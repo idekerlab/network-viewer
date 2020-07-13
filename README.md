@@ -1,3 +1,9 @@
+# NDEx Network Viewer
+React-based network viewer for NDEx and other apps
+
+## How to build and deploy
+(TBD)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

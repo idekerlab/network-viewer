@@ -12,7 +12,14 @@ import SearchIcon from '@material-ui/icons/Search'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import AppsIcon from '@material-ui/icons/Apps'
 
-import '../../assets/images/ndex-logo.svg'
+import InputLabel from '@material-ui/core/InputLabel'
+import FormHelperText from '@material-ui/core/FormHelperText'
+import FormControl from '@material-ui/core/FormControl'
+import Select from '@material-ui/core/Select'
+import NativeSelect from '@material-ui/core/NativeSelect'
+
+import logo from '../../assets/images/ndex-logo.svg'
+
 const drawerWidth = 300
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -26,6 +33,9 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'flex-end',
       padding: '0 8px',
       ...theme.mixins.toolbar,
+    },
+    ndexLogo: {
+      width: '1em',
     },
     appBar: {
       zIndex: theme.zIndex.drawer + 1,
@@ -43,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) =>
       }),
     },
     menuButton: {
-      marginRight: 36,
+      marginRight: 0,
     },
     menuButtonHidden: {
       display: 'none',
@@ -94,12 +104,24 @@ const useStyles = makeStyles((theme: Theme) =>
         },
       },
     },
+    formControl: {
+      margin: theme.spacing(0),
+      minWidth: 120,
+    },
+    selectEmpty: {
+      marginTop: theme.spacing(0),
+    },
+    searchType: {
+        width: '20ch',
+        padding: 0
+    }
   }),
 )
 
 const NDExAppBar = () => {
   const classes = useStyles()
   const [open, setOpen] = React.useState(false)
+  const [searchType, setSearchType] = React.useState("Keyword")
   const handleDrawerOpen = () => {
     setOpen(true)
   }
@@ -107,14 +129,23 @@ const NDExAppBar = () => {
     setOpen(false)
   }
 
+  const handleSearchTypeChange = () => {
+
+  }
+
+  
+
   return (
     <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
       <Toolbar>
         <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="open drawer">
           <MenuIcon />
         </IconButton>
-        <Typography className={classes.title} variant="h6" noWrap>
-          (Network Name Placeholder)
+        <IconButton color="default" aria-label="Ndex Home">
+          <img alt="NDEx logo" src={logo} className={classes.ndexLogo} />
+        </IconButton>
+        <Typography className={classes.title} variant="h5" noWrap>
+          NDEx Network Viewer
         </Typography>
         <div className={classes.search}>
           <div className={classes.searchIcon}>
@@ -129,6 +160,23 @@ const NDExAppBar = () => {
             inputProps={{ 'aria-label': 'search' }}
           />
         </div>
+        <FormControl variant="outlined" className={classes.formControl}>
+          <InputLabel htmlFor="outlined-age-native-simple">Search Type:</InputLabel>
+          <Select
+            native
+            value={searchType}
+            onChange={handleSearchTypeChange}
+            label="Search Type"
+            inputProps={{
+              name: 'search type',
+              id: 'search-type',
+            }}
+          >
+            <option value={10}>Keyword</option>
+            <option value={20}>First Neighbor</option>
+            <option value={30}>Second Neighbor</option>
+          </Select>
+        </FormControl>
         <IconButton edge="end" aria-label="account of current user" aria-haspopup="true" color="inherit">
           <AppsIcon />
         </IconButton>

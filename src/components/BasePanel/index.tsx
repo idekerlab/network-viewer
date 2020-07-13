@@ -1,10 +1,16 @@
-import React from 'react'
+import React, { useState, createContext, useContext } from 'react'
 import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 
 import NdexAppBar from '../NdexAppBar'
 import MainSplitPane from '../MainSplitPane'
+import { BrowserRouter as Router, Switch, useLocation } from 'react-router-dom'
+import useNetworkSummary from '../../hooks/useNetworkSummary'
+import AppContext from '../../context/AppState'
 
+const PUBLIC_URL = 'http://dev.ndexbio.org/v3/network/'
+const PUBLIC_URL_v2 = 'http://dev.ndexbio.org/v2/network/'
+// const PUBLIC_URL = 'http://public.ndexbio.org/v2/network/'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -14,7 +20,6 @@ const useStyles = makeStyles((theme: Theme) =>
       left: 0,
       width: '100%',
       height: '100%',
-      backgroundColor: '#0000FF',
       display: 'flex',
     },
     appBarSpacer: theme.mixins.toolbar,
@@ -30,12 +35,15 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-/**
- * Base panel for setting up all basic panels
- *  - Toolbar
- */
 const BasePanel = () => {
   const classes = useStyles()
+  let location = useLocation()
+  const appContext = useContext(AppContext)
+
+  const uuid = getUUID(location)
+  appContext.setUuid(uuid)
+  const { status, data, error, isFetching } = useNetworkSummary(uuid, PUBLIC_URL_v2)
+  appContext.setSummary(data)
 
   return (
     <div className={classes.root}>
@@ -49,6 +57,11 @@ const BasePanel = () => {
       </main>
     </div>
   )
+}
+
+const getUUID = (location) => {
+  const parts = location.pathname.split('/')
+  return parts[parts.length - 1]
 }
 
 export default BasePanel

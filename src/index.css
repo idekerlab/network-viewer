@@ -9,14 +9,17 @@ html, body, #root {
   background-color: #ffffff;
 }
 
+a {
+  text-decoration: none;
+}
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
 .Resizer {
-  background: #777777;
-  opacity: 0.2;
+  background: #444444;
+  opacity: 0.5;
   z-index: 1;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;

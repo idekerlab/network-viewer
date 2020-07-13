@@ -7,14 +7,26 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import { ThemeProvider } from '@material-ui/core/styles'
 import theme from './theme'
 
+import { ReactQueryConfigProvider } from 'react-query'
+
+const ROOT_TAG = 'root'
+/**
+ * This file contains settings for 3rd party libraries 
+ */
+
+// This avoids too many fetch calls from remote API
+const queryConfig: object = { queries: { refetchOnWindowFocus: false } }
+
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <App />
+      <ReactQueryConfigProvider config={queryConfig}>
+        <App />
+      </ReactQueryConfigProvider>
     </ThemeProvider>
   </React.StrictMode>,
-  document.getElementById('root'),
+  document.getElementById(ROOT_TAG),
 )
 
 // If you want your app to work offline and load faster, you can change
