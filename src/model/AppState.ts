@@ -11,7 +11,9 @@ type AppState = {
   summary: object,
   setSummary: Function,
   cx: object[],
-  setCx: Function
+  setCx: Function,
+  query: string,
+  setQuery: Function
 }
 
 export default AppState

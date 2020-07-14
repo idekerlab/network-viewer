@@ -7,6 +7,7 @@ import MainSplitPane from '../MainSplitPane'
 import { BrowserRouter as Router, Switch, useLocation } from 'react-router-dom'
 import useNetworkSummary from '../../hooks/useNetworkSummary'
 import AppContext from '../../context/AppState'
+import FooterPanel from '../FooterPanel'
 
 const PUBLIC_URL = 'http://dev.ndexbio.org/v3/network/'
 const PUBLIC_URL_v2 = 'http://dev.ndexbio.org/v2/network/'
@@ -21,6 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       height: '100%',
       display: 'flex',
+      flexDirection: 'column',
     },
     appBarSpacer: theme.mixins.toolbar,
     content: {
@@ -48,7 +50,6 @@ const BasePanel = () => {
   return (
     <div className={classes.root}>
       <CssBaseline />
-
       <NdexAppBar />
 
       <main className={classes.content}>

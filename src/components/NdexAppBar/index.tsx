@@ -112,16 +112,16 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(0),
     },
     searchType: {
-        width: '20ch',
-        padding: 0
-    }
+      width: '20ch',
+      padding: 0,
+    },
   }),
 )
 
 const NDExAppBar = () => {
   const classes = useStyles()
   const [open, setOpen] = React.useState(false)
-  const [searchType, setSearchType] = React.useState("Keyword")
+  const [searchType, setSearchType] = React.useState('Keyword')
   const handleDrawerOpen = () => {
     setOpen(true)
   }
@@ -129,18 +129,11 @@ const NDExAppBar = () => {
     setOpen(false)
   }
 
-  const handleSearchTypeChange = () => {
-
-  }
-
-  
+  const handleSearchTypeChange = () => {}
 
   return (
     <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
       <Toolbar>
-        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="open drawer">
-          <MenuIcon />
-        </IconButton>
         <IconButton color="default" aria-label="Ndex Home">
           <img alt="NDEx logo" src={logo} className={classes.ndexLogo} />
         </IconButton>

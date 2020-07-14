@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { withStyles, Theme, createStyles, makeStyles } from '@material-ui/core/styles'
 
 import ListSubheader from '@material-ui/core/ListSubheader'
@@ -31,6 +31,8 @@ import TableContainer from '@material-ui/core/TableContainer'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
+import useSearch from '../../../hooks/useSearch'
+import AppContext from '../../../context/AppState'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -104,9 +106,15 @@ const StyledTableRow = withStyles((theme: Theme) =>
 
 const SelectionList = (props) => {
   const classes = useStyles()
-  const { network } = props
+  const { network, selected} = props
+
+  const appContext = useContext(AppContext)
+  const {uuid, query, setSelectedEdges, setSelectedNodes} = appContext
 
   const [open, setOpen] = React.useState(true)
+
+  const { status, data, error, isFetching } = useSearch(uuid, query, '')
+ console.log('#########data raw', data) 
 
   const handleClick = () => {
     setOpen(!open)
@@ -115,12 +123,10 @@ const SelectionList = (props) => {
   let nodes = []
   let edges = []
 
-  if (network !== undefined) {
-    const { elements } = network
-
-    nodes = [dummyData]
-    edges = elements.slice(750, 760)
+  if (data !== undefined) {
+    nodes = data
   }
+ console.log('#########data', nodes) 
   return (
     <List
       dense
@@ -139,61 +145,16 @@ const SelectionList = (props) => {
             N
           </Avatar>
         </ListItemAvatar>
-        <Typography variant="h6" color="textSecondary" component="p">
-          <a href={'https://www.genecards.org/cgi-bin/carddisp.pl?gene=CDCA4'}>{'CDCA4'}</a>
-        </Typography>
+        <ListItemText primary="Nodes" />
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-          {nodes.map((data) => {
+          {nodes.map((n) => {
             return (
-              <React.Fragment>
-                <ListItem dense className={classes.nested} key={data['id']}>
-                  <Typography variant="body2" color="textSecondary" component="p">
-                    <a href={'https://www.ncbi.nlm.nih.gov/gene/?term=CDCA4'}>NCBI Gene</a>
-                  </Typography>
-                </ListItem>
-                <ListItem className={classes.nested} key={data['id'] + 'desc'}>
-                  <ListItemText secondary={data['summary']} primary={'Summary'} />
-                </ListItem>
-                <Collapse className={classes.nested} in={open} timeout="auto" unmountOnExit>
-                  <TableContainer component={Card}>
-                    <Table className={classes.table} size={'small'} aria-label="customized table">
-                      <TableHead>
-                        <TableRow>
-                          <StyledTableCell>Alias</StyledTableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {data['alias'].map((a) => (
-                          <StyledTableRow key={a}>
-                            <StyledTableCell align="left">{a}</StyledTableCell>
-                          </StyledTableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Collapse>
-                <ListItem dense className={classes.nested} key={'img2'}>
-                  <Card className={classes.card}>
-                    <CardActionArea>
-                      <CardMedia
-                        component="img"
-                        alt="Ch location"
-                        height="80"
-                        image={data['location']}
-                        title="Contemplative Reptile"
-                      />
-                      <CardContent>
-                        <Typography variant="body2" color="textSecondary" component="p">
-                          {data['locationDetail']}
-                        </Typography>
-                      </CardContent>
-                    </CardActionArea>
-                  </Card>
-                </ListItem>
-              </React.Fragment>
+              <ListItem dense className={classes.nested} key={n}>
+                <ListItemText primary={n} secondary={n} />
+              </ListItem>
             )
           })}
         </List>

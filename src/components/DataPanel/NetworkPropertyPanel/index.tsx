@@ -77,8 +77,6 @@ const NetworkPropertyPanel = () => {
     )
   }
 
-  console.log('SUMMMARY----------', summary)
-
   const newProps = {
     description: summary['description'],
   }

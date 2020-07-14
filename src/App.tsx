@@ -16,6 +16,7 @@ const App = () => {
   const [cx, setCx] = useState([])
   const [summary, setSummary] = useState({})
   const [style, setStyle] = useState({})
+  const [query, setQuery] = useState('')
   const [selectedNodes, setSelectedNodes] = useState([])
   const [selectedEdges, setSelectedEdges] = useState([])
   
@@ -34,7 +35,8 @@ const defState: AppState = {
   setUuid,
   cx,
   setCx,
-
+  query,
+  setQuery
 }
 
 

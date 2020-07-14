@@ -22,7 +22,7 @@ const DataPanel = (props) => {
   return (
     <SplitPane className={classes.dataPanel} split="horizontal" minSize={150} defaultSize={defSize}>
       <NetworkPropertyPanel />
-      {/* <GraphObjectPropertyPanel {...props}/> */}
+      <GraphObjectPropertyPanel />
     </SplitPane>
   )
 }

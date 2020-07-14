@@ -6,6 +6,7 @@ import SplitPane, { Pane } from 'react-split-pane'
 
 import useNetwork from '../../hooks/useNetwork'
 import AppContext from '../../context/AppState'
+import FooterPanel from '../FooterPanel'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -14,6 +15,11 @@ const useStyles = makeStyles((theme: Theme) =>
       boxSizing: 'border-box',
       flexGrow: 1,
     },
+    leftPanel: {
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%'
+    }
   }),
 )
 const MainSplitPane = () => {
@@ -23,7 +29,7 @@ const MainSplitPane = () => {
   const { status, data, error, isFetching } = useNetwork(uuid)
 
   let networkObj = data
-  if(networkObj === undefined) {
+  if (networkObj === undefined) {
     networkObj = {}
   }
 
@@ -32,7 +38,10 @@ const MainSplitPane = () => {
 
   return (
     <SplitPane className={classes.base} split="vertical" minSize={150} defaultSize={defSize}>
-      <NetworkPanel {...networkObj}/>
+      <div className={classes.leftPanel}>
+        <NetworkPanel {...networkObj} />
+        <FooterPanel />
+      </div>
       <DataPanel />
     </SplitPane>
   )
