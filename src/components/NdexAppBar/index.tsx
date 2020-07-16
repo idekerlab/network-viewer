@@ -140,36 +140,6 @@ const NDExAppBar = () => {
         <Typography className={classes.title} variant="h5" noWrap>
           NDEx Network Viewer
         </Typography>
-        <div className={classes.search}>
-          <div className={classes.searchIcon}>
-            <SearchIcon />
-          </div>
-          <InputBase
-            placeholder="Search this network…"
-            classes={{
-              root: classes.inputRoot,
-              input: classes.inputInput,
-            }}
-            inputProps={{ 'aria-label': 'search' }}
-          />
-        </div>
-        <FormControl variant="outlined" className={classes.formControl}>
-          <InputLabel htmlFor="outlined-age-native-simple">Search Type:</InputLabel>
-          <Select
-            native
-            value={searchType}
-            onChange={handleSearchTypeChange}
-            label="Search Type"
-            inputProps={{
-              name: 'search type',
-              id: 'search-type',
-            }}
-          >
-            <option value={10}>Keyword</option>
-            <option value={20}>First Neighbor</option>
-            <option value={30}>Second Neighbor</option>
-          </Select>
-        </FormControl>
         <IconButton edge="end" aria-label="account of current user" aria-haspopup="true" color="inherit">
           <AppsIcon />
         </IconButton>

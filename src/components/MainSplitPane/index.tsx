@@ -12,6 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     base: {
       width: '100%',
+      height: '100%',
       boxSizing: 'border-box',
       flexGrow: 1,
     },

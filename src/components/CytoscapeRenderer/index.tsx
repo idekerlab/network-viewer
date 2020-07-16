@@ -53,8 +53,6 @@ const CytoscapeRenderer = (props) => {
       const selectedElements = cy.$(selectionStr)
       console.log('------- Selected ELM ------------', selectedElements)
       selectedElements.select()
-
-      
     }
   }, [selected])
 
@@ -74,10 +72,10 @@ const initializeCy = (cy, eventHandlers) => {
 
       if (evtTarget.isNode()) {
         console.log('* tap on Node', evtTarget.data())
-        eventHandlers.setSelectedNodes([data])
+        eventHandlers.setSelectedNodes([data.id])
       } else {
         console.log('* tap on Edge', evtTarget.data())
-        eventHandlers.setSelectedEdges([data])
+        eventHandlers.setSelectedEdges([data.id])
       }
     }
   })

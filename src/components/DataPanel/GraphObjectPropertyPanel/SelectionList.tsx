@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { withStyles, Theme, createStyles, makeStyles } from '@material-ui/core/styles'
 
 import ListSubheader from '@material-ui/core/ListSubheader'
@@ -7,18 +7,8 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import Collapse from '@material-ui/core/Collapse'
-import InboxIcon from '@material-ui/icons/MoveToInbox'
-import DraftsIcon from '@material-ui/icons/Drafts'
-import SendIcon from '@material-ui/icons/Send'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
-import StarBorder from '@material-ui/icons/StarBorder'
-
-import Card from '@material-ui/core/Card'
-import CardActionArea from '@material-ui/core/CardActionArea'
-import CardActions from '@material-ui/core/CardActions'
-import CardContent from '@material-ui/core/CardContent'
-import CardMedia from '@material-ui/core/CardMedia'
 
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import Avatar from '@material-ui/core/Avatar'
@@ -33,12 +23,15 @@ import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
 import useSearch from '../../../hooks/useSearch'
 import AppContext from '../../../context/AppState'
+import SelectedItems from './SelectedItems'
+import NoSelectionListItem, { NoSelectionProps } from './NoSelectionListItem'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: '100%',
-      overflowY: 'scroll',
+      height: '100%',
+      overflowY: 'auto',
       backgroundColor: theme.palette.background.paper,
     },
     nested: {
@@ -56,32 +49,6 @@ const useStyles = makeStyles((theme: Theme) =>
     table: {},
   }),
 )
-
-const dummyData = {
-  id: '55038',
-  name: 'CDCA4',
-  fullName: 'Cell Division Cycle Associated 4',
-  alias: [
-    'Cell Division Cycle Associated',
-    'Hematopoietic Progenitor Protein',
-    'Cell Division Cycle-Associated Protein',
-    'HEPP',
-    'SEI-3/HEPP',
-  ],
-  summary:
-    'This gene encodes a protein that belongs to the E2F family of transcription' +
-    ' factors. This protein regulates E2F-dependent transcriptional activation and cell ' +
-    'proliferation, mainly through the E2F/retinoblastoma protein pathway. It also functions' +
-    ' in the regulation of JUN oncogene expression. This protein shows distinctive ' +
-    'nuclear-mitotic apparatus distribution, it is involved in spindle organization from ' +
-    'prometaphase, and may also play a role as a midzone factor involved in chromosome ' +
-    'segregation or cytokinesis. Two alternatively spliced transcript variants encoding ' +
-    'the same protein have been noted for this gene. Two pseudogenes have also been identified' +
-    ' on chromosome 1. [provided by RefSeq, May 2014]',
-  location: 'https://cdn.genecards.org/genomic-location-v4-14/CDCA4-gene.png',
-  locationDetail:
-    'CDCA4 Gene in genomic location: bands according to Ensembl, locations according to GeneLoc (and/or Entrez Gene and/or Ensembl if different)',
-}
 
 const StyledTableCell = withStyles((theme: Theme) =>
   createStyles({
@@ -106,15 +73,25 @@ const StyledTableRow = withStyles((theme: Theme) =>
 
 const SelectionList = (props) => {
   const classes = useStyles()
-  const { network, selected} = props
+  const { network, selected } = props
 
   const appContext = useContext(AppContext)
-  const {uuid, query, setSelectedEdges, setSelectedNodes} = appContext
+  const { uuid, query, setSelectedEdges, setSelectedNodes, selectedNodes} = appContext
 
   const [open, setOpen] = React.useState(true)
 
   const { status, data, error, isFetching } = useSearch(uuid, query, '')
- console.log('#########data raw', data) 
+  useEffect(() => {
+  
+    if(data === null || data === undefined) {
+      return
+    }
+
+    console.log('######### New data effect', data)
+    const {nodeIds} = data
+    setSelectedNodes(nodeIds)
+
+  }, [data] )
 
   const handleClick = () => {
     setOpen(!open)
@@ -124,9 +101,17 @@ const SelectionList = (props) => {
   let edges = []
 
   if (data !== undefined) {
-    nodes = data
+    nodes = data.nodeIds
   }
- console.log('#########data', nodes) 
+
+  const nodeCount = selectedNodes.length
+
+  const listProps: NoSelectionProps = {
+    avatarLetter: 'N',
+    objType: 'Nodes',
+    avatarColor: 'red',
+  }
+
   return (
     <List
       dense
@@ -139,26 +124,12 @@ const SelectionList = (props) => {
       }
       className={classes.root}
     >
-      <ListItem dense button onClick={handleClick}>
-        <ListItemAvatar>
-          <Avatar className={classes.nodes} alt="Nodes">
-            N
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText primary="Nodes" />
-        {open ? <ExpandLess /> : <ExpandMore />}
-      </ListItem>
-      <Collapse in={open} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          {nodes.map((n) => {
-            return (
-              <ListItem dense className={classes.nested} key={n}>
-                <ListItemText primary={n} secondary={n} />
-              </ListItem>
-            )
-          })}
-        </List>
-      </Collapse>
+      {nodeCount ? (
+        <SelectedItems label={`Nodes (${nodeCount + 1})`} selectedObjects={selectedNodes} avatarLetter={'N'} />
+      ) : (
+        <NoSelectionListItem {...listProps} />
+      )}
+
       <ListItem button onClick={handleClick}>
         <ListItemAvatar>
           <Avatar className={classes.edges} alt="Edges">

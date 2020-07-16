@@ -38,7 +38,7 @@ const NetworkPanel:FC = (props) => {
 
   let nodeIds = []
   if (data !== undefined && !isFetching) {
-    nodeIds = data
+    nodeIds = data.nodeIds
   }
 
 
