@@ -1,24 +1,19 @@
 import React, { FC, Fragment, useState, useContext } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
-import Typography from '@material-ui/core/Typography'
 import InputBase from '@material-ui/core/InputBase'
-import MenuIcon from '@material-ui/icons/Menu'
 import SearchIcon from '@material-ui/icons/Search'
-import AccountCircle from '@material-ui/icons/AccountCircle'
-import AppsIcon from '@material-ui/icons/Apps'
+import InfoIcon from '@material-ui/icons/InfoOutlined'
 
-import InputLabel from '@material-ui/core/InputLabel'
-import FormHelperText from '@material-ui/core/FormHelperText'
 import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
-import { Button } from '@material-ui/core'
+import { Button, IconButton } from '@material-ui/core'
 import AppContext from '../../context/AppState'
-import useSearch from '../../hooks/useSearch'
+import SearchHelpDialog from './SearchHelpDialog'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      width: '60ch',
+      width: '70ch',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'flex-start',
@@ -53,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
     },
     formControl: {
-      minWidth: '10em',
+      minWidth: '15em',
     },
     selectEmpty: {
       marginTop: theme.spacing(0),
@@ -83,11 +78,10 @@ const SearchBox: FC = () => {
   const [open, setOpen] = useState(false)
   const [rawQuery, setRawQuery] = useState('')
   const [result, setResult] = useState([])
-  const [searchType, setSearchType] = useState('Keyword')
+  const [searchType, setSearchType] = useState(queryMode.direct)
 
   const appContext = useContext(AppContext)
-  const { uuid, setSelectedNodes, setQuery } = appContext
-
+  const { uuid, setSelectedNodes, setQuery, setQueryMode } = appContext
 
   const handleDrawerOpen = () => {
     setOpen(true)
@@ -96,7 +90,12 @@ const SearchBox: FC = () => {
     setOpen(false)
   }
 
-  const handleSearchTypeChange = () => {}
+  const handleSearchTypeChange = (evt) => {
+    const val = evt.target.value
+    console.log('ST ===========', val)
+    setSearchType(val)
+    setQueryMode(val)
+  }
   const handleQueryChange = (evt) => {
     const q = evt.target.value
     setRawQuery(q)
@@ -108,6 +107,13 @@ const SearchBox: FC = () => {
     console.log('-------Start Search ------')
     setQuery(rawQuery)
     // console.log('NETQUERY ===========', data, appContext)
+  }
+
+  const handleHelpClose = () => {
+    setOpen(false)
+  }
+  const handleHelpOpen = () => {
+    setOpen(true)
   }
 
   return (
@@ -139,6 +145,9 @@ const SearchBox: FC = () => {
           ))}
         </Select>
       </FormControl>
+      <IconButton size="small" onClick={handleHelpOpen}>
+        <InfoIcon color="secondary" />
+      </IconButton>
       <Button
         className={classes.button}
         variant="outlined"
@@ -149,6 +158,7 @@ const SearchBox: FC = () => {
       >
         Query
       </Button>
+      <SearchHelpDialog onClose={handleHelpClose} open={open} />
     </div>
   )
 }

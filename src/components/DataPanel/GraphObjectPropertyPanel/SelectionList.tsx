@@ -76,22 +76,30 @@ const SelectionList = (props) => {
   const { network, selected } = props
 
   const appContext = useContext(AppContext)
-  const { uuid, query, setSelectedEdges, setSelectedNodes, selectedNodes} = appContext
+  const {
+    uuid,
+    query,
+    setSelectedEdges,
+    setSelectedNodes,
+    selectedNodes,
+    selectedEdges,
+    setSelectedNodeAttributes,
+    selectedNodeAttributes,
+  } = appContext
 
   const [open, setOpen] = React.useState(true)
 
   const { status, data, error, isFetching } = useSearch(uuid, query, '')
   useEffect(() => {
-  
-    if(data === null || data === undefined) {
+    if (data === null || data === undefined) {
       return
     }
 
     console.log('######### New data effect', data)
-    const {nodeIds} = data
+    const { nodeIds, kvMap } = data
     setSelectedNodes(nodeIds)
-
-  }, [data] )
+    setSelectedNodeAttributes(kvMap)
+  }, [data])
 
   const handleClick = () => {
     setOpen(!open)
@@ -105,6 +113,7 @@ const SelectionList = (props) => {
   }
 
   const nodeCount = selectedNodes.length
+  const edgeCount = selectedEdges.length
 
   const listProps: NoSelectionProps = {
     avatarLetter: 'N',
@@ -125,32 +134,20 @@ const SelectionList = (props) => {
       className={classes.root}
     >
       {nodeCount ? (
-        <SelectedItems label={`Nodes (${nodeCount + 1})`} selectedObjects={selectedNodes} avatarLetter={'N'} />
+        <SelectedItems
+          label={`Nodes (${nodeCount + 1})`}
+          selectedObjects={selectedNodes}
+          avatarLetter={'N'}
+          nodeAttributes={selectedNodeAttributes}
+        />
       ) : (
         <NoSelectionListItem {...listProps} />
       )}
-
-      <ListItem button onClick={handleClick}>
-        <ListItemAvatar>
-          <Avatar className={classes.edges} alt="Edges">
-            E
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText primary="Edges" />
-        {open ? <ExpandLess /> : <ExpandMore />}
-      </ListItem>
-      <Collapse in={open} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          {edges.map((e) => {
-            const data = e['data']
-            return (
-              <ListItem dense className={classes.nested} key={data['id']}>
-                <ListItemText primary={data['name']} secondary={data['id']} />
-              </ListItem>
-            )
-          })}
-        </List>
-      </Collapse>
+      {edgeCount ? (
+        <SelectedItems label={`Edges (${edgeCount + 1})`} selectedObjects={selectedEdges} avatarLetter={'E'} />
+      ) : (
+        <NoSelectionListItem avatarLetter={'E'} objType={'Edges'} avatarColor={'red'} />
+      )}
     </List>
   )
 }

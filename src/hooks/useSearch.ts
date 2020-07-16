@@ -80,6 +80,7 @@ const transformCx = (cx: object[]) => {
 
 const getAttrs = (kvMap: object) => {
   const nodeAttr = kvMap['nodeAttributes']
+  const nodes = kvMap['nodes']
 
   const id2attr = {}
 
@@ -90,14 +91,18 @@ const getAttrs = (kvMap: object) => {
 
     let current = id2attr[pointer]
     if (current === undefined) {
-      current = []
+      current = new Map()
     }
-    const newEntry = {
-      name: entry['n'],
-      value: entry['v'],
-    }
-    current.push(newEntry)
+    current.set(entry['n'], entry['v'])
     id2attr[pointer] = current
+  }
+
+  len = nodes.length
+  while(len--) {
+    const n = nodes[len]
+    const id = n['@id']
+    const val = n['n']
+    id2attr[id].set('name', val)
   }
 
   return id2attr

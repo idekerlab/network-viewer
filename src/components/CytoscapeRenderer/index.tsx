@@ -1,23 +1,17 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { createCytoscape } from './create-cytoscape'
 
+// Style for the network canvas area
 const ROOT_STYLE = {
   width: '100%',
   height: '100%',
 }
 
-/**
- *
- * @param props Minimal wrapper for Cytoscape.js
- * Cytoscape.js instance should be injected as a parameter
- *
- *
- */
 const CytoscapeRenderer = (props) => {
   const cyEl = useRef(null)
   const [cy, setCy] = useState(null)
 
-  const { network, visualStyle, eventHandlers, selected } = props
+  const { network, visualStyle, eventHandlers, selectedNodes, selectedEdges } = props
   let elements = []
 
   useEffect(() => {
@@ -25,10 +19,39 @@ const CytoscapeRenderer = (props) => {
       console.log('------- Adding elements ------------', props)
       elements = network.elements
       cy.add(elements)
-      cy.style().fromJson(visualStyle).update()
+
+      const newVS = addExtraStyle(visualStyle)
+
+      cy.style().fromJson(newVS).update()
       cy.fit()
     }
   }, [network])
+
+  const addExtraStyle = visualStyle => {
+    const faded = {
+      selector: '.faded',
+      css: {
+        'background-opacity': 0.1,
+        'text-opacity': 0.1,
+        'border-opacity': 0.1,
+      }
+    }
+    
+    const highlight = {
+      selector: '.highlight',
+      css: {
+        'background-opacity': 1,
+        'text-opacity': 1,
+        'border-opacity': 1,
+      }
+    }
+
+    visualStyle.push(faded)
+    visualStyle.push(highlight)
+
+    return visualStyle
+
+  }
 
   useEffect(() => {
     // Create new instance of Cytoscape when element is available
@@ -41,20 +64,21 @@ const CytoscapeRenderer = (props) => {
   }, [cyEl])
 
   useEffect(() => {
-    let selectionStr = selected.join(', #')
+    let selectionStr = selectedNodes.join(', #')
 
-    if(selectionStr.length === 0) {
+    if (selectionStr.length === 0) {
       return
     }
-    
+
     selectionStr = '#' + selectionStr
 
     if (cy !== null) {
       const selectedElements = cy.$(selectionStr)
       console.log('------- Selected ELM ------------', selectedElements)
-      selectedElements.select()
+      cy.nodes().addClass('faded')
+      selectedElements.select().addClass('highlight')
     }
-  }, [selected])
+  }, [selectedNodes])
 
   return <div style={ROOT_STYLE} ref={cyEl} />
 }
@@ -67,6 +91,8 @@ const initializeCy = (cy, eventHandlers) => {
       console.log('* tap on background')
       eventHandlers.setSelectedEdges([])
       eventHandlers.setSelectedNodes([])
+      cy.elements().removeClass('faded');
+      cy.elements().removeClass('highlight');
     } else {
       const data = evtTarget.data()
 

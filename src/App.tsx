@@ -17,8 +17,11 @@ const App = () => {
   const [summary, setSummary] = useState({})
   const [style, setStyle] = useState({})
   const [query, setQuery] = useState('')
+  const [queryMode, setQueryMode] = useState('direct')
   const [selectedNodes, setSelectedNodes] = useState([])
   const [selectedEdges, setSelectedEdges] = useState([])
+  
+  const [selectedNodeAttributes, setSelectedNodeAttributes] = useState({})
   
 
 const defState: AppState = {
@@ -26,6 +29,8 @@ const defState: AppState = {
   style,
   setStyle,
   selectedNodes,
+  selectedNodeAttributes,
+  setSelectedNodeAttributes,
   setSelectedNodes,
   selectedEdges,
   setSelectedEdges,
@@ -36,7 +41,9 @@ const defState: AppState = {
   cx,
   setCx,
   query,
-  setQuery
+  setQuery,
+  queryMode,
+  setQueryMode
 }
 
 

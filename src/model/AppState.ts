@@ -6,6 +6,8 @@ type AppState = {
   setStyle: Function,
   selectedNodes: object[],
   setSelectedNodes: Function,
+  selectedNodeAttributes: object,
+  setSelectedNodeAttributes: Function,
   selectedEdges: object[],
   setSelectedEdges: Function,
   summary: object,
@@ -13,7 +15,9 @@ type AppState = {
   cx: object[],
   setCx: Function,
   query: string,
-  setQuery: Function
+  setQuery: Function,
+  queryMode: string,
+  setQueryMode: Function
 }
 
 export default AppState

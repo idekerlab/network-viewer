@@ -1,4 +1,4 @@
-import React, { useContext, useEffect} from 'react'
+import React, { useContext, useEffect } from 'react'
 import { withStyles, Theme, createStyles, makeStyles } from '@material-ui/core/styles'
 
 import ListSubheader from '@material-ui/core/ListSubheader'
@@ -10,11 +10,10 @@ import Collapse from '@material-ui/core/Collapse'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 
-
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import Avatar from '@material-ui/core/Avatar'
 import Typography from '@material-ui/core/Typography'
-
+import DataTable from '../../DataTable'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const SelectedItems = (props) => {
   const classes = useStyles()
-  const { selectedObjects, label, avatarLetter } = props
+  const { selectedObjects, label, avatarLetter, nodeAttributes } = props
 
   const [open, setOpen] = React.useState(true)
 
@@ -54,10 +53,22 @@ const SelectedItems = (props) => {
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           {selectedObjects.map((n) => {
+            const attr = nodeAttributes[n]
+
+            let keys = []
+            let name = n.toString()
+            if(attr !== undefined) {
+              keys = [...attr.keys()]
+              name = attr.get('name')
+            }
+
+
             return (
-              <ListItem dense className={classes.nested} key={n}>
-                <ListItemText primary={n} secondary={n} />
-              </ListItem>
+              <React.Fragment>
+                <ListItem dense className={classes.nested} key={n}>
+                  <ListItemText primary={name} secondary={n} />
+                </ListItem>
+              </React.Fragment>
             )
           })}
         </List>
