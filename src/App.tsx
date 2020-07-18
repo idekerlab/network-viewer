@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import './App.css'
 import { useHistory } from 'react-router-dom'
 import { Route, BrowserRouter as Router, Link, useRouteMatch } from 'react-router-dom'
@@ -7,8 +7,6 @@ import BasePanel from './components/BasePanel'
 
 import AppContext from './context/AppState'
 import AppState from './model/AppState'
-
-
 
 const App = () => {
   const history = useHistory()
@@ -20,32 +18,31 @@ const App = () => {
   const [queryMode, setQueryMode] = useState('direct')
   const [selectedNodes, setSelectedNodes] = useState([])
   const [selectedEdges, setSelectedEdges] = useState([])
-  
+
   const [selectedNodeAttributes, setSelectedNodeAttributes] = useState({})
-  
 
-const defState: AppState = {
-  network: {},
-  style,
-  setStyle,
-  selectedNodes,
-  selectedNodeAttributes,
-  setSelectedNodeAttributes,
-  setSelectedNodes,
-  selectedEdges,
-  setSelectedEdges,
-  summary,
-  setSummary,
-  uuid,
-  setUuid,
-  cx,
-  setCx,
-  query,
-  setQuery,
-  queryMode,
-  setQueryMode
-}
-
+  // TODO: use reducer?
+  const defState: AppState = {
+    network: {},
+    style,
+    setStyle,
+    selectedNodes,
+    selectedNodeAttributes,
+    setSelectedNodeAttributes,
+    setSelectedNodes,
+    selectedEdges,
+    setSelectedEdges,
+    summary,
+    setSummary,
+    uuid,
+    setUuid,
+    cx,
+    setCx,
+    query,
+    setQuery,
+    queryMode,
+    setQueryMode,
+  }
 
   return (
     <Router>
@@ -57,6 +54,5 @@ const defState: AppState = {
     </Router>
   )
 }
-
 
 export default App

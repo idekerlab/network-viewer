@@ -2,18 +2,20 @@ import { useQuery } from 'react-query'
 import HttpResponse from '../api/HttpResponse'
 import { CxToJs, CyNetworkUtils } from 'cytoscape-cx2js'
 
-const PUBLIC_URL = 'http://dev.ndexbio.org/v2/network/'
-// const PUBLIC_URL = 'http://public.ndexbio.org/v2/network/'
 
 const utils = new CyNetworkUtils()
 const cx2js = new CxToJs(utils)
 
-const getNetwork = async <T>(_, uuid: string, serverUrl: string) => {
-  let url = `${PUBLIC_URL}${uuid}`
+const getNetwork = async <T>(_, uuid: string, serverUrl: string, apiVersion: string) => {
+  if(apiVersion === null) {
+    throw new Error('No API version') 
+  }
+  let url = `${serverUrl}${apiVersion}/network/${uuid}`
   const response: HttpResponse<T> = await fetch(url)
 
   try {
     response.parsedBody = await response.json()
+    console.log('**-------------------NET:', uuid, url, response.parsedBody)
   } catch (ex) {
     console.error('API Call error:', ex)
   }
@@ -47,6 +49,6 @@ const cx2cyjs = (uuid: string, cx: any) => {
   }
 }
 
-export default function useNetwork(uuid: string, serverUrl: string = PUBLIC_URL) {
-  return useQuery(['network', uuid, serverUrl], getNetwork)
+export default function useNetwork(uuid: string, serverUrl: string, apiVersion: string) {
+  return useQuery(['network', uuid, serverUrl, apiVersion], getNetwork)
 }

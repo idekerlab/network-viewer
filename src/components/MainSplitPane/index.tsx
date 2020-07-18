@@ -7,6 +7,11 @@ import SplitPane, { Pane } from 'react-split-pane'
 import useNetwork from '../../hooks/useNetwork'
 import AppContext from '../../context/AppState'
 import FooterPanel from '../FooterPanel'
+import useNetworkSummary from '../../hooks/useNetworkSummary'
+
+const BASE_URL = 'http://dev.ndexbio.org/'
+const V2 = 'v2'
+const V3 = 'v3'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -19,23 +24,39 @@ const useStyles = makeStyles((theme: Theme) =>
     leftPanel: {
       display: 'flex',
       flexDirection: 'column',
-      height: '100%'
-    }
+      height: '100%',
+    },
   }),
 )
 const MainSplitPane = () => {
   const appContext = useContext(AppContext)
   const { uuid } = appContext
   const classes = useStyles()
-  const { status, data, error, isFetching } = useNetwork(uuid)
+  const width = window.innerWidth
+  const defSize = Math.floor(width * 0.65)
+  const result = useNetworkSummary(uuid, BASE_URL, V2)
+
+  const summary = result.data
+
+  let apiVersion = null
+
+  if (summary !== undefined && Object.keys(summary).length !== 0) {
+    const count = summary['edgeCount'] + summary['nodeCount']
+    console.log('OBJ count========================================', count)
+    if (count > 3000) {
+      apiVersion = V3
+    } else {
+      apiVersion = V2
+    }
+  }
+  console.log('**Summary before CALL:', result, summary, apiVersion)
+
+  const { status, data, error, isFetching } = useNetwork(uuid, BASE_URL, apiVersion)
 
   let networkObj = data
   if (networkObj === undefined) {
     networkObj = {}
   }
-
-  const width = window.innerWidth
-  const defSize = Math.floor(width * 0.65)
 
   return (
     <SplitPane className={classes.base} split="vertical" minSize={150} defaultSize={defSize}>

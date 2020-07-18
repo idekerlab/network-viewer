@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, Suspense } from 'react'
 import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import Paper from '@material-ui/core/Paper'
@@ -13,9 +13,10 @@ import EditIcon from '@material-ui/icons/Edit'
 import PublicIcon from '@material-ui/icons/Public'
 import PropertyTable from './PropertyTable'
 import AppContext from '../../../context/AppState'
+import useNetworkSummary from '../../../hooks/useNetworkSummary'
 
-const dummy =
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+const BASE_URL = 'http://dev.ndexbio.org/'
+const API_VER = 'v2'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -65,7 +66,11 @@ const NetworkPropertyPanel = () => {
   const appContext = useContext(AppContext)
   const classes = useStyles()
 
-  const { summary } = appContext
+  const { uuid } = appContext
+  const { status, data, error, isFetching } = useNetworkSummary(uuid, BASE_URL, 'v2')
+
+  const summary = data
+
 
   if (summary === undefined || Object.entries(summary).length === 0) {
     return (

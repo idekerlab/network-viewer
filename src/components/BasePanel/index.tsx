@@ -5,13 +5,10 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import NdexAppBar from '../NdexAppBar'
 import MainSplitPane from '../MainSplitPane'
 import { BrowserRouter as Router, Switch, useLocation } from 'react-router-dom'
-import useNetworkSummary from '../../hooks/useNetworkSummary'
 import AppContext from '../../context/AppState'
 import FooterPanel from '../FooterPanel'
 
-const PUBLIC_URL = 'http://dev.ndexbio.org/v3/network/'
-const PUBLIC_URL_v2 = 'http://dev.ndexbio.org/v2/network/'
-// const PUBLIC_URL = 'http://public.ndexbio.org/v2/network/'
+
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -44,8 +41,6 @@ const BasePanel = () => {
 
   const uuid = getUUID(location)
   appContext.setUuid(uuid)
-  const { status, data, error, isFetching } = useNetworkSummary(uuid, PUBLIC_URL_v2)
-  appContext.setSummary(data)
 
   return (
     <div className={classes.root}>

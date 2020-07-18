@@ -27,32 +27,6 @@ const CytoscapeRenderer = (props) => {
     }
   }, [network])
 
-  const addExtraStyle = visualStyle => {
-    const faded = {
-      selector: '.faded',
-      css: {
-        'background-opacity': 0.1,
-        'text-opacity': 0.1,
-        'border-opacity': 0.1,
-      }
-    }
-    
-    const highlight = {
-      selector: '.highlight',
-      css: {
-        'background-opacity': 1,
-        'text-opacity': 1,
-        'border-opacity': 1,
-      }
-    }
-
-    visualStyle.push(faded)
-    visualStyle.push(highlight)
-
-    return visualStyle
-
-  }
-
   useEffect(() => {
     // Create new instance of Cytoscape when element is available
     if (cy === null && cyEl !== null && cyEl.current !== null) {
@@ -91,8 +65,8 @@ const initializeCy = (cy, eventHandlers) => {
       console.log('* tap on background')
       eventHandlers.setSelectedEdges([])
       eventHandlers.setSelectedNodes([])
-      cy.elements().removeClass('faded');
-      cy.elements().removeClass('highlight');
+      cy.elements().removeClass('faded')
+      cy.elements().removeClass('highlight')
     } else {
       const data = evtTarget.data()
 
@@ -105,6 +79,31 @@ const initializeCy = (cy, eventHandlers) => {
       }
     }
   })
+}
+
+const addExtraStyle = (visualStyle) => {
+  const faded = {
+    selector: '.faded',
+    css: {
+      'background-opacity': 0.1,
+      'text-opacity': 0.1,
+      'border-opacity': 0.1,
+    },
+  }
+
+  const highlight = {
+    selector: '.highlight',
+    css: {
+      'background-opacity': 1,
+      'text-opacity': 1,
+      'border-opacity': 1,
+    },
+  }
+
+  visualStyle.push(faded)
+  visualStyle.push(highlight)
+
+  return visualStyle
 }
 
 export default CytoscapeRenderer

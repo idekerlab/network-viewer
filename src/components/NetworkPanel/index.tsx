@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect } from 'react'
+import React, { FC, useContext, useEffect, Suspense } from 'react'
 import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
 import CytoscapeViewer from './CytoscapeViewer'
 import LGRPanel from './LGRPanel'
@@ -36,11 +36,20 @@ const NetworkPanel: FC = (props) => {
     nodeIds = data.nodeIds
   }
 
+  // console.log('**Network', props)
+  let objectCount = 0
+  if (props['network'] !== undefined) {
+    const network = props['network']
+    console.log('**Network', network.elements)
+  }
+
   return (
     <div className={classes.root}>
-      {/* <CytoscapeViewer {...props} /> */}
-      {/* <LGRPanel {...props} /> */}
-      <CytoscapeRenderer eventHandlers={eventHandlers} selectedNodes={nodeIds} {...props} />
+      <Suspense fallback={<p>Loading...</p>}>
+        {/* <CytoscapeViewer {...props} /> */}
+        <LGRPanel {...props} />
+        {/* <CytoscapeRenderer eventHandlers={eventHandlers} selectedNodes={nodeIds} {...props} /> */}
+      </Suspense>
     </div>
   )
 }

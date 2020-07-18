@@ -26,6 +26,9 @@ const selectNodes = (cxResult: object[]) => {
 }
 
 const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string) => {
+  if(uuid === undefined || uuid === '') {
+    throw new Error('No UUID')
+  }
   let url = `${URL}${uuid}/query`
 
   const queryData = {
@@ -83,6 +86,10 @@ const getAttrs = (kvMap: object) => {
   const nodes = kvMap['nodes']
 
   const id2attr = {}
+
+  if(nodeAttr === undefined) {
+    return id2attr
+  }
 
   let len = nodeAttr.length
   while (len--) {
