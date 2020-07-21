@@ -9,21 +9,24 @@ const ROOT_STYLE = {
 
 const CytoscapeRenderer = (props) => {
   const cyEl = useRef(null)
-  const [cy, setCy] = useState(null)
 
-  const { network, visualStyle, eventHandlers, selectedNodes, selectedEdges } = props
+  const { network, visualStyle, eventHandlers, selectedNodes, selectedEdges, setCy, cy } = props
   let elements = []
 
   useEffect(() => {
-    if (network !== undefined && network !== null) {
+    console.log('********************************************UP', props, network)
+    if (network !== undefined && network !== null && cy !== null) {
       console.log('------- Adding elements ------------', props)
       elements = network.elements
+      console.log('------- !!!!!!!!!!!!!lements22 ------------', elements)
       cy.add(elements)
 
       const newVS = addExtraStyle(visualStyle)
 
       cy.style().fromJson(newVS).update()
       cy.fit()
+    } else {
+      console.log('CANNOT ADD********************************************UP', props)
     }
   }, [network])
 
@@ -31,7 +34,7 @@ const CytoscapeRenderer = (props) => {
     // Create new instance of Cytoscape when element is available
     if (cy === null && cyEl !== null && cyEl.current !== null) {
       const cyjs = createCytoscape(cyEl.current)
-      initializeCy(cyjs, eventHandlers)
+      initializeCy(cyjs, eventHandlers, props)
       setCy(cyjs)
       console.log('Cytoscape.js instance created', cyEl, cyjs)
     }
@@ -57,7 +60,7 @@ const CytoscapeRenderer = (props) => {
   return <div style={ROOT_STYLE} ref={cyEl} />
 }
 
-const initializeCy = (cy, eventHandlers) => {
+const initializeCy = (cy, eventHandlers, props) => {
   cy.on('tap, click', (event) => {
     const evtTarget = event.target
 
@@ -78,6 +81,26 @@ const initializeCy = (cy, eventHandlers) => {
         eventHandlers.setSelectedEdges([data.id])
       }
     }
+  })
+
+  cy.on('resize', (event) => {
+    console.log('--------------resize------------', props, cy.elements().size())
+    if (cy.elements().size() === 0) {
+      const net = props.network
+      if (net !== undefined) {
+        console.log('------- !!!!!!!!!!!!!lements3 ------------', net)
+        cy.add(net.elements)
+        var layout = cy.layout({
+          name: 'cose'
+        });
+        
+        layout.run();
+      }
+
+      // const newVS = addExtraStyle(props.visualStyle)
+      // cy.style().fromJson(newVS).update()
+    }
+    cy.fit()
   })
 }
 

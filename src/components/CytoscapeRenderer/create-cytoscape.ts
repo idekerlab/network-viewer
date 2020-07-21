@@ -6,8 +6,8 @@ const DEFS = {
   maxZoom: 2.75,
 }
 
-const createCytoscape = (container: Element): object => {
-  return new Cytoscape({
+const createCytoscape = (container: Element): object =>
+  new Cytoscape({
     container: container,
     elements: [],
     layout: {
@@ -15,6 +15,5 @@ const createCytoscape = (container: Element): object => {
       fit: true,
     },
   })
-}
 
 export { createCytoscape }

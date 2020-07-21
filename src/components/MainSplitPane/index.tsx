@@ -13,6 +13,11 @@ const BASE_URL = 'http://dev.ndexbio.org/'
 const V2 = 'v2'
 const V3 = 'v3'
 
+const RENDERER = {
+  lgr: 'lgr',
+  cyjs: 'cyjs'
+}
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     base: {
@@ -40,13 +45,17 @@ const MainSplitPane = () => {
 
   let apiVersion = null
 
+  let rend = null
+
   if (summary !== undefined && Object.keys(summary).length !== 0) {
     const count = summary['edgeCount'] + summary['nodeCount']
     console.log('OBJ count========================================', count)
     if (count > 3000) {
       apiVersion = V3
+      rend = RENDERER.lgr
     } else {
       apiVersion = V2
+      rend = RENDERER.cyjs
     }
   }
   console.log('**Summary before CALL:', result, summary, apiVersion)
@@ -61,7 +70,7 @@ const MainSplitPane = () => {
   return (
     <SplitPane className={classes.base} split="vertical" minSize={150} defaultSize={defSize}>
       <div className={classes.leftPanel}>
-        <NetworkPanel {...networkObj} />
+        <NetworkPanel {...networkObj} renderer={rend}/>
         <FooterPanel />
       </div>
       <DataPanel />

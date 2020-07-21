@@ -12,6 +12,7 @@ const App = () => {
   const history = useHistory()
   const [uuid, setUuid] = useState('')
   const [cx, setCx] = useState([])
+  const [cy, setCy] = useState(null)
   const [summary, setSummary] = useState({})
   const [style, setStyle] = useState({})
   const [query, setQuery] = useState('')
@@ -38,6 +39,8 @@ const App = () => {
     setUuid,
     cx,
     setCx,
+    cy,
+    setCy,
     query,
     setQuery,
     queryMode,

@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react'
 import { useQuery } from 'react-query'
 import HttpResponse from '../api/HttpResponse'
 
+import {cx2cyjs} from './cx2cyjs'
+
+
 const URL = 'http://dev.ndexbio.org/v2/search/network/'
 
 const selectNodes = (cxResult: object[]) => {
@@ -27,13 +30,13 @@ const selectNodes = (cxResult: object[]) => {
 
 const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string) => {
   if(uuid === undefined || uuid === '') {
-    throw new Error('No UUID')
+    throw new Error('UUID is required')
   }
   let url = `${URL}${uuid}/query`
 
   const queryData = {
     searchString: query,
-    edgeLimit: 1,
+    edgeLimit: 0,
     directOnly: true,
   }
 
@@ -52,13 +55,13 @@ const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string
     const cx = await response.json()
     response.parsedBody = {
       nodeIds: selectNodes(cx),
-      cx,
       kvMap: transformCx(cx),
+      subNetwork: cx2cyjs(uuid, cx)
     }
 
-    console.log('QUERY called++++++++', url, response.parsedBody)
+    console.log('Search called: result++++++++', url, response.parsedBody)
   } catch (ex) {
-    console.error('API Call error:', ex)
+    console.error('Query API Call error:', ex)
   }
   if (!response.ok) {
     throw new Error(response.statusText)

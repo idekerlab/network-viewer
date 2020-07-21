@@ -14,6 +14,8 @@ type AppState = {
   setSummary: Function,
   cx: object[],
   setCx: Function,
+  cy: any | null,
+  setCy: Function,
   query: string,
   setQuery: Function,
   queryMode: string,
