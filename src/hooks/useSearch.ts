@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useQuery } from 'react-query'
 import HttpResponse from '../api/HttpResponse'
 
-import {cx2cyjs} from './cx2cyjs'
+import {cx2cyjs} from '../utils/cx2cyjs'
 
 
 const URL = 'http://dev.ndexbio.org/v2/search/network/'

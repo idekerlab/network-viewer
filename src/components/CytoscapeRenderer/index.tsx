@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { createCytoscape } from './create-cytoscape'
+import useCyjs from '../../hooks/useCyjs'
 
 // Style for the network canvas area
 const ROOT_STYLE = {
@@ -9,26 +10,16 @@ const ROOT_STYLE = {
 
 const CytoscapeRenderer = (props) => {
   const cyEl = useRef(null)
+  const { uuid, cx, eventHandlers, selectedNodes, selectedEdges, setCy, cy } = props
+  const cyjsNetwork = useCyjs(uuid, cx)
 
-  const { network, visualStyle, eventHandlers, selectedNodes, selectedEdges, setCy, cy } = props
   let elements = []
 
   useEffect(() => {
-    console.log('********************************************UP', props, network)
-    if (network !== undefined && network !== null && cy !== null) {
-      console.log('------- Adding elements ------------', props)
-      elements = network.elements
-      console.log('------- !!!!!!!!!!!!!lements22 ------------', elements)
-      cy.add(elements)
-
-      const newVS = addExtraStyle(visualStyle)
-
-      cy.style().fromJson(newVS).update()
-      cy.fit()
-    } else {
-      console.log('CANNOT ADD********************************************UP', props)
-    }
-  }, [network])
+    setTimeout(() => {
+      updateNetwork(cyjsNetwork, cy)
+    }, 1000)
+  }, [cy])
 
   useEffect(() => {
     // Create new instance of Cytoscape when element is available
@@ -91,10 +82,10 @@ const initializeCy = (cy, eventHandlers, props) => {
         console.log('------- !!!!!!!!!!!!!lements3 ------------', net)
         cy.add(net.elements)
         var layout = cy.layout({
-          name: 'cose'
-        });
-        
-        layout.run();
+          name: 'cose',
+        })
+
+        layout.run()
       }
 
       // const newVS = addExtraStyle(props.visualStyle)
@@ -127,6 +118,23 @@ const addExtraStyle = (visualStyle) => {
   visualStyle.push(highlight)
 
   return visualStyle
+}
+
+const updateNetwork = (cyjs, cy) => {
+  const { network } = cyjs
+  console.log('********************************************UP2', network, cy)
+  if (network !== undefined && network !== null && cy !== null) {
+    console.log('------- Adding elements ------------')
+    const elements = cyjs.network.elements
+    console.log('------- !!!!!!!!!!!!!lements22 ------------', elements)
+    cy.add(elements)
+
+    const newVS = addExtraStyle(cyjs.visualStyle)
+    cy.style().fromJson(newVS).update()
+    cy.fit()
+  } else {
+    console.log('CANNOT ADD********************************************UP', cyjs)
+  }
 }
 
 export default CytoscapeRenderer

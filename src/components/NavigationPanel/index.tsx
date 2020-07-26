@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react'
 import ButtonGroup from '@material-ui/core/ButtonGroup'
 import IconButton from '@material-ui/core/IconButton'
-import Button from '@material-ui/core/Button'
 
 import FitIcon from '@material-ui/icons/ZoomOutMap'
 import ZoomInIcon from '@material-ui/icons/ZoomIn'
@@ -13,15 +12,10 @@ import AppContext from '../../context/AppState'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      // backgroundColor: 'rgba(240, 240, 240, 0.5',
-      marginLeft: '1em',
-      zIndex: 999,
-      position: 'absolute',
-      top: '5em',
-      left: 0,
-      borderRadius: 10,
-
-      border: '1px solid #AAAAAA',
+      width: '4vw',
+      borderRadius: 6,
+      border: '1px solid #DDDDDD',
+      backgroundColor: '#FFFFFF',
     },
     subnet: {
       width: '100%',

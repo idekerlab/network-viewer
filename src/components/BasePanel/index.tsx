@@ -1,14 +1,11 @@
-import React, { useState, createContext, useContext } from 'react'
-import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
+import React, { FC } from 'react'
+import { useParams } from 'react-router-dom'
+import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
-
-import NdexAppBar from '../NdexAppBar'
 import MainSplitPane from '../MainSplitPane'
-import { BrowserRouter as Router, Switch, useLocation } from 'react-router-dom'
-import AppContext from '../../context/AppState'
-import FooterPanel from '../FooterPanel'
-
-
+import FloatingToolBar from '../FloatingToolBar'
+import NavigationPanel from '../NavigationPanel'
+import ToolBar from '../ToolBar'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -21,7 +18,6 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
     },
-    appBarSpacer: theme.mixins.toolbar,
     content: {
       flexGrow: 1,
       height: '100vh',
@@ -34,30 +30,23 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const BasePanel = () => {
+const BasePanel: FC = (props) => {
   const classes = useStyles()
-  let location = useLocation()
-  const appContext = useContext(AppContext)
-
-  const uuid = getUUID(location)
-  appContext.setUuid(uuid)
-
+  
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <NdexAppBar />
+      <ToolBar />
 
       <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
         <MainSplitPane />
       </main>
+
+      <FloatingToolBar>
+        <NavigationPanel />
+      </FloatingToolBar>
     </div>
   )
-}
-
-const getUUID = (location) => {
-  const parts = location.pathname.split('/')
-  return parts[parts.length - 1]
 }
 
 export default BasePanel

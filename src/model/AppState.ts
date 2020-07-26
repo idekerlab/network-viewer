@@ -19,7 +19,9 @@ type AppState = {
   query: string,
   setQuery: Function,
   queryMode: string,
-  setQueryMode: Function
+  setQueryMode: Function,
+  queryResult: object,
+  setQueryResult: Function,
 }
 
 export default AppState

@@ -3,7 +3,7 @@ import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
 import CytoscapeRenderer from '../CytoscapeRenderer'
 import AppContext from '../../context/AppState'
 import useSearch from '../../hooks/useSearch'
-import SplitPane from 'react-split-pane'
+import Loading from './Loading'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,11 +20,9 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const getEventHandlers = () => {}
 
 const SubnetworkView = (props) => {
   const classes = useStyles()
-  const { renderer } = props
 
   const appContext = useContext(AppContext)
   const { uuid, query, setSelectedEdges, setSelectedNodes, selectedNodes, selectedEdges } = appContext
@@ -38,19 +36,20 @@ const SubnetworkView = (props) => {
 
 
   if (data === undefined || isFetching) {
-    return <div>N/A</div>
+    // No result
+    return <Loading message={"Loading search result..."} />
   }
 
-  let network = data.cyjs
-
-  console.log('New net::', network, data)
+  let subnetwork = data
+  console.log('New net::', subnetwork, data)
   
-  if(network.network === null) {
-    return <div>N/A</div>
-    
+  if(subnetwork === null || subnetwork === undefined ) {
+    return <Loading message={"Loading search result..."} />
   }
 
-  return <CytoscapeRenderer eventHandlers={eventHandlers} selectedNodes={[]} {...network} />
+
+  return <div className={classes.subnet} >OK!!!!!!!!!!!</div>
+  // return <CytoscapeRenderer eventHandlers={eventHandlers} selectedNodes={[]} {...subnetwork} />
 }
 
 export default SubnetworkView

@@ -19,7 +19,6 @@ const cx2cyjs = (uuid: string, cx: any) => {
       },
       elements,
     },
-    cx,
     visualStyle: style,
   }
 }

@@ -39,6 +39,9 @@ const useStyles = makeStyles((theme: Theme) =>
       bottom: 0,
     },
     toolBar: {
+      position: 'fixed',
+      bottom: 0,
+      left: 0,
       marginLeft: 0,
       paddingLeft: 0,
     },
@@ -64,7 +67,6 @@ const FooterPanel: FC = () => {
   const classes = useStyles()
 
   return (
-    <AppBar position="fixed" color="primary" className={classes.appBar}>
       <Toolbar className={classes.toolBar}>
         <SearchBox />
         <div className={classes.grow} />
@@ -73,7 +75,6 @@ const FooterPanel: FC = () => {
         </IconButton>
         <AdvancedMenu />
       </Toolbar>
-    </AppBar>
   )
 }
 

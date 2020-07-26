@@ -52,25 +52,23 @@ const SelectedItems = (props) => {
       </ListItem>
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-          {selectedObjects.map((n) => {
+          {/* {selectedObjects.map((n) => {
             const attr = nodeAttributes[n]
 
             let keys = []
             let name = n.toString()
-            if(attr !== undefined) {
+            if (attr !== undefined) {
               keys = [...attr.keys()]
               name = attr.get('name')
             }
-
-
             return (
               <React.Fragment>
-                <ListItem dense className={classes.nested} key={n}>
+                <ListItem dense className={classes.nested} key={Math.random() + n}>
                   <ListItemText primary={name} secondary={n} />
                 </ListItem>
               </React.Fragment>
             )
-          })}
+          })} */}
         </List>
       </Collapse>
     </React.Fragment>

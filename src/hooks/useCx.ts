@@ -1,18 +1,17 @@
 import { useQuery } from 'react-query'
 import HttpResponse from '../api/HttpResponse'
 
-import { cx2cyjs } from '../utils/cx2cyjs'
-
-const getNetwork = async <T>(_, uuid: string, serverUrl: string, apiVersion: string) => {
+const getCx = async <T>(_, uuid: string, serverUrl: string, apiVersion: string) => {
   if (apiVersion === null) {
     throw new Error('No API version')
   }
+
   let url = `${serverUrl}${apiVersion}/network/${uuid}`
   const response: HttpResponse<T> = await fetch(url)
 
   try {
     response.parsedBody = await response.json()
-    console.log('**-------------------NET:', uuid, url, response.parsedBody)
+    console.log('CX:', uuid, url, response.parsedBody)
   } catch (ex) {
     console.error('API Call error:', ex)
   }
@@ -21,9 +20,9 @@ const getNetwork = async <T>(_, uuid: string, serverUrl: string, apiVersion: str
     throw new Error(response.statusText)
   }
 
-  return cx2cyjs(uuid, response.parsedBody)
+  return response.parsedBody
 }
 
-export default function useNetwork(uuid: string, serverUrl: string, apiVersion: string) {
-  return useQuery(['network', uuid, serverUrl, apiVersion], getNetwork)
+export default function useCx(uuid: string, serverUrl: string, apiVersion: string) {
+  return useQuery(['cx', uuid, serverUrl, apiVersion], getCx)
 }

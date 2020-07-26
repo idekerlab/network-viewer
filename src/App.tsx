@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import './App.css'
 import { useHistory } from 'react-router-dom'
-import { Route, BrowserRouter as Router, Link, useRouteMatch } from 'react-router-dom'
+import { Route, BrowserRouter as Router } from 'react-router-dom'
 
 import BasePanel from './components/BasePanel'
 
@@ -17,6 +17,7 @@ const App = () => {
   const [style, setStyle] = useState({})
   const [query, setQuery] = useState('')
   const [queryMode, setQueryMode] = useState('direct')
+  const [queryResult, setQueryResult] = useState(null)
   const [selectedNodes, setSelectedNodes] = useState([])
   const [selectedEdges, setSelectedEdges] = useState([])
 
@@ -45,6 +46,8 @@ const App = () => {
     setQuery,
     queryMode,
     setQueryMode,
+    queryResult,
+    setQueryResult,
   }
 
   return (

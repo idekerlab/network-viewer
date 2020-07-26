@@ -1,19 +1,16 @@
 import React, { useContext, Suspense } from 'react'
 import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
-import PropTypes from 'prop-types'
-import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
-import Link from '@material-ui/core/Link'
 import DescriptionEditor from './DescriptionEditor'
-import Summary from '../../../model/Summary'
 import Button from '@material-ui/core/Button'
 import { IconButton } from '@material-ui/core'
 import EditIcon from '@material-ui/icons/Edit'
 import PublicIcon from '@material-ui/icons/Public'
 import PropertyTable from './PropertyTable'
-import AppContext from '../../../context/AppState'
 import useNetworkSummary from '../../../hooks/useNetworkSummary'
+import CloseIcon from '@material-ui/icons/ArrowRight'
+import { useParams } from 'react-router-dom'
 
 const BASE_URL = 'http://dev.ndexbio.org/'
 const API_VER = 'v2'
@@ -57,20 +54,21 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: theme.spacing(1),
     },
     topBar: {
-      height: '5em',
+      // height: '5em',
     },
+    closeIcon: {
+      borderRadius: 3,
+      border: '1px solid #AAAAAA'
+    }
   }),
 )
 
 const NetworkPropertyPanel = () => {
-  const appContext = useContext(AppContext)
   const classes = useStyles()
+  const { uuid } = useParams()
 
-  const { uuid } = appContext
-  const { status, data, error, isFetching } = useNetworkSummary(uuid, BASE_URL, 'v2')
-
-  const summary = data
-
+  const summaryResponse= useNetworkSummary(uuid, BASE_URL, 'v2')
+  const summary = summaryResponse.data
 
   if (summary === undefined || Object.entries(summary).length === 0) {
     return (
@@ -89,9 +87,16 @@ const NetworkPropertyPanel = () => {
     <div className={classes.root}>
       <Grid container>
         <Grid item md={12}>
-          <Typography variant="h5" color="inherit" gutterBottom>
-            {summary['name']}
-          </Typography>
+          <Grid container direction="row" justify="flex-start" alignItems="center" className={classes.topBar}>
+            <Grid item xs={1}>
+              <CloseIcon className={classes.closeIcon} />
+            </Grid>
+            <Grid item xs={11}>
+              <Typography variant="h6" color="inherit" gutterBottom>
+                {summary['name']}
+              </Typography>
+            </Grid>
+          </Grid>
           <Grid container direction="row" justify="flex-start" alignItems="center" className={classes.topBar}>
             <IconButton edge="end" aria-label="account of current user" aria-haspopup="true" color="inherit">
               <PublicIcon />

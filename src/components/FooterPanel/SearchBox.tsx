@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     button: {
       margin: theme.spacing(1),
-      width: '12em',
+      width: '15em',
     },
   }),
 )
@@ -77,18 +77,11 @@ const SearchBox: FC = () => {
   const classes = useStyles()
   const [open, setOpen] = useState(false)
   const [rawQuery, setRawQuery] = useState('')
-  const [result, setResult] = useState([])
   const [searchType, setSearchType] = useState(queryMode.direct)
 
   const appContext = useContext(AppContext)
   const { uuid, setSelectedNodes, setQuery, setQueryMode } = appContext
 
-  const handleDrawerOpen = () => {
-    setOpen(true)
-  }
-  const handleDrawerClose = () => {
-    setOpen(false)
-  }
 
   const handleSearchTypeChange = (evt) => {
     const val = evt.target.value
@@ -141,7 +134,7 @@ const SearchBox: FC = () => {
           }}
         >
           {Object.keys(queryMode).map((key) => (
-            <option value={key}>{queryMode[key]}</option>
+            <option key={key} value={key}>{queryMode[key]}</option>
           ))}
         </Select>
       </FormControl>

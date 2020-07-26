@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     dataPanel: {
       width: '100%',
-      height: '100%',
+      height: '100vh',
       backgroundColor: '#FAFAFA',
     },
   }),
