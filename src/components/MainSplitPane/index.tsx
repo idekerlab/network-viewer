@@ -78,7 +78,7 @@ const MainSplitPane = () => {
         )}
         <FooterPanel />
       </div>
-      <DataPanel />
+      <DataPanel uuid={uuid} cx={cxResponse.data}/>
     </SplitPane>
   )
 }

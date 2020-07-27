@@ -1,4 +1,4 @@
-import React, { useContext  } from 'react'
+import React, { useContext } from 'react'
 import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
 import LGRPanel from './LGRPanel'
 import CytoscapeRenderer from '../CytoscapeRenderer'
@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       height: '100%',
       backgroundColor: '#FFFFFF',
-    }
+    },
   }),
 )
 
@@ -34,9 +34,10 @@ const BasicView = (props) => {
   return (
     <div className={classes.root}>
       {renderer === 'lgr' ? (
-        <LGRPanel cx={cx} eventHandlers={eventHandlers} selectedNodes={[]} {...props} />
+        <LGRPanel cx={cx} eventHandlers={eventHandlers} selectedNodes={[]} />
       ) : (
         <CytoscapeRenderer
+          id={'upper'}
           uuid={uuid}
           cx={cx}
           cy={cy}

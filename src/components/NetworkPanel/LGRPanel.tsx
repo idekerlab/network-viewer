@@ -39,7 +39,7 @@ const LGRPanel = (props) => {
     console.log('injected !!!!!!!!!!!! BG click event:', event)
   }
 
-  const { network, cx } = props
+  const { cx } = props
 
   useEffect(() => {
     if (cx !== undefined && data === null) {

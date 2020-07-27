@@ -73,7 +73,7 @@ const StyledTableRow = withStyles((theme: Theme) =>
 
 const SelectionList = (props) => {
   const classes = useStyles()
-  const { network, selected } = props
+  const { network, selected, attributes } = props
 
   const appContext = useContext(AppContext)
   const {
@@ -121,6 +121,7 @@ const SelectionList = (props) => {
     avatarColor: 'red',
   }
 
+  console.log('######### Attr for tbl', attributes)
   return (
     <List
       dense
@@ -135,16 +136,23 @@ const SelectionList = (props) => {
     >
       {nodeCount ? (
         <SelectedItems
-          label={`Nodes (${nodeCount + 1})`}
+          key={'selected-nodes'}
+          label={`Nodes (${nodeCount})`}
           selectedObjects={selectedNodes}
           avatarLetter={'N'}
-          nodeAttributes={selectedNodeAttributes}
+          attributes={attributes.nodeAttr}
         />
       ) : (
         <NoSelectionListItem {...listProps} />
       )}
       {edgeCount ? (
-        <SelectedItems label={`Edges (${edgeCount + 1})`} selectedObjects={selectedEdges} avatarLetter={'E'} />
+        <SelectedItems
+          key={'selected-edges'}
+          label={`Edges (${edgeCount + 1})`}
+          selectedObjects={selectedEdges}
+          avatarLetter={'E'}
+          attributes={attributes.edgeAttr}
+        />
       ) : (
         <NoSelectionListItem avatarLetter={'E'} objType={'Edges'} avatarColor={'red'} />
       )}

@@ -3,8 +3,8 @@ import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
 import LGRPanel from './LGRPanel'
 import CytoscapeRenderer from '../CytoscapeRenderer'
 import AppContext from '../../context/AppState'
-import useSearch from '../../hooks/useSearch'
 import SplitPane from 'react-split-pane'
+import { useParams } from 'react-router-dom'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -16,7 +16,6 @@ const useStyles = makeStyles((theme: Theme) =>
     subnet: {
       width: '100%',
       height: '100%',
-      backgroundColor: '#AAAAAA',
     },
     loading: {
       width: '100%',
@@ -27,8 +26,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     lowerPanel: {
       width: '100%',
-      height: '20em',
-      backgroundColor: '#0000AA',
+      height: '100%',
+      backgroundColor: '#EEEEEE',
     },
   }),
 )
@@ -42,28 +41,43 @@ const useStyles = makeStyles((theme: Theme) =>
  */
 const SplitView = (props) => {
   const classes = useStyles()
+  const { uuid } = useParams()
 
   // Both main and sub network should be passed from parent
-  const { renderer, subNetwork, mainNetwork} = props
+  const { renderer, cx, subCx } = props
+  console.log('subCx', subCx)
 
   const appContext = useContext(AppContext)
-  const { setSelectedEdges, setSelectedNodes, cy, setCy } = appContext
+  const { setSelectedEdges, setSelectedNodes } = appContext
 
   const eventHandlers = {
     setSelectedEdges,
     setSelectedNodes,
   }
 
-  const width = window.innerWidth
-  const defSize = Math.floor(width * 0.6)
+  const height = window.innerHeight
+  const defSize = Math.floor(height * 0.6)
+  const lowerSize = height-defSize
 
   return (
     <SplitPane className={classes.root} split="horizontal" defaultSize={defSize}>
       <div className={classes.subnet}>
-        <CytoscapeRenderer cy={cy} setCy={setCy} eventHandlers={eventHandlers} selectedNodes={[]} {...props} />
+        <CytoscapeRenderer
+          uuid={uuid}
+          cx={subCx}
+          eventHandlers={eventHandlers}
+          selectedNodes={[]}
+          layoutName={'cose'}
+        />
+        
       </div>
       <div className={classes.lowerPanel}>
-        Lower 1upper
+        <CytoscapeRenderer
+          uuid={uuid}
+          cx={cx}
+          eventHandlers={eventHandlers}
+          selectedNodes={[]}
+        />
       </div>
     </SplitPane>
   )

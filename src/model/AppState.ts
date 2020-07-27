@@ -16,6 +16,8 @@ type AppState = {
   setCx: Function,
   cy: any | null,
   setCy: Function,
+  cySub: any | null,
+  setCySub: Function,
   query: string,
   setQuery: Function,
   queryMode: string,

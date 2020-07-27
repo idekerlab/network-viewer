@@ -10,24 +10,32 @@ const ROOT_STYLE = {
 
 const CytoscapeRenderer = (props) => {
   const cyEl = useRef(null)
-  const { uuid, cx, eventHandlers, selectedNodes, selectedEdges, setCy, cy } = props
-  const cyjsNetwork = useCyjs(uuid, cx)
+  const [cyInstance, setCyInstance] = useState(null)
 
-  let elements = []
+  const { id, uuid, cx, eventHandlers, selectedNodes, selectedEdges, layoutName } = props
+  const cyjsNetwork = useCyjs(uuid, cx)
+  // console.log('------------------------------ CYJS Called -------------------', cyEl, cyjsNetwork)
 
   useEffect(() => {
-    setTimeout(() => {
-      updateNetwork(cyjsNetwork, cy)
-    }, 1000)
-  }, [cy])
+    updateNetwork(cyjsNetwork, cyInstance)
+
+    if (layoutName !== undefined && cyInstance !== null) {
+      const layout = cyInstance.layout({
+        name: 'cose',
+        animate: false
+      })
+      layout.run()
+    }
+  }, [cyInstance])
 
   useEffect(() => {
     // Create new instance of Cytoscape when element is available
-    if (cy === null && cyEl !== null && cyEl.current !== null) {
-      const cyjs = createCytoscape(cyEl.current)
-      initializeCy(cyjs, eventHandlers, props)
-      setCy(cyjs)
-      console.log('Cytoscape.js instance created', cyEl, cyjs)
+    if (cyInstance === null && cyEl !== null && cyEl.current !== null) {
+      const newCyInstance = createCytoscape(cyEl.current)
+      initializeCy(newCyInstance, eventHandlers, props)
+      // setCy(cyjs)
+      setCyInstance(newCyInstance)
+      console.log('############### Cytoscape.js instance created ###############', cyEl, newCyInstance)
     }
   }, [cyEl])
 
@@ -40,15 +48,15 @@ const CytoscapeRenderer = (props) => {
 
     selectionStr = '#' + selectionStr
 
-    if (cy !== null) {
-      const selectedElements = cy.$(selectionStr)
+    if (cyInstance !== null) {
+      const selectedElements = cyInstance.$(selectionStr)
       console.log('------- Selected ELM ------------', selectedElements)
-      cy.nodes().addClass('faded')
+      cyInstance.nodes().addClass('faded')
       selectedElements.select().addClass('highlight')
     }
   }, [selectedNodes])
 
-  return <div style={ROOT_STYLE} ref={cyEl} />
+  return <div id={id} style={ROOT_STYLE} ref={cyEl} />
 }
 
 const initializeCy = (cy, eventHandlers, props) => {
@@ -69,9 +77,24 @@ const initializeCy = (cy, eventHandlers, props) => {
         eventHandlers.setSelectedNodes([data.id])
       } else {
         console.log('* tap on Edge', evtTarget.data())
-        eventHandlers.setSelectedEdges([data.id])
+        eventHandlers.setSelectedEdges([data.id.slice(1)])
       }
     }
+  })
+
+  cy.on('boxend', (event) => {
+    const evtTarget = event.target
+
+    const data = evtTarget.data()
+    setTimeout(() => {
+      console.log('* MULT on Node', cy.$('node:selected'))
+      const selectedNodes = cy.$('node:selected')
+      const selectedEdges = cy.$('edge:selected')
+      const nodeIds = selectedNodes.map((node) => node.data().id)
+      const edgeIds = selectedEdges.map((edge) => edge.data().id.slice(1))
+      eventHandlers.setSelectedNodes(nodeIds)
+      eventHandlers.setSelectedEdges(edgeIds)
+    }, 500)
   })
 
   cy.on('resize', (event) => {
@@ -122,11 +145,9 @@ const addExtraStyle = (visualStyle) => {
 
 const updateNetwork = (cyjs, cy) => {
   const { network } = cyjs
-  console.log('********************************************UP2', network, cy)
   if (network !== undefined && network !== null && cy !== null) {
-    console.log('------- Adding elements ------------')
     const elements = cyjs.network.elements
-    console.log('------- !!!!!!!!!!!!!lements22 ------------', elements)
+    console.log(network.data.uuid + '!!!!!!!!!!!!!lements22 ------------', elements)
     cy.add(elements)
 
     const newVS = addExtraStyle(cyjs.visualStyle)

@@ -1,19 +1,16 @@
-import React, { useContext, useEffect } from 'react'
-import { withStyles, Theme, createStyles, makeStyles } from '@material-ui/core/styles'
+import React, { useState } from 'react'
+import { Theme, createStyles, makeStyles } from '@material-ui/core/styles'
 
-import ListSubheader from '@material-ui/core/ListSubheader'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import ListItemText from '@material-ui/core/ListItemText'
 import Collapse from '@material-ui/core/Collapse'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 
+import ListItemText from '@material-ui/core/ListItemText'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import Avatar from '@material-ui/core/Avatar'
-import Typography from '@material-ui/core/Typography'
-import DataTable from '../../DataTable'
+import EntryTable from './EntryTable'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,9 +28,9 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const SelectedItems = (props) => {
   const classes = useStyles()
-  const { selectedObjects, label, avatarLetter, nodeAttributes } = props
+  const { selectedObjects, label, avatarLetter, attributes } = props
 
-  const [open, setOpen] = React.useState(true)
+  const [open, setOpen] = useState(true)
 
   const handleClick = () => {
     setOpen(!open)
@@ -52,23 +49,10 @@ const SelectedItems = (props) => {
       </ListItem>
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-          {/* {selectedObjects.map((n) => {
-            const attr = nodeAttributes[n]
-
-            let keys = []
-            let name = n.toString()
-            if (attr !== undefined) {
-              keys = [...attr.keys()]
-              name = attr.get('name')
-            }
-            return (
-              <React.Fragment>
-                <ListItem dense className={classes.nested} key={Math.random() + n}>
-                  <ListItemText primary={name} secondary={n} />
-                </ListItem>
-              </React.Fragment>
-            )
-          })} */}
+          {selectedObjects.map((n: string) => {
+            const attr = attributes[n]
+            return <EntryTable key={'attr-table-' + n} title={attr.get('name')} attributes={attr} />
+          })}
         </List>
       </Collapse>
     </React.Fragment>

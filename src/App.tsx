@@ -13,6 +13,7 @@ const App = () => {
   const [uuid, setUuid] = useState('')
   const [cx, setCx] = useState([])
   const [cy, setCy] = useState(null)
+  const [cySub, setCySub] = useState(null)
   const [summary, setSummary] = useState({})
   const [style, setStyle] = useState({})
   const [query, setQuery] = useState('')
@@ -42,6 +43,8 @@ const App = () => {
     setCx,
     cy,
     setCy,
+    cySub,
+    setCySub,
     query,
     setQuery,
     queryMode,

@@ -7,6 +7,34 @@ import {cx2cyjs} from '../utils/cx2cyjs'
 
 const URL = 'http://dev.ndexbio.org/v2/search/network/'
 
+const queryModeParams = {
+  direct: {
+    directOnly: true,
+  },
+  firstStepNeighborhood: {
+    edgeLimit: 0,
+    directOnly: false,
+    searchDepth: 1
+  },
+  firstStepAdjacent: {
+    edgeLimit: 0,
+    directOnly: true,
+    searchDepth: 1
+  },
+  interconnect: {},
+  twoStepNeighborhood: {
+    edgeLimit: 0,
+    directOnly: false,
+    searchDepth: 2
+
+  },
+  twoStepAdjacent: {
+    edgeLimit: 0,
+    directOnly: true,
+    searchDepth: 2
+  },
+}
+
 const selectNodes = (cxResult: object[]) => {
   let len = cxResult.length
   let nodes = undefined
@@ -27,6 +55,9 @@ const selectNodes = (cxResult: object[]) => {
 
   return nodeIds
 }
+
+
+
 
 const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string) => {
   if(uuid === undefined || uuid === '') {
@@ -56,7 +87,8 @@ const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string
     response.parsedBody = {
       nodeIds: selectNodes(cx),
       kvMap: transformCx(cx),
-      subNetwork: cx2cyjs(uuid, cx)
+      subNetwork: cx2cyjs(uuid, cx),
+      cx
     }
 
     console.log('Search called: result++++++++', url, response.parsedBody)

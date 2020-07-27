@@ -1,7 +1,8 @@
 import React, {useState} from 'react'
-import SplitPane, { Pane } from 'react-split-pane'
+import SplitPane from 'react-split-pane'
+import useAttributes from '../../hooks/useAttributes'
 
-import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
+import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import GraphObjectPropertyPanel from './GraphObjectPropertyPanel'
 import NetworkPropertyPanel from './NetworkPropertyPanel'
 
@@ -15,6 +16,8 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 const DataPanel = (props) => {
+  const {uuid, cx} = props
+  const attr: object = useAttributes(uuid, cx)
   const classes = useStyles()
   const height = window.innerHeight
   const defSize = Math.floor(height * 0.5)
@@ -26,7 +29,7 @@ const DataPanel = (props) => {
     setBottomHeight(windowHeight-size)
 
   }
-
+    
   return (
     <SplitPane
       className={classes.dataPanel}
@@ -36,7 +39,7 @@ const DataPanel = (props) => {
       onDragFinished={(size) => handleChange(size)}
     >
       <NetworkPropertyPanel />
-      <GraphObjectPropertyPanel height={bottomHeight} />
+      <GraphObjectPropertyPanel attributes={attr} height={bottomHeight} />
     </SplitPane>
   )
 }

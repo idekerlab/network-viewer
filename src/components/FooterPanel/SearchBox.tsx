@@ -2,6 +2,7 @@ import React, { FC, Fragment, useState, useContext } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import InputBase from '@material-ui/core/InputBase'
 import SearchIcon from '@material-ui/icons/Search'
+import DeleteIcon from '@material-ui/icons/Delete'
 import InfoIcon from '@material-ui/icons/InfoOutlined'
 
 import FormControl from '@material-ui/core/FormControl'
@@ -13,7 +14,7 @@ import SearchHelpDialog from './SearchHelpDialog'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      width: '70ch',
+      width: '100%',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'flex-start',
@@ -101,6 +102,11 @@ const SearchBox: FC = () => {
     setQuery(rawQuery)
     // console.log('NETQUERY ===========', data, appContext)
   }
+  
+  const handleClear = () => {
+    console.log('Clear resylt ------')
+    setQuery('')
+  }
 
   const handleHelpClose = () => {
     setOpen(false)
@@ -150,6 +156,16 @@ const SearchBox: FC = () => {
         onClick={handleClick}
       >
         Query
+      </Button>
+      <Button
+        className={classes.button}
+        variant="outlined"
+        color="secondary"
+        size="small"
+        startIcon={<DeleteIcon />}
+        onClick={handleClear}
+      >
+        Clear
       </Button>
       <SearchHelpDialog onClose={handleHelpClose} open={open} />
     </div>
