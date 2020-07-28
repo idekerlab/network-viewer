@@ -5,6 +5,7 @@ import CytoscapeRenderer from '../CytoscapeRenderer'
 import AppContext from '../../context/AppState'
 import SplitPane from 'react-split-pane'
 import { useParams } from 'react-router-dom'
+import { Typography } from '@material-ui/core'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,8 +28,16 @@ const useStyles = makeStyles((theme: Theme) =>
     lowerPanel: {
       width: '100%',
       height: '100%',
-      backgroundColor: '#EEEEEE',
+      backgroundColor: '#F0F0F0',
+      opacity: 0.5
     },
+    title: {
+      position: 'absolute',
+      top: '1em',
+      left: '1em',
+      color: 'rgba(10,10,10,1)',
+      zIndex: 100
+    }
   }),
 )
 
@@ -72,11 +81,18 @@ const SplitView = (props) => {
         
       </div>
       <div className={classes.lowerPanel}>
+        <Typography className={classes.title} variant="h6">Overview</Typography>
         <CytoscapeRenderer
           uuid={uuid}
           cx={cx}
           eventHandlers={eventHandlers}
           selectedNodes={[]}
+          options={{
+            selectable: false, 
+            locked: true, 
+            grabbable: false, 
+            pannable: true
+          }}
         />
       </div>
     </SplitPane>

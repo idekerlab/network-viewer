@@ -19,6 +19,7 @@
     }
   ],
   "start_url": ".",
+  "homepage": "https://dev.ndexbio.org/viewer",
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff"

@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react'
 import { useQuery } from 'react-query'
 import HttpResponse from '../api/HttpResponse'
 
-import {cx2cyjs} from '../utils/cx2cyjs'
-
+import { cx2cyjs } from '../utils/cx2cyjs'
 
 const URL = 'http://dev.ndexbio.org/v2/search/network/'
 
@@ -14,24 +13,23 @@ const queryModeParams = {
   firstStepNeighborhood: {
     edgeLimit: 0,
     directOnly: false,
-    searchDepth: 1
+    searchDepth: 1,
   },
   firstStepAdjacent: {
     edgeLimit: 0,
     directOnly: true,
-    searchDepth: 1
+    searchDepth: 1,
   },
   interconnect: {},
   twoStepNeighborhood: {
     edgeLimit: 0,
     directOnly: false,
-    searchDepth: 2
-
+    searchDepth: 2,
   },
   twoStepAdjacent: {
     edgeLimit: 0,
     directOnly: true,
-    searchDepth: 2
+    searchDepth: 2,
   },
 }
 
@@ -56,20 +54,15 @@ const selectNodes = (cxResult: object[]) => {
   return nodeIds
 }
 
-
-
-
-const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string) => {
-  if(uuid === undefined || uuid === '') {
+const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string, mode: string) => {
+  if (uuid === undefined || uuid === '') {
     throw new Error('UUID is required')
   }
   let url = `${URL}${uuid}/query`
 
-  const queryData = {
-    searchString: query,
-    edgeLimit: 0,
-    directOnly: true,
-  }
+  const queryParam = queryModeParams[mode]
+  console.log('%%%%%%%%% mode', mode, queryParam)
+  queryParam['searchString'] = query
 
   const settings = {
     method: 'POST',
@@ -77,7 +70,7 @@ const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(queryData),
+    body: JSON.stringify(queryParam),
   }
 
   const response: HttpResponse<object> = await fetch(url, settings)
@@ -88,10 +81,10 @@ const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string
       nodeIds: selectNodes(cx),
       kvMap: transformCx(cx),
       subNetwork: cx2cyjs(uuid, cx),
-      cx
+      cx,
     }
 
-    console.log('Search called: result++++++++', url, response.parsedBody)
+    console.log('Search called: result2++++++++', mode, queryParam, url, response.parsedBody)
   } catch (ex) {
     console.error('Query API Call error:', ex)
   }
@@ -122,7 +115,7 @@ const getAttrs = (kvMap: object) => {
 
   const id2attr = {}
 
-  if(nodeAttr === undefined) {
+  if (nodeAttr === undefined) {
     return id2attr
   }
 
@@ -140,7 +133,7 @@ const getAttrs = (kvMap: object) => {
   }
 
   len = nodes.length
-  while(len--) {
+  while (len--) {
     const n = nodes[len]
     const id = n['@id']
     const val = n['n']
@@ -150,36 +143,12 @@ const getAttrs = (kvMap: object) => {
   return id2attr
 }
 
-const useSearch = (uuid: string, query: string, serverUrl: string) => {
-
-  const [selection, setSelection] = useState(null)
-  const result = useQuery(['queryNetwork', uuid, query, serverUrl], queryNetwork)
-
-
-  // useEffect(()=> {
-  //   if(result === undefined) {
-  //     return
-  //   }
-
-  //   const {data} = result
-
-  //   if(data === undefined) {
-  //     return
-  //   }
-
-  //   console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@new data = ', query, data, selection)
-
-  // }, [result.data])
-
-  // updateSelectionState(result.data, setSelection)
-
-  return result
+const useSearch = ( uuid: string, query: string, serverUrl: string, mode: string) => {
+  return useQuery(['queryNetwork', uuid, query, serverUrl, mode], queryNetwork)
 }
 
 const updateSelectionState = (data: object, setSelection: Function) => {
-
   // setSelection(data)
-
 }
 
 export default useSearch

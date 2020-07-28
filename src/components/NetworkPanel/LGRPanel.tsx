@@ -16,7 +16,7 @@ const rootStyle = {
 }
 
 const LGRPanel = (props) => {
-  const { eventHandlers } = props
+  const { eventHandlers, selectedNodes, selectedEdges } = props
 
   const [render3d, setRender3d] = useState(false)
   const [data, setData] = useState<GraphView | null>(null)
@@ -26,6 +26,7 @@ const LGRPanel = (props) => {
   const _handleNodeClick = (selectedNode: NodeView): void => {
     console.log('################ Node click event:', selectedNode)
     const nodeId: string = selectedNode.id
+
     eventHandlers.setSelectedNodes([nodeId])
   }
 
@@ -37,6 +38,7 @@ const LGRPanel = (props) => {
 
   const _handleBackgroundClick = (event: object): void => {
     console.log('injected !!!!!!!!!!!! BG click event:', event)
+    eventHandlers.setSelectedNodes([])
   }
 
   const { cx } = props

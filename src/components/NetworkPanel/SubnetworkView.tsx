@@ -25,14 +25,14 @@ const SubnetworkView = (props) => {
   const classes = useStyles()
 
   const appContext = useContext(AppContext)
-  const { uuid, query, setSelectedEdges, setSelectedNodes, selectedNodes, selectedEdges } = appContext
+  const { uuid, query, queryMode, setSelectedEdges, setSelectedNodes, selectedNodes, selectedEdges } = appContext
 
   const eventHandlers = {
     setSelectedEdges,
     setSelectedNodes,
   }
 
-  const { status, data, error, isFetching } = useSearch(uuid, query, '')
+  const { status, data, error, isFetching } = useSearch(uuid, query, '', queryMode)
 
 
   if (data === undefined || isFetching) {

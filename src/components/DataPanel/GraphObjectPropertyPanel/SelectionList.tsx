@@ -79,6 +79,7 @@ const SelectionList = (props) => {
   const {
     uuid,
     query,
+    queryMode,
     setSelectedEdges,
     setSelectedNodes,
     selectedNodes,
@@ -89,7 +90,7 @@ const SelectionList = (props) => {
 
   const [open, setOpen] = React.useState(true)
 
-  const { status, data, error, isFetching } = useSearch(uuid, query, '')
+  const { status, data, error, isFetching } = useSearch(uuid, query, '', queryMode)
   useEffect(() => {
     if (data === null || data === undefined) {
       return

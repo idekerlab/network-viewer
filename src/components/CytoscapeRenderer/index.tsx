@@ -12,7 +12,7 @@ const CytoscapeRenderer = (props) => {
   const cyEl = useRef(null)
   const [cyInstance, setCyInstance] = useState(null)
 
-  const { id, uuid, cx, eventHandlers, selectedNodes, selectedEdges, layoutName } = props
+  const { id, uuid, cx, eventHandlers, selectedNodes, selectedEdges, layoutName, options } = props
   const cyjsNetwork = useCyjs(uuid, cx)
   // console.log('------------------------------ CYJS Called -------------------', cyEl, cyjsNetwork)
 
@@ -31,7 +31,7 @@ const CytoscapeRenderer = (props) => {
   useEffect(() => {
     // Create new instance of Cytoscape when element is available
     if (cyInstance === null && cyEl !== null && cyEl.current !== null) {
-      const newCyInstance = createCytoscape(cyEl.current)
+      const newCyInstance = createCytoscape(options, cyEl.current)
       initializeCy(newCyInstance, eventHandlers, props)
       // setCy(cyjs)
       setCyInstance(newCyInstance)
@@ -94,28 +94,28 @@ const initializeCy = (cy, eventHandlers, props) => {
       const edgeIds = selectedEdges.map((edge) => edge.data().id.slice(1))
       eventHandlers.setSelectedNodes(nodeIds)
       eventHandlers.setSelectedEdges(edgeIds)
-    }, 500)
+    }, 200)
   })
 
-  cy.on('resize', (event) => {
-    console.log('--------------resize------------', props, cy.elements().size())
-    if (cy.elements().size() === 0) {
-      const net = props.network
-      if (net !== undefined) {
-        console.log('------- !!!!!!!!!!!!!lements3 ------------', net)
-        cy.add(net.elements)
-        var layout = cy.layout({
-          name: 'cose',
-        })
+  // cy.on('resize', (event) => {
+  //   console.log('--------------resize------------', props, cy.elements().size())
+  //   if (cy.elements().size() === 0) {
+  //     const net = props.network
+  //     if (net !== undefined) {
+  //       console.log('------- !!!!!!!!!!!!!lements3 ------------', net)
+  //       cy.add(net.elements)
+  //       var layout = cy.layout({
+  //         name: 'cose',
+  //       })
 
-        layout.run()
-      }
+  //       layout.run()
+  //     }
 
-      // const newVS = addExtraStyle(props.visualStyle)
-      // cy.style().fromJson(newVS).update()
-    }
-    cy.fit()
-  })
+  //     // const newVS = addExtraStyle(props.visualStyle)
+  //     // cy.style().fromJson(newVS).update()
+  //   }
+  //   cy.fit()
+  // })
 }
 
 const addExtraStyle = (visualStyle) => {

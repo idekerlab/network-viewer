@@ -1,5 +1,22 @@
+import { networkInterfaces } from 'os'
+
+const CX2_TAG = 'CXVersion'
+
+const isCxV2 = (cx: object[]) => {
+  let len = cx.length
+  while (len--) {
+    const entry = cx[len]
+    const version = entry[CX2_TAG]
+    if (version !== undefined && version === '2.0') {
+      return true
+    }
+  }
+
+  return false
+}
 
 export const getAttributeMap = (cx: object[]) => {
+  const isV2 = isCxV2(cx)
   const resultObject = {}
 
   let len = cx.length
@@ -13,10 +30,36 @@ export const getAttributeMap = (cx: object[]) => {
 
   console.log('CX and kv', cx, resultObject)
 
-  return {
-    nodeAttr: getNodeAttrs(resultObject),
-    edgeAttr: getEdgeAttrs(resultObject)
+  if (isV2) {
+    return {
+      nodeAttr: getNodeAttrsV2(resultObject),
+      edgeAttr: {}
+    }
+  } else {
+    return {
+      nodeAttr: getNodeAttrs(resultObject),
+      edgeAttr: getEdgeAttrs(resultObject),
+    }
   }
+}
+
+const getNodeAttrsV2 = (kvMap: object) => {
+  const nodes = kvMap['nodes']
+  const id2attr = {}
+
+  let len = nodes.length
+  while (len--) {
+    const entry = nodes[len]
+    const attrs = entry['v']
+    const current = new Map()
+    const keys = Object.keys(attrs)
+    keys.forEach(key => {
+      current.set(key, attrs[key])
+    })
+    current.set('name', attrs['n'])
+    id2attr[entry.id] = current
+  }
+  return id2attr
 }
 
 const getEdgeAttrs = (kvMap: object) => {
@@ -24,7 +67,7 @@ const getEdgeAttrs = (kvMap: object) => {
   const edges = kvMap['edges']
   const id2attr = {}
 
-  if(edgeAttr === undefined) {
+  if (edgeAttr === undefined) {
     return id2attr
   }
 
@@ -42,7 +85,7 @@ const getEdgeAttrs = (kvMap: object) => {
   }
 
   len = edges.length
-  while(len--) {
+  while (len--) {
     const e = edges[len]
     const id = e['@id']
     const source = e['s']
@@ -60,7 +103,7 @@ const getNodeAttrs = (kvMap: object) => {
 
   const id2attr = {}
 
-  if(nodeAttr === undefined) {
+  if (nodeAttr === undefined) {
     return id2attr
   }
 
@@ -78,7 +121,7 @@ const getNodeAttrs = (kvMap: object) => {
   }
 
   len = nodes.length
-  while(len--) {
+  while (len--) {
     const n = nodes[len]
     const id = n['@id']
     const val = n['n']
