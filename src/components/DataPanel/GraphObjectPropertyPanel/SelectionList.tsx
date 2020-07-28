@@ -122,7 +122,6 @@ const SelectionList = (props) => {
     avatarColor: 'red',
   }
 
-  console.log('######### Attr for tbl', attributes)
   return (
     <List
       dense

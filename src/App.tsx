@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import './App.css'
 import { useHistory } from 'react-router-dom'
-import { Route, BrowserRouter as Router } from 'react-router-dom'
+import { Switch, Route, BrowserRouter as Router  } from 'react-router-dom'
 
 import BasePanel from './components/BasePanel'
 
 import AppContext from './context/AppState'
 import AppState from './model/AppState'
+import TopPanel from './components/TopPanel'
 
 const App = () => {
   const history = useHistory()
@@ -55,11 +56,16 @@ const App = () => {
 
   return (
     <Router>
-      <Route path="/networks/:uuid">
-        <AppContext.Provider value={defState}>
-          <BasePanel />
-        </AppContext.Provider>
-      </Route>
+      <Switch>
+        <Route path="/networks/:uuid">
+          <AppContext.Provider value={defState}>
+            <BasePanel />
+          </AppContext.Provider>
+        </Route>
+        <Route path="/">
+          <TopPanel />
+        </Route>
+      </Switch>
     </Router>
   )
 }

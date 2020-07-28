@@ -1,8 +1,5 @@
-import { useState, useEffect } from 'react'
 import { useQuery } from 'react-query'
 import HttpResponse from '../api/HttpResponse'
-
-import { cx2cyjs } from '../utils/cx2cyjs'
 
 const URL = 'http://dev.ndexbio.org/v2/search/network/'
 
@@ -20,7 +17,9 @@ const queryModeParams = {
     directOnly: true,
     searchDepth: 1,
   },
-  interconnect: {},
+  interconnect: {
+    searchDepth: 1
+  },
   twoStepNeighborhood: {
     edgeLimit: 0,
     directOnly: false,
@@ -55,13 +54,16 @@ const selectNodes = (cxResult: object[]) => {
 }
 
 const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string, mode: string) => {
-  if (uuid === undefined || uuid === '') {
+  if (uuid === undefined || uuid === null || uuid.length === 0) {
     throw new Error('UUID is required')
   }
+
   let url = `${URL}${uuid}/query`
+  if(mode === 'interconnect') {
+    url = `${URL}${uuid}/interconnectquery`
+  }
 
   const queryParam = queryModeParams[mode]
-  console.log('%%%%%%%%% mode', mode, queryParam)
   queryParam['searchString'] = query
 
   const settings = {
@@ -80,7 +82,7 @@ const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string
     response.parsedBody = {
       nodeIds: selectNodes(cx),
       kvMap: transformCx(cx),
-      subNetwork: cx2cyjs(uuid, cx),
+      // subNetwork: cx2cyjs(uuid, cx),
       cx,
     }
 

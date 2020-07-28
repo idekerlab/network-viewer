@@ -8,6 +8,7 @@ const rootStyle = {
   zIndex: 999,
   display: 'grid',
   placeItems: 'center',
+
 }
 
 const FloatingToolBar = (props) => {

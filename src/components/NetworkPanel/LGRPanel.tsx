@@ -37,7 +37,13 @@ const LGRPanel = (props) => {
   }
 
   const _handleBackgroundClick = (event: object): void => {
-    console.log('injected !!!!!!!!!!!! BG click event:', event)
+    selectedNodes.forEach(node => {
+      const nodeView = data.nodeViews.get(node)
+      console.log('Clear click event:', nodeView)
+      nodeView.selected = false
+      data.nodeViews.set(node, nodeView)
+
+    })
     eventHandlers.setSelectedNodes([])
   }
 

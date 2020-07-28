@@ -77,12 +77,12 @@ const queryMode = {
 const SearchBox: FC = () => {
   const classes = useStyles()
   const [open, setOpen] = useState(false)
+  const [disableQuery, setDisableQuery] = useState(true)
   const [rawQuery, setRawQuery] = useState('')
   const [searchType, setSearchType] = useState(queryMode.direct)
 
   const appContext = useContext(AppContext)
   const { uuid, setSelectedNodes, setQuery, setQueryMode } = appContext
-
 
   const handleSearchTypeChange = (evt) => {
     const val = evt.target.value
@@ -91,7 +91,10 @@ const SearchBox: FC = () => {
     setQueryMode(val)
   }
   const handleQueryChange = (evt) => {
-    const q = evt.target.value
+    const q: string = evt.target.value
+    if(q !== undefined && q.length !== 0) {
+      setDisableQuery(false)
+    }
     setRawQuery(q)
   }
 
@@ -100,12 +103,13 @@ const SearchBox: FC = () => {
 
     console.log('-------Start Search ------')
     setQuery(rawQuery)
-    // console.log('NETQUERY ===========', data, appContext)
   }
-  
+
   const handleClear = () => {
     console.log('Clear resylt ------')
+    setRawQuery('')
     setQuery('')
+    setDisableQuery(true)
   }
 
   const handleHelpClose = () => {
@@ -120,6 +124,7 @@ const SearchBox: FC = () => {
       <div className={classes.search}>
         <InputBase
           placeholder="Enter query terms"
+          value={rawQuery}
           classes={{
             root: classes.inputRoot,
             input: classes.inputInput,
@@ -140,7 +145,9 @@ const SearchBox: FC = () => {
           }}
         >
           {Object.keys(queryMode).map((key) => (
-            <option key={key} value={key}>{queryMode[key]}</option>
+            <option key={key} value={key}>
+              {queryMode[key]}
+            </option>
           ))}
         </Select>
       </FormControl>
@@ -152,6 +159,7 @@ const SearchBox: FC = () => {
         variant="outlined"
         color="secondary"
         size="small"
+        disabled={disableQuery}
         startIcon={<SearchIcon />}
         onClick={handleClick}
       >
@@ -162,6 +170,7 @@ const SearchBox: FC = () => {
         variant="outlined"
         color="secondary"
         size="small"
+        disabled={disableQuery}
         startIcon={<DeleteIcon />}
         onClick={handleClear}
       >

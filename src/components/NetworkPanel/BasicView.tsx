@@ -24,7 +24,7 @@ const BasicView = (props) => {
   const { cx, renderer } = props
 
   const appContext = useContext(AppContext)
-  const { setSelectedEdges, setSelectedNodes, selectedNodes, selectedEdges, cy, setCy } = appContext
+  const { setSelectedEdges, setSelectedNodes, selectedNodes, selectedEdges, setCy } = appContext
 
   const eventHandlers = {
     setSelectedEdges,
@@ -34,16 +34,15 @@ const BasicView = (props) => {
   return (
     <div className={classes.root}>
       {renderer === 'lgr' ? (
-        <LGRPanel cx={cx} eventHandlers={eventHandlers} selectedNodes={[]} />
+        <LGRPanel cx={cx} eventHandlers={eventHandlers} selectedNodes={selectedNodes} selectedEdges={selectedEdges} />
       ) : (
         <CytoscapeRenderer
           id={'upper'}
           uuid={uuid}
           cx={cx}
-          cy={cy}
           setCy={setCy}
           eventHandlers={eventHandlers}
-          selectedNodes={[]}
+          selectedNodes={selectedNodes}
           {...props}
         />
       )}

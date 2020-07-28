@@ -12,7 +12,7 @@ const CytoscapeRenderer = (props) => {
   const cyEl = useRef(null)
   const [cyInstance, setCyInstance] = useState(null)
 
-  const { id, uuid, cx, eventHandlers, selectedNodes, selectedEdges, layoutName, options } = props
+  const { id, uuid, cx, eventHandlers, selectedNodes, selectedEdges, layoutName, options, setCy } = props
   const cyjsNetwork = useCyjs(uuid, cx)
   // console.log('------------------------------ CYJS Called -------------------', cyEl, cyjsNetwork)
 
@@ -32,6 +32,11 @@ const CytoscapeRenderer = (props) => {
     // Create new instance of Cytoscape when element is available
     if (cyInstance === null && cyEl !== null && cyEl.current !== null) {
       const newCyInstance = createCytoscape(options, cyEl.current)
+      
+      // Expose Cyjs instance to other component
+      if(setCy !== undefined) {
+        setCy(newCyInstance)
+      }
       initializeCy(newCyInstance, eventHandlers, props)
       // setCy(cyjs)
       setCyInstance(newCyInstance)
@@ -87,14 +92,13 @@ const initializeCy = (cy, eventHandlers, props) => {
 
     const data = evtTarget.data()
     setTimeout(() => {
-      console.log('* MULT on Node', cy.$('node:selected'))
       const selectedNodes = cy.$('node:selected')
       const selectedEdges = cy.$('edge:selected')
       const nodeIds = selectedNodes.map((node) => node.data().id)
       const edgeIds = selectedEdges.map((edge) => edge.data().id.slice(1))
       eventHandlers.setSelectedNodes(nodeIds)
       eventHandlers.setSelectedEdges(edgeIds)
-    }, 200)
+    }, 100)
   })
 
   // cy.on('resize', (event) => {
