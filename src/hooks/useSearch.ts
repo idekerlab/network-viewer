@@ -57,7 +57,12 @@ const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string
   if (uuid === undefined || uuid === null || uuid.length === 0) {
     throw new Error('UUID is required')
   }
+  
+  if (query === undefined || query === null || query.length === 0) {
+    return {}
+  }
 
+  console.log('Calling search: ', mode, query, uuid)
   let url = `${URL}${uuid}/query`
   if(mode === 'interconnect') {
     url = `${URL}${uuid}/interconnectquery`
@@ -75,10 +80,13 @@ const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string
     body: JSON.stringify(queryParam),
   }
 
+  console.log('Calling search settings: ', settings)
   const response: HttpResponse<object> = await fetch(url, settings)
 
+  console.log('Calling search res---------------->: ', response)
   try {
     const cx = await response.json()
+    console.log('Calling search CX---------------->: ', cx)
     response.parsedBody = {
       nodeIds: selectNodes(cx),
       kvMap: transformCx(cx),
@@ -139,7 +147,12 @@ const getAttrs = (kvMap: object) => {
     const n = nodes[len]
     const id = n['@id']
     const val = n['n']
-    id2attr[id].set('name', val)
+    let current = id2attr[id]
+    if(current === undefined) {
+      current = new Map()
+    }
+    current.set('name', val)
+    id2attr[id] = current
   }
 
   return id2attr

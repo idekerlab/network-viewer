@@ -14,7 +14,6 @@ const CytoscapeRenderer = (props) => {
 
   const { id, uuid, cx, eventHandlers, selectedNodes, selectedEdges, layoutName, options, setCy } = props
   const cyjsNetwork = useCyjs(uuid, cx)
-  // console.log('------------------------------ CYJS Called -------------------', cyEl, cyjsNetwork)
 
   useEffect(() => {
     updateNetwork(cyjsNetwork, cyInstance)
@@ -37,7 +36,7 @@ const CytoscapeRenderer = (props) => {
       if(setCy !== undefined) {
         setCy(newCyInstance)
       }
-      initializeCy(newCyInstance, eventHandlers, props)
+      initializeCy(newCyInstance, eventHandlers, selectedNodes, selectedEdges)
       // setCy(cyjs)
       setCyInstance(newCyInstance)
       console.log('############### Cytoscape.js instance created ###############', cyEl, newCyInstance)
@@ -64,7 +63,7 @@ const CytoscapeRenderer = (props) => {
   return <div id={id} style={ROOT_STYLE} ref={cyEl} />
 }
 
-const initializeCy = (cy, eventHandlers, props) => {
+const initializeCy = (cy, eventHandlers, selectedNodes, selectedEdges) => {
   cy.on('tap, click', (event) => {
     const evtTarget = event.target
 
@@ -79,6 +78,8 @@ const initializeCy = (cy, eventHandlers, props) => {
 
       if (evtTarget.isNode()) {
         console.log('* tap on Node', evtTarget.data())
+        // Clear last one first
+
         eventHandlers.setSelectedNodes([data.id])
       } else {
         console.log('* tap on Edge', evtTarget.data())

@@ -33,7 +33,7 @@ export const getAttributeMap = (cx: object[]) => {
   if (isV2) {
     return {
       nodeAttr: getNodeAttrsV2(resultObject),
-      edgeAttr: {}
+      edgeAttr: getEdgeAttrsV2(resultObject)
     }
   } else {
     return {
@@ -59,6 +59,34 @@ const getNodeAttrsV2 = (kvMap: object) => {
     current.set('name', attrs['n'])
     id2attr[entry.id] = current
   }
+  return id2attr
+}
+
+const getEdgeAttrsV2 = (kvMap: object) => {
+  const edges = kvMap['edges']
+  const id2attr = {}
+
+  if (edges === undefined || edges.length === 0) {
+    return id2attr
+  }
+
+  let len = edges.length
+  while (len--) {
+    const e = edges[len]
+    const id = e['id']
+    const current = new Map()
+    const source = e['s']
+    const target = e['t']
+    current.set('source', source)
+    current.set('target', target)
+    const attrs = e['v']
+    const keys = Object.keys(attrs)
+    keys.forEach(key => {
+      current.set(key, attrs[key])
+    })
+    id2attr[id] = current
+  }
+
   return id2attr
 }
 

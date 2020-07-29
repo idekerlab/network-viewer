@@ -73,7 +73,7 @@ const StyledTableRow = withStyles((theme: Theme) =>
 
 const SelectionList = (props) => {
   const classes = useStyles()
-  const { network, selected, attributes } = props
+  const { attributes } = props
 
   const appContext = useContext(AppContext)
   const {
@@ -122,6 +122,8 @@ const SelectionList = (props) => {
     avatarColor: 'red',
   }
 
+  console.log('######### Attribute available for list', attributes)
+  
   return (
     <List
       dense

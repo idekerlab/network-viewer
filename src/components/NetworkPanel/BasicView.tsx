@@ -5,6 +5,9 @@ import CytoscapeRenderer from '../CytoscapeRenderer'
 import AppContext from '../../context/AppState'
 import { useParams } from 'react-router-dom'
 
+import { getEntry } from '../../utils/cxUtil'
+import useHighlight from '../../hooks/useHighlights'
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -21,7 +24,9 @@ const useStyles = makeStyles((theme: Theme) =>
 const BasicView = (props) => {
   const { uuid } = useParams()
   const classes = useStyles()
-  const { cx, renderer } = props
+  const { cx, subCx, renderer } = props
+  const targets = useHighlight(uuid, subCx)
+  console.log('HL', targets)
 
   const appContext = useContext(AppContext)
   const { setSelectedEdges, setSelectedNodes, selectedNodes, selectedEdges, setCy } = appContext
@@ -34,7 +39,7 @@ const BasicView = (props) => {
   return (
     <div className={classes.root}>
       {renderer === 'lgr' ? (
-        <LGRPanel cx={cx} eventHandlers={eventHandlers} selectedNodes={selectedNodes} selectedEdges={selectedEdges} />
+        <LGRPanel highlight={targets} cx={cx} eventHandlers={eventHandlers} selectedNodes={selectedNodes} selectedEdges={selectedEdges} />
       ) : (
         <CytoscapeRenderer
           id={'upper'}
@@ -48,6 +53,12 @@ const BasicView = (props) => {
       )}
     </div>
   )
+}
+
+const highlight = (subCx: object[]) => {
+  const nodes = getEntry('nodes', subCx)
+  console.log('HL nodes', nodes, subCx)
+  return nodes.map((node: object) => node['@id'])
 }
 
 export default BasicView

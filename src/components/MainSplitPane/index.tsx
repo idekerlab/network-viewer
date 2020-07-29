@@ -74,7 +74,7 @@ const MainSplitPane = () => {
             <Typography variant="h6">Initializing Viewer...</Typography>
           </div>
         ) : (
-          <NetworkPanel cx={cxResponse.data} renderer={rend} />
+          <NetworkPanel summary={summary} cx={cxResponse.data} renderer={rend} />
         )}
         <FooterPanel />
       </div>
