@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import './App.css'
 import { useHistory } from 'react-router-dom'
-import { Switch, Route, BrowserRouter as Router  } from 'react-router-dom'
+import { Switch, Route, BrowserRouter } from 'react-router-dom'
 
 import BasePanel from './components/BasePanel'
 
@@ -55,7 +55,7 @@ const App = () => {
   }
 
   return (
-    <Router>
+    <BrowserRouter basename={process.env.PUBLIC_URL} history={history}>
       <Switch>
         <Route path="/networks/:uuid">
           <AppContext.Provider value={defState}>
@@ -66,7 +66,7 @@ const App = () => {
           <TopPanel />
         </Route>
       </Switch>
-    </Router>
+    </BrowserRouter>
   )
 }
 
