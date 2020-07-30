@@ -4,14 +4,23 @@ import { NodeView, EdgeView, GraphView, GraphViewFactory, LargeGraphRenderer } f
 import * as cxVizConverter from 'cx-viz-converter'
 import Loading from './Loading'
 
-const LGRPanel = (props) => {
-  const { eventHandlers, selectedNodes, selectedEdges, highlight } = props
+type LGRPanelProps = {
+  eventHandlers: EventHandlers
+  selectedNodes: string[]
+  selectedEdges: string[]
+  highlight: object
+  cx: object[]
+}
 
+export type EventHandlers = {
+  setSelectedNodes: Function,
+  setSelectedEdges: Function
+}
+
+const LGRPanel = ({ eventHandlers, selectedNodes, selectedEdges, highlight, cx }: LGRPanelProps) => {
   const [render3d, setRender3d] = useState(false)
-  const [isHighlight, setIsHighlight] = useState(false)
   const [painted, setPainted] = useState(false)
   const [data, setData] = useState<GraphView | null>(null)
-  const [loading, setLoading] = useState(false)
 
   // TODO: support multiple selection
   const _handleNodeClick = (selectedNode: NodeView): void => {
@@ -60,67 +69,32 @@ const LGRPanel = (props) => {
     eventHandlers.setSelectedEdges([])
   }
 
-  const { cx } = props
 
   useEffect(() => {
     if (cx !== undefined && data === null) {
-      setLoading(true)
       const result = cxVizConverter.convert(cx, 'lnv')
       const gv = GraphViewFactory.createGraphView(result.nodeViews, result.edgeViews)
       setData(gv)
-      setLoading(false)
     }
   }, [cx])
 
   useEffect(() => {
-    if (highlight !== undefined && highlight !== null && Object.keys(highlight).length !== 0) {
-      setIsHighlight(true)
+    console.log('---------Highlight changed', highlight, data)
+    // if (highlight !== undefined && highlight !== null && Object.keys(highlight).length !== 0) {
+    if (highlight !== null && !painted) {
+      applyHighlight(highlight, data)
+      setPainted(true)
       console.log('--------------------------- color on!!', highlight, data)
+    } else if (highlight === null && painted) {
+      console.log('-------CLEAR start!!', highlight, data)
+      clearHighlight(data)
+      setPainted(false)
     }
   }, [highlight])
 
   if (data === null || data === undefined) {
     const loadingMessage = 'Loading large network data.  Please wait......'
     return <Loading message={loadingMessage} />
-  }
-
-  if (isHighlight && !painted) {
-    const { nodeIds, edgeIds, queryNodes } = highlight
-
-    const qSet = new Set(queryNodes)
-    const nSet = new Set(nodeIds)
-    const nodeViews = data.nodeViews
-    let len = nodeViews.size
-    for (let entry of nodeViews) {
-      const nv: NodeView = entry[1]
-      const id = entry[0]
-
-      if (nSet.has(Number.parseInt(id))) {
-        nv.color = [255, 255, 0]
-        nv.size = nv.size * 1.5
-        if (qSet.has(Number.parseInt(id))) {
-          nv.color= [255, 0, 0, 255]
-          nv.size = nv.size * 2.2
-        }
-      } else {
-        nv.color = [155, 155, 155, 8]
-      }
-    }
-
-    const eSet = new Set(edgeIds)
-    const edgeViews = data.edgeViews
-    len = edgeViews.size
-    for (let entry of edgeViews) {
-      const ev: EdgeView = entry[1]
-      const id = entry[0]
-
-      if (eSet.has(Number.parseInt(id))) {
-        ev.color = [255, 255, 0]
-      } else {
-        ev.color = [155, 155, 155, 8]
-      }
-    }
-    setPainted(true)
   }
 
   return (
@@ -132,6 +106,58 @@ const LGRPanel = (props) => {
       render3d={render3d}
     />
   )
+}
+
+const applyHighlight = (highlight, data) => {
+  const { nodeIds, edgeIds, queryNodes } = highlight
+
+  const qSet = new Set(queryNodes)
+  const nSet = new Set(nodeIds)
+  const nodeViews = data.nodeViews
+  let len = nodeViews.size
+  for (let entry of nodeViews) {
+    const nv: NodeView = entry[1]
+    const id = entry[0]
+
+    if (nSet.has(Number.parseInt(id))) {
+      nv.color = [255, 255, 0]
+      nv.size = nv.size * 1.5
+      if (qSet.has(Number.parseInt(id))) {
+        nv.color = [255, 0, 0, 255]
+        nv.size = nv.size * 2.2
+      }
+    } else {
+      nv.color = [155, 155, 155, 8]
+    }
+  }
+
+  const eSet = new Set(edgeIds)
+  const edgeViews = data.edgeViews
+  len = edgeViews.size
+  for (let entry of edgeViews) {
+    const ev: EdgeView = entry[1]
+    const id = entry[0]
+
+    if (eSet.has(Number.parseInt(id))) {
+      ev.color = [255, 255, 0]
+    } else {
+      ev.color = [155, 155, 155, 8]
+    }
+  }
+}
+
+const clearHighlight = (data) => {
+  const nodeViews = data.nodeViews
+  for (let entry of nodeViews) {
+    const nv: NodeView = entry[1]
+    nv.color = [255, 255, 255, 255]
+  }
+
+  const edgeViews = data.edgeViews
+  for (let entry of edgeViews) {
+    const ev: EdgeView = entry[1]
+    ev.color = [155, 155, 155, 200]
+  }
 }
 
 export default LGRPanel

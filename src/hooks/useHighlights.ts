@@ -1,26 +1,42 @@
 import { useState } from 'react'
 import { getEntry } from '../utils/cxUtil'
 
-let running = false
 
-const useHighlight = (id: string, cx: object[]) => {
-  const [uuid, setUuid] = useState(null)
-  const [result, setResult] = useState({})
+const useHighlight = (query: string, mode: string, cx: object[]) => {
 
-  console.log('HL start', running)
-  if (running) {
-    return
-  }
+  // Highlight object
+  const [highlight, setHighlight] = useState(null)
+  const [isRunning, setIsRunning] = useState(false)
 
+  const [searchId, setSearchId] = useState(null)
+  
   if (cx === undefined || cx === null || cx === []) {
-    return {}
+    return null
   }
 
-  if (uuid === id) {
-    return result
+  if(query === '' || query === null) {
+    // Clear result if query is cleared
+    setHighlight(null)
+    setSearchId(null)
+    return null
   }
 
-  running = true
+  if (isRunning) {
+    // Processing and not ready yet
+    return null
+  }
+
+
+  const searchState = query + '-' + mode
+  if(searchId !== null && searchState === searchId) {
+    
+    return highlight
+  }
+
+  setSearchId(searchState)
+  setIsRunning(true)
+
+  console.log('Highlight computation start', isRunning, searchState, highlight)
 
   const nodes = getEntry('nodes', cx)
   const edges = getEntry('edges', cx)
@@ -30,13 +46,10 @@ const useHighlight = (id: string, cx: object[]) => {
   let len = nodeAttr.length
   while (len--) {
     const entry = nodeAttr[len]
-    // console.log('ATTR node!!!!!!!!!!', entry)
     const tag = entry['n']
     const val = !!entry['v']
-    // console.log('ATTR node!!!!!!!!!!', entry, tag, val)
     if (tag === 'querynode' && val) {
       const pointer = entry['po']
-      // console.log('Query node!!!!!!!!!!', pointer)
       queryNodes.push(pointer)
     }
   }
@@ -45,11 +58,9 @@ const useHighlight = (id: string, cx: object[]) => {
   const edgeIds: string[] = edges.map((edge: object) => edge['@id'])
 
   const selected = { nodeIds, edgeIds, queryNodes }
-  setResult(selected)
-  setUuid(id)
-
-  console.log('HL updated', selected)
-  running = false
+  setHighlight(selected)
+  setIsRunning(false)
+  console.log('-----------> HL updated', selected)
   return selected
 }
 

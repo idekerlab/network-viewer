@@ -122,8 +122,6 @@ const SelectionList = (props) => {
     avatarColor: 'red',
   }
 
-  console.log('######### Attribute available for list', attributes)
-  
   return (
     <List
       dense
