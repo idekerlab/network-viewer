@@ -14,7 +14,7 @@ const StyledTableCell = withStyles((theme: Theme) =>
       backgroundColor: theme.palette.secondary.main,
       color: theme.palette.common.white,
       fontSize: '1.3em',
-      fontWeight: 500
+      fontWeight: 500,
     },
     body: {
       fontSize: '0.8em',
@@ -34,39 +34,48 @@ const StyledTableRow = withStyles((theme: Theme) =>
 
 const useStyles = makeStyles({
   table: {
-    marginTop: '1em'
+    marginTop: '1em',
   },
   container: {
-    margin: '0.5em'
-  }
+    margin: '0.5em',
+  },
 })
 
 const EntryTable = (props) => {
   const classes = useStyles()
-  const { attributes, title } = props
-
-  // This is single entry
-  const attrNames = [...attributes.keys()]
+  const { selectedObjects, attributes } = props
+  if (attributes === undefined) {
+    return <div />
+  }
 
   return (
-      <Table className={classes.table} size={'small'} aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>{title}</StyledTableCell>
-            <StyledTableCell></StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {attrNames.map((key) => (
-            <StyledTableRow key={Math.random()}>
-              <StyledTableCell component="th" scope="row">
-                {key}
-              </StyledTableCell>
-              <StyledTableCell align="left">{attributes.get(key)}</StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
+    <Table className={classes.table} size={'small'} aria-label="data table">
+      {selectedObjects.map((n: string) => {
+        const attr = attributes[n]
+        const attrNames = [...attr.keys()]
+
+        return (
+          <React.Fragment>
+            <TableHead>
+              <TableRow>
+                <StyledTableCell>{attr.get('name')}</StyledTableCell>
+                <StyledTableCell></StyledTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {attrNames.map((key) => (
+                <StyledTableRow key={Math.random()}>
+                  <StyledTableCell component="th" scope="row">
+                    {key}
+                  </StyledTableCell>
+                  <StyledTableCell align="left">{attr.get(key)}</StyledTableCell>
+                </StyledTableRow>
+              ))}
+            </TableBody>
+          </React.Fragment>
+        )
+      })}
+    </Table>
   )
 }
 

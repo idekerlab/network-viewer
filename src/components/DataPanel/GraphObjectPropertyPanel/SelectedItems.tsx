@@ -45,18 +45,33 @@ const SelectedItems = (props) => {
           </Avatar>
         </ListItemAvatar>
         <ListItemText primary={label} />
-        {open ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
-      <Collapse in={open} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          {selectedObjects.map((n: string) => {
-            const attr = attributes[n]
-            return <EntryTable key={'attr-table-' + n} title={attr.get('name')} attributes={attr} />
-          })}
-        </List>
-      </Collapse>
+      <List component="div" disablePadding>
+        <EntryTable selectedObjects={selectedObjects} attributes={attributes} />
+      </List>
     </React.Fragment>
   )
+  // return (
+  //   <React.Fragment>
+  //     <ListItem dense button onClick={handleClick}>
+  //       <ListItemAvatar>
+  //         <Avatar className={classes.nodes} alt={label}>
+  //           {avatarLetter}
+  //         </Avatar>
+  //       </ListItemAvatar>
+  //       <ListItemText primary={label} />
+  //       {open ? <ExpandLess /> : <ExpandMore />}
+  //     </ListItem>
+  //     <Collapse in={open} timeout="auto" unmountOnExit>
+  //       <List component="div" disablePadding>
+  //         {selectedObjects.map((n: string) => {
+  //           const attr = attributes[n]
+  //           return <EntryTable key={'attr-table-' + n} title={attr.get('name')} attributes={attr} />
+  //         })}
+  //       </List>
+  //     </Collapse>
+  //   </React.Fragment>
+  // )
 }
 
 export default SelectedItems

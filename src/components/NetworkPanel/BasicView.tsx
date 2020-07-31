@@ -5,7 +5,6 @@ import CytoscapeRenderer from '../CytoscapeRenderer'
 import AppContext from '../../context/AppState'
 import { useParams } from 'react-router-dom'
 
-import { getEntry } from '../../utils/cxUtil'
 import useHighlight from '../../hooks/useHighlights'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -51,8 +50,6 @@ const BasicView = (props) => {
           cx={cx}
           setCy={setCy}
           eventHandlers={eventHandlers}
-          selectedNodes={selectedNodes}
-          {...props}
         />
       )}
     </div>
