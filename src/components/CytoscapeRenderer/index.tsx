@@ -43,7 +43,6 @@ const CytoscapeRenderer = (props) => {
     }
   }, [cyEl])
 
-
   return <div id={id} style={ROOT_STYLE} ref={cyEl} />
 }
 
@@ -77,31 +76,30 @@ const initializeCy = (cy, eventHandlers) => {
 }
 
 const boxSelectHandler = (cy, eventHandlers, event) => {
-  const evtTarget = event.target
-  cy.removeAllListeners()
-
+  const t0 = performance.now()
   setTimeout(() => {
-    const t0 = performance.now()
-
     const selectedNodes = cy.$('node:selected')
     const selectedEdges = cy.$('edge:selected')
     const nodeIds = selectedNodes.map((node) => node.data().id)
     const edgeIds = selectedEdges.map((edge) => edge.data().id.slice(1))
+    console.log('SetSelected start------->', nodeIds, edgeIds)
+
     eventHandlers.setSelectedNodes(nodeIds)
-    // eventHandlers.setSelectedEdges(edgeIds)
-    console.log(performance.now() - t0)
-    addHandlers(cy, eventHandlers)
-  }, 100)
+    eventHandlers.setSelectedEdges(edgeIds)
+    console.log('idone!!!!!!!!', performance.now() - t0)
+  }, 10)
 }
 const tapHandler = (cy, eventHandlers, event) => {
   const evtTarget = event.target
   const t0 = performance.now()
-  
-  cy.removeAllListeners()
+
   if (evtTarget === cy) {
     console.log('* tap on background2')
-    // eventHandlers.setSelectedEdges([])
-    // eventHandlers.setSelectedNodes([])
+
+    setTimeout(() => {
+      eventHandlers.setSelectedEdges([])
+      eventHandlers.setSelectedNodes([])
+    }, 10)
     // cy.elements().removeClass('faded')
     // cy.elements().removeClass('highlight')
   } else {
@@ -118,11 +116,6 @@ const tapHandler = (cy, eventHandlers, event) => {
     }
   }
   console.log('tap clear', performance.now() - t0)
-  
-  setTimeout(() => {
-    addHandlers(cy, eventHandlers)
-    
-  }, 100)
 }
 
 const addExtraStyle = (visualStyle) => {

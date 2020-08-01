@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 const DataPanel = (props) => {
-  const {uuid, cx} = props
+  const {uuid, cx, selection} = props
   const attr: object = useAttributes(uuid, cx)
   const classes = useStyles()
   const height = window.innerHeight
@@ -39,7 +39,7 @@ const DataPanel = (props) => {
       onDragFinished={(size) => handleChange(size)}
     >
       <NetworkPropertyPanel />
-      <GraphObjectPropertyPanel attributes={attr} height={bottomHeight} />
+      <GraphObjectPropertyPanel attributes={attr} height={bottomHeight} {...selection}/>
     </SplitPane>
   )
 }

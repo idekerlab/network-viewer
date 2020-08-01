@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { withStyles, Theme, createStyles, makeStyles } from '@material-ui/core/styles'
 
 import ListSubheader from '@material-ui/core/ListSubheader'
@@ -25,6 +25,8 @@ import useSearch from '../../../hooks/useSearch'
 import AppContext from '../../../context/AppState'
 import SelectedItems from './SelectedItems'
 import NoSelectionListItem, { NoSelectionProps } from './NoSelectionListItem'
+
+import VirtualizedDataTable from './VirtualizedDataTable'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -72,25 +74,19 @@ const StyledTableRow = withStyles((theme: Theme) =>
 )(TableRow)
 
 const SelectionList = (props) => {
+  const t0 = performance.now()
+  console.log('* List start')
   const classes = useStyles()
-  const { attributes } = props
+
+  const { attributes, selectedNodes, selectedEdges } = props
 
   const appContext = useContext(AppContext)
-  const {
-    uuid,
-    query,
-    queryMode,
-    setSelectedEdges,
-    setSelectedNodes,
-    selectedNodes,
-    selectedEdges,
-    setSelectedNodeAttributes,
-    selectedNodeAttributes,
-  } = appContext
+  const { uuid, query, queryMode, setSelectedNodeAttributes, selectedNodeAttributes } = appContext
 
-  const [open, setOpen] = React.useState(true)
+  const [open, setOpen] = useState(true)
 
   const { status, data, error, isFetching } = useSearch(uuid, query, '', queryMode)
+
   useEffect(() => {
     if (data === null || data === undefined) {
       return
@@ -98,7 +94,7 @@ const SelectionList = (props) => {
 
     console.log('######### New data effect', data)
     const { nodeIds, kvMap } = data
-    setSelectedNodes(nodeIds)
+    // setSelectedNodes(nodeIds)
     setSelectedNodeAttributes(kvMap)
   }, [data])
 
@@ -106,34 +102,12 @@ const SelectionList = (props) => {
     setOpen(!open)
   }
 
-  let nodes = []
-  let edges = []
-
-  if (data !== undefined) {
-    nodes = data.nodeIds
-  }
-
   const nodeCount = selectedNodes.length
   const edgeCount = selectedEdges.length
 
-  const listProps: NoSelectionProps = {
-    avatarLetter: 'N',
-    objType: 'Nodes',
-    avatarColor: 'red',
-  }
-
+  console.log('######### New Selection', performance.now() - t0, selectedNodes, selectedEdges)
   return (
-    <List
-      dense
-      component="nav"
-      aria-labelledby="nested-list-subheader"
-      subheader={
-        <ListSubheader component="div" id="nested-list-subheader">
-          Selected Nodes and Edges
-        </ListSubheader>
-      }
-      className={classes.root}
-    >
+    <div className={classes.root}>
       {nodeCount ? (
         <SelectedItems
           key={'selected-nodes'}
@@ -143,7 +117,7 @@ const SelectionList = (props) => {
           attributes={attributes.nodeAttr}
         />
       ) : (
-        <NoSelectionListItem {...listProps} />
+        <NoSelectionListItem avatarLetter={'N'} objType={'Nodes'} avatarColor={'red'} />
       )}
       {edgeCount ? (
         <SelectedItems
@@ -156,7 +130,7 @@ const SelectionList = (props) => {
       ) : (
         <NoSelectionListItem avatarLetter={'E'} objType={'Edges'} avatarColor={'red'} />
       )}
-    </List>
+    </div>
   )
 }
 

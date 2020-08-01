@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import NetworkPanel from '../NetworkPanel'
 import DataPanel from '../DataPanel'
@@ -17,6 +17,8 @@ const RENDERER = {
   lgr: 'lgr',
   cyjs: 'cyjs',
 }
+
+const def: string[] = []
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -43,6 +45,10 @@ const MainSplitPane = () => {
   const classes = useStyles()
   const { uuid } = useParams()
 
+  // Selected items in the current view     
+  const [selectedNodes, setSelectedNodes] = useState([])
+  const [selectedEdges, setSelectedEdges] = useState([])
+
   const width = window.innerWidth
   const defSize = Math.floor(width * 0.65)
 
@@ -66,6 +72,7 @@ const MainSplitPane = () => {
   // const { status, data, error, isFetching } = useNetwork(uuid, BASE_URL, apiVersion)
   const cxResponse = useCx(uuid, BASE_URL, apiVersion)
 
+  const selection = {selectedNodes, selectedEdges, setSelectedNodes, setSelectedEdges}
   return (
     <SplitPane className={classes.base} split="vertical" minSize={150} defaultSize={defSize}>
       <div className={classes.leftPanel}>
@@ -74,11 +81,11 @@ const MainSplitPane = () => {
             <Typography variant="h6">Initializing Viewer...</Typography>
           </div>
         ) : (
-          <NetworkPanel summary={summary} cx={cxResponse.data} renderer={rend} />
+          <NetworkPanel summary={summary} cx={cxResponse.data} renderer={rend} {...selection}/>
         )}
         <FooterPanel />
       </div>
-      <DataPanel uuid={uuid} cx={cxResponse.data}/>
+      <DataPanel uuid={uuid} cx={cxResponse.data} selection={selection}/>
     </SplitPane>
   )
 }

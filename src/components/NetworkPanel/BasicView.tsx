@@ -23,9 +23,9 @@ const useStyles = makeStyles((theme: Theme) =>
 const BasicView = (props) => {
   const { uuid } = useParams()
   const classes = useStyles()
-  const { cx, subCx, renderer } = props
+  const { cx, subCx, renderer, setSelectedNodes, setSelectedEdges } = props
   const appContext = useContext(AppContext)
-  const { query, queryMode, setSelectedEdges, setSelectedNodes, selectedNodes, selectedEdges, setCy } = appContext
+  const { query, queryMode, selectedNodes, selectedEdges, setCy } = appContext
   const targets = useHighlight(query, queryMode, subCx)
 
   const eventHandlers: EventHandlers = {

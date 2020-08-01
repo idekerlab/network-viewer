@@ -55,14 +55,15 @@ const selectNodes = (cxResult: object[]) => {
 
 const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string, mode: string) => {
   if (uuid === undefined || uuid === null || uuid.length === 0) {
-    throw new Error('UUID is required')
+    // throw new Error('UUID is required')
+    return {}
   }
   
   if (query === undefined || query === null || query.length === 0) {
     return {}
   }
 
-  console.log('Calling search: ', mode, query, uuid)
+  console.log('##############################Calling search: ', mode, query, uuid)
   let url = `${URL}${uuid}/query`
   if(mode === 'interconnect') {
     url = `${URL}${uuid}/interconnectquery`

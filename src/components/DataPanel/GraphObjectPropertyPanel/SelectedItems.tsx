@@ -36,21 +36,7 @@ const SelectedItems = (props) => {
     setOpen(!open)
   }
 
-  return (
-    <React.Fragment>
-      <ListItem dense button onClick={handleClick}>
-        <ListItemAvatar>
-          <Avatar className={classes.nodes} alt={label}>
-            {avatarLetter}
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText primary={label} />
-      </ListItem>
-      <List component="div" disablePadding>
-        <EntryTable selectedObjects={selectedObjects} attributes={attributes} />
-      </List>
-    </React.Fragment>
-  )
+  return <EntryTable selectedObjects={selectedObjects} attributes={attributes} />
   // return (
   //   <React.Fragment>
   //     <ListItem dense button onClick={handleClick}>

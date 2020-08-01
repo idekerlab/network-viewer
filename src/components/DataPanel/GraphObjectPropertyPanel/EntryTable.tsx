@@ -7,6 +7,7 @@ import TableContainer from '@material-ui/core/TableContainer'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
+import VirtualizedDataTable from './VirtualizedDataTable'
 
 const StyledTableCell = withStyles((theme: Theme) =>
   createStyles({
@@ -48,35 +49,62 @@ const EntryTable = (props) => {
     return <div />
   }
 
-  return (
-    <Table className={classes.table} size={'small'} aria-label="data table">
-      {selectedObjects.map((n: string) => {
-        const attr = attributes[n]
-        const attrNames = [...attr.keys()]
+  const getDataArray = (ids, attributes) => {
 
-        return (
-          <React.Fragment>
-            <TableHead>
-              <TableRow>
-                <StyledTableCell>{attr.get('name')}</StyledTableCell>
-                <StyledTableCell></StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {attrNames.map((key) => (
+    const data = []
+    let len = ids.length
+
+    while(len--) {
+      const id = ids[len]
+      const attr = attributes[id]
+      const keys =[...attr.keys()]
+      let idx = keys.length
+
+      while(idx--) {
+        const row = {}
+        const key = keys[idx]
+        row['id'] = id
+        row['propName'] = key
+        row['value'] = attr.get(key)
+        data.push(row)
+      }
+      
+    }
+
+    return data
+  }
+
+  const dataRows = getDataArray(selectedObjects, attributes)
+
+  console.log(dataRows)
+  return (
+    <VirtualizedDataTable data={dataRows} />
+    // <Table key={'tbl-' + Math.random()} className={classes.table} size={'small'} aria-label="data table">
+    //   {selectedObjects.map((n: string) => {
+    //     const attr = attributes[n]
+    //     const attrNames = [...attr.keys()]
+    //     const name = attr.get('name') 
+
+    //     return (
+    //       <TableBody>
+    //         <StyledTableRow>
+    //           <StyledTableCell>{attr.get('name')}</StyledTableCell>
+    //           <StyledTableCell>{n}</StyledTableCell>
+    //         </StyledTableRow>
+    //       </TableBody>
+    //     )
+    //   })}
+    // </Table>
+  )
+}
+
+export default EntryTable
+
+/* {attrNames.map((key) => (
                 <StyledTableRow key={Math.random()}>
                   <StyledTableCell component="th" scope="row">
                     {key}
                   </StyledTableCell>
                   <StyledTableCell align="left">{attr.get(key)}</StyledTableCell>
                 </StyledTableRow>
-              ))}
-            </TableBody>
-          </React.Fragment>
-        )
-      })}
-    </Table>
-  )
-}
-
-export default EntryTable
+              ))} */

@@ -1,6 +1,6 @@
 import React, { FC, useContext } from 'react'
 import { withStyles, Theme, createStyles, makeStyles } from '@material-ui/core/styles'
-
+import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
@@ -13,12 +13,14 @@ export type NoSelectionProps = {
 }
 
 const NoSelectionListItem: FC<NoSelectionProps> = (props: NoSelectionProps) => (
-  <ListItem dense>
-    <ListItemAvatar>
-      <Avatar alt={props.objType}>{props.avatarLetter}</Avatar>
-    </ListItemAvatar>
-    <ListItemText primary={props.objType} />
-  </ListItem>
+  <List>
+    <ListItem dense>
+      <ListItemAvatar>
+        <Avatar alt={props.objType}>{props.avatarLetter}</Avatar>
+      </ListItemAvatar>
+      <ListItemText primary={props.objType} />
+    </ListItem>
+  </List>
 )
 
 export default NoSelectionListItem
