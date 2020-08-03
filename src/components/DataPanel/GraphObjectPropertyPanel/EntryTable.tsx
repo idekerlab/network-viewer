@@ -44,7 +44,7 @@ const useStyles = makeStyles({
 
 const EntryTable = (props) => {
   const classes = useStyles()
-  const { selectedObjects, attributes } = props
+  const { selectedObjects, attributes, label } = props
   if (attributes === undefined) {
     return <div />
   }
@@ -68,9 +68,7 @@ const EntryTable = (props) => {
         row['value'] = attr.get(key)
         data.push(row)
       }
-      
     }
-
     return data
   }
 
@@ -78,33 +76,8 @@ const EntryTable = (props) => {
 
   console.log(dataRows)
   return (
-    <VirtualizedDataTable data={dataRows} />
-    // <Table key={'tbl-' + Math.random()} className={classes.table} size={'small'} aria-label="data table">
-    //   {selectedObjects.map((n: string) => {
-    //     const attr = attributes[n]
-    //     const attrNames = [...attr.keys()]
-    //     const name = attr.get('name') 
-
-    //     return (
-    //       <TableBody>
-    //         <StyledTableRow>
-    //           <StyledTableCell>{attr.get('name')}</StyledTableCell>
-    //           <StyledTableCell>{n}</StyledTableCell>
-    //         </StyledTableRow>
-    //       </TableBody>
-    //     )
-    //   })}
-    // </Table>
+    <VirtualizedDataTable label={label} data={dataRows} />
   )
 }
 
 export default EntryTable
-
-/* {attrNames.map((key) => (
-                <StyledTableRow key={Math.random()}>
-                  <StyledTableCell component="th" scope="row">
-                    {key}
-                  </StyledTableCell>
-                  <StyledTableCell align="left">{attr.get(key)}</StyledTableCell>
-                </StyledTableRow>
-              ))} */

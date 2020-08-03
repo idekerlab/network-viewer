@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
 import clsx from 'clsx'
 import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles'
 import TableCell from '@material-ui/core/TableCell'
+import TableRow from '@material-ui/core/TableRow'
 import { AutoSizer, Column, Table, TableCellRenderer, TableHeaderProps } from 'react-virtualized'
 
 declare module '@material-ui/core/styles/withStyles' {
-  // Augment the BaseCSSProperties so that we can control jss-rtl
   interface BaseCSSProperties {
     /*
      * Used to control if the rule-set should be affected by rtl transformation
@@ -65,10 +65,33 @@ interface MuiVirtualizedTableProps extends WithStyles<typeof styles> {
   rowHeight?: number
 }
 
-class MuiVirtualizedTable extends React.PureComponent<MuiVirtualizedTableProps> {
+const StyledTableCell = withStyles((theme: Theme) =>
+  createStyles({
+    head: {
+      backgroundColor: theme.palette.secondary.main,
+      color: theme.palette.common.white,
+      fontSize: '0.8em',
+    },
+    body: {
+      fontSize: '0.7em',
+    },
+  }),
+)(TableCell)
+
+const StyledTableRow = withStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.action.hover,
+      },
+    },
+  }),
+)(TableRow)
+
+class MuiVirtualizedTable extends PureComponent<MuiVirtualizedTableProps> {
   static defaultProps = {
     headerHeight: 40,
-    rowHeight: 40,
+    rowHeight: 30,
   }
 
   getRowClassName = ({ index }: Row) => {
@@ -81,8 +104,9 @@ class MuiVirtualizedTable extends React.PureComponent<MuiVirtualizedTableProps> 
 
   cellRenderer: TableCellRenderer = ({ cellData, columnIndex }) => {
     const { columns, classes, rowHeight, onRowClick } = this.props
+
     return (
-      <TableCell
+      <StyledTableCell
         component="div"
         className={clsx(classes.tableCell, classes.flexContainer, {
           [classes.noClick]: onRowClick == null,
@@ -92,7 +116,7 @@ class MuiVirtualizedTable extends React.PureComponent<MuiVirtualizedTableProps> 
         align={(columnIndex != null && columns[columnIndex].numeric) || false ? 'right' : 'left'}
       >
         {cellData}
-      </TableCell>
+      </StyledTableCell>
     )
   }
 
@@ -100,7 +124,7 @@ class MuiVirtualizedTable extends React.PureComponent<MuiVirtualizedTableProps> 
     const { headerHeight, columns, classes } = this.props
 
     return (
-      <TableCell
+      <StyledTableCell
         component="div"
         className={clsx(classes.tableCell, classes.flexContainer, classes.noClick)}
         variant="head"
@@ -108,8 +132,15 @@ class MuiVirtualizedTable extends React.PureComponent<MuiVirtualizedTableProps> 
         align={columns[columnIndex].numeric || false ? 'right' : 'left'}
       >
         <span>{label}</span>
-      </TableCell>
+      </StyledTableCell>
     )
+  }
+
+  createRowStyle = (rowIdx) => {
+    const idx = rowIdx.index
+    const backgroundColor = idx % 2 ? 'white' : '#EFEFEF'
+
+    return { backgroundColor }
   }
 
   render() {
@@ -118,8 +149,9 @@ class MuiVirtualizedTable extends React.PureComponent<MuiVirtualizedTableProps> 
       <AutoSizer>
         {({ height, width }) => (
           <Table
-            height={height}
+            height={height / 2}
             width={width}
+            rowStyle={idx => this.createRowStyle(idx)}
             rowHeight={rowHeight!}
             gridStyle={{
               direction: 'inherit',
@@ -163,16 +195,15 @@ interface Data {
 
 // const rows: Data[] = [{ propName: 'Attr 1', value: 'val1' }]
 
-const VirtualizedDataTable = ({ data }) => {
-
+const VirtualizedDataTable = ({ data, label }) => {
   return (
     <VirtualizedTable
       rowCount={data.length}
       rowGetter={({ index }) => data[index]}
       columns={[
         {
-          width: 50,
-          label: 'ID',
+          width: 200,
+          label: label,
           dataKey: 'id',
         },
         {
@@ -181,7 +212,7 @@ const VirtualizedDataTable = ({ data }) => {
           dataKey: 'propName',
         },
         {
-          width: 120,
+          width: 200,
           label: 'Value',
           dataKey: 'value',
         },
