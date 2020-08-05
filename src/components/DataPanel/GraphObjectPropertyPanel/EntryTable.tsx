@@ -57,13 +57,14 @@ const EntryTable = (props) => {
     while(len--) {
       const id = ids[len]
       const attr = attributes[id]
+      const name = attr.get('name')
       const keys =[...attr.keys()]
       let idx = keys.length
 
       while(idx--) {
         const row = {}
         const key = keys[idx]
-        row['id'] = id
+        row['id'] = name
         row['propName'] = key
         row['value'] = attr.get(key)
         data.push(row)

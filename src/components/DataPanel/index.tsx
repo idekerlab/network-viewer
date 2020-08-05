@@ -19,6 +19,8 @@ const DataPanel = (props) => {
   const {uuid, cx, selection} = props
   const attr: object = useAttributes(uuid, cx)
   const classes = useStyles()
+
+
   const height = window.innerHeight
   const defSize = Math.floor(height * 0.5)
   const [bottomHeight, setBottomHeight] = useState(defSize)

@@ -1,4 +1,4 @@
-import React, { useContext, Suspense } from 'react'
+import React, { useContext, Suspense, useState } from 'react'
 import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
@@ -9,8 +9,8 @@ import EditIcon from '@material-ui/icons/Edit'
 import PublicIcon from '@material-ui/icons/Public'
 import PropertyTable from './PropertyTable'
 import useNetworkSummary from '../../../hooks/useNetworkSummary'
-import CloseIcon from '@material-ui/icons/ArrowRight'
 import { useParams } from 'react-router-dom'
+import MinimizeButton from './MinimizeButton'
 
 const BASE_URL = 'http://dev.ndexbio.org/'
 const API_VER = 'v2'
@@ -21,6 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       overflowY: 'auto',
       padding: '1em',
+      paddingTop: '0.5em',
       margin: 0,
       // backgroundColor: theme.palette.secondary.main,
     },
@@ -54,12 +55,8 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: theme.spacing(1),
     },
     topBar: {
-      // height: '5em',
+      // height: '3em',
     },
-    closeIcon: {
-      borderRadius: 3,
-      border: '1px solid #AAAAAA'
-    }
   }),
 )
 
@@ -67,7 +64,7 @@ const NetworkPropertyPanel = () => {
   const classes = useStyles()
   const { uuid } = useParams()
 
-  const summaryResponse= useNetworkSummary(uuid, BASE_URL, 'v2')
+  const summaryResponse = useNetworkSummary(uuid, BASE_URL, 'v2')
   const summary = summaryResponse.data
 
   if (summary === undefined || Object.entries(summary).length === 0) {
@@ -88,11 +85,11 @@ const NetworkPropertyPanel = () => {
       <Grid container>
         <Grid item md={12}>
           <Grid container direction="row" justify="flex-start" alignItems="center" className={classes.topBar}>
-            <Grid item xs={1}>
-              <CloseIcon className={classes.closeIcon} />
+            <Grid item xs={2}>
+              <MinimizeButton />
             </Grid>
-            <Grid item xs={11}>
-              <Typography variant="h6" color="inherit" gutterBottom>
+            <Grid item xs={10}>
+              <Typography variant="h6" color="inherit">
                 {summary['name']}
               </Typography>
             </Grid>

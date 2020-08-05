@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState, useContext } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import NetworkPanel from '../NetworkPanel'
 import DataPanel from '../DataPanel'
@@ -8,6 +8,9 @@ import FooterPanel from '../FooterPanel'
 import useNetworkSummary from '../../hooks/useNetworkSummary'
 import useCx from '../../hooks/useCx'
 import { Typography } from '@material-ui/core'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import AppContext from '../../context/AppState'
+import ClosedPanel from '../DataPanel/ClosedPanel'
 
 const BASE_URL = 'http://dev.ndexbio.org/'
 const V2 = 'v2'
@@ -34,8 +37,17 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%',
     },
     initPanel: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100%',
       height: '100%',
       color: '#AAAAAA',
+      display: 'grid',
+      placeItems: 'center',
+    },
+    message: {
+      height: '10em',
       display: 'grid',
       placeItems: 'center',
     },
@@ -44,8 +56,10 @@ const useStyles = makeStyles((theme: Theme) =>
 const MainSplitPane = () => {
   const classes = useStyles()
   const { uuid } = useParams()
+  const appContext = useContext(AppContext)
+  const { dataPanelOpen } = appContext
 
-  // Selected items in the current view     
+  // Selected items in the current view
   const [selectedNodes, setSelectedNodes] = useState([])
   const [selectedEdges, setSelectedEdges] = useState([])
 
@@ -72,20 +86,40 @@ const MainSplitPane = () => {
   // const { status, data, error, isFetching } = useNetwork(uuid, BASE_URL, apiVersion)
   const cxResponse = useCx(uuid, BASE_URL, apiVersion)
 
-  const selection = {selectedNodes, selectedEdges, setSelectedNodes, setSelectedEdges}
+  const getMainPanel = () => {}
+
+  if (cxResponse.data === undefined || cxResponse.isFetching || rend === null) {
+    return (
+      <div className={classes.initPanel}>
+        <div className={classes.message}>
+          <Typography variant="h6">Initializing Network Viewer...</Typography>
+          <CircularProgress color={'secondary'} disableShrink />
+        </div>
+      </div>
+    )
+  }
+
+  const selection = { selectedNodes, selectedEdges, setSelectedNodes, setSelectedEdges }
+
+  if (!dataPanelOpen) {
+    return (
+      <SplitPane className={classes.base} split="vertical" minSize={150} size={width-40} allowResize={false}>
+        <div className={classes.leftPanel}>
+          <NetworkPanel summary={summary} cx={cxResponse.data} renderer={rend} {...selection} />
+          <FooterPanel />
+        </div>
+        <ClosedPanel />
+      </SplitPane>
+    )
+  }
+
   return (
-    <SplitPane className={classes.base} split="vertical" minSize={150} defaultSize={defSize}>
+    <SplitPane className={classes.base} split="vertical" minSize={150} size={defSize}>
       <div className={classes.leftPanel}>
-        {cxResponse.data === undefined || cxResponse.isFetching || rend === null ? (
-          <div className={classes.initPanel}>
-            <Typography variant="h6">Initializing Viewer...</Typography>
-          </div>
-        ) : (
-          <NetworkPanel summary={summary} cx={cxResponse.data} renderer={rend} {...selection}/>
-        )}
+        <NetworkPanel summary={summary} cx={cxResponse.data} renderer={rend} {...selection} />
         <FooterPanel />
       </div>
-      <DataPanel uuid={uuid} cx={cxResponse.data} selection={selection}/>
+      <DataPanel uuid={uuid} cx={cxResponse.data} selection={selection} />
     </SplitPane>
   )
 }

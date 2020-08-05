@@ -3,7 +3,7 @@ import './App.css'
 import { useHistory } from 'react-router-dom'
 import { Switch, Route, BrowserRouter } from 'react-router-dom'
 
-import BasePanel from './components/BasePanel'
+import AppShell from './components/AppShell'
 
 import AppContext from './context/AppState'
 import AppState from './model/AppState'
@@ -11,6 +11,7 @@ import TopPanel from './components/TopPanel'
 
 const App = () => {
   const history = useHistory()
+  const [dataPanelOpen, setDataPanelOpen] = useState(true)
   const [uuid, setUuid] = useState('')
   const [cx, setCx] = useState([])
   const [cy, setCy] = useState(null)
@@ -27,7 +28,8 @@ const App = () => {
 
   // TODO: use reducer?
   const defState: AppState = {
-    network: {},
+    dataPanelOpen, 
+    setDataPanelOpen,
     style,
     setStyle,
     selectedNodes,
@@ -59,7 +61,7 @@ const App = () => {
       <Switch>
         <Route path="/networks/:uuid">
           <AppContext.Provider value={defState}>
-            <BasePanel />
+            <AppShell />
           </AppContext.Provider>
         </Route>
         <Route path="/">

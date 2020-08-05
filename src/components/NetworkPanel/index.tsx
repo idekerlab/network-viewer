@@ -13,15 +13,12 @@ const NetworkPanel = (props) => {
   const searchResult = useSearch(uuid, query, '', queryMode)
 
   if (searchResult.data === undefined || searchResult.data === {} || query === '') {
-    return (
-      <BasicView
-        cx={cx}
-        renderer={renderer}
-        setCy={setCy}
-        setSelectedEdges={setSelectedEdges}
-        setSelectedNodes={setSelectedNodes}
-      />
-    )
+    return <BasicView cx={cx} renderer={renderer} setCy={setCy} 
+    
+          setSelectedEdges={setSelectedEdges}
+          setSelectedNodes={setSelectedNodes}
+    
+    />
   } else {
     if (renderer === 'lgr') {
       // For large network, use highlight

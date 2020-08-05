@@ -16,9 +16,6 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center'
-
-      
-
     },
     message: {
       padding: '2em'
@@ -26,13 +23,12 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const Loading = (props) => {
+const Loading = ({message}) => {
   const classes = useStyles()
-
   return (
     <div className={classes.root}>
       <div className={classes.item} >
-        <Typography className={classes.message} variant="h5">{props.message}</Typography>
+        <Typography className={classes.message} variant="h5">{message}</Typography>
         <CircularProgress size={'20em'} color="secondary" />
       </div>
     </div>

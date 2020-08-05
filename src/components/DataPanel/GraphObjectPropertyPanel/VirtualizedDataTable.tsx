@@ -105,6 +105,15 @@ class MuiVirtualizedTable extends PureComponent<MuiVirtualizedTableProps> {
   cellRenderer: TableCellRenderer = ({ cellData, columnIndex }) => {
     const { columns, classes, rowHeight, onRowClick } = this.props
 
+    let fontWeight = 300
+
+    let fontSize = '0.8em'
+    if(columnIndex === 0) {
+      fontWeight = 700
+      fontSize = '1em'
+    }
+
+
     return (
       <StyledTableCell
         component="div"
@@ -112,7 +121,7 @@ class MuiVirtualizedTable extends PureComponent<MuiVirtualizedTableProps> {
           [classes.noClick]: onRowClick == null,
         })}
         variant="body"
-        style={{ height: rowHeight }}
+        style={{ height: rowHeight, fontWeight, fontSize }}
         align={(columnIndex != null && columns[columnIndex].numeric) || false ? 'right' : 'left'}
       >
         {cellData}

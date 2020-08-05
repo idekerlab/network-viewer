@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const BasePanel: FC = (props) => {
+const AppShell: FC = (props) => {
   const classes = useStyles()
   
   return (
@@ -49,4 +49,4 @@ const BasePanel: FC = (props) => {
   )
 }
 
-export default BasePanel
+export default AppShell
