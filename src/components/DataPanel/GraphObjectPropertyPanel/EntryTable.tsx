@@ -43,7 +43,6 @@ const useStyles = makeStyles({
 })
 
 const EntryTable = (props) => {
-  const classes = useStyles()
   const { selectedObjects, attributes, label } = props
   if (attributes === undefined) {
     return <div />
@@ -75,7 +74,6 @@ const EntryTable = (props) => {
 
   const dataRows = getDataArray(selectedObjects, attributes)
 
-  console.log(dataRows)
   return (
     <VirtualizedDataTable label={label} data={dataRows} />
   )

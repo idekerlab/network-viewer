@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { EditorState, convertToRaw, ContentState } from 'draft-js'
+import { EditorState, ContentState } from 'draft-js'
 import { Editor } from 'react-draft-wysiwyg'
 import htmlToDraft from 'html-to-draftjs'
 
@@ -21,7 +21,7 @@ const DescriptionEditor = (props) => {
     <div>
       <Editor
         toolbarHidden
-        editorStyle={{background: '#EEEEEE', padding: '0.5em'}}
+        editorStyle={{background: '#EEEEEE', padding: '0.8em', paddingTop: 0}}
         editorState={editorState}
         wrapperClassName="demo-wrapper"
         editorClassName="demo-editor"

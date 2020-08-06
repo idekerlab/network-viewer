@@ -202,8 +202,6 @@ interface Data {
   value: string
 }
 
-// const rows: Data[] = [{ propName: 'Attr 1', value: 'val1' }]
-
 const VirtualizedDataTable = ({ data, label }) => {
   return (
     <VirtualizedTable

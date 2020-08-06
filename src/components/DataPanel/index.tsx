@@ -22,8 +22,8 @@ const DataPanel = (props) => {
 
 
   const height = window.innerHeight
-  const defSize = Math.floor(height * 0.5)
-  const [bottomHeight, setBottomHeight] = useState(defSize)
+  const defSize = Math.floor(height * 0.45)
+  const [bottomHeight, setBottomHeight] = useState(height-defSize)
 
   const handleChange = (size) => {
     console.log('change:', size)

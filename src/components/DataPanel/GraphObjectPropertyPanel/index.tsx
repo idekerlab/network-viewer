@@ -6,7 +6,6 @@ const GraphObjectPropertyPanel = (props) => {
   const rootStyle = {
     width: '100%',
     height,
-    padding: '1em',
   }
 
   return (

@@ -6,7 +6,6 @@ import TableCell from '@material-ui/core/TableCell'
 import TableContainer from '@material-ui/core/TableContainer'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
-import Paper from '@material-ui/core/Paper'
 
 const StyledTableCell = withStyles((theme: Theme) =>
   createStyles({
@@ -15,7 +14,7 @@ const StyledTableCell = withStyles((theme: Theme) =>
       color: theme.palette.common.white,
     },
     body: {
-      fontSize: 14,
+      fontSize: '1em'
     },
   }),
 )(TableCell)
@@ -33,20 +32,22 @@ const StyledTableRow = withStyles((theme: Theme) =>
 
 
 const useStyles = makeStyles({
-  table: {},
+  container: {
+    width: '100%',
+    minWidth: 150,
+  }
 })
 
 const PropertyTable = (props) => {
   const classes = useStyles()
-
   const { data } = props
 
   return (
-    <TableContainer>
-      <Table className={classes.table} size={'small'} aria-label="customized table">
+    <TableContainer className={classes.container}>
+      <Table size={'small'}>
         <TableHead>
           <TableRow>
-            <StyledTableCell>Property Name</StyledTableCell>
+            <StyledTableCell>Name</StyledTableCell>
             <StyledTableCell>Value</StyledTableCell>
           </TableRow>
         </TableHead>

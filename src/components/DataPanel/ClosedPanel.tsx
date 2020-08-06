@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme: Theme) =>
       right: 0,
       top: 0,
       paddingTop: '1vh',
-      backgroundColor: 'rgba(0,0,0,0)',
+      // backgroundColor: 'rgba(0,0,0,0)',
       display: 'flex',
       flexDirection: 'column'
     },

@@ -5,7 +5,6 @@ import Grid from '@material-ui/core/Grid'
 import DescriptionEditor from './DescriptionEditor'
 import Button from '@material-ui/core/Button'
 import { IconButton } from '@material-ui/core'
-import EditIcon from '@material-ui/icons/Edit'
 import PublicIcon from '@material-ui/icons/Public'
 import PropertyTable from './PropertyTable'
 import useNetworkSummary from '../../../hooks/useNetworkSummary'
@@ -21,44 +20,55 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       overflowY: 'auto',
       margin: 0,
+      padding: 0,
+      display: 'flex',
+      flexDirection: 'column',
+
       // backgroundColor: theme.palette.secondary.main,
     },
-    mainFeaturedPost: {
-      position: 'relative',
-      backgroundColor: theme.palette.grey[800],
-      color: theme.palette.common.white,
-      marginBottom: theme.spacing(1),
-      backgroundImage: 'url(https://source.unsplash.com/random)',
-      backgroundSize: 'cover',
-      backgroundRepeat: 'no-repeat',
-      backgroundPosition: 'center',
+    topBar: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      width: '100%',
+      paddingRight: theme.spacing(1),
     },
-    overlay: {
-      position: 'absolute',
-      top: 0,
-      bottom: 0,
-      right: 0,
-      left: 0,
-      backgroundColor: 'rgba(0,0,0,.3)',
+    objectCount: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      width: '100%',
+      paddingTop: theme.spacing(1),
+      paddingBottom: theme.spacing(1),
+    },
+    title: {
+      // width: '50%',
+      paddingLeft: theme.spacing(1),
     },
     editor: {
       position: 'relative',
-      paddingTop: theme.spacing(0),
+      padding: 0,
     },
     propTable: {
       width: '100%',
-      paddingTop: theme.spacing(2),
+      padding: 0,
+      margin: 0,
     },
     countButton: {
       marginLeft: theme.spacing(1),
     },
-    topBar: {
-      marginBottom: theme.spacing(3),
-      height: '4em',
+    description: {
+      padding: 0,
+      margin: 0,
+      backgroundColor: '#EEEEEE',
     },
-    title: {
-      paddingLeft: theme.spacing(2)
-    }
+    label: {
+      backgroundColor: '#EEEEEE',
+      // paddingTop: theme.spacing(1),
+      margin: 0,
+      marginLeft: '0.7em',
+      paddingBottom: 0,
+    },
   }),
 )
 
@@ -84,49 +94,28 @@ const NetworkPropertyPanel = () => {
   }
   return (
     <div className={classes.root}>
-      <Grid container>
-        <Grid item md={12}>
-          <Grid container direction="row" justify="flex-start" alignItems="center" className={classes.topBar}>
-            <MinimizeButton />
-            <Typography className={classes.title} variant="h6" color="inherit">
-              {summary['name']}
-            </Typography>
-          </Grid>
-          <Grid container direction="row" justify="flex-start" alignItems="center" >
-            <IconButton edge="end" aria-label="account of current user" aria-haspopup="true" color="inherit">
-              <PublicIcon />
-            </IconButton>
-            <Grid item className={classes.countButton}>
-              <Button variant="outlined" color="secondary">
-                Nodes: {summary['nodeCount']}
-              </Button>
-            </Grid>
-            <Grid item className={classes.countButton}>
-              <Button variant="outlined" color="secondary">
-                Edges: {summary['edgeCount']}
-              </Button>
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item md={12}>
-          <div className={classes.editor}>
-            <Grid container direction="row" justify="flex-start" alignItems="center">
-              <Typography variant="button" color="inherit" gutterBottom>
-                Description:
-              </Typography>
-              <IconButton edge="end" aria-label="account of current user" aria-haspopup="true" color="inherit">
-                <EditIcon />
-              </IconButton>
-            </Grid>
-            <DescriptionEditor {...newProps} />
-          </div>
-        </Grid>
-        <Grid item md={12}>
-          <div className={classes.propTable}>
-            <PropertyTable data={summary['properties']} />
-          </div>
-        </Grid>
-      </Grid>
+      <div className={classes.topBar}>
+        <MinimizeButton />
+        <Typography className={classes.title}>{summary['name']}</Typography>
+      </div>
+      <div className={classes.objectCount}>
+        <IconButton>
+          <PublicIcon />
+        </IconButton>
+        <Button disabled className={classes.countButton} variant="outlined" color="secondary">
+          Nodes: {summary['nodeCount']}
+        </Button>
+        <Button disabled className={classes.countButton} variant="outlined" color="secondary">
+          Edges: {summary['edgeCount']}
+        </Button>
+      </div>
+      <div className={classes.description}>
+        <Typography className={classes.label} color="inherit" gutterBottom>
+          Description:
+        </Typography>
+        <DescriptionEditor {...newProps} />
+      </div>
+      <PropertyTable data={summary['properties']} />
     </div>
   )
 }
