@@ -25,11 +25,16 @@ const def: string[] = []
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    base: {
+    wrapper: {
       width: '100%',
       height: '100%',
       boxSizing: 'border-box',
       flexGrow: 1,
+    },
+    base: {
+      width: '100%',
+      height: '100%',
+      boxSizing: 'border-box',
     },
     leftPanel: {
       display: 'flex',
@@ -101,26 +106,23 @@ const MainSplitPane = () => {
 
   const selection = { selectedNodes, selectedEdges, setSelectedNodes, setSelectedEdges }
 
+  let leftWidth = defSize
+
   if (!dataPanelOpen) {
-    return (
-      <SplitPane className={classes.base} split="vertical" minSize={150} size={width-40} allowResize={false}>
+    leftWidth = width
+  }
+
+  return (
+    <div className={classes.wrapper}>
+      <SplitPane className={classes.base} split="vertical" minSize={150} size={leftWidth}>
         <div className={classes.leftPanel}>
           <NetworkPanel summary={summary} cx={cxResponse.data} renderer={rend} {...selection} />
           <FooterPanel />
         </div>
-        <ClosedPanel />
+        <DataPanel uuid={uuid} cx={cxResponse.data} selection={selection} />
       </SplitPane>
-    )
-  }
-
-  return (
-    <SplitPane className={classes.base} split="vertical" minSize={150} size={defSize}>
-      <div className={classes.leftPanel}>
-        <NetworkPanel summary={summary} cx={cxResponse.data} renderer={rend} {...selection} />
-        <FooterPanel />
-      </div>
-      <DataPanel uuid={uuid} cx={cxResponse.data} selection={selection} />
-    </SplitPane>
+      {dataPanelOpen ? <div /> : <ClosedPanel /> }
+    </div>
   )
 }
 

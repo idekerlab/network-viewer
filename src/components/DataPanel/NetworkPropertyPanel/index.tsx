@@ -20,8 +20,6 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       width: '100%',
       overflowY: 'auto',
-      padding: '1em',
-      paddingTop: '0.5em',
       margin: 0,
       // backgroundColor: theme.palette.secondary.main,
     },
@@ -55,8 +53,12 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: theme.spacing(1),
     },
     topBar: {
-      // height: '3em',
+      marginBottom: theme.spacing(3),
+      height: '4em',
     },
+    title: {
+      paddingLeft: theme.spacing(2)
+    }
   }),
 )
 
@@ -85,16 +87,12 @@ const NetworkPropertyPanel = () => {
       <Grid container>
         <Grid item md={12}>
           <Grid container direction="row" justify="flex-start" alignItems="center" className={classes.topBar}>
-            <Grid item xs={2}>
-              <MinimizeButton />
-            </Grid>
-            <Grid item xs={10}>
-              <Typography variant="h6" color="inherit">
-                {summary['name']}
-              </Typography>
-            </Grid>
+            <MinimizeButton />
+            <Typography className={classes.title} variant="h6" color="inherit">
+              {summary['name']}
+            </Typography>
           </Grid>
-          <Grid container direction="row" justify="flex-start" alignItems="center" className={classes.topBar}>
+          <Grid container direction="row" justify="flex-start" alignItems="center" >
             <IconButton edge="end" aria-label="account of current user" aria-haspopup="true" color="inherit">
               <PublicIcon />
             </IconButton>

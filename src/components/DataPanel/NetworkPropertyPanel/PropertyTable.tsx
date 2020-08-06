@@ -42,7 +42,7 @@ const PropertyTable = (props) => {
   const { data } = props
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer>
       <Table className={classes.table} size={'small'} aria-label="customized table">
         <TableHead>
           <TableRow>
