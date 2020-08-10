@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useReducer } from 'react'
 import './App.css'
 import { useHistory } from 'react-router-dom'
 import { Switch, Route, BrowserRouter } from 'react-router-dom'
@@ -9,45 +9,53 @@ import AppContext from './context/AppState'
 import AppState from './model/AppState'
 import TopPanel from './components/TopPanel'
 
+import UIState from './model/UIState'
+import CyReference from './model/CyReference'
+import selectionReducer, {EMPTY_SELECTION} from './reducer/selectionReducer'
+
+const defUIState: UIState = {
+  dataPanelOpen: true,
+  showSearchResult: false,
+}
+
+const defCyRef: CyReference = {}
+
 const App = () => {
-  const history = useHistory()
-  const [dataPanelOpen, setDataPanelOpen] = useState(true)
+  const history = useHistory(defUIState)
+  const [uiState, setUIState] = useState(defUIState)
   const [uuid, setUuid] = useState('')
   const [cx, setCx] = useState([])
-  const [cy, setCy] = useState(null)
-  const [cySub, setCySub] = useState(null)
+  const [cyReference, setCyReference] = useState(defCyRef)
   const [summary, setSummary] = useState({})
   const [style, setStyle] = useState({})
   const [query, setQuery] = useState('')
   const [queryMode, setQueryMode] = useState('direct')
   const [queryResult, setQueryResult] = useState(null)
-  const [selectedNodes, setSelectedNodes] = useState([])
-  const [selectedEdges, setSelectedEdges] = useState([])
 
   const [selectedNodeAttributes, setSelectedNodeAttributes] = useState({})
 
+  const [selection, dispatch] = useReducer(selectionReducer, EMPTY_SELECTION)
+
   // TODO: use reducer?
   const defState: AppState = {
-    dataPanelOpen, 
-    setDataPanelOpen,
+
+    selection,
+    dispatch,
+
+    uiState,
+    setUIState,
     style,
     setStyle,
-    selectedNodes,
     selectedNodeAttributes,
     setSelectedNodeAttributes,
-    setSelectedNodes,
-    selectedEdges,
-    setSelectedEdges,
     summary,
     setSummary,
     uuid,
     setUuid,
     cx,
     setCx,
-    cy,
-    setCy,
-    cySub,
-    setCySub,
+    cyReference,
+    setCyReference,
     query,
     setQuery,
     queryMode,

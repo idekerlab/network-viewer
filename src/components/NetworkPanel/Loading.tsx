@@ -10,6 +10,8 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       height: '100%',
       placeItems: 'center',
+      zIndex: 2000,
+      background: 'rgba(200, 0, 0, 100)'
     },
     item: {
       display: 'flex',
@@ -29,7 +31,7 @@ const Loading = ({message}) => {
     <div className={classes.root}>
       <div className={classes.item} >
         <Typography className={classes.message} variant="h5">{message}</Typography>
-        <CircularProgress size={'20em'} color="secondary" />
+        <CircularProgress disableShrink size={'10em'} color="secondary" />
       </div>
     </div>
   )

@@ -24,13 +24,14 @@ const useStyles = makeStyles((theme: Theme) =>
 const MinimizeButton = () => {
   const classes = useStyles()
   const appContext = useContext(AppContext)
-  const { setDataPanelOpen, dataPanelOpen } = appContext
+  const { uiState, setUIState } = appContext
 
   const handleClick = () => {
-    setDataPanelOpen(!dataPanelOpen)
+    
+    setUIState({...uiState, dataPanelOpen: !uiState.dataPanelOpen})
   }
 
-  if (dataPanelOpen) {
+  if (uiState.dataPanelOpen) {
     return (
       <Tooltip title="Hide Data Panel" placement="left" arrow>
         <IconButton className={classes.button} size="small" onClick={handleClick}>

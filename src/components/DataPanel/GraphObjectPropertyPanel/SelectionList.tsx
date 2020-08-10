@@ -32,10 +32,11 @@ const useStyles = makeStyles((theme: Theme) =>
 const SelectionList = (props) => {
   const classes = useStyles()
 
-  const { attributes, selectedNodes, selectedEdges } = props
+  const { attributes } = props
 
-  const appContext = useContext(AppContext)
-  const { uuid, query, queryMode, setSelectedNodeAttributes, selectedNodeAttributes } = appContext
+  const { uuid, query, queryMode, setSelectedNodeAttributes, selectedNodeAttributes, selection } = useContext(
+    AppContext,
+  )
   const { status, data, error, isFetching } = useSearch(uuid, query, '', queryMode)
 
   useEffect(() => {
@@ -47,22 +48,22 @@ const SelectionList = (props) => {
     setSelectedNodeAttributes(kvMap)
   }, [data])
 
-  const nodeCount = selectedNodes.length
-  const edgeCount = selectedEdges.length
+  const nodeCount = selection.main.nodes.length
+  const edgeCount = selection.main.edges.length
 
   return (
     <div className={classes.root}>
       <EntryTable
         key={'selected-nodes'}
         label={`Selected Nodes (${nodeCount})`}
-        selectedObjects={selectedNodes}
+        selectedObjects={selection.main.nodes}
         attributes={attributes.nodeAttr}
       />
 
       <EntryTable
         key={'selected-edges'}
         label={`Selected Edges (${edgeCount})`}
-        selectedObjects={selectedEdges}
+        selectedObjects={selection.main.edges}
         attributes={attributes.edgeAttr}
       />
     </div>

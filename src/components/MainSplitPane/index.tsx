@@ -16,6 +16,8 @@ const BASE_URL = 'http://dev.ndexbio.org/'
 const V2 = 'v2'
 const V3 = 'v3'
 
+const TH = 7000
+
 const RENDERER = {
   lgr: 'lgr',
   cyjs: 'cyjs',
@@ -62,7 +64,7 @@ const MainSplitPane = () => {
   const classes = useStyles()
   const { uuid } = useParams()
   const appContext = useContext(AppContext)
-  const { dataPanelOpen } = appContext
+  const { uiState } = appContext
 
   // Selected items in the current view
   const [selectedNodes, setSelectedNodes] = useState([])
@@ -79,7 +81,7 @@ const MainSplitPane = () => {
 
   if (summary !== undefined && Object.keys(summary).length !== 0) {
     const count = summary['edgeCount'] + summary['nodeCount']
-    if (count > 3000) {
+    if (count > TH) {
       apiVersion = V3
       rend = RENDERER.lgr
     } else {
@@ -108,7 +110,7 @@ const MainSplitPane = () => {
 
   let leftWidth = defSize
 
-  if (!dataPanelOpen) {
+  if (!uiState.dataPanelOpen) {
     leftWidth = width
   }
 
@@ -116,12 +118,12 @@ const MainSplitPane = () => {
     <div className={classes.wrapper}>
       <SplitPane className={classes.base} split="vertical" minSize={150} size={leftWidth}>
         <div className={classes.leftPanel}>
-          <NetworkPanel summary={summary} cx={cxResponse.data} renderer={rend} {...selection} />
+          <NetworkPanel cx={cxResponse.data} renderer={rend} {...selection} />
           <FooterPanel />
         </div>
         <DataPanel uuid={uuid} cx={cxResponse.data} selection={selection} />
       </SplitPane>
-      {dataPanelOpen ? <div /> : <ClosedPanel /> }
+      {uiState.dataPanelOpen ? <div /> : <ClosedPanel /> }
     </div>
   )
 }

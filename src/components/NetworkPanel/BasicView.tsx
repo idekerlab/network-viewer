@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
-import LGRPanel, {EventHandlers} from './LGRPanel'
+import LGRPanel, { EventHandlers } from './LGRPanel'
 import CytoscapeRenderer from '../CytoscapeRenderer'
 import AppContext from '../../context/AppState'
 import { useParams } from 'react-router-dom'
@@ -25,7 +25,7 @@ const BasicView = (props) => {
   const classes = useStyles()
   const { cx, subCx, renderer, setSelectedNodes, setSelectedEdges } = props
   const appContext = useContext(AppContext)
-  const { query, queryMode, selectedNodes, selectedEdges, setCy } = appContext
+  const { query, queryMode, setCyReference, selection } = appContext
   const targets = useHighlight(query, queryMode, subCx)
 
   const eventHandlers: EventHandlers = {
@@ -40,15 +40,15 @@ const BasicView = (props) => {
           highlight={targets}
           cx={cx}
           eventHandlers={eventHandlers}
-          selectedNodes={selectedNodes}
-          selectedEdges={selectedEdges}
+          selectedNodes={selection.main.nodes}
+          selectedEdges={selection.main.edges}
         />
       ) : (
         <CytoscapeRenderer
           id={'upper'}
           uuid={uuid}
           cx={cx}
-          setCy={setCy}
+          setCyReference={setCyReference}
           eventHandlers={eventHandlers}
         />
       )}

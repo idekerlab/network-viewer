@@ -5,8 +5,12 @@ export default function useCyjs(uuid: string, cx: any) {
   const [cyjs, setCyjs] = useState(null)
   const [id, setUuid] = useState(null)
 
+
+  if(cx === undefined || cx === null) {
+    return {}
+  }
+
   if (id === null && cx.length > 6) {
-    console.log('to be CYJS CX =======', cx)
     setUuid(uuid)
     setCyjs(cx2cyjs(uuid, cx))
     return cyjs

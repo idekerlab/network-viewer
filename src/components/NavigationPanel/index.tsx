@@ -30,27 +30,27 @@ const NavigationPanel = () => {
   const [zoomLevel, setZoomLevel] = useState(1.0)
 
   const appContext = useContext(AppContext)
-  const { cy } = appContext
+  const { cyReference } = appContext
 
   const handleFit = (evt) => {
-    if (cy) {
-      cy.fit()
+    if (cyReference.main) {
+      cyReference.main.fit()
       console.log('* Fit content')
     }
   }
   const handleZoomIn = (evt) => {
-    if (cy) {
+    if (cyReference.main) {
       console.log('* Zoom in')
       const newLevel = zoomLevel * 1.2
-      cy.zoom(newLevel)
+      cyReference.main.zoom(newLevel)
       setZoomLevel(newLevel)
     }
   }
   const handleZoomOut = (evt) => {
-    if (cy) {
+    if (cyReference.main) {
       console.log('* Zoom out')
       const newLevel = zoomLevel * 0.8
-      cy.zoom(newLevel)
+      cyReference.main.zoom(newLevel)
       setZoomLevel(newLevel)
     }
   }

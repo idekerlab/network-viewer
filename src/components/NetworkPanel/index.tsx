@@ -1,40 +1,53 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import AppContext from '../../context/AppState'
 import useSearch from '../../hooks/useSearch'
 import { useParams } from 'react-router-dom'
 import BasicView from './BasicView'
-import SplitView from './SplitView'
+// import SplitView from './SplitView'
+import NewSplitView from './NewSplitView'
 
-const NetworkPanel = (props) => {
-  const { uuid } = useParams()
-  const { renderer, cx, setSelectedNodes, setSelectedEdges } = props
-  const appContext = useContext(AppContext)
-  const { query, queryMode, setCy } = appContext
-  const searchResult = useSearch(uuid, query, '', queryMode)
+/**
+ *
+ * Basic panel for a network
+ * It is ALWAYS show only one network with a unique UUID.
+ *
+ * @param props
+ */
+const NetworkPanel = ({ renderer, cx } ) => {
 
-  if (searchResult.data === undefined || searchResult.data === {} || query === '') {
-    return <BasicView cx={cx} renderer={renderer} setCy={setCy} 
-    
-          setSelectedEdges={setSelectedEdges}
-          setSelectedNodes={setSelectedNodes}
-    
+  return (
+    <NewSplitView
+      cx={cx}
+      renderer={renderer}
     />
-  } else {
-    if (renderer === 'lgr') {
-      // For large network, use highlight
-      return (
-        <BasicView
-          cx={cx}
-          renderer={renderer}
-          subCx={searchResult.data.cx}
-          setSelectedEdges={setSelectedEdges}
-          setSelectedNodes={setSelectedNodes}
-        />
-      )
-    } else {
-      return <SplitView cx={cx} renderer={renderer} subCx={searchResult.data.cx} />
-    }
-  }
+  )
+
+  // if (searchResult.data === undefined || searchResult.data === {} || query === '') {
+  //   return (
+  //     <NewSplitView
+  //       cx={cx}
+  //       renderer={renderer}
+  //       setCy={setCy}
+  //       setSelectedEdges={setSelectedEdges}
+  //       setSelectedNodes={setSelectedNodes}
+  //     />
+  //   )
+  // } else {
+  //   if (renderer === 'lgr') {
+  //     // For large network, use highlight
+  //     return (
+  //       <BasicView
+  //         cx={cx}
+  //         renderer={renderer}
+  //         subCx={searchResult.data.cx}
+  //         setSelectedEdges={setSelectedEdges}
+  //         setSelectedNodes={setSelectedNodes}
+  //       />
+  //     )
+  //   } else {
+  //     return <NewSplitView cx={cx} renderer={renderer} subCx={searchResult.data.cx} />
+  //   }
+  // }
 }
 
 export default NetworkPanel

@@ -1,6 +1,7 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useEffect, useState, Children } from 'react'
 import { createCytoscape } from './create-cytoscape'
 import useCyjs from '../../hooks/useCyjs'
+import Loading from '../NetworkPanel/Loading'
 
 // Style for the network canvas area
 const ROOT_STYLE = {
@@ -8,20 +9,52 @@ const ROOT_STYLE = {
   height: '100%',
 }
 
+
 const CytoscapeRenderer = (props) => {
   const cyEl = useRef(null)
   const [cyInstance, setCyInstance] = useState(null)
 
-  const { id, uuid, cx, eventHandlers, layoutName, options, setCy } = props
+  const { uuid, cx, eventHandlers, layoutName, options, setCyReference, setBusy, cyReference } = props
   const cyjsNetwork = useCyjs(uuid, cx)
 
   useEffect(() => {
+    if (cyjsNetwork !== undefined && Object.keys(cyjsNetwork).length === 0) {
+      return
+    }
+
+    updateNetwork(cyjsNetwork, cyInstance)
+
+    if (cyjsNetwork !== {} && cyInstance !== null) {
+      if (layoutName !== undefined && cyInstance !== null) {
+        const layout = cyInstance.layout({
+          name: 'cose',
+          animate: false,
+          stop: function () {
+            setBusy(false)
+            console.log('CYJS data up--------------- Layout done!!')
+          },
+        })
+
+        setBusy(true)
+        layout.run()
+      }
+    }
+  }, [cyjsNetwork])
+
+  useEffect(() => {
+    if (cyjsNetwork !== undefined && Object.keys(cyjsNetwork).length === 0) {
+      return
+    }
+
     updateNetwork(cyjsNetwork, cyInstance)
 
     if (layoutName !== undefined && cyInstance !== null) {
       const layout = cyInstance.layout({
         name: 'cose',
         animate: false,
+        stop: function () {
+          console.log('CyInstance --------------- Layout done!!')
+        },
       })
       layout.run()
     }
@@ -33,46 +66,21 @@ const CytoscapeRenderer = (props) => {
       const newCyInstance = createCytoscape(options, cyEl.current)
 
       // Expose Cyjs instance to other component
-      if (setCy !== undefined) {
-        setCy(newCyInstance)
+      if (setCyReference !== undefined) {
+        setCyReference({...cyReference, main: newCyInstance})
       }
       initializeCy(newCyInstance, eventHandlers)
-      // setCy(cyjs)
       setCyInstance(newCyInstance)
-      console.log('############### Cytoscape.js instance created ###############', cyEl, newCyInstance)
+      console.log('#CYEL ############### Cytoscape.js instance created #', newCyInstance)
     }
   }, [cyEl])
 
-  return <div id={id} style={ROOT_STYLE} ref={cyEl} />
-}
-
-const addHandlers = (cy, eventHandlers) => {
-  cy.on('tap, click', (event) => tapHandler(cy, eventHandlers, event))
-  cy.on('boxend', (event) => boxSelectHandler(cy, eventHandlers, event))
+  return <div style={ROOT_STYLE} ref={cyEl} />
 }
 
 const initializeCy = (cy, eventHandlers) => {
-  addHandlers(cy, eventHandlers)
-
-  // cy.on('resize', (event) => {
-  //   console.log('--------------resize------------', props, cy.elements().size())
-  //   if (cy.elements().size() === 0) {
-  //     const net = props.network
-  //     if (net !== undefined) {
-  //       console.log('------- !!!!!!!!!!!!!lements3 ------------', net)
-  //       cy.add(net.elements)
-  //       var layout = cy.layout({
-  //         name: 'cose',
-  //       })
-
-  //       layout.run()
-  //     }
-
-  //     // const newVS = addExtraStyle(props.visualStyle)
-  //     // cy.style().fromJson(newVS).update()
-  //   }
-  //   cy.fit()
-  // })
+  cy.on('tap, click', (event) => tapHandler(cy, eventHandlers, event))
+  cy.on('boxend', (event) => boxSelectHandler(cy, eventHandlers, event))
 }
 
 const boxSelectHandler = (cy, eventHandlers, event) => {
@@ -82,12 +90,11 @@ const boxSelectHandler = (cy, eventHandlers, event) => {
     const selectedEdges = cy.$('edge:selected')
     const nodeIds = selectedNodes.map((node) => node.data().id)
     const edgeIds = selectedEdges.map((edge) => edge.data().id.slice(1))
-    console.log('SetSelected start------->', nodeIds, edgeIds)
 
     eventHandlers.setSelectedNodes(nodeIds)
     eventHandlers.setSelectedEdges(edgeIds)
-    console.log('idone!!!!!!!!', performance.now() - t0)
-  }, 10)
+    console.log('selection done!!!!!!!!', performance.now() - t0)
+  }, 5)
 }
 const tapHandler = (cy, eventHandlers, event) => {
   const evtTarget = event.target
@@ -147,14 +154,14 @@ const updateNetwork = (cyjs, cy) => {
   const { network } = cyjs
   if (network !== undefined && network !== null && cy !== null) {
     const elements = cyjs.network.elements
-    console.log(network.data.uuid + '!!!!!!!!!!!!!lements22 ------------', elements)
     cy.add(elements)
 
     const newVS = addExtraStyle(cyjs.visualStyle)
     cy.style().fromJson(newVS).update()
     cy.fit()
-  } else {
-    console.log('CANNOT ADD********************************************UP', cyjs)
+    // cy.userPanningEnabled(false)
+    // cy.elements().unselectify()
+    // cy.nodes().ungrabify()
   }
 }
 

@@ -10,8 +10,9 @@ const useSelection = (nodes, edges) => {
   }, [nodes, edges])
 
   return {
-    nodes, edges
-  } 
+    nodes,
+    edges,
+  }
 }
 
 export default useSelection

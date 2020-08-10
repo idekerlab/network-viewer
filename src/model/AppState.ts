@@ -1,25 +1,30 @@
+import UIState from './UIState'
+import CyReference from './CyReference'
+import { SelectionState } from '../reducer/selectionReducer'
+
 type AppState = {
-  dataPanelOpen: boolean
-  setDataPanelOpen: Function
+  selection: SelectionState
+  dispatch: any
+  
+  uiState: UIState
+  setUIState: Function
   
   uuid: string
   setUuid: Function
   style: object
   setStyle: Function
-  selectedNodes: string[]
-  setSelectedNodes: Function
+  
   selectedNodeAttributes: object
   setSelectedNodeAttributes: Function
-  selectedEdges: string[]
-  setSelectedEdges: Function
+  
   summary: object
   setSummary: Function
   cx: object[]
   setCx: Function
-  cy: any | null
-  setCy: Function
-  cySub: any | null
-  setCySub: Function
+
+  cyReference: CyReference
+  setCyReference: Function
+
   query: string
   setQuery: Function
   queryMode: string

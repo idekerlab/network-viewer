@@ -81,28 +81,26 @@ const SearchBox: FC = () => {
   const [rawQuery, setRawQuery] = useState('')
   const [searchType, setSearchType] = useState(queryMode.direct)
 
-  const appContext = useContext(AppContext)
-  const { uuid, setSelectedNodes, setQuery, setQueryMode } = appContext
+  const { uuid, selection, setQuery, setQueryMode, setUIState, uiState } = useContext(AppContext)
 
   const handleSearchTypeChange = (evt) => {
     const val = evt.target.value
-    console.log('ST ===========', val)
     setSearchType(val)
     setQueryMode(val)
   }
   const handleQueryChange = (evt) => {
     const q: string = evt.target.value
-    if(q !== undefined && q.length !== 0) {
+    if (q !== undefined && q.length !== 0) {
       setDisableQuery(false)
+    } else {
+      setDisableQuery(true)
     }
     setRawQuery(q)
   }
 
   const handleClick = () => {
-    // TODO: Validate here
-
-    console.log('-------Start Search ------')
     setQuery(rawQuery)
+    setUIState({ ...uiState, showSearchResult: true })
   }
 
   const handleClear = () => {
@@ -110,6 +108,7 @@ const SearchBox: FC = () => {
     setRawQuery('')
     setQuery('')
     setDisableQuery(true)
+    setUIState({ ...uiState, showSearchResult: false })
   }
 
   const handleHelpClose = () => {
