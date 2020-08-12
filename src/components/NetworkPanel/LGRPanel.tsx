@@ -8,7 +8,7 @@ type LGRPanelProps = {
   eventHandlers: EventHandlers
   selectedNodes: string[]
   selectedEdges: string[]
-  highlight: object
+  // highlight: object
   cx: object[]
 }
 
@@ -17,7 +17,7 @@ export type EventHandlers = {
   setSelectedEdges: Function
 }
 
-const LGRPanel = ({ eventHandlers, selectedNodes, selectedEdges, highlight, cx }: LGRPanelProps) => {
+const LGRPanel = ({ eventHandlers, selectedNodes, selectedEdges, cx }: LGRPanelProps) => {
   const [render3d, setRender3d] = useState(false)
   const [painted, setPainted] = useState(false)
   const [data, setData] = useState<GraphView | null>(null)
@@ -78,19 +78,23 @@ const LGRPanel = ({ eventHandlers, selectedNodes, selectedEdges, highlight, cx }
     }
   }, [cx])
 
-  useEffect(() => {
-    console.log('---------Highlight changed', highlight, data)
-    // if (highlight !== undefined && highlight !== null && Object.keys(highlight).length !== 0) {
-    if (highlight !== null && !painted) {
-      applyHighlight(highlight, data)
-      setPainted(true)
-      console.log('--------------------------- color on!!', highlight, data)
-    } else if (highlight === null && painted) {
-      console.log('-------CLEAR start!!', highlight, data)
-      clearHighlight(data)
-      setPainted(false)
-    }
-  }, [highlight])
+  // useEffect(() => {
+  //   console.log('---------Highlight changed', highlight, data)
+
+  //   if (highlight === undefined && highlight === null && Object.keys(highlight).length === 0) {
+  //     return
+  //   }
+
+  //   if (highlight !== null && !painted) {
+  //     applyHighlight(highlight, data)
+  //     setPainted(true)
+  //     console.log('--------------------------- color on!!', highlight, data)
+  //   } else if (highlight === null && painted) {
+  //     console.log('-------CLEAR start!!', highlight, data)
+  //     clearHighlight(data)
+  //     setPainted(false)
+  //   }
+  // }, [highlight])
 
   if (data === null || data === undefined) {
     const loadingMessage = 'Loading large network data.  Please wait......'

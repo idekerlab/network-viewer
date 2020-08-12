@@ -19,8 +19,9 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       justifyContent: 'flex-start',
       borderRadius: theme.shape.borderRadius,
-      backgroundColor: theme.palette.grey[200],
-      marginLeft: theme.spacing(2),
+      backgroundColor: theme.palette.grey[100],
+      marginRight: theme.spacing(1),
+      marginLeft: theme.spacing(1),
     },
     search: {
       width: '100%',

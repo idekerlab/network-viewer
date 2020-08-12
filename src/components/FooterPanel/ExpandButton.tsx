@@ -3,17 +3,16 @@ import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import { IconButton } from '@material-ui/core'
 import AppContext from '../../context/AppState'
 import Tooltip from '@material-ui/core/Tooltip'
-import CloseIcon from '@material-ui/icons/ExpandLess'
-import ExpandIcon from '@material-ui/icons/ExpandMore'
+import CloseIcon from '@material-ui/icons/FullscreenExit'
+import ExpandIcon from '@material-ui/icons/Fullscreen'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     button: {
-      height: '3em',
-      width: '3em',
-      margin: 0,
+      height: '2em',
+      width: '2em',
       borderRadius: 2,
-      border: '1px solid #AAAAAA',
+      // border: '1px solid #AAAAAA',
     },
   }),
 )
@@ -23,23 +22,22 @@ const ExpandButton = () => {
   const { uiState, setUIState } = useContext(AppContext)
 
   const handleClick = () => {
-    
-    setUIState({...uiState, showSearchResult: !uiState.showSearchResult})
+    setUIState({ ...uiState, showSearchResult: !uiState.showSearchResult })
   }
 
   if (uiState.showSearchResult) {
     return (
-      <Tooltip title="Hide sub network" placement="left" arrow>
+      <Tooltip title="Full screen" placement="top" arrow>
         <IconButton className={classes.button} size="small" onClick={handleClick}>
-          <CloseIcon />
+          <ExpandIcon />
         </IconButton>
       </Tooltip>
     )
   } else {
     return (
-      <Tooltip title="Show query result" placement="left" arrow>
+      <Tooltip title="Collapse main view" placement="top" arrow>
         <IconButton className={classes.button} size="small" onClick={handleClick}>
-          <ExpandIcon aria-label='Expand sub network' />
+          <CloseIcon />
         </IconButton>
       </Tooltip>
     )

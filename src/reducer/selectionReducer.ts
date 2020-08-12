@@ -39,17 +39,14 @@ export const SelectionActions = {
 }
 
 const selectionReducer = (state: SelectionState, action: SelectionAction): SelectionState => {
-  console.log('$$$$$$$$$$$calling rd', state, action)
   switch (action.type) {
     case SelectionActions.SET_MAIN_NODES:
       return { ...state, main: {nodes: action.selected, edges: state.main.edges} }
     case SelectionActions.SET_MAIN_EDGES:
       return { ...state, main: {edges: action.selected, nodes: state.main.nodes} }
     case SelectionActions.SET_SUB_NODES:
-      console.log('11111111111 new SUB nodes $$$$$$$$$$$calling rd', state, action)
       return { ...state, sub: {nodes: action.selected, edges: state.main.edges} }
     case SelectionActions.SET_SUB_EDGES:
-      console.log('11111111111 new SUB Es $$$$$$$$$$$calling rd', state, action)
       return { ...state, sub: {edges: action.selected, nodes: state.main.nodes} }
     case SelectionActions.CLEAR_ALL:
       return EMPTY_SELECTION

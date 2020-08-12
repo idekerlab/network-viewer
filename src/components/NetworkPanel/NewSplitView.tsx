@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom'
 import { Typography } from '@material-ui/core'
 import useSearch from '../../hooks/useSearch'
 
-import ExpandButton from './ExpandButton'
+import ExpandButton from '../FooterPanel/ExpandButton'
 import Loading from './Loading'
 import { SelectionAction, SelectionActions } from '../../reducer/selectionReducer'
 
@@ -50,8 +50,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     expandButton: {
       position: 'fixed',
-      bottom: '1em',
-      right: '1em',
+      bottom: '5em',
+      left: '1em',
       color: 'rgba(100,100,100,1)',
       zIndex: 100,
       // width: '8em'
@@ -71,15 +71,7 @@ const NewSplitView = ({ renderer, cx }) => {
 
   const [busy, setBusy] = useState(false)
 
-  const {
-    query,
-    queryMode,
-    uiState,
-    setCyReference,
-    cyReference,
-    selection,
-    dispatch,
-  } = useContext(AppContext)
+  const { query, queryMode, uiState, setCyReference, cyReference, selection, dispatch } = useContext(AppContext)
   const searchResult = useSearch(uuid, query, '', queryMode)
 
   const subnet = searchResult.data
@@ -92,7 +84,7 @@ const NewSplitView = ({ renderer, cx }) => {
     setSelectedNodes: (selected) => dispatch({ type: SelectionActions.SET_MAIN_NODES, selected }),
     setSelectedEdges: (selected) => dispatch({ type: SelectionActions.SET_MAIN_EDGES, selected }),
   }
-  
+
   const subEventHandlers = {
     setSelectedNodes: (selected) => dispatch({ type: SelectionActions.SET_SUB_NODES, selected }),
     setSelectedEdges: (selected) => dispatch({ type: SelectionActions.SET_SUB_EDGES, selected }),
@@ -107,19 +99,32 @@ const NewSplitView = ({ renderer, cx }) => {
   }
   const bottomHeight = height - topHeight
 
-  const getSub = () => {
-    return <Loading message={'Layout'} />
+  const getMainRenderer = (renderer: string) => {
+    if (renderer !== 'lgr') {
+      return (
+        <CytoscapeRenderer
+          uuid={uuid}
+          cx={cx}
+          cyReference={cyReference}
+          setCyReference={setCyReference}
+          eventHandlers={mainEventHandlers}
+        />
+      )
+    } else {
+      return (
+        <LGRPanel
+          cx={cx}
+          eventHandlers={mainEventHandlers}
+          selectedNodes={selection.main.nodes}
+          selectedEdges={selection.main.edges}
+        />
+      )
+    }
   }
 
-  console.log('-------!! seleciton', selection)
   return (
     <div className={classes.root}>
       <div className={classes.subnet} style={{ height: topHeight }}>
-        <div className={classes.expandButton}>
-          <ExpandButton />
-        </div>
-
-        {busy ? <Loading message={'Layout'} /> : <div />}
 
         {!showSearchResult ? (
           <div />
@@ -136,20 +141,7 @@ const NewSplitView = ({ renderer, cx }) => {
       </div>
       <div className={classes.lowerPanel} style={{ height: bottomHeight }}>
         {!showSearchResult ? <div /> : <Typography className={classes.title}>Overview</Typography>}
-        <CytoscapeRenderer
-          uuid={uuid}
-          cx={cx}
-          cyReference={cyReference}
-          setCyReference={setCyReference}
-          eventHandlers={mainEventHandlers}
-          selectedNodes={[]}
-          options={{
-            selectable: false,
-            locked: true,
-            grabbable: false,
-            pannable: true,
-          }}
-        />
+        {getMainRenderer(renderer)}
       </div>
     </div>
   )

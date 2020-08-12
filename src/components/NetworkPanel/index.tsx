@@ -2,8 +2,6 @@ import React, { useContext, useState } from 'react'
 import AppContext from '../../context/AppState'
 import useSearch from '../../hooks/useSearch'
 import { useParams } from 'react-router-dom'
-import BasicView from './BasicView'
-// import SplitView from './SplitView'
 import NewSplitView from './NewSplitView'
 
 /**

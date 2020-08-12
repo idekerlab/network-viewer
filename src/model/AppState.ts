@@ -19,8 +19,6 @@ type AppState = {
   
   summary: object
   setSummary: Function
-  cx: object[]
-  setCx: Function
 
   cyReference: CyReference
   setCyReference: Function

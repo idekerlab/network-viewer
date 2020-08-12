@@ -56,7 +56,14 @@ const EntryTable = (props) => {
     while(len--) {
       const id = ids[len]
       const attr = attributes[id]
-      const name = attr.get('name')
+      if(attr == undefined) {
+
+        continue
+      }
+      let name = attr.get('name')
+      if(name === undefined) {
+        name = id
+      }
       const keys =[...attr.keys()]
       let idx = keys.length
 

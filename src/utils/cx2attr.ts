@@ -1,5 +1,3 @@
-import { networkInterfaces } from 'os'
-
 const CX2_TAG = 'CXVersion'
 
 const isCxV2 = (cx: object[]) => {
@@ -36,9 +34,10 @@ export const getAttributeMap = (cx: object[]) => {
       edgeAttr: getEdgeAttrsV2(resultObject),
     }
   } else {
+    const nodeAttr = getNodeAttrs(resultObject)
     return {
-      nodeAttr: getNodeAttrs(resultObject),
-      edgeAttr: getEdgeAttrs(resultObject),
+      nodeAttr,
+      edgeAttr: getEdgeAttrs(nodeAttr, resultObject),
     }
   }
 }
@@ -92,12 +91,14 @@ const getEdgeAttrsV2 = (kvMap: object) => {
   return id2attr
 }
 
-const getEdgeAttrs = (kvMap: object) => {
+const getEdgeAttrs = (nodeArrt, kvMap: object) => {
   const edgeAttr = kvMap['edgeAttributes']
   const edges = kvMap['edges']
+  const nodes = kvMap['nodes']
   const id2attr = {}
 
   if (edgeAttr === undefined) {
+    addSourceTarget(nodeArrt, edges, id2attr)
     return id2attr
   }
 
@@ -114,17 +115,27 @@ const getEdgeAttrs = (kvMap: object) => {
     id2attr[pointer] = current
   }
 
-  len = edges.length
+  addSourceTarget(nodeArrt, edges, id2attr)
+  return id2attr
+}
+const addSourceTarget = (nodeAttr, edges, id2attr) => {
+  let len = edges.length
   while (len--) {
     const e = edges[len]
     const id = e['@id']
+    let current = id2attr[id]
+    if (current === undefined) {
+      current = new Map()
+      id2attr[id] = current
+    }
     const source = e['s']
     const target = e['t']
-    id2attr[id].set('source', source)
-    id2attr[id].set('target', target)
+    const s = nodeAttr[source]
+    const t = nodeAttr[target]
+    // console.log(s,t)
+    id2attr[id].set('source', s.get('name'))
+    id2attr[id].set('target', t.get('name'))
   }
-
-  return id2attr
 }
 
 const getNodeAttrs = (kvMap: object) => {

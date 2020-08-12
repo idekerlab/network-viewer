@@ -24,7 +24,6 @@ const App = () => {
   const history = useHistory(defUIState)
   const [uiState, setUIState] = useState(defUIState)
   const [uuid, setUuid] = useState('')
-  const [cx, setCx] = useState([])
   const [cyReference, setCyReference] = useState(defCyRef)
   const [summary, setSummary] = useState({})
   const [style, setStyle] = useState({})
@@ -52,8 +51,7 @@ const App = () => {
     setSummary,
     uuid,
     setUuid,
-    cx,
-    setCx,
+    
     cyReference,
     setCyReference,
     query,

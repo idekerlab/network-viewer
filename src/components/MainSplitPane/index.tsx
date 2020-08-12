@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import NetworkPanel from '../NetworkPanel'
 import DataPanel from '../DataPanel'
@@ -63,15 +63,19 @@ const useStyles = makeStyles((theme: Theme) =>
 const MainSplitPane = () => {
   const classes = useStyles()
   const { uuid } = useParams()
-  const appContext = useContext(AppContext)
-  const { uiState } = appContext
-
-  // Selected items in the current view
-  const [selectedNodes, setSelectedNodes] = useState([])
-  const [selectedEdges, setSelectedEdges] = useState([])
-
+  const { uiState } = useContext(AppContext)
   const width = window.innerWidth
   const defSize = Math.floor(width * 0.65)
+
+  const [leftWidth, setLeftWidth] = useState(defSize)
+
+  useEffect(() => {
+    if (!uiState.dataPanelOpen) {
+      setLeftWidth(width)
+    } else {
+      setLeftWidth(defSize)
+    }
+  }, [uiState.dataPanelOpen])
 
   const result = useNetworkSummary(uuid, BASE_URL, V2)
   const summary = result.data
@@ -90,10 +94,7 @@ const MainSplitPane = () => {
     }
   }
 
-  // const { status, data, error, isFetching } = useNetwork(uuid, BASE_URL, apiVersion)
   const cxResponse = useCx(uuid, BASE_URL, apiVersion)
-
-  const getMainPanel = () => {}
 
   if (cxResponse.data === undefined || cxResponse.isFetching || rend === null) {
     return (
@@ -106,24 +107,20 @@ const MainSplitPane = () => {
     )
   }
 
-  const selection = { selectedNodes, selectedEdges, setSelectedNodes, setSelectedEdges }
-
-  let leftWidth = defSize
-
-  if (!uiState.dataPanelOpen) {
-    leftWidth = width
+  const handleChange = (newWidth) => {
+    setLeftWidth(newWidth)
   }
 
   return (
     <div className={classes.wrapper}>
-      <SplitPane className={classes.base} split="vertical" minSize={150} size={leftWidth}>
+      <SplitPane className={classes.base} split="vertical" minSize={550} size={leftWidth} onDragFinished={handleChange}>
         <div className={classes.leftPanel}>
-          <NetworkPanel cx={cxResponse.data} renderer={rend} {...selection} />
-          <FooterPanel />
+          <NetworkPanel cx={cxResponse.data} renderer={rend} />
+          <FooterPanel width={leftWidth} />
         </div>
-        <DataPanel uuid={uuid} cx={cxResponse.data} selection={selection} />
+        <DataPanel uuid={uuid} cx={cxResponse.data} />
       </SplitPane>
-      {uiState.dataPanelOpen ? <div /> : <ClosedPanel /> }
+      {uiState.dataPanelOpen ? <div /> : <ClosedPanel />}
     </div>
   )
 }

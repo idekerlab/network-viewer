@@ -11,7 +11,7 @@ const getCx = async <T>(_, uuid: string, serverUrl: string, apiVersion: string) 
 
   try {
     response.parsedBody = await response.json()
-    console.log('CX:', uuid, url, response.parsedBody)
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Fetch called:: CX:', uuid, url, response.parsedBody)
   } catch (ex) {
     console.error('API Call error:', ex)
   }

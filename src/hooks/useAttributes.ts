@@ -14,7 +14,7 @@ export default function useAttributes(uuid: string, cx: object[]) {
     const attr = getAttributeMap(cx)
     setAttr(attr)
 
-    console.log('---------------------- CX processed::', attr, cx)
+    console.log('----ATTRIBUTES  processed::', attr, cx)
     return attr
   }
 
