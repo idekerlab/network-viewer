@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { FC } from 'react'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 import CircularProgress from '@material-ui/core/CircularProgress'
@@ -11,27 +11,35 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%',
       placeItems: 'center',
       zIndex: 2000,
-      background: 'rgba(200, 0, 0, 100)'
+      background: '#EFEFEF',
     },
     item: {
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
-      alignItems: 'center'
+      alignItems: 'center',
     },
     message: {
-      padding: '2em'
-    }
+      padding: '2em',
+      color: '#999999'
+    },
   }),
 )
 
-const Loading = ({message}) => {
+type LoadingProps = {
+  message: string
+  showLoading?: boolean
+}
+
+const Loading: FC<LoadingProps> = ({ message, showLoading=true }: LoadingProps) => {
   const classes = useStyles()
   return (
     <div className={classes.root}>
-      <div className={classes.item} >
-        <Typography className={classes.message} variant="h5">{message}</Typography>
-        <CircularProgress disableShrink size={'10em'} color="secondary" />
+      <div className={classes.item}>
+        <Typography className={classes.message} variant="h5">
+          {message}
+        </Typography>
+        {showLoading ? <CircularProgress disableShrink size={'10em'} color="secondary" /> : null}
       </div>
     </div>
   )

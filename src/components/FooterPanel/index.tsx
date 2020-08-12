@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
       left: 0,
       margin: 0,
       padding: 0,
+      backgroundColor: 'rgba(255,255,255, 0.3)'
     },
     grow: {
       flexGrow: 1,

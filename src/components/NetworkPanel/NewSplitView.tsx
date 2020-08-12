@@ -27,18 +27,8 @@ const useStyles = makeStyles((theme: Theme) =>
     lowerPanel: {
       width: '100%',
       flexGrow: 1,
-      borderTop: '1px solid #999999',
-      // top: 0,
-      // backgroundColor: '#F0F0F0',
-      // opacity: 0.5,
+      borderTop: '2px solid #AAAAAA',
     },
-    loading: {
-      width: '100%',
-      backgroundColor: '#999999',
-      display: 'grid',
-      placeItems: 'center',
-    },
-
     title: {
       position: 'fixed',
       // top: '1em',
@@ -122,29 +112,47 @@ const NewSplitView = ({ renderer, cx }) => {
     }
   }
 
+  const getSubRenderer = () => {
+    if (subCx === undefined && showSearchResult) {
+      let showLoading = busy
+      let message = 'No query result yet'
+      if(busy) {
+        message = 'Applying layout...'
+      }
+      return <Loading message="No search result yet" showLoading={showLoading} />
+    }
+    return (
+      <CytoscapeRenderer
+        uuid={uuid}
+        cx={subCx}
+        eventHandlers={subEventHandlers}
+        selectedNodes={[]}
+        layoutName={'cose'}
+        setBusy={setBusy}
+      />
+    )
+  }
+
+  let lowerOpacity = 1
+  if(showSearchResult) {
+    lowerOpacity = 0.4
+  }
+
   return (
     <div className={classes.root}>
       <div className={classes.subnet} style={{ height: topHeight }}>
-
-        {!showSearchResult ? (
-          <div />
-        ) : (
-          <CytoscapeRenderer
-            uuid={uuid}
-            cx={subCx}
-            eventHandlers={subEventHandlers}
-            selectedNodes={[]}
-            layoutName={'cose'}
-            setBusy={setBusy}
-          />
-        )}
+        {getSubRenderer()}
       </div>
-      <div className={classes.lowerPanel} style={{ height: bottomHeight }}>
+      <div className={classes.lowerPanel} style={{ height: bottomHeight, opacity: lowerOpacity }}>
         {!showSearchResult ? <div /> : <Typography className={classes.title}>Overview</Typography>}
         {getMainRenderer(renderer)}
       </div>
     </div>
   )
+}
+
+const lockMainView = () => {
+
 }
 
 export default NewSplitView
