@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%',
       placeItems: 'center',
       zIndex: 2000,
-      background: '#EFEFEF',
+      background: '#FAFAFA',
     },
     item: {
       display: 'flex',

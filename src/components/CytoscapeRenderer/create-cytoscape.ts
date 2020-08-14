@@ -6,7 +6,7 @@ const DEFS = {
   maxZoom: 2.75,
 }
 
-const createCytoscape = (options: object, container: Element, elements: any[] = []): object => {
+const createCytoscape = (container: Element, elements: any[] = []): object => {
   const baseParams = {
     container: container,
     elements: elements,
@@ -14,16 +14,10 @@ const createCytoscape = (options: object, container: Element, elements: any[] = 
       name: 'preset',
       fit: true,
     },
-    locked: true
+    locked: true,
   }
 
-  let finalParameter = baseParams
-  if (options !== undefined) {
-    finalParameter = Object.assign({}, baseParams, options)
-  }
-
-  console.log('FINAL params===', finalParameter)
-  return new Cytoscape(finalParameter)
+  return new Cytoscape(baseParams)
 }
 
 export { createCytoscape }

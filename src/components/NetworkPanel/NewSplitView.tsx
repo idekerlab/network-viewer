@@ -11,6 +11,8 @@ import useSearch from '../../hooks/useSearch'
 import ExpandButton from '../FooterPanel/ExpandButton'
 import Loading from './Loading'
 import { SelectionAction, SelectionActions } from '../../reducer/selectionReducer'
+import CyReference from '../../model/CyReference'
+import { CyActions } from '../../reducer/cyReducer'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -61,7 +63,7 @@ const NewSplitView = ({ renderer, cx }) => {
 
   const [busy, setBusy] = useState(false)
 
-  const { query, queryMode, uiState, setCyReference, cyReference, selection, dispatch } = useContext(AppContext)
+  const { query, queryMode, uiState, cyReference, cyDispatch, selection, dispatch } = useContext(AppContext)
   const searchResult = useSearch(uuid, query, '', queryMode)
 
   const subnet = searchResult.data
@@ -80,6 +82,9 @@ const NewSplitView = ({ renderer, cx }) => {
     setSelectedEdges: (selected) => dispatch({ type: SelectionActions.SET_SUB_EDGES, selected }),
   }
 
+  const setMain = (cy: CyReference) => cyDispatch({ type: CyActions.SET_MAIN, cyReference: cy })
+  const setSub = (cy: CyReference) => cyDispatch({ type: CyActions.SET_SUB, cyReference: cy })
+
   const { showSearchResult } = uiState
 
   const height = window.innerHeight
@@ -96,7 +101,7 @@ const NewSplitView = ({ renderer, cx }) => {
           uuid={uuid}
           cx={cx}
           cyReference={cyReference}
-          setCyReference={setCyReference}
+          setCyReference={setMain}
           eventHandlers={mainEventHandlers}
         />
       )
@@ -116,7 +121,7 @@ const NewSplitView = ({ renderer, cx }) => {
     if (subCx === undefined && showSearchResult) {
       let showLoading = busy
       let message = 'No query result yet'
-      if(busy) {
+      if (busy) {
         message = 'Applying layout...'
       }
       return <Loading message="No search result yet" showLoading={showLoading} />
@@ -129,12 +134,13 @@ const NewSplitView = ({ renderer, cx }) => {
         selectedNodes={[]}
         layoutName={'cose'}
         setBusy={setBusy}
+        setCyReference={setSub}
       />
     )
   }
 
   let lowerOpacity = 1
-  if(showSearchResult) {
+  if (showSearchResult) {
     lowerOpacity = 0.4
   }
 
@@ -151,8 +157,6 @@ const NewSplitView = ({ renderer, cx }) => {
   )
 }
 
-const lockMainView = () => {
-
-}
+const lockMainView = () => {}
 
 export default NewSplitView

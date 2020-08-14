@@ -6,6 +6,9 @@ type AppState = {
   selection: SelectionState
   dispatch: any
   
+  cyReference: CyReference
+  cyDispatch: any
+  
   uiState: UIState
   setUIState: Function
   
@@ -20,8 +23,6 @@ type AppState = {
   summary: object
   setSummary: Function
 
-  cyReference: CyReference
-  setCyReference: Function
 
   query: string
   setQuery: Function

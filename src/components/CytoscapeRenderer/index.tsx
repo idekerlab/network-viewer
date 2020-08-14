@@ -14,7 +14,7 @@ const CytoscapeRenderer = (props) => {
   const cyEl = useRef(null)
   const [cyInstance, setCyInstance] = useState(null)
 
-  const { uuid, cx, eventHandlers, layoutName, options, setCyReference, setBusy, cyReference } = props
+  const { uuid, cx, eventHandlers, layoutName, setCyReference, setBusy, cyReference } = props
   const cyjsNetwork = useCyjs(uuid, cx)
 
   useEffect(() => {
@@ -63,11 +63,11 @@ const CytoscapeRenderer = (props) => {
   useEffect(() => {
     // Create new instance of Cytoscape when element is available
     if (cyInstance === null && cyEl !== null && cyEl.current !== null) {
-      const newCyInstance = createCytoscape(options, cyEl.current)
+      const newCyInstance = createCytoscape( cyEl.current)
 
       // Expose Cyjs instance to other component
       if (setCyReference !== undefined) {
-        setCyReference({...cyReference, main: newCyInstance})
+        setCyReference(newCyInstance)
       }
       initializeCy(newCyInstance, eventHandlers)
       setCyInstance(newCyInstance)

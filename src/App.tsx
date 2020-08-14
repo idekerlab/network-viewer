@@ -10,21 +10,18 @@ import AppState from './model/AppState'
 import TopPanel from './components/TopPanel'
 
 import UIState from './model/UIState'
-import CyReference from './model/CyReference'
-import selectionReducer, {EMPTY_SELECTION} from './reducer/selectionReducer'
+import selectionReducer, { EMPTY_SELECTION } from './reducer/selectionReducer'
+import cyReducer, { INITIAL_CY_REFERENCE } from './reducer/cyReducer'
 
 const defUIState: UIState = {
   dataPanelOpen: true,
   showSearchResult: false,
 }
 
-const defCyRef: CyReference = {}
-
 const App = () => {
   const history = useHistory(defUIState)
   const [uiState, setUIState] = useState(defUIState)
   const [uuid, setUuid] = useState('')
-  const [cyReference, setCyReference] = useState(defCyRef)
   const [summary, setSummary] = useState({})
   const [style, setStyle] = useState({})
   const [query, setQuery] = useState('')
@@ -34,12 +31,17 @@ const App = () => {
   const [selectedNodeAttributes, setSelectedNodeAttributes] = useState({})
 
   const [selection, dispatch] = useReducer(selectionReducer, EMPTY_SELECTION)
+  const [cyReference, cyDispatch] = useReducer(cyReducer, INITIAL_CY_REFERENCE)
 
   // TODO: use reducer?
   const defState: AppState = {
-
     selection,
     dispatch,
+
+
+    cyReference,
+    cyDispatch,
+
 
     uiState,
     setUIState,
@@ -51,9 +53,7 @@ const App = () => {
     setSummary,
     uuid,
     setUuid,
-    
-    cyReference,
-    setCyReference,
+
     query,
     setQuery,
     queryMode,
