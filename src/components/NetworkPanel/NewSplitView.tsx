@@ -8,11 +8,11 @@ import { useParams } from 'react-router-dom'
 import { Typography } from '@material-ui/core'
 import useSearch from '../../hooks/useSearch'
 
-import ExpandButton from '../FooterPanel/ExpandButton'
 import Loading from './Loading'
 import { SelectionAction, SelectionActions } from '../../reducer/selectionReducer'
 import CyReference from '../../model/CyReference'
 import { CyActions } from '../../reducer/cyReducer'
+import NavigationPanel from '../NavigationPanel'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,10 +33,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       position: 'fixed',
-      // top: '1em',
       paddingTop: '1em',
       left: '1em',
-      color: 'rgba(100,100,100,0.5)',
+      color: 'rgba(100,100,100,0.7)',
       zIndex: 100,
       width: '8em',
     },
@@ -141,17 +140,20 @@ const NewSplitView = ({ renderer, cx }) => {
 
   let lowerOpacity = 1
   if (showSearchResult) {
-    lowerOpacity = 0.4
+    lowerOpacity = 0.8
   }
 
   return (
     <div className={classes.root}>
       <div className={classes.subnet} style={{ height: topHeight }}>
+        {showSearchResult ? <NavigationPanel target={'sub'} /> : <div/>}
         {getSubRenderer()}
       </div>
       <div className={classes.lowerPanel} style={{ height: bottomHeight, opacity: lowerOpacity }}>
+        <NavigationPanel target={'main'} />
         {!showSearchResult ? <div /> : <Typography className={classes.title}>Overview</Typography>}
         {getMainRenderer(renderer)}
+
       </div>
     </div>
   )

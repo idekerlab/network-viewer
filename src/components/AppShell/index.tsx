@@ -42,9 +42,10 @@ const AppShell: FC = (props) => {
         <MainSplitPane />
       </main>
 
-      <FloatingToolBar>
-        <NavigationPanel />
-      </FloatingToolBar>
+      {/* <FloatingToolBar>
+        <NavigationPanel target={'sub'} />
+        <NavigationPanel target={'main'} />
+      </FloatingToolBar> */}
     </div>
   )
 }

@@ -5,6 +5,8 @@ import AppContext from '../../context/AppState'
 import Tooltip from '@material-ui/core/Tooltip'
 import CloseIcon from '@material-ui/icons/FullscreenExit'
 import ExpandIcon from '@material-ui/icons/Fullscreen'
+import CyReference from '../../model/CyReference'
+import { fitContent } from '../../utils/cyjsUtil'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -19,10 +21,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const ExpandButton = () => {
   const classes = useStyles()
-  const { uiState, setUIState } = useContext(AppContext)
+  const { uiState, setUIState, cyReference } = useContext(AppContext)
 
   const handleClick = () => {
     setUIState({ ...uiState, showSearchResult: !uiState.showSearchResult })
+    setTimeout(() => {
+      fitContent(cyReference)
+    }, 300)
   }
 
   if (uiState.showSearchResult) {

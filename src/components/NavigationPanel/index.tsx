@@ -12,10 +12,15 @@ import AppContext from '../../context/AppState'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
+      position: 'fixed',
+      zIndex: 3000,
+      left: '1em',
+      marginTop: '5em',
       width: '3em',
       borderRadius: 6,
       border: '1px solid #DDDDDD',
       backgroundColor: '#FFFFFF',
+      
     },
     subnet: {
       width: '100%',
@@ -25,55 +30,48 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const NavigationPanel = () => {
+const NavigationPanel = ({ target = 'main' }) => {
   const classes = useStyles()
-  const [zoomLevel, setZoomLevel] = useState(1.0)
 
   const appContext = useContext(AppContext)
   const { cyReference } = appContext
 
+  let cy = cyReference.main
+  if (target === 'sub') {
+    cy = cyReference.sub
+  }
+
   const handleFit = (evt) => {
-    if (cyReference.main) {
-      cyReference.main.fit()
-      console.log('* Fit content')
-    }
+    cy.fit()
   }
   const handleZoomIn = (evt) => {
-    if (cyReference.main) {
-      console.log('* Zoom in')
-      const newLevel = zoomLevel * 1.2
-      cyReference.main.zoom(newLevel)
-      setZoomLevel(newLevel)
-    }
+    const currentZoom = cy.zoom()
+    const newLevel = currentZoom * 1.2
+    cy.zoom(newLevel)
   }
   const handleZoomOut = (evt) => {
-    if (cyReference.main) {
-      console.log('* Zoom out')
-      const newLevel = zoomLevel * 0.8
-      cyReference.main.zoom(newLevel)
-      setZoomLevel(newLevel)
-    }
+    const currentZoom = cy.zoom()
+    const newLevel = currentZoom * 0.8
+    cy.zoom(newLevel)
   }
 
-
   return (
-    <ButtonGroup
-      className={classes.root}
-      orientation="vertical"
-      color="secondary"
-      variant="outlined"
-      aria-label="vertical outlined secondary button group"
-    >
-      <IconButton onClick={handleFit}>
-        <FitIcon />
-      </IconButton>
-      <IconButton onClick={handleZoomIn}>
-        <ZoomInIcon />
-      </IconButton>
-      <IconButton onClick={handleZoomOut}>
-        <ZoomOutIcon />
-      </IconButton>
-    </ButtonGroup>
+      <ButtonGroup
+        className={classes.root}
+        orientation="vertical"
+        color="secondary"
+        variant="outlined"
+      >
+        <IconButton onClick={handleFit}>
+          <FitIcon />
+        </IconButton>
+        <IconButton onClick={handleZoomIn}>
+          <ZoomInIcon />
+        </IconButton>
+        <IconButton onClick={handleZoomOut}>
+          <ZoomOutIcon />
+        </IconButton>
+      </ButtonGroup>
   )
 }
 

@@ -10,6 +10,7 @@ import Select from '@material-ui/core/Select'
 import { Button, IconButton } from '@material-ui/core'
 import AppContext from '../../context/AppState'
 import SearchHelpDialog from './SearchHelpDialog'
+import { fitContent } from '../../utils/cyjsUtil'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -82,7 +83,7 @@ const SearchBox: FC = () => {
   const [rawQuery, setRawQuery] = useState('')
   const [searchType, setSearchType] = useState(queryMode.direct)
 
-  const { uuid, selection, setQuery, setQueryMode, setUIState, uiState } = useContext(AppContext)
+  const { cyReference, setQuery, setQueryMode, setUIState, uiState } = useContext(AppContext)
 
   const handleSearchTypeChange = (evt) => {
     const val = evt.target.value
@@ -102,14 +103,19 @@ const SearchBox: FC = () => {
   const handleClick = () => {
     setQuery(rawQuery)
     setUIState({ ...uiState, showSearchResult: true })
+    setTimeout(() => {
+      fitContent(cyReference)
+    }, 300)
   }
 
   const handleClear = () => {
-    console.log('Clear resylt ------')
     setRawQuery('')
     setQuery('')
     setDisableQuery(true)
     setUIState({ ...uiState, showSearchResult: false })
+    setTimeout(() => {
+      fitContent(cyReference)
+    }, 300)
   }
 
   const handleHelpClose = () => {
