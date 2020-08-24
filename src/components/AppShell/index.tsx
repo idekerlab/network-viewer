@@ -1,10 +1,7 @@
 import React, { FC } from 'react'
-import { useParams } from 'react-router-dom'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import MainSplitPane from '../MainSplitPane'
-import FloatingToolBar from '../FloatingToolBar'
-import NavigationPanel from '../NavigationPanel'
 import ToolBar from '../ToolBar'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -42,10 +39,6 @@ const AppShell: FC = (props) => {
         <MainSplitPane />
       </main>
 
-      {/* <FloatingToolBar>
-        <NavigationPanel target={'sub'} />
-        <NavigationPanel target={'main'} />
-      </FloatingToolBar> */}
     </div>
   )
 }

@@ -16,6 +16,11 @@ import cyReducer, { INITIAL_CY_REFERENCE } from './reducer/cyReducer'
 const defUIState: UIState = {
   dataPanelOpen: true,
   showSearchResult: false,
+  showPropPanel: false,
+  pointerPosition: {
+    x: 200,
+    y: 500
+  }
 }
 
 const App = () => {

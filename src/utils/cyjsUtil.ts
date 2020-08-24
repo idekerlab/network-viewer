@@ -4,14 +4,33 @@ const fitContent = (cyReference: CyReference): void => {
   const { main, sub } = cyReference
 
   if (main !== undefined) {
-    console.log('main %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%FIT:', cyReference)
     main.fit()
   }
 
   if (sub !== undefined) {
-    console.log('sub %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%FIT:', cyReference)
     sub.fit()
   }
 }
 
-export { fitContent }
+
+const lockMainWindow = (cyReference: CyReference, lock: boolean): void => {
+
+  const main = cyReference.main
+  if(main === undefined) {
+    return
+  }
+
+  main.boxSelectionEnabled( lock )
+  if(lock) {
+    main.nodes().grabify()
+    main.nodes().unlock()
+    main.elements().selectify()
+  } else {
+    main.nodes().ungrabify()
+    main.nodes().lock()
+    main.elements().unselectify()
+  }
+
+}
+
+export { fitContent, lockMainWindow }

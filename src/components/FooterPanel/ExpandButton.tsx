@@ -6,7 +6,7 @@ import Tooltip from '@material-ui/core/Tooltip'
 import CloseIcon from '@material-ui/icons/FullscreenExit'
 import ExpandIcon from '@material-ui/icons/Fullscreen'
 import CyReference from '../../model/CyReference'
-import { fitContent } from '../../utils/cyjsUtil'
+import { fitContent, lockMainWindow } from '../../utils/cyjsUtil'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,6 +27,7 @@ const ExpandButton = () => {
     setUIState({ ...uiState, showSearchResult: !uiState.showSearchResult })
     setTimeout(() => {
       fitContent(cyReference)
+      lockMainWindow(cyReference, uiState.showSearchResult)
     }, 300)
   }
 

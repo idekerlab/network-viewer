@@ -1,6 +1,11 @@
 type UIState = {
   dataPanelOpen: boolean
-  showSearchResult: boolean
+  showSearchResult: boolean,
+  showPropPanel: boolean
+  pointerPosition: {
+    x: number,
+    y: number
+  }
 
 }
 

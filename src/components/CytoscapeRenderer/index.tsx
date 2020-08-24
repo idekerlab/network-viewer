@@ -14,7 +14,7 @@ const CytoscapeRenderer = (props) => {
   const cyEl = useRef(null)
   const [cyInstance, setCyInstance] = useState(null)
 
-  const { uuid, cx, eventHandlers, layoutName, setCyReference, setBusy, cyReference } = props
+  const { uuid, cx, eventHandlers, layoutName, setCyReference, setBusy } = props
   const cyjsNetwork = useCyjs(uuid, cx)
 
   useEffect(() => {
@@ -97,6 +97,7 @@ const boxSelectHandler = (cy, eventHandlers, event) => {
   }, 5)
 }
 const tapHandler = (cy, eventHandlers, event) => {
+  console.log('**********tap:', event)
   const evtTarget = event.target
   const t0 = performance.now()
 
@@ -116,10 +117,10 @@ const tapHandler = (cy, eventHandlers, event) => {
       console.log('* tap on Node', evtTarget.data())
       // Clear last one first
 
-      eventHandlers.setSelectedNodes([data.id])
+      eventHandlers.setSelectedNodes([data.id], event)
     } else {
       console.log('* tap on Edge', evtTarget.data())
-      eventHandlers.setSelectedEdges([data.id.slice(1)])
+      eventHandlers.setSelectedEdges([data.id.slice(1)], event)
     }
   }
   console.log('tap clear', performance.now() - t0)

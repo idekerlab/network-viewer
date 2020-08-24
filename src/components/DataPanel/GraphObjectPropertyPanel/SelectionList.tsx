@@ -16,15 +16,6 @@ const useStyles = makeStyles((theme: Theme) =>
     nested: {
       paddingLeft: theme.spacing(4),
     },
-    nodes: {
-      backgroundColor: theme.palette.secondary.main,
-    },
-    edges: {
-      backgroundColor: theme.palette.secondary.main,
-    },
-    card: {
-      padding: '0.5em',
-    },
     table: {},
   }),
 )
@@ -44,7 +35,7 @@ const SelectionList = (props) => {
       return
     }
     console.log('######### New data', data)
-    const { kvMap } = data
+    const kvMap = data['kvMap']
     setSelectedNodeAttributes(kvMap)
   }, [data])
 

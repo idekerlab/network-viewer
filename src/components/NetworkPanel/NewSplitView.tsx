@@ -3,7 +3,6 @@ import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
 import LGRPanel from './LGRPanel'
 import CytoscapeRenderer from '../CytoscapeRenderer'
 import AppContext from '../../context/AppState'
-import SplitPane from 'react-split-pane'
 import { useParams } from 'react-router-dom'
 import { Typography } from '@material-ui/core'
 import useSearch from '../../hooks/useSearch'
@@ -13,6 +12,7 @@ import { SelectionAction, SelectionActions } from '../../reducer/selectionReduce
 import CyReference from '../../model/CyReference'
 import { CyActions } from '../../reducer/cyReducer'
 import NavigationPanel from '../NavigationPanel'
+import PropertyPanel from '../PropertyPanel'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -62,18 +62,32 @@ const NewSplitView = ({ renderer, cx }) => {
 
   const [busy, setBusy] = useState(false)
 
-  const { query, queryMode, uiState, cyReference, cyDispatch, selection, dispatch } = useContext(AppContext)
+  const { query, queryMode, setUIState, uiState, cyReference, cyDispatch, selection, dispatch } = useContext(AppContext)
   const searchResult = useSearch(uuid, query, '', queryMode)
 
   const subnet = searchResult.data
   let subCx
   if (subnet !== undefined) {
-    subCx = subnet.cx
+    subCx = subnet['cx']
   }
 
   const mainEventHandlers = {
-    setSelectedNodes: (selected) => dispatch({ type: SelectionActions.SET_MAIN_NODES, selected }),
-    setSelectedEdges: (selected) => dispatch({ type: SelectionActions.SET_MAIN_EDGES, selected }),
+    setSelectedNodes: (selected, event) => {
+      if (event !== undefined) {
+        const node = event.target
+        if (node !== undefined) {
+          console.log('------------> tabEV', node.renderedPosition())
+          setUIState({ ...uiState, pointerPosition: node.renderedPosition(), showPropPanel: true })
+        } else {
+          setUIState({ ...uiState, showPropPanel: false })
+
+        }
+      } else {
+        setUIState({ ...uiState, showPropPanel: false })
+      }
+      return dispatch({ type: SelectionActions.SET_MAIN_NODES, selected })
+    },
+    setSelectedEdges: (selected, event) => dispatch({ type: SelectionActions.SET_MAIN_EDGES, selected }),
   }
 
   const subEventHandlers = {
@@ -145,20 +159,19 @@ const NewSplitView = ({ renderer, cx }) => {
 
   return (
     <div className={classes.root}>
+      <PropertyPanel />
+
       <div className={classes.subnet} style={{ height: topHeight }}>
-        {showSearchResult ? <NavigationPanel target={'sub'} /> : <div/>}
+        {showSearchResult ? <NavigationPanel target={'sub'} /> : <div />}
         {getSubRenderer()}
       </div>
       <div className={classes.lowerPanel} style={{ height: bottomHeight, opacity: lowerOpacity }}>
         <NavigationPanel target={'main'} />
         {!showSearchResult ? <div /> : <Typography className={classes.title}>Overview</Typography>}
         {getMainRenderer(renderer)}
-
       </div>
     </div>
   )
 }
-
-const lockMainView = () => {}
 
 export default NewSplitView
