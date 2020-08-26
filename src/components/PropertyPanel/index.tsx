@@ -1,56 +1,61 @@
 import React, { FC, useContext } from 'react'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
-import { Typography } from '@material-ui/core'
-import AppContext from '../../context/AppState'
+import { Typography, IconButton } from '@material-ui/core'
+import PropList from './PropList'
+import CloseIcon from '@material-ui/icons/Close'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      position: 'absolute',
-      display: 'grid',
-      width: '20vh',
-      height: '20vh',
-      background: '#EFEFEF',
-      placeItems: 'center',
-      borderRadius: 8,
-      border: '1px solid #999999',
-      zIndex: 500
-    },
-    item: {
       display: 'flex',
+      width: '100%',
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
     },
-    message: {
-      padding: '2em',
+    title: {
+      display: 'flex',
+      width: '100%',
+      height: '4em',
+      borderBottom: '1px solid #777777',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+    },
+    name: {
+      fontWeight: 500,
+      fontSize: '1.5em',
+      flexGrow: 3,
+    },
+
+    propList: {
+      height: '30vh',
+      width: '100%',
+      overflowY: 'auto',
+      padding: 0,
+      margin: 0,
     },
   }),
 )
 
-
-const PropertyPanel: FC = () => {
+const PropertyPanel = ({ attrMap, onClose }) => {
   const classes = useStyles()
-  const { uiState, selection } = useContext(AppContext)
 
-  const {showPropPanel, pointerPosition} = uiState
-
-
-  if(!showPropPanel) {
-    return <div />
-  }
-
-  const position = {
-    left: pointerPosition.x,
-    top: pointerPosition.y,
+  const handleClose = () => {
+    onClose()
   }
 
   return (
-    <div className={classes.root} style={position}>
-      <div className={classes.item}>
-        <Typography className={classes.message} variant="h5">
-          Selected Node: {selection.main.nodes}
+    <div className={classes.root}>
+      <div className={classes.title}>
+        <Typography className={classes.name} variant="body1">
+          {attrMap.get('name')}
         </Typography>
+        <IconButton onClick={handleClose}>
+          <CloseIcon />
+        </IconButton>
+      </div>
+      <div className={classes.propList}>
+        <PropList attrMap={attrMap} />
       </div>
     </div>
   )

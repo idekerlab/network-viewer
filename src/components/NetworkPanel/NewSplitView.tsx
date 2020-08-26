@@ -12,7 +12,7 @@ import { SelectionAction, SelectionActions } from '../../reducer/selectionReduce
 import CyReference from '../../model/CyReference'
 import { CyActions } from '../../reducer/cyReducer'
 import NavigationPanel from '../NavigationPanel'
-import PropertyPanel from '../PropertyPanel'
+import Popup from '../Popup'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -80,7 +80,6 @@ const NewSplitView = ({ renderer, cx }) => {
           setUIState({ ...uiState, pointerPosition: node.renderedPosition(), showPropPanel: true })
         } else {
           setUIState({ ...uiState, showPropPanel: false })
-
         }
       } else {
         setUIState({ ...uiState, showPropPanel: false })
@@ -159,7 +158,7 @@ const NewSplitView = ({ renderer, cx }) => {
 
   return (
     <div className={classes.root}>
-      <PropertyPanel />
+      <Popup cx={cx} />
 
       <div className={classes.subnet} style={{ height: topHeight }}>
         {showSearchResult ? <NavigationPanel target={'sub'} /> : <div />}
