@@ -1,28 +1,18 @@
 import { useQuery } from 'react-query'
-import HttpResponse from '../api/HttpResponse'
+import NdexCredential from '../model/NdexCredential'
+import { getNdexClient } from '../utils/credentialUtil'
 
-const getCx = async <T>(_, uuid: string, serverUrl: string, apiVersion: string) => {
+const getCx = async <T>(_, uuid: string, serverUrl: string, apiVersion: string, credential: NdexCredential) => {
   if (apiVersion === null) {
     throw new Error('No API version')
   }
 
-  let url = `${serverUrl}${apiVersion}/network/${uuid}`
-  const response: HttpResponse<T> = await fetch(url)
 
-  try {
-    response.parsedBody = await response.json()
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Fetch called:: CX:', uuid, url, response.parsedBody)
-  } catch (ex) {
-    console.error('API Call error:', ex)
-  }
-
-  if (!response.ok) {
-    throw new Error(response.statusText)
-  }
-
-  return response.parsedBody
+  const ndexClient = getNdexClient(`${serverUrl}${apiVersion}`, credential)
+  const cx = await ndexClient.getRawNetwork(uuid)
+  return cx
 }
 
-export default function useCx(uuid: string, serverUrl: string, apiVersion: string) {
-  return useQuery(['cx', uuid, serverUrl, apiVersion], getCx)
+export default function useCx(uuid: string, serverUrl: string, apiVersion: string, credential: NdexCredential) {
+  return useQuery(['cx', uuid, serverUrl, apiVersion, credential], getCx)
 }

@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const MainSplitPane = () => {
   const classes = useStyles()
   const { uuid } = useParams()
-  const { uiState } = useContext(AppContext)
+  const { uiState, ndexCredential } = useContext(AppContext)
   const width = window.innerWidth
   const defSize = Math.floor(width * 0.65)
 
@@ -77,7 +77,7 @@ const MainSplitPane = () => {
     }
   }, [uiState.dataPanelOpen])
 
-  const result = useNetworkSummary(uuid, BASE_URL, V2)
+  const result = useNetworkSummary(uuid, BASE_URL, V2, ndexCredential)
   const summary = result.data
 
   let apiVersion = null
@@ -94,7 +94,7 @@ const MainSplitPane = () => {
     }
   }
 
-  const cxResponse = useCx(uuid, BASE_URL, apiVersion)
+  const cxResponse = useCx(uuid, BASE_URL, apiVersion, ndexCredential)
 
   if (cxResponse.data === undefined || cxResponse.isFetching || rend === null) {
     return (

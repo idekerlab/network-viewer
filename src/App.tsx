@@ -12,6 +12,7 @@ import TopPanel from './components/TopPanel'
 import UIState from './model/UIState'
 import selectionReducer, { EMPTY_SELECTION } from './reducer/selectionReducer'
 import cyReducer, { INITIAL_CY_REFERENCE } from './reducer/cyReducer'
+import NdexCredential from './model/NdexCredential'
 
 const defUIState: UIState = {
   dataPanelOpen: true,
@@ -23,6 +24,11 @@ const defUIState: UIState = {
   }
 }
 
+const defNdexCredential: NdexCredential = {
+  isLogin: false,
+  isGoogle: false
+}
+
 const App = () => {
   const history = useHistory(defUIState)
   const [uiState, setUIState] = useState(defUIState)
@@ -32,6 +38,9 @@ const App = () => {
   const [query, setQuery] = useState('')
   const [queryMode, setQueryMode] = useState('direct')
   const [queryResult, setQueryResult] = useState(null)
+
+  const [ndexCredential, setNdexCredential] = useState(defNdexCredential)
+
 
   const [selectedNodeAttributes, setSelectedNodeAttributes] = useState({})
 
@@ -65,6 +74,9 @@ const App = () => {
     setQueryMode,
     queryResult,
     setQueryResult,
+
+    ndexCredential,
+    setNdexCredential
   }
 
   return (

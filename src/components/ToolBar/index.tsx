@@ -1,17 +1,20 @@
-import React, { FC } from 'react'
+import React, { FC, useContext } from 'react'
 import IconButton from '@material-ui/core/IconButton'
 import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import AppsIcon from '@material-ui/icons/Apps'
 import Grid from '@material-ui/core/Grid'
 
-import logo from '../../assets/images/ndex-logo.svg'
+import { NDExAccountProvider, NDExSignInButton } from 'cytoscape-explore-components'
 
+import logo from '../../assets/images/ndex-logo.svg'
+import AppContext from '../../context/AppState'
+
+import { useGoogleLogin } from 'react-google-login'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-
       position: 'fixed',
       top: 0,
       left: 0,
@@ -93,22 +96,55 @@ const useStyles = makeStyles((theme: Theme) =>
 const ToolBar: FC = (props) => {
   const classes = useStyles()
 
+  const handleSuccess = (login) => {
+    console.log('##############################################################---------------OK', login)
+  }
+  const { signIn, loaded } = useGoogleLogin({
+    clientId: '802839698598-mrrd3iq3jl06n6c2fo1pmmc8uugt9ukq.apps.googleusercontent.com',
+    scope: 'profile email',
+    onSuccess: handleSuccess,
+  })
+
+  if (loaded) {
+
+    // Check current login status
+    const g = window['gapi']
+
+    const user = g.auth2.getAuthInstance().currentUser.get()
+    const id_token = user.getAuthResponse().id_token
+
+    console.log('OK2######################', g, user, id_token)
+  }
+  const { ndexCredential, setNdexCredential } = useContext(AppContext)
+
+  const loginStateUpdated = (loginState) => {
+    if (loginState.isGoogle) {
+      setNdexCredential({ isLogin: true, isGoogle: true, oauth: loginState })
+    } else {
+      const details = loginState.loginDetails
+      setNdexCredential({
+        isLogin: true,
+        isGoogle: false,
+        basic: { userId: details.id, password: details.password },
+      })
+    }
+  }
+
   return (
     <div className={classes.root}>
       <Grid container direction="row" justify="flex-start" alignItems="center" spacing={0}>
-        <Grid container direction="row" justify="flex-start" alignItems="center" >
+        <Grid container direction="row" justify="flex-start" alignItems="center">
           <IconButton color="default" aria-label="Ndex Home">
             <img alt="NDEx logo" src={logo} className={classes.ndexLogo} />
           </IconButton>
           <IconButton aria-label="open in external apps" aria-haspopup="true" color="inherit">
             <AppsIcon />
           </IconButton>
-          <IconButton aria-label="account of current user" aria-haspopup="true" color="inherit">
-            <AccountCircle />
-          </IconButton>
+          <NDExAccountProvider ndexServerURL="http://dev.ndexbio.org">
+            <NDExSignInButton size="small" onLoginStateUpdated={loginStateUpdated} />
+          </NDExAccountProvider>
         </Grid>
-        <Grid container direction="row" justify="flex-end" alignItems="center">
-        </Grid>
+        <Grid container direction="row" justify="flex-end" alignItems="center"></Grid>
       </Grid>
     </div>
   )

@@ -1,8 +1,9 @@
-import React, { FC } from 'react'
+import React, { useState, FC } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import MainSplitPane from '../MainSplitPane'
 import ToolBar from '../ToolBar'
+import ErrorDialog from './ErrorDialog'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,9 +28,13 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
+
+
 const AppShell: FC = (props) => {
   const classes = useStyles()
-  
+
+  const [openDialog, setOpenDialog] = useState(false)
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -38,7 +43,7 @@ const AppShell: FC = (props) => {
       <main className={classes.content}>
         <MainSplitPane />
       </main>
-
+      <ErrorDialog open={openDialog} setOpen={setOpenDialog} />
     </div>
   )
 }

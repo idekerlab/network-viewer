@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
@@ -10,6 +10,7 @@ import PropertyTable from './PropertyTable'
 import useNetworkSummary from '../../../hooks/useNetworkSummary'
 import { useParams } from 'react-router-dom'
 import MinimizeButton from './MinimizeButton'
+import AppContext from '../../../context/AppState'
 
 const BASE_URL = 'http://dev.ndexbio.org/'
 const API_VER = 'v2'
@@ -75,8 +76,9 @@ const useStyles = makeStyles((theme: Theme) =>
 const NetworkPropertyPanel = () => {
   const classes = useStyles()
   const { uuid } = useParams()
+  const { ndexCredential } = useContext(AppContext)
 
-  const summaryResponse = useNetworkSummary(uuid, BASE_URL, 'v2')
+  const summaryResponse = useNetworkSummary(uuid, BASE_URL, 'v2', ndexCredential)
   const summary = summaryResponse.data
 
   if (summary === undefined || Object.entries(summary).length === 0) {

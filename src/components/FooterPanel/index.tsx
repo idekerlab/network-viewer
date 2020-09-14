@@ -6,13 +6,12 @@ import SearchBox from './SearchBox'
 import AdvancedMenu from './AdvancedMenu'
 import { useParams } from 'react-router-dom'
 
-import cyLogo from '../../assets/images/cy-logo-orange.svg'
 import ExpandButton from './ExpandButton'
+import { DownloadButton, DownloadProps, CyNDExProvider, OpenInCytoscapeButton } from 'cytoscape-explore-components'
 
-import { OpenInCytoscapeButton, CyNDExProvider, NDExAccountProvider } from 'cytoscape-explore-ui'
-import ExportCxButton from '../ExportCxButton'
 import useSearch from '../../hooks/useSearch'
 import AppContext from '../../context/AppState'
+import OpenInCytoscape from './OpenInCytoscape'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -50,15 +49,18 @@ const FooterPanel: FC<FooterProps> = ({ width }: FooterProps) => {
     subCx = subnet['cx']
   }
 
+  const downloadProps: DownloadProps = {
+    data: subCx,
+    tooltip: 'Download query result as CX',
+    fileName: `${uuid} subnet.cx`,
+  }
 
   return (
     <Toolbar className={classes.toolBar} style={{ width: width }}>
       <SearchBox />
       <div className={classes.grow} />
-      <IconButton aria-label="Open in Cytoscape Desktop">
-        <img alt="Cy3 logo" src={cyLogo} className={classes.cyLogo} />
-      </IconButton>
-      <ExportCxButton  cx={subCx}/>
+      <DownloadButton {...downloadProps} />
+      <OpenInCytoscape />
       <ExpandButton />
       <AdvancedMenu />
     </Toolbar>
