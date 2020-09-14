@@ -16,7 +16,7 @@
     "draftjs-to-html": "^0.9.1",
     "google-auth-library": "^6.0.6",
     "googleapis": "^59.0.0",
-    "ndex-client": "0.2.0",
+    "ndex-client": "../ndex-js-client",
     "react-google-login": "^5.1.21",
     "react": "^16.13.1",
     "react-cytoscapejs": "^1.2.1",
