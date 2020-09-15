@@ -21,8 +21,8 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: theme.shape.borderRadius,
       backgroundColor: theme.palette.grey[100],
       marginRight: theme.spacing(1),
-      paddingRight: theme.spacing(1),
       marginLeft: theme.spacing(1),
+      padding: theme.spacing(0.2),
     },
     search: {
       maxWidth: '65em',
@@ -51,9 +51,8 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: 0,
     },
     button: {
-      marginLeft: '1em',
-      width: '1.5em',
-      padding: 0
+      width: '2em',
+      padding: 0,
     },
   }),
 )
@@ -130,7 +129,7 @@ const SearchBox: FC = () => {
           onChange={handleQueryChange}
         />
       </div>
-      <IconButton className={classes.button} onClick={handleHelpOpen}>
+      <IconButton size={'small'} disableFocusRipple disableRipple className={classes.button} onClick={handleHelpOpen}>
         <InfoIcon />
       </IconButton>
       <FormControl variant="standard" className={classes.formControl}>
@@ -151,10 +150,10 @@ const SearchBox: FC = () => {
           ))}
         </Select>
       </FormControl>
-      <IconButton color="primary" className={classes.button} disabled={disableQuery} onClick={handleClick}>
+      <IconButton color="primary" size="small" disableFocusRipple disableRipple　className={classes.button} disabled={disableQuery} onClick={handleClick}>
         <SearchIcon />
       </IconButton>
-      <IconButton color="primary" className={classes.button} disabled={disableQuery} onClick={handleClear}>
+      <IconButton color="primary" size='small' disableFocusRipple disableRipple className={classes.button} disabled={disableQuery} onClick={handleClear}>
         <DeleteIcon />
       </IconButton>
       <SearchHelpDialog onClose={handleHelpClose} open={open} />
