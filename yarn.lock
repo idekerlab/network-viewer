@@ -1189,6 +1189,20 @@
     mjolnir.js "^2.3.0"
     probe.gl "^3.2.1"
 
+"@deck.gl/core@^8.2.3":
+  version "8.2.8"
+  resolved "https://registry.yarnpkg.com/@deck.gl/core/-/core-8.2.8.tgz#d2878b7efc3861cb26b947f99a7d4b5499fcb59d"
+  integrity sha512-96HV3MXXx3U27uyTemaWlHKD8tX6tnIrxPHyQcLB6ujG7Q5h0dtat2KrvOU/xfIJyIYK52lIOBBNNn6ph8G33g==
+  dependencies:
+    "@loaders.gl/core" "^2.2.3"
+    "@loaders.gl/images" "^2.2.3"
+    "@luma.gl/core" "^8.2.0"
+    "@math.gl/web-mercator" "^3.2.1"
+    gl-matrix "^3.0.0"
+    math.gl "^3.2.0"
+    mjolnir.js "^2.3.0"
+    probe.gl "^3.2.1"
+
 "@deck.gl/extensions@8.2.6":
   version "8.2.6"
   resolved "https://registry.yarnpkg.com/@deck.gl/extensions/-/extensions-8.2.6.tgz#d6d230387a1bfb6d7de4e10431f6099e19fd1ed6"
@@ -1235,6 +1249,16 @@
     "@math.gl/polygon" "^3.2.1"
     earcut "^2.0.6"
 
+"@deck.gl/layers@^8.2.3":
+  version "8.2.8"
+  resolved "https://registry.yarnpkg.com/@deck.gl/layers/-/layers-8.2.8.tgz#675f13a570504b5de18bd5af2cd363592889ece5"
+  integrity sha512-kqmj6ID6uAgIzmooNmbXWwC2UR9ZXo4h9dqFCkB/z4z2ptApgFRxTLoN3Pdrf/q81QArQeI3JIWsaNunpE90Vw==
+  dependencies:
+    "@loaders.gl/images" "^2.2.3"
+    "@mapbox/tiny-sdf" "^1.1.0"
+    "@math.gl/polygon" "^3.2.1"
+    earcut "^2.0.6"
+
 "@deck.gl/mapbox@8.2.6":
   version "8.2.6"
   resolved "https://registry.yarnpkg.com/@deck.gl/mapbox/-/mapbox-8.2.6.tgz#6ba2493e61cb51933e05c17a5320be555c1db2c3"
@@ -1252,6 +1276,13 @@
   version "8.2.6"
   resolved "https://registry.yarnpkg.com/@deck.gl/react/-/react-8.2.6.tgz#479829b4860246e310e49fc63822f36444dd2469"
   integrity sha512-iJoHGo0NQqs6pyj+x4GeHdrT2QaXQbk/zWeXNnGmq8TJxWkU7qxC5XAoDUI4YAewr/UX+TqLw8A5XjLsIH4BkQ==
+  dependencies:
+    prop-types "^15.6.0"
+
+"@deck.gl/react@^8.2.3":
+  version "8.2.8"
+  resolved "https://registry.yarnpkg.com/@deck.gl/react/-/react-8.2.8.tgz#d7ef4485c38d0955dbd29a43e46ac0ce3bfd288f"
+  integrity sha512-JqS7nRXNK7QKmh8WkAVeTmLOAw8TEZdF64zgYU2z68XwHRDEl7IkihwoFaJNpzo8W8qhiM/GLx8MbeLYHfTOsg==
   dependencies:
     prop-types "^15.6.0"
 
@@ -7517,6 +7548,10 @@ kleur@^3.0.3:
   resolved "https://registry.yarnpkg.com/kleur/-/kleur-3.0.3.tgz#a79c9ecc86ee1ce3fa6206d1216c501f147fc07e"
   integrity sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==
 
+"large-graph-renderer@link:../large-graph-renderer":
+  version "0.0.0"
+  uid ""
+
 last-call-webpack-plugin@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/last-call-webpack-plugin/-/last-call-webpack-plugin-3.0.0.tgz#9742df0e10e3cf46e5c0381c2de90d3a7a2d7555"
@@ -8103,10 +8138,8 @@ natural-compare@^1.4.0:
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=
 
-ndex-client@^0.2.0:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/ndex-client/-/ndex-client-0.0.2.tgz#438cb315ef68103116dc0e6f666243d6e8255544"
-  integrity sha512-4v2pGHzVm7VdTWyyHbMYZugZsR1ebbBBYP/xzVp4tz4XcQiF9FULi1OiUpW+6goVkoOk7WIgfS4rp4D/DrQ3lw==
+ndex-client@../ndex-js-client:
+  version "0.2.0"
   dependencies:
     axios "^0.18.0"
 
