@@ -2,7 +2,7 @@ import React, { FC, useContext } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import { useParams } from 'react-router-dom'
 
-import { DownloadButton, DownloadProps, CyNDExProvider, OpenInCytoscapeButton } from 'cytoscape-explore-components'
+import { CyNDExProvider, OpenInCytoscapeButton } from 'cytoscape-explore-components'
 
 import AppContext from '../../context/AppState'
 

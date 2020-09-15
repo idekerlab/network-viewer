@@ -12,6 +12,7 @@ import { DownloadButton, DownloadProps, CyNDExProvider, OpenInCytoscapeButton } 
 import useSearch from '../../hooks/useSearch'
 import AppContext from '../../context/AppState'
 import OpenInCytoscape from './OpenInCytoscape'
+import SaveNetworkToButton from './SaveNetworkToButton'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -60,6 +61,7 @@ const FooterPanel: FC<FooterProps> = ({ width }: FooterProps) => {
       <SearchBox />
       <div className={classes.grow} />
       <DownloadButton {...downloadProps} />
+      <SaveNetworkToButton />
       <OpenInCytoscape />
       <ExpandButton />
       <AdvancedMenu />

@@ -15,7 +15,6 @@ import { fitContent } from '../../utils/cyjsUtil'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      width: '100%',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'flex-start',
@@ -25,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: theme.spacing(1),
     },
     search: {
-      width: '100%',
+      maxWidth: '30em',
       height: '3em',
       display: 'flex',
       alignItems: 'center',
@@ -62,7 +61,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     button: {
       margin: theme.spacing(1),
-      width: '15em',
+      width: '8em',
     },
   }),
 )
