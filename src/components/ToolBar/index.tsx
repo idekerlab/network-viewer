@@ -5,7 +5,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle'
 import AppsIcon from '@material-ui/icons/Apps'
 import Grid from '@material-ui/core/Grid'
 
-import { NDExAccountProvider, NDExSignInButton } from 'cytoscape-explore-components'
+import { NDExSignInButton } from 'cytoscape-explore-components'
 
 import logo from '../../assets/images/ndex-logo.svg'
 import AppContext from '../../context/AppState'
@@ -118,6 +118,7 @@ const ToolBar: FC = (props) => {
   const { ndexCredential, setNdexCredential } = useContext(AppContext)
 
   const loginStateUpdated = (loginState) => {
+    if (loginState) {
     if (loginState.isGoogle) {
       setNdexCredential({ isLogin: true, isGoogle: true, oauth: loginState })
     } else {
@@ -127,6 +128,12 @@ const ToolBar: FC = (props) => {
         isGoogle: false,
         basic: { userId: details.id, password: details.password },
       })
+    }
+    } else {
+      setNdexCredential({
+          isLogin: false,
+          isGoogle: false
+      });
     }
   }
 
@@ -140,9 +147,7 @@ const ToolBar: FC = (props) => {
           <IconButton aria-label="open in external apps" aria-haspopup="true" color="inherit">
             <AppsIcon />
           </IconButton>
-          <NDExAccountProvider ndexServerURL="http://dev.ndexbio.org">
-            <NDExSignInButton size="small" onLoginStateUpdated={loginStateUpdated} />
-          </NDExAccountProvider>
+          <NDExSignInButton size="small" onLoginStateUpdated={loginStateUpdated} />
         </Grid>
         <Grid container direction="row" justify="flex-end" alignItems="center"></Grid>
       </Grid>
