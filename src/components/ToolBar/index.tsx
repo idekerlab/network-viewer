@@ -111,8 +111,6 @@ const ToolBar: FC = (props) => {
 
     const user = g.auth2.getAuthInstance().currentUser.get()
     const id_token = user.getAuthResponse().id_token
-
-    console.log('OK2######################', g, user, id_token)
   }
   const { ndexCredential, setNdexCredential } = useContext(AppContext)
 

@@ -19,33 +19,6 @@ const NetworkPanel = ({ renderer, cx } ) => {
       renderer={renderer}
     />
   )
-
-  // if (searchResult.data === undefined || searchResult.data === {} || query === '') {
-  //   return (
-  //     <NewSplitView
-  //       cx={cx}
-  //       renderer={renderer}
-  //       setCy={setCy}
-  //       setSelectedEdges={setSelectedEdges}
-  //       setSelectedNodes={setSelectedNodes}
-  //     />
-  //   )
-  // } else {
-  //   if (renderer === 'lgr') {
-  //     // For large network, use highlight
-  //     return (
-  //       <BasicView
-  //         cx={cx}
-  //         renderer={renderer}
-  //         subCx={searchResult.data.cx}
-  //         setSelectedEdges={setSelectedEdges}
-  //         setSelectedNodes={setSelectedNodes}
-  //       />
-  //     )
-  //   } else {
-  //     return <NewSplitView cx={cx} renderer={renderer} subCx={searchResult.data.cx} />
-  //   }
-  // }
 }
 
 export default NetworkPanel
