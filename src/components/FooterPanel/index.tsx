@@ -1,7 +1,6 @@
 import React, { FC, useContext } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import Toolbar from '@material-ui/core/Toolbar'
-import IconButton from '@material-ui/core/IconButton'
 import SearchBox from './SearchBox'
 import AdvancedMenu from './AdvancedMenu'
 import { useParams } from 'react-router-dom'
@@ -22,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
       left: 0,
       margin: 0,
       padding: 0,
-      backgroundColor: 'rgba(255,255,255, 0.3)',
+      backgroundColor: 'rgba(255,255,255, 0.9)',
     },
     grow: {
       flexGrow: 1,
