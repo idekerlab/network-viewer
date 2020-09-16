@@ -35,9 +35,13 @@ const OpenInCytoscape: FC = () => {
 
   const onFailure = () => {}
 
+  const ndexNetworkProperties = {
+    uuid: uuid
+  }
+
   return (
     <CyNDExProvider port={1234}>
-      <OpenInCytoscapeButton size="small" onSuccess={onSuccess} onFailure={onFailure} />
+      <OpenInCytoscapeButton size="small" ndexNetworkProperties={ ndexNetworkProperties } onSuccess={onSuccess} onFailure={onFailure} />
     </CyNDExProvider>
   )
 }

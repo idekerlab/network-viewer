@@ -1,6 +1,7 @@
 import React, { useState, FC } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
+import { NDExAccountProvider } from 'cytoscape-explore-components'
 import MainSplitPane from '../MainSplitPane'
 import ToolBar from '../ToolBar'
 import ErrorDialog from './ErrorDialog'
@@ -38,12 +39,14 @@ const AppShell: FC = (props) => {
   return (
     <div className={classes.root}>
       <CssBaseline />
+      <NDExAccountProvider ndexServerURL="http://dev.ndexbio.org">
       <ToolBar />
 
       <main className={classes.content}>
         <MainSplitPane />
       </main>
       <ErrorDialog open={openDialog} setOpen={setOpenDialog} />
+      </NDExAccountProvider>
     </div>
   )
 }
