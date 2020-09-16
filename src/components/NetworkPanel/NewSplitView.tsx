@@ -182,6 +182,7 @@ const NewSplitView = ({ renderer, cx }) => {
   return (
     <div className={classes.root}>
       <Popup cx={cx} />
+      <Popup cx={cx} objectType={'edge'}/>
 
       <div className={classes.subnet} style={{ height: topHeight }}>
         {showSearchResult ? <NavigationPanel target={'sub'} /> : <div />}
