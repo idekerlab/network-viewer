@@ -3,30 +3,34 @@ import HttpResponse from '../api/HttpResponse'
 
 const URL = 'http://dev.ndexbio.org/v2/search/network/'
 
+const EDGE_LIMIT = 5000
+
 const queryModeParams = {
   direct: {
     directOnly: true,
+    edgeLimit: EDGE_LIMIT
   },
   firstStepNeighborhood: {
-    edgeLimit: 0,
     directOnly: false,
     searchDepth: 1,
+    edgeLimit: EDGE_LIMIT
   },
   firstStepAdjacent: {
-    edgeLimit: 0,
+    edgeLimit: EDGE_LIMIT,
     directOnly: true,
     searchDepth: 1,
   },
   interconnect: {
+    edgeLimit: EDGE_LIMIT,
     searchDepth: 1
   },
   twoStepNeighborhood: {
-    edgeLimit: 0,
+    edgeLimit: EDGE_LIMIT,
     directOnly: false,
     searchDepth: 2,
   },
   twoStepAdjacent: {
-    edgeLimit: 0,
+    edgeLimit: EDGE_LIMIT,
     directOnly: true,
     searchDepth: 2,
   },
@@ -87,7 +91,7 @@ const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string
   console.log('Calling search res---------------->: ', response)
   try {
     const cx = await response.json()
-    console.log('Calling search CX---------------->: ', cx)
+    console.log('Calling search CX---------------->: ', cx, )
     response.parsedBody = {
       nodeIds: selectNodes(cx),
       kvMap: transformCx(cx),

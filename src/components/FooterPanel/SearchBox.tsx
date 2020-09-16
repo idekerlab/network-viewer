@@ -22,22 +22,13 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.grey[100],
       marginRight: theme.spacing(1),
       marginLeft: theme.spacing(1),
+      padding: theme.spacing(0.2),
     },
     search: {
-      maxWidth: '30em',
-      height: '3em',
+      maxWidth: '65em',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'flex-start',
-    },
-    searchIcon: {
-      paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(2),
-      height: '100%',
-      pointerEvents: 'none',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
     },
     inputRoot: {
       width: '100%',
@@ -50,18 +41,18 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
     },
     formControl: {
-      minWidth: '15em',
+      minWidth: '12em',
     },
     selectEmpty: {
       marginTop: theme.spacing(0),
     },
     searchType: {
-      width: '20ch',
+      maxWidth: '12ch',
       padding: 0,
     },
     button: {
-      margin: theme.spacing(1),
-      width: '8em',
+      width: '2em',
+      padding: 0,
     },
   }),
 )
@@ -138,6 +129,9 @@ const SearchBox: FC = () => {
           onChange={handleQueryChange}
         />
       </div>
+      <IconButton size={'small'} disableFocusRipple disableRipple className={classes.button} onClick={handleHelpOpen}>
+        <InfoIcon />
+      </IconButton>
       <FormControl variant="standard" className={classes.formControl}>
         <Select
           native
@@ -156,31 +150,12 @@ const SearchBox: FC = () => {
           ))}
         </Select>
       </FormControl>
-      <IconButton size="small" onClick={handleHelpOpen}>
-        <InfoIcon color="secondary" />
+      <IconButton color="primary" size="small" disableFocusRipple disableRipple　className={classes.button} disabled={disableQuery} onClick={handleClick}>
+        <SearchIcon />
       </IconButton>
-      <Button
-        className={classes.button}
-        variant="outlined"
-        color="secondary"
-        size="small"
-        disabled={disableQuery}
-        startIcon={<SearchIcon />}
-        onClick={handleClick}
-      >
-        Query
-      </Button>
-      <Button
-        className={classes.button}
-        variant="outlined"
-        color="secondary"
-        size="small"
-        disabled={disableQuery}
-        startIcon={<DeleteIcon />}
-        onClick={handleClear}
-      >
-        Clear
-      </Button>
+      <IconButton color="primary" size='small' disableFocusRipple disableRipple className={classes.button} disabled={disableQuery} onClick={handleClear}>
+        <DeleteIcon />
+      </IconButton>
       <SearchHelpDialog onClose={handleHelpClose} open={open} />
     </div>
   )

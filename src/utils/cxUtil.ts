@@ -1,3 +1,8 @@
+const OBJ_TYPE = {
+  NODES: 'nodes',
+  EDGES: 'edges'
+}
+
 const getEntry = (tag: string, cx: object[]) => {
   if (tag === undefined || tag === null) {
     return {}
@@ -24,4 +29,21 @@ const getNodesWith = (tag: string, value: any, cx: object[]) => {
   
 }
 
-export { getEntry }
+const getNodeCount = (cx) => {
+  return _getObjectCount('nodes', cx)
+}
+const getEdgeCount = (cx) => {
+  return _getObjectCount('edges', cx)
+}
+
+const _getObjectCount = (tag: string, cx: object[]) => {
+  const objs = getEntry(tag, cx)
+  if(objs === undefined) {
+    return 0
+  }
+
+  return objs.length
+
+}
+
+export { getEntry, getNodeCount, getEdgeCount }

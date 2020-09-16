@@ -1,7 +1,6 @@
 import React, { FC, useContext } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import Toolbar from '@material-ui/core/Toolbar'
-import IconButton from '@material-ui/core/IconButton'
 import SearchBox from './SearchBox'
 import AdvancedMenu from './AdvancedMenu'
 import { useParams } from 'react-router-dom'
@@ -22,13 +21,10 @@ const useStyles = makeStyles((theme: Theme) =>
       left: 0,
       margin: 0,
       padding: 0,
-      backgroundColor: 'rgba(255,255,255, 0.3)',
+      backgroundColor: 'rgba(255,255,255,0.93)',
     },
     grow: {
       flexGrow: 1,
-    },
-    cyLogo: {
-      width: '1.2em',
     },
   }),
 )
@@ -57,7 +53,7 @@ const FooterPanel: FC<FooterProps> = ({ width }: FooterProps) => {
   }
 
   return (
-    <Toolbar className={classes.toolBar} style={{ width: width }}>
+    <Toolbar variant='dense' className={classes.toolBar} style={{ width: width }}>
       <SearchBox />
       <div className={classes.grow} />
       <DownloadButton {...downloadProps} />

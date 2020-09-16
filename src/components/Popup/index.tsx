@@ -35,7 +35,6 @@ const Popup = ({ cx }) => {
 
   const onClose = () => {
     setUIState({ ...uiState, showPropPanel: false })
-    console.log('CLOSE!!')
   }
 
   if (!showPropPanel || selection.main.nodes.length === 0) {

@@ -1,7 +1,4 @@
-import React, { useContext, useState } from 'react'
-import AppContext from '../../context/AppState'
-import useSearch from '../../hooks/useSearch'
-import { useParams } from 'react-router-dom'
+import React from 'react'
 import NewSplitView from './NewSplitView'
 
 /**
@@ -11,41 +8,6 @@ import NewSplitView from './NewSplitView'
  *
  * @param props
  */
-const NetworkPanel = ({ renderer, cx } ) => {
-
-  return (
-    <NewSplitView
-      cx={cx}
-      renderer={renderer}
-    />
-  )
-
-  // if (searchResult.data === undefined || searchResult.data === {} || query === '') {
-  //   return (
-  //     <NewSplitView
-  //       cx={cx}
-  //       renderer={renderer}
-  //       setCy={setCy}
-  //       setSelectedEdges={setSelectedEdges}
-  //       setSelectedNodes={setSelectedNodes}
-  //     />
-  //   )
-  // } else {
-  //   if (renderer === 'lgr') {
-  //     // For large network, use highlight
-  //     return (
-  //       <BasicView
-  //         cx={cx}
-  //         renderer={renderer}
-  //         subCx={searchResult.data.cx}
-  //         setSelectedEdges={setSelectedEdges}
-  //         setSelectedNodes={setSelectedNodes}
-  //       />
-  //     )
-  //   } else {
-  //     return <NewSplitView cx={cx} renderer={renderer} subCx={searchResult.data.cx} />
-  //   }
-  // }
-}
+const NetworkPanel = ({ renderer, cx }) => <NewSplitView cx={cx} renderer={renderer} />
 
 export default NetworkPanel
