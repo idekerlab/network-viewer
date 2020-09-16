@@ -9,11 +9,11 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 export type MessageDialogProps = {
   open: boolean
   setOpen: Function
-  title: string
-  message: string
+  title?: string
+  message?: string
 }
 
-const MessageDialog: FC<MessageDialogProps> = ({ message, open, setOpen }) => {
+const MessageDialog: FC<MessageDialogProps> = ({ title='', message='', open, setOpen }) => {
   const handleClose = () => {
     setOpen(false)
   }
@@ -33,4 +33,4 @@ const MessageDialog: FC<MessageDialogProps> = ({ message, open, setOpen }) => {
   )
 }
 
-export default ErrorDialog
+export default MessageDialog

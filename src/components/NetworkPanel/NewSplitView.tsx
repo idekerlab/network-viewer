@@ -14,6 +14,7 @@ import { CyActions } from '../../reducer/cyReducer'
 import NavigationPanel from '../NavigationPanel'
 import Popup from '../Popup'
 import { getEdgeCount, getNodeCount } from '../../utils/cxUtil'
+import MessageDialog from '../MessageDialog'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -142,19 +143,21 @@ const NewSplitView = ({ renderer, cx }) => {
     }
   }
 
-  
   const getSubRenderer = () => {
-
     if (subCx === undefined && showSearchResult) {
       // let showLoading = busy
       let message = 'Applying layout...'
       return <Loading message={message} showLoading={true} />
     }
-    
+
     const count = getNodeCount(subCx) + getEdgeCount(subCx)
 
+    if (count === 0 && showSearchResult) {
+      return <Loading message={'No nodes matching your query were found in this network.'} showLoading={false} />
+    }
+
     let layout = 'cose'
-    if(count > LAYOUT_TH) {
+    if (count > LAYOUT_TH) {
       layout = 'circle'
     }
 
