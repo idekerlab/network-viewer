@@ -1,7 +1,4 @@
-import React, { useContext, useState } from 'react'
-import AppContext from '../../context/AppState'
-import useSearch from '../../hooks/useSearch'
-import { useParams } from 'react-router-dom'
+import React from 'react'
 import NewSplitView from './NewSplitView'
 
 /**
@@ -11,14 +8,6 @@ import NewSplitView from './NewSplitView'
  *
  * @param props
  */
-const NetworkPanel = ({ renderer, cx } ) => {
-
-  return (
-    <NewSplitView
-      cx={cx}
-      renderer={renderer}
-    />
-  )
-}
+const NetworkPanel = ({ renderer, cx }) => <NewSplitView cx={cx} renderer={renderer} />
 
 export default NetworkPanel

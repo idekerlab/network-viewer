@@ -27,11 +27,10 @@ const CytoscapeRenderer = (props) => {
     if (cyjsNetwork !== {} && cyInstance !== null) {
       if (layoutName !== undefined && cyInstance !== null) {
         const layout = cyInstance.layout({
-          name: 'cose',
+          name: layoutName,
           animate: false,
           stop: function () {
             setBusy(false)
-            console.log('CYJS data up--------------- Layout done!!')
           },
         })
 
@@ -50,7 +49,7 @@ const CytoscapeRenderer = (props) => {
 
     if (layoutName !== undefined && cyInstance !== null) {
       const layout = cyInstance.layout({
-        name: 'cose',
+        name: layoutName,
         animate: false,
         stop: function () {
           console.log('CyInstance --------------- Layout done!!')

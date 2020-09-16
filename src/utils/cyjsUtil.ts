@@ -3,11 +3,11 @@ import CyReference from '../model/CyReference'
 const fitContent = (cyReference: CyReference): void => {
   const { main, sub } = cyReference
 
-  if (main !== undefined) {
+  if (main !== undefined && main !== null) {
     main.fit()
   }
 
-  if (sub !== undefined) {
+  if (sub !== undefined && sub !== null) {
     sub.fit()
   }
 }

@@ -13,6 +13,7 @@ import CyReference from '../../model/CyReference'
 import { CyActions } from '../../reducer/cyReducer'
 import NavigationPanel from '../NavigationPanel'
 import Popup from '../Popup'
+import { getEdgeCount, getNodeCount } from '../../utils/cxUtil'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -50,6 +51,8 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
+const LAYOUT_TH = 1000
+
 /**
  *
  * For now, Upper panel always uses Cyjs.
@@ -72,22 +75,21 @@ const NewSplitView = ({ renderer, cx }) => {
   }
 
   const updatePanelState = (selected) => {
-      // Position of the pointer
-      const ev = window.event
-      console.log(selected, ev)
-      if(ev === undefined) {
-        return
-      }
+    // Position of the pointer
+    const ev = window.event
+    console.log(selected, ev)
+    if (ev === undefined) {
+      return
+    }
 
-      const x = ev['clientX']
-      const y = ev['clientY']
+    const x = ev['clientX']
+    const y = ev['clientY']
 
-      if (selected !== undefined && selected.length !== 0) {
-        setUIState({ ...uiState, pointerPosition: { x, y }, showPropPanel: true })
-      } else {
-        setUIState({ ...uiState, showPropPanel: false })
-      }
-
+    if (selected !== undefined && selected.length !== 0) {
+      setUIState({ ...uiState, pointerPosition: { x, y }, showPropPanel: true })
+    } else {
+      setUIState({ ...uiState, showPropPanel: false })
+    }
   }
   const mainEventHandlers = {
     setSelectedNodes: (selected) => {
@@ -140,22 +142,29 @@ const NewSplitView = ({ renderer, cx }) => {
     }
   }
 
+  
   const getSubRenderer = () => {
+
     if (subCx === undefined && showSearchResult) {
-      let showLoading = busy
-      let message = 'No query result yet'
-      if (busy) {
-        message = 'Applying layout...'
-      }
-      return <Loading message="No search result yet" showLoading={showLoading} />
+      // let showLoading = busy
+      let message = 'Applying layout...'
+      return <Loading message={message} showLoading={true} />
     }
+    
+    const count = getNodeCount(subCx) + getEdgeCount(subCx)
+
+    let layout = 'cose'
+    if(count > LAYOUT_TH) {
+      layout = 'circle'
+    }
+
     return (
       <CytoscapeRenderer
         uuid={uuid}
         cx={subCx}
         eventHandlers={subEventHandlers}
         selectedNodes={[]}
-        layoutName={'cose'}
+        layoutName={layout}
         setBusy={setBusy}
         setCyReference={setSub}
       />

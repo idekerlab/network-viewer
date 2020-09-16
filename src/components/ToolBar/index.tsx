@@ -16,12 +16,16 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       position: 'fixed',
-      top: 0,
-      left: 0,
-      height: '5vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      top: theme.spacing(1),
+      left: theme.spacing(1),
+      height: '3.5em',
       padding: 0,
-      background: 'rgba(250, 250, 250, 0)',
+      background: 'rgba(255, 255, 255, 0.95)',
       zIndex: 1000,
+      borderRadius: 5
     },
     ndexLogo: {
       height: '3vh',
@@ -96,7 +100,6 @@ const ToolBar: FC = (props) => {
   const classes = useStyles()
 
   const handleSuccess = (login) => {
-    console.log('##############################################################---------------OK', login)
   }
   const { signIn, loaded } = useGoogleLogin({
     clientId: '802839698598-mrrd3iq3jl06n6c2fo1pmmc8uugt9ukq.apps.googleusercontent.com',
