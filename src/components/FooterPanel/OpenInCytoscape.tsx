@@ -2,6 +2,8 @@ import React, { FC, useContext } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import { useParams } from 'react-router-dom'
 
+import Snackbar from '@material-ui/core/Snackbar';
+
 import { CyNDExProvider, OpenInCytoscapeButton } from 'cytoscape-explore-components'
 
 import AppContext from '../../context/AppState'
@@ -31,9 +33,19 @@ const OpenInCytoscape: FC = () => {
 
   const { query, queryMode } = useContext(AppContext)
 
-  const onSuccess = () => {}
+  const [snackMessage, setSnackMessage] = React.useState(undefined);
+ 
+  const onSuccess = () => {
+    setSnackMessage('Network opened.');
+  }
 
-  const onFailure = () => {}
+  const onFailure = (err) => {
+    setSnackMessage('Failed to load network: ' + err);
+  }
+
+  const handleClose = () => {
+    setSnackMessage(undefined);
+  }
 
   const ndexNetworkProperties = {
     uuid: uuid
@@ -42,6 +54,10 @@ const OpenInCytoscape: FC = () => {
   return (
     <CyNDExProvider port={1234}>
       <OpenInCytoscapeButton size="small" ndexNetworkProperties={ ndexNetworkProperties } onSuccess={onSuccess} onFailure={onFailure} />
+      <Snackbar open={snackMessage} 
+        autoHideDuration={6000} 
+        onClose={handleClose}
+        message={snackMessage} />
     </CyNDExProvider>
   )
 }
