@@ -1,23 +1,26 @@
 import { useQuery } from 'react-query'
-import HttpResponse from '../api/HttpResponse'
 import NdexCredential from '../model/NdexCredential'
 
-import { getNdexClient, checkCurrentStatus } from '../utils/credentialUtil'
+import { getNdexClient } from '../utils/credentialUtil'
 
-import * as ndex from 'ndex-client'
-import ServerError from '../model/ServerError'
+const summaryMap = {}
 
 const getNetworkSummary = async <T>(
   _,
   uuid: string,
   serverUrl: string,
   apiVersion: string,
-  credential: NdexCredential,
+  credential: NdexCredential
 ) => {
+  const cache = summaryMap[uuid]
+
+  if(cache !== undefined) {
+    return cache
+  }
+
   const ndexClient = getNdexClient(`${serverUrl}${apiVersion}`, credential)
   const summary = await ndexClient.getNetworkSummary(uuid)
-  console.log('#############SUMM2:', summary)
-  checkCurrentStatus()
+  summaryMap[uuid] = summary
 
   return summary
 }

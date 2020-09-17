@@ -20,7 +20,6 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: 6,
       border: '1px solid #DDDDDD',
       backgroundColor: '#FFFFFF',
-      
     },
     subnet: {
       width: '100%',
@@ -30,6 +29,8 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
+
+// TODO: support for LGR
 const NavigationPanel = ({ target = 'main' }) => {
   const classes = useStyles()
 
@@ -42,36 +43,37 @@ const NavigationPanel = ({ target = 'main' }) => {
   }
 
   const handleFit = (evt) => {
-    cy.fit()
+    if (cy !== null && cy !== undefined) {
+      cy.fit()
+    }
   }
   const handleZoomIn = (evt) => {
-    const currentZoom = cy.zoom()
-    const newLevel = currentZoom * 1.2
-    cy.zoom(newLevel)
+    if (cy !== null && cy !== undefined) {
+      const currentZoom = cy.zoom()
+      const newLevel = currentZoom * 1.2
+      cy.zoom(newLevel)
+    }
   }
   const handleZoomOut = (evt) => {
-    const currentZoom = cy.zoom()
-    const newLevel = currentZoom * 0.8
-    cy.zoom(newLevel)
+    if (cy !== null && cy !== undefined) {
+      const currentZoom = cy.zoom()
+      const newLevel = currentZoom * 0.8
+      cy.zoom(newLevel)
+    }
   }
 
   return (
-      <ButtonGroup
-        className={classes.root}
-        orientation="vertical"
-        color="secondary"
-        variant="outlined"
-      >
-        <IconButton onClick={handleFit}>
-          <FitIcon />
-        </IconButton>
-        <IconButton onClick={handleZoomIn}>
-          <ZoomInIcon />
-        </IconButton>
-        <IconButton onClick={handleZoomOut}>
-          <ZoomOutIcon />
-        </IconButton>
-      </ButtonGroup>
+    <ButtonGroup className={classes.root} orientation="vertical" color="secondary" variant="outlined">
+      <IconButton onClick={handleFit}>
+        <FitIcon />
+      </IconButton>
+      <IconButton onClick={handleZoomIn}>
+        <ZoomInIcon />
+      </IconButton>
+      <IconButton onClick={handleZoomOut}>
+        <ZoomOutIcon />
+      </IconButton>
+    </ButtonGroup>
   )
 }
 

@@ -1,7 +1,6 @@
 import React, { FC, useContext } from 'react'
 import IconButton from '@material-ui/core/IconButton'
 import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
-import AccountCircle from '@material-ui/icons/AccountCircle'
 import AppsIcon from '@material-ui/icons/Apps'
 import Grid from '@material-ui/core/Grid'
 
@@ -10,7 +9,6 @@ import { NDExSignInButton } from 'cytoscape-explore-components'
 import logo from '../../assets/images/ndex-logo.svg'
 import AppContext from '../../context/AppState'
 
-import { useGoogleLogin } from 'react-google-login'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -99,23 +97,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const ToolBar: FC = (props) => {
   const classes = useStyles()
 
-  const handleSuccess = (login) => {
-  }
-  const { signIn, loaded } = useGoogleLogin({
-    clientId: '802839698598-mrrd3iq3jl06n6c2fo1pmmc8uugt9ukq.apps.googleusercontent.com',
-    scope: 'profile email',
-    onSuccess: handleSuccess,
-  })
-
-  if (loaded) {
-
-    // Check current login status
-    const g = window['gapi']
-
-    const user = g.auth2.getAuthInstance().currentUser.get()
-    const id_token = user.getAuthResponse().id_token
-  }
-  const { ndexCredential, setNdexCredential } = useContext(AppContext)
+  const { setNdexCredential } = useContext(AppContext)
 
   const loginStateUpdated = (loginState) => {
     if (loginState) {

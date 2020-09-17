@@ -7,22 +7,26 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import { ThemeProvider } from '@material-ui/core/styles'
 import theme from './theme'
 
-import { ReactQueryConfigProvider } from 'react-query'
+import { ReactQueryConfigProvider, ReactQueryCacheProvider, QueryCache } from 'react-query'
 
 const ROOT_TAG = 'root'
+
 /**
- * This file contains settings for 3rd party libraries 
+ * This file contains settings for 3rd party libraries
  */
 
 // This avoids too many fetch calls from remote API
 const queryConfig: object = { queries: { refetchOnWindowFocus: false } }
+const queryCache = new QueryCache()
 
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <ReactQueryConfigProvider config={queryConfig}>
-        <App />
+        <ReactQueryCacheProvider queryCache={queryCache}>
+          <App />
+        </ReactQueryCacheProvider>
       </ReactQueryConfigProvider>
     </ThemeProvider>
   </React.StrictMode>,
