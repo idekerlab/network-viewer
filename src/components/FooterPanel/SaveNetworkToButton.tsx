@@ -1,8 +1,12 @@
 import React, { useContext } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
+import { useParams } from 'react-router-dom'
+import useSearch from '../../hooks/useSearch'
 import { IconButton } from '@material-ui/core'
 import AppContext from '../../context/AppState'
 import Tooltip from '@material-ui/core/Tooltip'
+import { SaveToNDExButton } from 'cytoscape-explore-components'
+
 import UploadIcon from '@material-ui/icons/CloudUpload'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -17,25 +21,31 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const SaveNetworkToButton = () => {
   const classes = useStyles()
-  const { uiState } = useContext(AppContext)
+  const { uuid } = useParams()
 
-  const handleClick = () => {
-    //Upload to NDEx logic here...
+  const { query, queryMode, uiState } = useContext(AppContext)
+  const searchResult = useSearch(uuid, query, '', queryMode)
+
+  const subnet = searchResult.data
+  let subCx
+  if (subnet !== undefined) {
+    subCx = subnet['cx']
+  }
+
+  const fetchCX = () => {
+    return new Promise<Object>(function(resolve, reject) {
+      console.log(JSON.stringify(subCx));
+      resolve(subCx);
+    });
   }
 
   if (uiState.showSearchResult) {
     return (
-      <Tooltip title="Save to your NDEx account" placement="top" arrow>
-        <IconButton className={classes.button} size="small" onClick={handleClick}>
-          <UploadIcon />
-        </IconButton>
-      </Tooltip>
+      <SaveToNDExButton fetchCX={ fetchCX }/>
     )
   } else {
     return (
-        <IconButton className={classes.button} disabled size="small">
-          <UploadIcon />
-        </IconButton>
+      <SaveToNDExButton disabled />
     )
   }
 }
