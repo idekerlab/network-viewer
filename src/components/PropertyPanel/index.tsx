@@ -1,4 +1,4 @@
-import React, { FC, useContext } from 'react'
+import React from 'react'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { Typography, IconButton } from '@material-ui/core'
 import PropList from './PropList'
@@ -17,7 +17,6 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       width: '100%',
       height: '4em',
-      borderBottom: '1px solid #777777',
       justifyContent: 'flex-start',
       alignItems: 'center',
     },
@@ -26,13 +25,13 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '1.5em',
       flexGrow: 3,
     },
-
     propList: {
-      height: '30vh',
+      height: '100%',
       width: '100%',
-      overflowY: 'auto',
       padding: 0,
       margin: 0,
+      borderTop: '1px solid #777777',
+      overflowX: 'auto',
     },
   }),
 )
@@ -55,7 +54,9 @@ const PropertyPanel = ({ attrMap, onClose }) => {
         </IconButton>
       </div>
       <div className={classes.propList}>
-        <PropList attrMap={attrMap} />
+        <div>
+          <PropList attrMap={attrMap} />
+        </div>{' '}
       </div>
     </div>
   )
