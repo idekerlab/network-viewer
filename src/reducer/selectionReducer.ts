@@ -32,23 +32,23 @@ export const SelectionActions = {
   SET_MAIN_EDGES: 'setMainEdges',
   SET_SUB_NODES: 'setSubNodes',
   SET_SUB_EDGES: 'setSubEdges',
-  CLEAR_ALL: 'clearAll'
+  CLEAR_ALL: 'clearAll',
 }
 
 const selectionReducer = (state: SelectionState, action: SelectionAction): SelectionState => {
   switch (action.type) {
     case SelectionActions.SET_MAIN_NODES:
-      return { ...state, main: {nodes: action.selected, edges: state.main.edges} }
+      return { ...state, main: { nodes: action.selected, edges: state.main.edges } }
     case SelectionActions.SET_MAIN_EDGES:
-      return { ...state, main: {edges: action.selected, nodes: state.main.nodes} }
+      return { ...state, main: { edges: action.selected, nodes: state.main.nodes } }
     case SelectionActions.SET_SUB_NODES:
-      return { ...state, sub: {nodes: action.selected, edges: state.main.edges} }
+      return { ...state, sub: { nodes: action.selected, edges: state.main.edges } }
     case SelectionActions.SET_SUB_EDGES:
-      return { ...state, sub: {edges: action.selected, nodes: state.main.nodes} }
+      return { ...state, sub: { edges: action.selected, nodes: state.main.nodes } }
     case SelectionActions.CLEAR_ALL:
       return EMPTY_SELECTION
     default:
-      throw new Error('Invalid action')
+      console.log(action.type)
   }
 }
 

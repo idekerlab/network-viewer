@@ -78,7 +78,12 @@ const NewSplitView = ({ renderer, cx }) => {
       if (event !== undefined) {
         const node = event.target
         if (node !== undefined) {
-          setUIState({ ...uiState, pointerPosition: node.renderedPosition(), showPropPanel: true })
+          setUIState({
+            ...uiState,
+            pointerPosition: node.renderedPosition(),
+            showPropPanel: true,
+            lastSelectWasNode: true,
+          })
         } else {
           setUIState({ ...uiState, showPropPanel: false })
         }
@@ -87,7 +92,28 @@ const NewSplitView = ({ renderer, cx }) => {
       }
       return dispatch({ type: SelectionActions.SET_MAIN_NODES, selected })
     },
-    setSelectedEdges: (selected, event) => dispatch({ type: SelectionActions.SET_MAIN_EDGES, selected }),
+    //setSelectedEdges: (selected, event) => dispatch({ type: SelectionActions.SET_MAIN_EDGES, selected }),
+    setSelectedEdges: (selected, event) => {
+      if (event !== undefined) {
+        const edge = event.target
+        if (edge !== undefined) {
+          console.log(event)
+          console.log(event.renderedPosition.x)
+          setUIState({
+            ...uiState,
+            pointerPosition: { x: event.renderedPosition.x, y: event.renderedPosition.y },
+            showPropPanel: true,
+            lastSelectWasNode: false,
+          })
+        } else {
+          setUIState({ ...uiState, showPropPanel: false })
+        }
+      } else {
+        setUIState({ ...uiState, showPropPanel: false })
+      }
+
+      return dispatch({ type: SelectionActions.SET_MAIN_EDGES, selected })
+    },
   }
 
   const subEventHandlers = {
@@ -140,7 +166,6 @@ const NewSplitView = ({ renderer, cx }) => {
       return <Loading message="No search result yet" showLoading={showLoading} />
     }
 
-
     return (
       <CytoscapeRenderer
         uuid={uuid}
@@ -162,6 +187,7 @@ const NewSplitView = ({ renderer, cx }) => {
   return (
     <div className={classes.root}>
       <Popup cx={cx} />
+      <div style={{ height: '20px', width: '20px', backgroundColor: 'blue' }}></div>
       <MessageDialog open={openDialog} setOpen={setOpenDialog} />
 
       <div className={classes.subnet} style={{ height: topHeight }}>

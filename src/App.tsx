@@ -20,13 +20,14 @@ const defUIState: UIState = {
   showPropPanel: false,
   pointerPosition: {
     x: 200,
-    y: 500
-  }
+    y: 500,
+  },
+  lastSelectWasNode: false,
 }
 
 const defNdexCredential: NdexCredential = {
   isLogin: false,
-  isGoogle: false
+  isGoogle: false,
 }
 
 const App = () => {
@@ -41,7 +42,6 @@ const App = () => {
 
   const [ndexCredential, setNdexCredential] = useState(defNdexCredential)
 
-
   const [selectedNodeAttributes, setSelectedNodeAttributes] = useState({})
 
   const [selection, dispatch] = useReducer(selectionReducer, EMPTY_SELECTION)
@@ -52,10 +52,8 @@ const App = () => {
     selection,
     dispatch,
 
-
     cyReference,
     cyDispatch,
-
 
     uiState,
     setUIState,
@@ -76,7 +74,7 @@ const App = () => {
     setQueryResult,
 
     ndexCredential,
-    setNdexCredential
+    setNdexCredential,
   }
 
   return (

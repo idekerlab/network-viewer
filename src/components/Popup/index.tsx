@@ -103,11 +103,6 @@ const Popup = ({ cx }) => {
     top: top,
   }
 
-  console.log('width: ' + width)
-  console.log('windowWidth: ' + windowWidth)
-  console.log('pointer: ' + pointerPosition.x)
-  console.log('left: ' + left)
-
   return (
     <div className={classes.root} style={position}>
       <PropertyPanel attrMap={attrMap} onClose={onClose} />
