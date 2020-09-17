@@ -25,11 +25,37 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const Popup = ({ cx }) => {
+const PopupTarget = {
+  MAIN: 'main',
+  SUB: 'sub',
+}
+
+const ObjectType = {
+  NODE: 'node',
+  EDGE: 'edge',
+}
+
+type PopupProps = {
+  cx: object[]
+  target?: string
+  objectType?: string
+}
+
+const Popup: FC<PopupProps> = ({ cx, target = PopupTarget.MAIN, objectType = ObjectType.NODE }: PopupProps) => {
   const classes = useStyles()
   const { uuid } = useParams()
   const attr = useAttributes(uuid, cx)
   const { uiState, setUIState, selection } = useContext(AppContext)
+
+  let selectionTarget = selection.main
+  if (target === PopupTarget.SUB) {
+    selectionTarget = selection.sub
+  }
+
+  let objects = selectionTarget.nodes
+  if (objectType === ObjectType.EDGE) {
+    objects = selectionTarget.edges
+  }
 
   const { showPropPanel, pointerPosition } = uiState
 
@@ -37,7 +63,7 @@ const Popup = ({ cx }) => {
     setUIState({ ...uiState, showPropPanel: false })
   }
 
-  if (!showPropPanel || selection.main.nodes.length === 0) {
+  if (!showPropPanel || objects.length === 0) {
     return <div />
   }
 
@@ -46,11 +72,14 @@ const Popup = ({ cx }) => {
     top: pointerPosition.y,
   }
 
-  const nodes = selection.main.nodes
-  const nodeId = selection.main.nodes[0]
-  const attrMap = attr.nodeAttr[nodeId]
+  const id = objects[0]
+  let attrMap = null
+  if (objectType === ObjectType.NODE) {
+    attrMap = attr.nodeAttr[id]
+  } else {
+    attrMap = attr.edgeAttr[id]
+  }
 
-  console.log(nodes, nodeId, attrMap)
   return (
     <div className={classes.root} style={position}>
       <PropertyPanel attrMap={attrMap} onClose={onClose} />
