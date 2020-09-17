@@ -5,6 +5,8 @@ import useSearch from '../../hooks/useSearch'
 import { IconButton } from '@material-ui/core'
 import AppContext from '../../context/AppState'
 import Tooltip from '@material-ui/core/Tooltip'
+import Snackbar from '@material-ui/core/Snackbar';
+
 import { SaveToNDExButton } from 'cytoscape-explore-components'
 
 import UploadIcon from '@material-ui/icons/CloudUpload'
@@ -39,10 +41,31 @@ const SaveNetworkToButton = () => {
     });
   }
 
+  const [snackMessage, setSnackMessage] = React.useState(undefined);
+ 
+  const onSuccess = (data) => {
+    console.log(data);
+    setSnackMessage('Network saved to NDEx.');
+  }
+
+  const onFailure = (err) => {
+    setSnackMessage('Failed to Save network: ' + err);
+  }
+
+  const handleClose = () => {
+    setSnackMessage(undefined);
+  }
+
   if (uiState.showSearchResult) {
     return (
-      <SaveToNDExButton fetchCX={ fetchCX }/>
-    )
+      <div>
+      <SaveToNDExButton fetchCX={ fetchCX } onSuccess={onSuccess} onFailure={onFailure}/>
+      <Snackbar open={snackMessage != undefined} 
+      autoHideDuration={6000} 
+      onClose={handleClose}
+      message={snackMessage} />
+      </div>
+      )
   } else {
     return (
       <SaveToNDExButton disabled />
