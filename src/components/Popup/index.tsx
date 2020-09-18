@@ -58,10 +58,6 @@ const Popup: FC<PopupProps> = ({ cx, target = PopupTarget.MAIN, objectType = Obj
     objects = selectionTarget.edges
   }
 
-  console.log('target: ')
-  console.log(selectionTarget)
-  console.log('objects: ' + objects)
-
   const { showPropPanel, pointerPosition } = uiState
 
   const onClose = () => {
@@ -72,10 +68,9 @@ const Popup: FC<PopupProps> = ({ cx, target = PopupTarget.MAIN, objectType = Obj
     return <div />
   }
 
-  const nodes = selection.main.nodes
-  const nodeId = selection.main.nodes[0]
+  //const nodes = selection.main.nodes
+  //const nodeId = selection.main.nodes[0]
   const id = objects[0]
-  console.log('id: ' + id)
   let attrMap = null
   if (objectType === ObjectType.NODE) {
     attrMap = attr.nodeAttr[id]

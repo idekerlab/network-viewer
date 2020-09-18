@@ -78,7 +78,6 @@ const NewSplitView = ({ renderer, cx }) => {
   const updatePanelState = (selected) => {
     // Position of the pointer
     const ev = window.event
-    console.log(selected, ev)
     if (ev === undefined) {
       return
     }
@@ -92,45 +91,6 @@ const NewSplitView = ({ renderer, cx }) => {
     }
   }
   const mainEventHandlers = {
-    /*    setSelectedNodes: (selected, event) => {
-      if (event !== undefined) {
-        const node = event.target
-        if (node !== undefined) {
-          setUIState({
-            ...uiState,
-            pointerPosition: node.renderedPosition(),
-            showPropPanel: true,
-            lastSelectWasNode: true,
-          })
-        } else {
-          setUIState({ ...uiState, showPropPanel: false })
-        }
-      } else {
-        setUIState({ ...uiState, showPropPanel: false })
-      }
-      return dispatch({ type: SelectionActions.SET_MAIN_NODES, selected })
-    },
-    //setSelectedEdges: (selected, event) => dispatch({ type: SelectionActions.SET_MAIN_EDGES, selected }),
-    setSelectedEdges: (selected, event) => {
-      if (event !== undefined) {
-        const edge = event.target
-        if (edge !== undefined) {
-          console.log(event)
-          console.log(event.renderedPosition.x)
-          setUIState({
-            ...uiState,
-            pointerPosition: { x: event.renderedPosition.x, y: event.renderedPosition.y },
-            showPropPanel: true,
-            lastSelectWasNode: false,
-          })
-        } else {
-          setUIState({ ...uiState, showPropPanel: false })
-        }
-      } else {
-        setUIState({ ...uiState, showPropPanel: false })
-      }
-
-*/
     setSelectedNodes: (selected) => {
       updatePanelState(selected)
       return dispatch({ type: SelectionActions.SET_MAIN_NODES, selected })
