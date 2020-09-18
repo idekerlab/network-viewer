@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from 'react'
+import React, { useState, useReducer, useEffect} from 'react'
 import './App.css'
 import { useHistory } from 'react-router-dom'
 import { Switch, Route, BrowserRouter } from 'react-router-dom'
@@ -23,6 +23,7 @@ const defUIState: UIState = {
     x: 200,
     y: 500,
   },
+  lastSelectWasNode: false
 }
 
 const defNdexCredential: NdexCredential = {
@@ -35,6 +36,9 @@ const defConfig: AppConfig = {
 }
 
 const App = () => {
+  useEffect(() => {
+    loadResource()
+  }, [])
   
   const [config, setConfig] = useState(defConfig)
   
@@ -55,7 +59,6 @@ const App = () => {
     setConfig(config)
   }
   
-  loadResource()
 
   const history = useHistory(defUIState)
   const [uiState, setUIState] = useState(defUIState)

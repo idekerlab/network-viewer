@@ -78,14 +78,12 @@ const NewSplitView = ({ renderer, cx }) => {
   const updatePanelState = (selected) => {
     // Position of the pointer
     const ev = window.event
-    console.log(selected, ev)
     if (ev === undefined) {
       return
     }
 
     const x = ev['clientX']
     const y = ev['clientY']
-
     if (selected !== undefined && selected.length !== 0) {
       setUIState({ ...uiState, pointerPosition: { x, y }, showPropPanel: true })
     } else {
@@ -182,7 +180,7 @@ const NewSplitView = ({ renderer, cx }) => {
   return (
     <div className={classes.root}>
       <Popup cx={cx} />
-      <Popup cx={cx} objectType={'edge'}/>
+      <Popup cx={cx} objectType={'edge'} />
 
       <div className={classes.subnet} style={{ height: topHeight }}>
         {showSearchResult ? <NavigationPanel target={'sub'} /> : <div />}

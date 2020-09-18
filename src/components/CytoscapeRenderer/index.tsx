@@ -9,7 +9,6 @@ const ROOT_STYLE = {
   height: '100%',
 }
 
-
 const CytoscapeRenderer = (props) => {
   const cyEl = useRef(null)
   const [cyInstance, setCyInstance] = useState(null)
@@ -62,7 +61,7 @@ const CytoscapeRenderer = (props) => {
   useEffect(() => {
     // Create new instance of Cytoscape when element is available
     if (cyInstance === null && cyEl !== null && cyEl.current !== null) {
-      const newCyInstance = createCytoscape( cyEl.current)
+      const newCyInstance = createCytoscape(cyEl.current)
 
       // Expose Cyjs instance to other component
       if (setCyReference !== undefined) {
@@ -115,10 +114,11 @@ const tapHandler = (cy, eventHandlers, event) => {
     if (evtTarget.isNode()) {
       console.log('* tap on Node', evtTarget.data())
       // Clear last one first
-
+      eventHandlers.setSelectedEdges([])
       eventHandlers.setSelectedNodes([data.id], event)
     } else {
       console.log('* tap on Edge', evtTarget.data())
+      eventHandlers.setSelectedNodes([])
       eventHandlers.setSelectedEdges([data.id.slice(1)], event)
     }
   }
