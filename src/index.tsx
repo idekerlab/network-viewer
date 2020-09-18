@@ -11,6 +11,7 @@ import { ReactQueryConfigProvider, ReactQueryCacheProvider, QueryCache } from 'r
 
 const ROOT_TAG = 'root'
 
+
 /**
  * This file contains settings for 3rd party libraries
  */
