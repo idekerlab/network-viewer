@@ -36,7 +36,7 @@ const queryModeParams = {
   },
 }
 
-const selectNodes = (cxResult: object[]) => {
+const selectNodes = (cxResult: object[]): string[] => {
   let len = cxResult.length
   let nodes = undefined
   while (len--) {
@@ -59,7 +59,6 @@ const selectNodes = (cxResult: object[]) => {
 
 const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string, mode: string) => {
   if (uuid === undefined || uuid === null || uuid.length === 0) {
-    // throw new Error('UUID is required')
     return {}
   }
   
@@ -67,7 +66,7 @@ const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string
     return {}
   }
 
-  console.log('##############################Calling search: ', mode, query, uuid)
+  console.log('#######Network Query: ', mode, query, uuid)
   let url = `${URL}${uuid}/query`
   if(mode === 'interconnect') {
     url = `${URL}${uuid}/interconnectquery`
@@ -88,18 +87,14 @@ const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string
   console.log('Calling search settings: ', settings)
   const response: HttpResponse<object> = await fetch(url, settings)
 
-  console.log('Calling search res---------------->: ', response)
   try {
     const cx = await response.json()
-    console.log('Calling search CX---------------->: ', cx, )
     response.parsedBody = {
       nodeIds: selectNodes(cx),
       kvMap: transformCx(cx),
       // subNetwork: cx2cyjs(uuid, cx),
       cx,
     }
-
-    console.log('Search called: result2++++++++', mode, queryParam, url, response.parsedBody)
   } catch (ex) {
     console.error('Query API Call error:', ex)
   }
@@ -165,10 +160,6 @@ const getAttrs = (kvMap: object) => {
 
 const useSearch = ( uuid: string, query: string, serverUrl: string, mode: string) => {
   return useQuery(['queryNetwork', uuid, query, serverUrl, mode], queryNetwork)
-}
-
-const updateSelectionState = (data: object, setSelection: Function) => {
-  // setSelection(data)
 }
 
 export default useSearch

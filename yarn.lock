@@ -9940,10 +9940,12 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-react-query@^2.12.1:
-  version "2.12.1"
-  resolved "https://registry.yarnpkg.com/react-query/-/react-query-2.12.1.tgz#60cfdaa2b2c142af5b169f4efc4def739222e8c9"
-  integrity sha512-KoIB/RE+hLCKjoUkPbc+gq4/XscQd0Cx9qryftG91GDykfEe47YtC2YlvKv235UTYWNXbFgByAqXrNIotXtd1g==
+react-query@^2.22.0:
+  version "2.22.0"
+  resolved "https://registry.yarnpkg.com/react-query/-/react-query-2.22.0.tgz#10d4eda9632fd6644293f4db0185f0f78bb81a36"
+  integrity sha512-D0zOcxTw1drcZsggIEwRJIYFv6lRQoYjQCG2nWDxxb6/Xm3Rs43mUCR6L8Isjpx2ZO9gVB95ZGtT8DFAzMHwog==
+  dependencies:
+    "@babel/runtime" "^7.5.5"
 
 react-router-dom@^5.2.0:
   version "5.2.0"

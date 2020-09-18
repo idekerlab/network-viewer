@@ -54,7 +54,7 @@ const OpenInCytoscape: FC = () => {
   return (
     <CyNDExProvider port={1234}>
       <OpenInCytoscapeButton size="small" ndexNetworkProperties={ ndexNetworkProperties } onSuccess={onSuccess} onFailure={onFailure} />
-      <Snackbar open={snackMessage} 
+      <Snackbar open={snackMessage != undefined} 
         autoHideDuration={6000} 
         onClose={handleClose}
         message={snackMessage} />
