@@ -29,11 +29,8 @@ const SaveNetworkToButton = () => {
   const searchResult = useSearch(uuid, query, '', queryMode)
 
   const subnet = searchResult.data
-  let subCx
-  if (subnet !== undefined) {
-    subCx = subnet['cx']
-  }
-
+  const subCx = subnet !== undefined ? subnet['cx'] : undefined;
+  
   const fetchCX = () => {
     return new Promise<Object>(function(resolve, reject) {
       console.log(JSON.stringify(subCx));
@@ -59,7 +56,15 @@ const SaveNetworkToButton = () => {
   if (uiState.showSearchResult) {
     return (
       <div>
-      <SaveToNDExButton fetchCX={ fetchCX } onSuccess={onSuccess} onFailure={onFailure}/>
+     
+      <SaveToNDExButton 
+        disabled={ subCx == undefined }
+        fetchCX={ fetchCX } 
+        onSuccess={onSuccess} 
+        onFailure={onFailure}
+        tooltip="Save Query to NDEx"
+        />
+ 
       <Snackbar open={snackMessage != undefined} 
       autoHideDuration={6000} 
       onClose={handleClose}
