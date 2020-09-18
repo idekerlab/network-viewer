@@ -17,6 +17,7 @@
     "google-auth-library": "^6.0.6",
     "googleapis": "^59.0.0",
     "large-graph-renderer": "link:../large-graph-renderer",
+    "linkifyjs": "^2.1.9",
     "ndex-client": "../ndex-js-client",
     "react": "^16.13.1",
     "react-cytoscapejs": "^1.2.1",

@@ -16,7 +16,6 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       display: 'flex',
       width: '100%',
-      minHeight: '4em',
       justifyContent: 'flex-start',
       alignItems: 'center',
     },
@@ -24,6 +23,8 @@ const useStyles = makeStyles((theme: Theme) =>
       fontWeight: 500,
       fontSize: '1.5em',
       flexGrow: 3,
+      paddingTop: '12.5px',
+      paddingBottom: '12.5px',
     },
     propList: {
       height: '100%',
