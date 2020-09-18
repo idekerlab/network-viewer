@@ -1,3 +1,5 @@
+import { artifactregistry } from "googleapis/build/src/apis/artifactregistry"
+
 const OBJ_TYPE = {
   NODES: 'nodes',
   EDGES: 'edges'
@@ -42,7 +44,11 @@ const _getObjectCount = (tag: string, cx: object[]) => {
     return 0
   }
 
-  return objs.length
+  if(Array.isArray(objs)) {
+    return objs.length
+  }
+
+  return 0
 
 }
 

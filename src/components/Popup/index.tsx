@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect, FC } from 'react'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { useParams } from 'react-router-dom'
 import AppContext from '../../context/AppState'
@@ -12,7 +12,6 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'flex-start',
-      alignItems: 'left',
       maxWidth: '40vh',
       maxHeight: '50vh',
       backgroundColor: '#FFFFFF',
@@ -26,12 +25,42 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const Popup = ({ cx }) => {
+const PopupTarget = {
+  MAIN: 'main',
+  SUB: 'sub',
+}
+
+const ObjectType = {
+  NODE: 'node',
+  EDGE: 'edge',
+}
+
+type PopupProps = {
+  cx: object[]
+  target?: string
+  objectType?: string
+}
+
+const Popup: FC<PopupProps> = ({ cx, target = PopupTarget.MAIN, objectType = ObjectType.NODE }: PopupProps) => {
   const classes = useStyles()
   const { uuid } = useParams()
   const attr = useAttributes(uuid, cx)
   const { uiState, setUIState, selection } = useContext(AppContext)
   const { windowHeight, windowWidth } = useWindowDimensions()
+
+  let selectionTarget = selection.main
+  if (target === PopupTarget.SUB) {
+    selectionTarget = selection.sub
+  }
+
+  let objects = selectionTarget.nodes
+  if (objectType === ObjectType.EDGE) {
+    objects = selectionTarget.edges
+  }
+
+  console.log('target: ')
+  console.log(selectionTarget)
+  console.log('objects: ' + objects)
 
   const { showPropPanel, pointerPosition } = uiState
 
@@ -39,13 +68,20 @@ const Popup = ({ cx }) => {
     setUIState({ ...uiState, showPropPanel: false })
   }
 
-  if (!showPropPanel || selection.main.nodes.length === 0) {
+  if (!showPropPanel || objects.length === 0) {
     return <div />
   }
 
   const nodes = selection.main.nodes
   const nodeId = selection.main.nodes[0]
-  let attrMap = attr.nodeAttr[nodeId]
+  const id = objects[0]
+  console.log('id: ' + id)
+  let attrMap = null
+  if (objectType === ObjectType.NODE) {
+    attrMap = attr.nodeAttr[id]
+  } else {
+    attrMap = attr.edgeAttr[id]
+  }
 
   //Process attrMap to only display non-empty fields
   const nonEmptyMap = new Map()

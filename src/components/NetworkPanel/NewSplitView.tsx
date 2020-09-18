@@ -13,6 +13,7 @@ import CyReference from '../../model/CyReference'
 import { CyActions } from '../../reducer/cyReducer'
 import NavigationPanel from '../NavigationPanel'
 import Popup from '../Popup'
+import { getEdgeCount, getNodeCount } from '../../utils/cxUtil'
 import MessageDialog from '../MessageDialog'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -51,6 +52,8 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
+const LAYOUT_TH = 1000
+
 /**
  *
  * For now, Upper panel always uses Cyjs.
@@ -62,7 +65,6 @@ const NewSplitView = ({ renderer, cx }) => {
   const { uuid } = useParams()
 
   const [busy, setBusy] = useState(false)
-  const [openDialog, setOpenDialog] = useState(false)
 
   const { query, queryMode, setUIState, uiState, cyReference, cyDispatch, selection, dispatch } = useContext(AppContext)
   const searchResult = useSearch(uuid, query, '', queryMode)
@@ -73,8 +75,24 @@ const NewSplitView = ({ renderer, cx }) => {
     subCx = subnet['cx']
   }
 
+  const updatePanelState = (selected) => {
+    // Position of the pointer
+    const ev = window.event
+    console.log(selected, ev)
+    if (ev === undefined) {
+      return
+    }
+
+    const x = ev['clientX']
+    const y = ev['clientY']
+    if (selected !== undefined && selected.length !== 0) {
+      setUIState({ ...uiState, pointerPosition: { x, y }, showPropPanel: true })
+    } else {
+      setUIState({ ...uiState, showPropPanel: false })
+    }
+  }
   const mainEventHandlers = {
-    setSelectedNodes: (selected, event) => {
+    /*    setSelectedNodes: (selected, event) => {
       if (event !== undefined) {
         const node = event.target
         if (node !== undefined) {
@@ -112,6 +130,13 @@ const NewSplitView = ({ renderer, cx }) => {
         setUIState({ ...uiState, showPropPanel: false })
       }
 
+*/
+    setSelectedNodes: (selected) => {
+      updatePanelState(selected)
+      return dispatch({ type: SelectionActions.SET_MAIN_NODES, selected })
+    },
+    setSelectedEdges: (selected) => {
+      updatePanelState(selected)
       return dispatch({ type: SelectionActions.SET_MAIN_EDGES, selected })
     },
   }
@@ -158,12 +183,20 @@ const NewSplitView = ({ renderer, cx }) => {
 
   const getSubRenderer = () => {
     if (subCx === undefined && showSearchResult) {
-      let showLoading = busy
-      let message = 'No query result yet'
-      if (busy) {
-        message = 'Applying layout...'
-      }
-      return <Loading message="No search result yet" showLoading={showLoading} />
+      // let showLoading = busy
+      let message = 'Applying layout...'
+      return <Loading message={message} showLoading={true} />
+    }
+
+    const count = getNodeCount(subCx) + getEdgeCount(subCx)
+
+    if (count === 0 && showSearchResult) {
+      return <Loading message={'No nodes matching your query were found in this network.'} showLoading={false} />
+    }
+
+    let layout = 'cose'
+    if (count > LAYOUT_TH) {
+      layout = 'circle'
     }
 
     return (
@@ -172,7 +205,7 @@ const NewSplitView = ({ renderer, cx }) => {
         cx={subCx}
         eventHandlers={subEventHandlers}
         selectedNodes={[]}
-        layoutName={'cose'}
+        layoutName={layout}
         setBusy={setBusy}
         setCyReference={setSub}
       />
@@ -187,8 +220,7 @@ const NewSplitView = ({ renderer, cx }) => {
   return (
     <div className={classes.root}>
       <Popup cx={cx} />
-      <div style={{ height: '20px', width: '20px', backgroundColor: 'blue' }}></div>
-      <MessageDialog open={openDialog} setOpen={setOpenDialog} />
+      <Popup cx={cx} objectType={'edge'} />
 
       <div className={classes.subnet} style={{ height: topHeight }}>
         {showSearchResult ? <NavigationPanel target={'sub'} /> : <div />}
