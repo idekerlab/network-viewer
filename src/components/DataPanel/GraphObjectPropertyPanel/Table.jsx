@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { DynamicSizeList } from 'react-window'
-import { useTable, useBlockLayout, useResizeColumns } from 'react-table'
+import { useTable, useBlockLayout } from 'react-table'
 import { AutoSizer } from 'react-virtualized'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 
@@ -11,12 +11,21 @@ const useStyles = makeStyles((theme) =>
       flexFlow: 'column',
       height: '100%',
       overflowX: 'auto',
+      width: '100%',
     },
     header: {
       flex: '0 1 auto',
+      width: '100%',
+      background: theme.palette.secondary.main,
+      lineHeight: 1.5,
     },
     content: {
       flex: '1 1 auto',
+    },
+    headerRow: {
+      backgroundColor: theme.palette.secondary.main,
+      display: 'flex',
+      alignItems: 'center',
     },
     tableHeaderCell: {
       backgroundColor: theme.palette.secondary.main,
@@ -30,14 +39,18 @@ const useStyles = makeStyles((theme) =>
     },
     tableRow: {
       '&:nth-of-type(odd)': {
-        backgroundColor: theme.palette.action.hover,
+        backgroundColor: 'rgb(240, 240, 240)',
       },
+
+      borderBottom: '1px solid rgb(225, 225, 225)',
+      borderCollapse: 'collapse',
     },
   }),
 )
 
-function Table({ columns, data, height }) {
+function Table({ columns, data }) {
   const classes = useStyles()
+  const scrollBarWidth = 15
 
   // Use the state and functions returned from useTable to build your UI
 
@@ -57,7 +70,6 @@ function Table({ columns, data, height }) {
       defaultColumn,
     },
     useBlockLayout,
-    useResizeColumns,
   )
 
   const RenderRow = React.useCallback(
@@ -90,11 +102,15 @@ function Table({ columns, data, height }) {
   )
 
   // Render the UI for your table
-  return (
+  return data.length > 0 ? (
     <div {...getTableProps()} className={classes.table}>
       <div className={classes.header}>
         {headerGroups.map((headerGroup) => (
-          <div {...headerGroup.getHeaderGroupProps()} className="tr">
+          <div
+            {...headerGroup.getHeaderGroupProps()}
+            className={'tr ' + classes.headerRow}
+            style={{ width: totalColumnsWidth + scrollBarWidth }}
+          >
             {headerGroup.headers.map((column) => (
               <div {...column.getHeaderProps()} className={'th ' + classes.tableHeaderCell}>
                 {column.render('Header')}
@@ -107,14 +123,50 @@ function Table({ columns, data, height }) {
       <div {...getTableBodyProps()} className={classes.content}>
         <AutoSizer disableWidth>
           {({ height, width }) => (
-            <DynamicSizeList height={height} itemCount={rows.length} width={totalColumnsWidth}>
+            <DynamicSizeList
+              height={height}
+              itemCount={rows.length}
+              width={totalColumnsWidth + scrollBarWidth}
+              style={{ minWidth: '100%' }}
+            >
               {RenderRow}
             </DynamicSizeList>
           )}
         </AutoSizer>
       </div>
     </div>
+  ) : (
+    <div />
   )
+}
+
+class TempScrollBox {
+  constructor() {
+    this.scrollBarWidth = 0
+
+    this.measureScrollbarWidth()
+  }
+
+  measureScrollbarWidth() {
+    // Add temporary box to wrapper
+    let scrollbox = document.createElement('div')
+
+    // Make box scrollable
+    scrollbox.style.overflow = 'scroll'
+
+    // Append box to document
+    document.body.appendChild(scrollbox)
+
+    // Measure inner width of box
+    this.scrollBarWidth = scrollbox.offsetWidth - scrollbox.clientWidth
+
+    // Remove box
+    document.body.removeChild(scrollbox)
+  }
+
+  get width() {
+    return this.scrollBarWidth
+  }
 }
 
 export default Table

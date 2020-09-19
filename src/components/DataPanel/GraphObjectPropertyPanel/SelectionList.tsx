@@ -51,7 +51,6 @@ const SelectionList = (props) => {
             label={`Selected Nodes (${nodeCount})`}
             selectedObjects={selection.main.nodes}
             attributes={attributes.nodeAttr}
-            height={height / 2}
           />
 
           <EntryTable
@@ -59,36 +58,11 @@ const SelectionList = (props) => {
             label={`Selected Edges (${edgeCount})`}
             selectedObjects={selection.main.edges}
             attributes={attributes.edgeAttr}
-            height={height / 2}
           />
         </SplitPane>
       )}
     </AutoSizer>
   )
-  /*
-    <AutoSizer>
-      {({ height, width }) => (
-        <div className={classes.root} style={{ height: height, width: width }}>
-          <div style={{ height: height / 2, overflow: 'auto' }} className={'hi'}>
-            <EntryTable
-              key={'selected-nodes'}
-              label={`Selected Nodes (${nodeCount})`}
-              selectedObjects={selection.main.nodes}
-              attributes={attributes.nodeAttr}
-            />
-          </div>
-          <div style={{ height: height / 2, overflow: 'auto' }} className={'hi'}>
-            <EntryTable
-              key={'selected-edges'}
-              label={`Selected Edges (${edgeCount})`}
-              selectedObjects={selection.main.edges}
-              attributes={attributes.edgeAttr}
-            />
-          </div>
-        </div>
-      )}
-    </AutoSizer>
-    */
 }
 
 export default SelectionList

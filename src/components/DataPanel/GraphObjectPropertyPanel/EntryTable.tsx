@@ -1,43 +1,13 @@
 import React, { useMemo } from 'react'
 import Table from './Table'
 
-/*
-const StyledTableCell = withStyles((theme: Theme) =>
-  createStyles({
-    head: {
-      backgroundColor: theme.palette.secondary.main,
-      color: theme.palette.common.white,
-      fontSize: '1.3em',
-      fontWeight: 500,
-    },
-    body: {
-      fontSize: '0.8em',
-    },
-  }),
-)(TableCell)
-
-const StyledTableRow = withStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      '&:nth-of-type(odd)': {
-        backgroundColor: theme.palette.action.hover,
-      },
-    },
-  }),
-)(TableRow)
-
-const useStyles = makeStyles({
-  table: {
-    marginTop: '1em',
-  },
-  container: {
-    margin: '0.5em',
-  },
-})
-*/
-
 const EntryTable = (props) => {
-  const { selectedObjects, attributes, label, height } = props
+  const { selectedObjects, attributes, label } = props
+
+  const replacePeriods = (string) => {
+    const regex = /\./gi
+    return string.replace(regex, '(_)')
+  }
 
   const getColumnWidth = (rows, accessor, header) => {
     const spacing = 10
@@ -47,7 +17,7 @@ const EntryTable = (props) => {
     return Math.min(maxWidth, cellLength * spacing)
   }
 
-  const columns = React.useMemo(() => {
+  const columns = useMemo(() => {
     const columnsList = []
     for (let id of selectedObjects) {
       const attrs = attributes[id]
@@ -84,7 +54,7 @@ const EntryTable = (props) => {
     return columnsList
   }, [selectedObjects])
 
-  const data = React.useMemo(() => {
+  const data = useMemo(() => {
     const dataList = []
     for (let id of selectedObjects) {
       const attrs = attributes[id]
@@ -95,9 +65,9 @@ const EntryTable = (props) => {
       for (let column of columns) {
         const value = attrs.get(column)
         if (Array.isArray(value)) {
-          row[column] = value.join(', ')
+          row[replacePeriods(column)] = value.join(', ')
         } else {
-          row[column] = attrs.get(column)
+          row[replacePeriods(column)] = attrs.get(column)
         }
       }
       dataList.push(row)
@@ -105,19 +75,19 @@ const EntryTable = (props) => {
     return dataList
   }, [selectedObjects])
 
-  const finalColumns = React.useMemo(() => {
+  const finalColumns = useMemo(() => {
     const columnsObject = columns.map((column) => {
       if (column === 'name') {
         return {
           Header: label,
           accessor: 'name',
-          width: getColumnWidth(data, 'name', label),
+          minWidth: getColumnWidth(data, 'name', label),
         }
       } else {
         return {
           Header: column,
-          accessor: column,
-          width: getColumnWidth(data, column, column),
+          accessor: replacePeriods(column),
+          minWidth: getColumnWidth(data, column, column),
         }
       }
     })
@@ -125,7 +95,7 @@ const EntryTable = (props) => {
     return columnsObject
   }, [selectedObjects])
 
-  return <Table columns={finalColumns} data={data} height={height} />
+  return <Table columns={finalColumns} data={data} />
 }
 
 export default EntryTable
