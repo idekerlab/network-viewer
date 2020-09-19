@@ -40,7 +40,7 @@ const EntryTable = (props) => {
   const { selectedObjects, attributes, label, height } = props
 
   const getColumnWidth = (rows, accessor, header) => {
-    const spacing = 9
+    const spacing = 10
     const maxWidth = 300
 
     const cellLength = Math.max(...rows.map((row) => (`${row[accessor]}` || '').length), header.length)
