@@ -76,7 +76,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const NetworkPropertyPanel = () => {
   const classes = useStyles()
   const { uuid } = useParams()
-  const { ndexCredential } = useContext(AppContext)
+  const { ndexCredential, config } = useContext(AppContext)
 
   const summaryResponse = useNetworkSummary(uuid, BASE_URL, 'v2', ndexCredential)
   const summary = summaryResponse.data

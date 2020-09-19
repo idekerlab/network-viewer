@@ -1,5 +1,3 @@
-import { artifactregistry } from "googleapis/build/src/apis/artifactregistry"
-
 const OBJ_TYPE = {
   NODES: 'nodes',
   EDGES: 'edges'
@@ -27,9 +25,6 @@ const getEntry = (tag: string, cx: object[]) => {
   return {}
 }
 
-const getNodesWith = (tag: string, value: any, cx: object[]) => {
-  
-}
 
 const getNodeCount = (cx) => {
   return _getObjectCount('nodes', cx)

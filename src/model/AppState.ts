@@ -2,9 +2,12 @@ import UIState from './UIState'
 import CyReference from './CyReference'
 import { SelectionState } from '../reducer/selectionReducer'
 import NdexCredential from './NdexCredential'
+import AppConfig from './AppConfig'
 
 
 type AppState = {
+  config: AppConfig
+  
   selection: SelectionState
   dispatch: any
   
