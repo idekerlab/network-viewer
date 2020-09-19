@@ -3,6 +3,8 @@ import { Theme, createStyles, makeStyles } from '@material-ui/core/styles'
 import useSearch from '../../../hooks/useSearch'
 import AppContext from '../../../context/AppState'
 import EntryTable from './EntryTable'
+import { AutoSizer } from 'react-virtualized'
+import SplitPane from 'react-split-pane'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,9 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const SelectionList = (props) => {
   const classes = useStyles()
-
   const { attributes } = props
-
   const { uuid, query, queryMode, setSelectedNodeAttributes, selectedNodeAttributes, selection } = useContext(
     AppContext,
   )
@@ -43,22 +43,52 @@ const SelectionList = (props) => {
   const edgeCount = selection.main.edges.length
 
   return (
-    <div className={classes.root}>
-      <EntryTable
-        key={'selected-nodes'}
-        label={`Selected Nodes (${nodeCount})`}
-        selectedObjects={selection.main.nodes}
-        attributes={attributes.nodeAttr}
-      />
+    <AutoSizer disableWidth>
+      {({ height, width }) => (
+        <SplitPane split="horizontal" defaultSize={height / 2}>
+          <EntryTable
+            key={'selected-nodes'}
+            label={`Selected Nodes (${nodeCount})`}
+            selectedObjects={selection.main.nodes}
+            attributes={attributes.nodeAttr}
+            height={height / 2}
+          />
 
-      <EntryTable
-        key={'selected-edges'}
-        label={`Selected Edges (${edgeCount})`}
-        selectedObjects={selection.main.edges}
-        attributes={attributes.edgeAttr}
-      />
-    </div>
+          <EntryTable
+            key={'selected-edges'}
+            label={`Selected Edges (${edgeCount})`}
+            selectedObjects={selection.main.edges}
+            attributes={attributes.edgeAttr}
+            height={height / 2}
+          />
+        </SplitPane>
+      )}
+    </AutoSizer>
   )
+  /*
+    <AutoSizer>
+      {({ height, width }) => (
+        <div className={classes.root} style={{ height: height, width: width }}>
+          <div style={{ height: height / 2, overflow: 'auto' }} className={'hi'}>
+            <EntryTable
+              key={'selected-nodes'}
+              label={`Selected Nodes (${nodeCount})`}
+              selectedObjects={selection.main.nodes}
+              attributes={attributes.nodeAttr}
+            />
+          </div>
+          <div style={{ height: height / 2, overflow: 'auto' }} className={'hi'}>
+            <EntryTable
+              key={'selected-edges'}
+              label={`Selected Edges (${edgeCount})`}
+              selectedObjects={selection.main.edges}
+              attributes={attributes.edgeAttr}
+            />
+          </div>
+        </div>
+      )}
+    </AutoSizer>
+    */
 }
 
 export default SelectionList

@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const PopupTarget = {
   MAIN: 'main',
   SUB: 'sub',
+  LAST: 'last',
 }
 
 const ObjectType = {
@@ -41,16 +42,18 @@ type PopupProps = {
   objectType?: string
 }
 
-const Popup: FC<PopupProps> = ({ cx, target = PopupTarget.MAIN, objectType = ObjectType.NODE }: PopupProps) => {
+const Popup: FC<PopupProps> = ({ cx, target = PopupTarget.LAST, objectType = ObjectType.NODE }: PopupProps) => {
   const classes = useStyles()
   const { uuid } = useParams()
   const attr = useAttributes(uuid, cx)
   const { uiState, setUIState, selection } = useContext(AppContext)
   const { windowHeight, windowWidth } = useWindowDimensions()
 
-  let selectionTarget = selection.main
+  let selectionTarget = selection.lastSelected
   if (target === PopupTarget.SUB) {
     selectionTarget = selection.sub
+  } else if (target === PopupTarget.MAIN) {
+    selectionTarget = selection.main
   }
 
   let objects = selectionTarget.nodes
@@ -68,8 +71,6 @@ const Popup: FC<PopupProps> = ({ cx, target = PopupTarget.MAIN, objectType = Obj
     return <div />
   }
 
-  //const nodes = selection.main.nodes
-  //const nodeId = selection.main.nodes[0]
   const id = objects[0]
   let attrMap = null
   if (objectType === ObjectType.NODE) {

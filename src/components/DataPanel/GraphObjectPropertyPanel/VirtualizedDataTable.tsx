@@ -108,11 +108,10 @@ class MuiVirtualizedTable extends PureComponent<MuiVirtualizedTableProps> {
     let fontWeight = 300
 
     let fontSize = '0.8em'
-    if(columnIndex === 0) {
+    if (columnIndex === 0) {
       fontWeight = 700
       fontSize = '1em'
     }
-
 
     return (
       <StyledTableCell
@@ -160,7 +159,7 @@ class MuiVirtualizedTable extends PureComponent<MuiVirtualizedTableProps> {
           <Table
             height={height / 2}
             width={width}
-            rowStyle={idx => this.createRowStyle(idx)}
+            rowStyle={(idx) => this.createRowStyle(idx)}
             rowHeight={rowHeight!}
             gridStyle={{
               direction: 'inherit',
@@ -202,12 +201,12 @@ interface Data {
   value: string
 }
 
-const VirtualizedDataTable = ({ data, label }) => {
+const VirtualizedDataTable = ({ data, labels }) => {
   return (
     <VirtualizedTable
       rowCount={data.length}
       rowGetter={({ index }) => data[index]}
-      columns={[
+      /*columns={[
         {
           width: 200,
           label: label,
@@ -223,7 +222,12 @@ const VirtualizedDataTable = ({ data, label }) => {
           label: 'Value',
           dataKey: 'value',
         },
-      ]}
+      ]}*/
+      columns={labels.map((label) => ({
+        label: label,
+        dataKey: label,
+        width: 200,
+      }))}
     />
   )
 }

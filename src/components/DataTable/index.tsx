@@ -68,6 +68,8 @@ const defaultColumn = {
 }
 
 const DataTable = ({ columns, data, setData, updateMyData, skipPageReset }) => {
+  return <div />
+  /*
   const {
     getTableProps,
     headerGroups,
@@ -179,6 +181,7 @@ const DataTable = ({ columns, data, setData, updateMyData, skipPageReset }) => {
       </MaUTable>
     </TableContainer>
   )
+  */
 }
 
 DataTable.propTypes = {

@@ -22,6 +22,8 @@ const useStyles = makeStyles({
 })
 
 const NestedTable = ({ columns: nodeColumns, data }) => {
+  return <div />
+  /*
   const {
     getTableProps,
     getTableBodyProps,
@@ -61,7 +63,7 @@ const NestedTable = ({ columns: nodeColumns, data }) => {
         })}
       </tbody>
     </table>
-  )
+  )*/
 }
 
 export default NestedTable
