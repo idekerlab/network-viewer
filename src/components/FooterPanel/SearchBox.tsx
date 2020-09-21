@@ -2,7 +2,7 @@ import React, { FC, Fragment, useState, useContext } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import InputBase from '@material-ui/core/InputBase'
 import SearchIcon from '@material-ui/icons/Search'
-import DeleteIcon from '@material-ui/icons/Delete'
+import CloseIcon from '@material-ui/icons/Close'
 import InfoIcon from '@material-ui/icons/InfoOutlined'
 
 import FormControl from '@material-ui/core/FormControl'
@@ -154,7 +154,7 @@ const SearchBox: FC = () => {
         <SearchIcon />
       </IconButton>
       <IconButton color="primary" size='small' disableFocusRipple disableRipple className={classes.button} disabled={disableQuery} onClick={handleClear}>
-        <DeleteIcon />
+        <CloseIcon />
       </IconButton>
       <SearchHelpDialog onClose={handleHelpClose} open={open} />
     </div>
