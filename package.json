@@ -23,6 +23,7 @@
     "react-cytoscapejs": "^1.2.1",
     "react-dom": "^16.13.1",
     "react-draft-wysiwyg": "^1.14.5",
+    "react-draggable": "^4.4.3",
     "react-google-login": "^5.1.21",
     "react-query": "^2.22.0",
     "react-router": "^5.2.0",
