@@ -30,7 +30,7 @@ const getEdgeInfo = (niceCX, edgeId) => {
     var counter;
     if ( niceCX.edgeAttributes && niceCX.edgeAttributes[edgeId]) {
         var edgeAttrs = niceCX.edgeAttributes[edgeId];
-        _.forEach(edgeAttrs, function(value, pname) {
+        edgeAttrs.forEach ( (value, pname) => {
             if ( pname != 'selected') {
                 if ( !edgeInfo[pname]) {
                     edgeInfo[pname] = value;
@@ -47,7 +47,7 @@ const getEdgeInfo = (niceCX, edgeId) => {
 
     if ( niceCX.edgeCitations && niceCX.edgeCitations[edgeId]) {
         var citationList = [];
-        _.forEach(niceCX.edgeCitations[edgeId], function ( citationId) {
+        niceCX.edgeCitations[edgeId].forEach( ( citationId) => {
             citationList.push ( niceCX.citations[citationId]);
         });
         if (citationList.length >0 )
@@ -205,7 +205,6 @@ export const getTSVOfCurrentNiceCX = (niceCX) => {
     });
     var headerKeysJoined = headersKeysSorted.join('\t') + '\n';
 
-  //  var headersInverted = _.invert(headers);
     var fileString      = headerKeysJoined;
 
     var row = {};
