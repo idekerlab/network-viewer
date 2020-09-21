@@ -94,27 +94,6 @@ export const getTSVOfCurrentNiceCX = (niceCX) => {
 
     var nodes = network.nodes;
 
-    // in this loop, build headers for Node: Source NAme (s.n), Source Represents (s.r),
-    // Target Name (t.n), Target Represents (t.r)
-    /*
-    _.forEach(nodes, function(node) {
-        if (node) {
-            if (node['n'] && !('s.n' in headers)) {
-                headers['s.n'] = _.size(headers);
-            }
-            if (node['r'] && !('s.r' in headers)) {
-                headers['s.r'] = _.size(headers);
-            }
-            if (node['n'] && !('t.n' in headers)) {
-                headers['t.n'] = _.size(headers);
-            }
-            if (node['r'] && !('t.r' in headers)) {
-                headers['t.r'] = _.size(headers);
-            }
-        }
-    });
-    */
-
     var nodeKeys = Object.keys(nodes);
     var nodeAttributes = network.nodeAttributes;
     var aliasColumnHeader = null;
@@ -122,10 +101,7 @@ export const getTSVOfCurrentNiceCX = (niceCX) => {
     for (var key in nodeKeys)
     {
         var nodeId = nodeKeys[key];
-
-        //var nodeObj = networkService.getNodeInfo(nodeId);
-        //var nodeName = networkService.getNodeName(nodeObj);
-
+        
         if (nodeAttributes) {
 
             var nodeAttrs = nodeAttributes[nodeId];
@@ -147,18 +123,18 @@ export const getTSVOfCurrentNiceCX = (niceCX) => {
                 //var attributeObjNameTarget = 'Target ' + attributeObjName;
 
                 if (!(attributeObjNameSource in headers)) {
-                    headers[attributeObjNameSource] = _.size(headers);
+                    headers[attributeObjNameSource] = Object.keys(headers).length;
                 }
 
                 //if (!(attributeObjNameTarget in headers)) {
-                //    headers[attributeObjNameTarget] = _.size(headers);
+                //    headers[attributeObjNameTarget] = Object.keys(headers).length;
                 //}
             }
         }
     }
 
     headers['Target ID']    = Object.keys(headers).length;
-    headers['Target Alias'] = _.size(headers);
+    headers['Target Alias'] = Object.keys(headers).length;
     var targetAliasOrder    = headers['Target Alias'];
 
 
@@ -192,7 +168,7 @@ export const getTSVOfCurrentNiceCX = (niceCX) => {
         }
     }
 
-    headers['Citation'] = _.size(headers);
+    headers['Citation'] = Object.keys(headers).length;
     var citationOrder   = headers['Citation'];
 
     for(let i = 0; i < edgeKeys.length; i++ )
@@ -212,15 +188,15 @@ export const getTSVOfCurrentNiceCX = (niceCX) => {
                 }
 
                 if (!(keySanitized in headers)) {
-                    headers[keySanitized] = _.size(headers);
+                    headers[keySanitized] = Object.keys(headers).length;
                 }
             }
         }
     }
 
-    headers['cx edge id']        = _.size(headers);
-    headers['cx source node id'] = _.size(headers);
-    headers['cx target node id'] = _.size(headers);
+    headers['cx edge id']        = Object.keys(headers).length;
+    headers['cx source node id'] = Object.keys(headers).length;
+    headers['cx target node id'] = Object.keys(headers).length;
 
 
     var headersKeysSorted = Object.keys(headers);
