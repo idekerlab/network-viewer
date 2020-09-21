@@ -1,5 +1,6 @@
 type AppConfig = {
-  ndexUrl: string
+  ndexUrl: string,
+  ndexHttps: string,
 }
 
 export default AppConfig

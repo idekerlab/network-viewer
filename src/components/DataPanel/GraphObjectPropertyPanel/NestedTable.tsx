@@ -30,7 +30,7 @@ const NestedTable = ({ columns: nodeColumns, data }) => {
     headerGroups,
     rows,
     prepareRow,
-    state: { expanded },
+    // state: { expanded },
   } = useTable(
     {
       columns: nodeColumns,
