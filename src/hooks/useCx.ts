@@ -10,7 +10,7 @@ const getCx = async <T>(_, uuid: string, serverUrl: string, apiVersion: string, 
     return EMPTY_CX
   }
 
-  const ndexClient = getNdexClient(`${serverUrl}${apiVersion}`, credential)
+  const ndexClient = getNdexClient(`${serverUrl}/${apiVersion}`, credential)
   return await ndexClient.getRawNetwork(uuid)
 }
 

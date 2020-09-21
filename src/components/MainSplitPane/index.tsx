@@ -12,7 +12,6 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import AppContext from '../../context/AppState'
 import ClosedPanel from '../DataPanel/ClosedPanel'
 
-const BASE_URL = 'http://dev.ndexbio.org/'
 const V2 = 'v2'
 const V3 = 'v3'
 
@@ -63,7 +62,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const MainSplitPane = () => {
   const classes = useStyles()
   const { uuid } = useParams()
-  const { uiState, ndexCredential } = useContext(AppContext)
+  const { uiState, ndexCredential, config } = useContext(AppContext)
   const width = window.innerWidth
   const defSize = Math.floor(width * 0.65)
 
@@ -77,7 +76,7 @@ const MainSplitPane = () => {
     }
   }, [uiState.dataPanelOpen])
 
-  const result = useNetworkSummary(uuid, BASE_URL, V2, ndexCredential)
+  const result = useNetworkSummary(uuid, config.ndexHttps, V2, ndexCredential)
   const summary = result.data
 
   let apiVersion = null
@@ -94,7 +93,7 @@ const MainSplitPane = () => {
     }
   }
 
-  const cxResponse = useCx(uuid, BASE_URL, apiVersion, ndexCredential)
+  const cxResponse = useCx(uuid, config.ndexHttps, apiVersion, ndexCredential)
 
   if (cxResponse.data === undefined || cxResponse.isFetching || rend === null) {
     return (

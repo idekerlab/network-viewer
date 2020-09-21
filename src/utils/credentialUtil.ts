@@ -10,6 +10,7 @@ const getGoogleHeader = (userInfo) => {
 }
 
 const getNdexClient = (baseUrl: string, ndexCredential: NdexCredential) => {
+  console.log('++++++++++++ BASE URL ++++++++++', baseUrl)
   const ndexClient = new ndex.NDEx(baseUrl)
   ndexClient.getStatus().then((response) => {
     console.log('* NDEx Status checked: ' + response.message)

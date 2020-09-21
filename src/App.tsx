@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useEffect} from 'react'
+import React, { useState, useReducer, useEffect } from 'react'
 import './App.css'
 import { useHistory } from 'react-router-dom'
 import { Switch, Route, BrowserRouter } from 'react-router-dom'
@@ -13,7 +13,7 @@ import UIState from './model/UIState'
 import selectionReducer, { EMPTY_SELECTION } from './reducer/selectionReducer'
 import cyReducer, { INITIAL_CY_REFERENCE } from './reducer/cyReducer'
 import NdexCredential from './model/NdexCredential'
-import AppConfig from './model/AppConfig'
+
 
 const defUIState: UIState = {
   dataPanelOpen: true,
@@ -23,7 +23,7 @@ const defUIState: UIState = {
     x: 200,
     y: 500,
   },
-  lastSelectWasNode: false
+  lastSelectWasNode: false,
 }
 
 const defNdexCredential: NdexCredential = {
@@ -31,34 +31,8 @@ const defNdexCredential: NdexCredential = {
   isGoogle: false,
 }
 
-const defConfig: AppConfig = {
-  ndexUrl: '',
-}
 
-const App = () => {
-  useEffect(() => {
-    loadResource()
-  }, [])
-  
-  const [config, setConfig] = useState(defConfig)
-  
-  async function loadResource() {
-    const response = await fetch(`${process.env.PUBLIC_URL}/resource.json`)
-
-    if (response.status !== 200) {
-      throw new Error('Failed to load resource file.  Could not find NDEx server location')
-    }
-    const resource = await response.json()
-    console.log('- Resource file loaded:', resource)
-    const ndexUrl = resource['ndexUrl']
-
-    const config: AppConfig = {
-      ndexUrl
-    }
-    
-    setConfig(config)
-  }
-  
+const App = ({config}) => {
 
   const history = useHistory(defUIState)
   const [uiState, setUIState] = useState(defUIState)

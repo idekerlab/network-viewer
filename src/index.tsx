@@ -8,31 +8,46 @@ import { ThemeProvider } from '@material-ui/core/styles'
 import theme from './theme'
 
 import { ReactQueryConfigProvider, ReactQueryCacheProvider, QueryCache } from 'react-query'
+import AppConfig from './model/AppConfig'
 
 const ROOT_TAG = 'root'
-
-
-/**
- * This file contains settings for 3rd party libraries
- */
 
 // This avoids too many fetch calls from remote API
 const queryConfig: object = { queries: { refetchOnWindowFocus: false } }
 const queryCache = new QueryCache()
 
-ReactDOM.render(
-  <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <ReactQueryConfigProvider config={queryConfig}>
-        <ReactQueryCacheProvider queryCache={queryCache}>
-          <App />
-        </ReactQueryCacheProvider>
-      </ReactQueryConfigProvider>
-    </ThemeProvider>
-  </React.StrictMode>,
-  document.getElementById(ROOT_TAG),
-)
+async function loadResource() {
+  const response = await fetch(`${process.env.PUBLIC_URL}/resource.json`)
+
+  if (response.status !== 200) {
+    throw new Error('Failed to load resource file.  Could not find NDEx server location')
+  }
+  const resource = await response.json()
+  console.log('* Resource file loaded:', resource)
+  const ndexUrl = resource['ndexUrl']
+
+  const config: AppConfig = {
+    ndexUrl,
+    ndexHttps: `https://${ndexUrl}`,
+  }
+  
+  ReactDOM.render(
+    <React.StrictMode>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <ReactQueryConfigProvider config={queryConfig}>
+          <ReactQueryCacheProvider queryCache={queryCache}>
+            <App config={config} />
+          </ReactQueryCacheProvider>
+        </ReactQueryConfigProvider>
+      </ThemeProvider>
+    </React.StrictMode>,
+    document.getElementById(ROOT_TAG),
+  )
+}
+
+// Load resource and start the app.
+loadResource()
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

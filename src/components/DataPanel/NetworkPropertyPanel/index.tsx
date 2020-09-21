@@ -12,7 +12,6 @@ import { useParams } from 'react-router-dom'
 import MinimizeButton from './MinimizeButton'
 import AppContext from '../../../context/AppState'
 
-const BASE_URL = 'http://dev.ndexbio.org/'
 const API_VER = 'v2'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -78,7 +77,7 @@ const NetworkPropertyPanel = () => {
   const { uuid } = useParams()
   const { ndexCredential, config } = useContext(AppContext)
 
-  const summaryResponse = useNetworkSummary(uuid, BASE_URL, 'v2', ndexCredential)
+  const summaryResponse = useNetworkSummary(uuid, config.ndexHttps, 'v2', ndexCredential)
   const summary = summaryResponse.data
 
   if (summary === undefined || Object.entries(summary).length === 0) {

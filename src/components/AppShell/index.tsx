@@ -4,6 +4,8 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import { NDExAccountProvider } from 'cytoscape-explore-components'
 import MainSplitPane from '../MainSplitPane'
 import ToolBar from '../ToolBar'
+import AppContext from '../../context/AppState'
+import { useContext } from 'react'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -19,18 +21,19 @@ const useStyles = makeStyles((theme: Theme) =>
     content: {
       flexGrow: 1,
       width: '100%',
-      height: '100%'
+      height: '100%',
     },
   }),
 )
 
 const AppShell: FC = () => {
   const classes = useStyles()
+  const { config } = useContext(AppContext)
 
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <NDExAccountProvider ndexServerURL="http://dev.ndexbio.org">
+      <NDExAccountProvider ndexServerURL={config.ndexHttps}>
         <ToolBar />
 
         <main className={classes.content}>
