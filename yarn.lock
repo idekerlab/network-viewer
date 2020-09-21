@@ -10101,10 +10101,10 @@ react-virtualized@^9.22.2:
     prop-types "^15.7.2"
     react-lifecycles-compat "^3.0.4"
 
-react-window@^1.6.0-alpha.1:
-  version "1.6.0-alpha.1"
-  resolved "https://registry.yarnpkg.com/react-window/-/react-window-1.6.0-alpha.1.tgz#6ffbf8168a1325512fe0127582ee2672ecadb67a"
-  integrity sha512-Q4Yg/rnVHTSjHdqVuTnZFTD3cwEzXFxFMyEZ5ihK3qu/NLiiFA67M1WM/Q558VmGUQumtJAW5oxKoo5JcdqoOQ==
+react-window@1.4.0-alpha.1:
+  version "1.4.0-alpha.1"
+  resolved "https://registry.yarnpkg.com/react-window/-/react-window-1.4.0-alpha.1.tgz#e9c1b15f470ee73dd2b32f69a8e0d184cf6ef3b8"
+  integrity sha512-JyJEIUpvuy8rvHFj71JiIVLIF2NC3pLOFZT/hRBK4zOjlZZZMvpVyhb0XqWEC4yxgYMDlQ0GKOSllsMiil4Wog==
   dependencies:
     "@babel/runtime" "^7.0.0"
     memoize-one "^3.1.1"
