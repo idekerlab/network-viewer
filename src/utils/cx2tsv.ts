@@ -162,7 +162,7 @@ export const getTSVOfCurrentNiceCX = (niceCX) => {
                 }
 
                 if (!(attributeObjNameTarget in headers)) {
-                    headers[attributeObjNameTarget] = _.size(headers);
+                    headers[attributeObjNameTarget] = Object.keys(headers).length;
                 }
             }
         }
