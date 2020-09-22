@@ -24,7 +24,7 @@
     "react-dom": "^16.13.1",
     "react-draft-wysiwyg": "^1.14.5",
     "react-google-login": "^5.1.21",
-    "react-query": "^2.22.0",
+    "react-query": "^2.23.0",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
