@@ -75,29 +75,35 @@ const NewSplitView = ({ renderer, cx }) => {
     subCx = subnet['cx']
   }
 
-  const updatePanelState = (selected) => {
+  const updatePanelState = (selected, event) => {
     // Position of the pointer
-    const ev = window.event
+    //const ev = window.event
+    const ev = event
     if (ev === undefined) {
       return
     }
-
-    const x = ev['clientX']
-    const y = ev['clientY']
     if (selected !== undefined && selected.length !== 0) {
-      setUIState({ ...uiState, pointerPosition: { x, y }, showPropPanel: true })
+      setUIState({ ...uiState, pointerPosition: ev.renderedPosition, showPropPanel: true })
     } else {
       setUIState({ ...uiState, showPropPanel: false })
     }
   }
   const mainEventHandlers = {
     setSelectedNodes: (selected) => {
-      updatePanelState(selected)
+      updatePanelState(selected, undefined)
       return dispatch({ type: SelectionActions.SET_MAIN_NODES, selected })
     },
     setSelectedEdges: (selected) => {
-      updatePanelState(selected)
+      updatePanelState(selected, undefined)
       return dispatch({ type: SelectionActions.SET_MAIN_EDGES, selected })
+    },
+    setLastSelectedNode: (selected, event) => {
+      updatePanelState(selected, event)
+      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_NODE, selected })
+    },
+    setLastSelectedEdge: (selected, event) => {
+      updatePanelState(selected, event)
+      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_EDGE, selected })
     },
   }
 

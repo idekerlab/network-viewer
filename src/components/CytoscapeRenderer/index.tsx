@@ -105,6 +105,8 @@ const tapHandler = (cy, eventHandlers, event) => {
     setTimeout(() => {
       eventHandlers.setSelectedEdges([])
       eventHandlers.setSelectedNodes([])
+      eventHandlers.setLastSelectedNode([])
+      eventHandlers.setLastSelectedEdge([])
     }, 10)
     // cy.elements().removeClass('faded')
     // cy.elements().removeClass('highlight')
@@ -114,12 +116,30 @@ const tapHandler = (cy, eventHandlers, event) => {
     if (evtTarget.isNode()) {
       console.log('* tap on Node', evtTarget.data())
       // Clear last one first
-      eventHandlers.setSelectedEdges([])
-      eventHandlers.setSelectedNodes([data.id], event)
+      //eventHandlers.setSelectedEdges([])
+      //eventHandlers.setSelectedNodes([data.id], event)
+      setTimeout(() => {
+        const selectedNodes = cy.$('node:selected')
+        const selectedEdges = cy.$('edge:selected')
+        const nodeIds = selectedNodes.map((node) => node.data().id)
+        const edgeIds = selectedEdges.map((edge) => edge.data().id.slice(1))
+        eventHandlers.setSelectedEdges(edgeIds)
+        eventHandlers.setSelectedNodes(nodeIds, event)
+        eventHandlers.setLastSelectedNode([data.id], event)
+      }, 5)
     } else {
       console.log('* tap on Edge', evtTarget.data())
-      eventHandlers.setSelectedNodes([])
-      eventHandlers.setSelectedEdges([data.id.slice(1)], event)
+      //eventHandlers.setSelectedNodes([])
+      //eventHandlers.setSelectedEdges([data.id.slice(1)], event)
+      setTimeout(() => {
+        const selectedNodes = cy.$('node:selected')
+        const selectedEdges = cy.$('edge:selected')
+        const nodeIds = selectedNodes.map((node) => node.data().id)
+        const edgeIds = selectedEdges.map((edge) => edge.data().id.slice(1))
+        eventHandlers.setSelectedEdges(edgeIds)
+        eventHandlers.setSelectedNodes(nodeIds, event)
+        eventHandlers.setLastSelectedEdge([data.id.slice(1)], event)
+      }, 5)
     }
   }
   console.log('tap clear', performance.now() - t0)
