@@ -1,13 +1,12 @@
 import React, { FC, useContext } from 'react'
-import IconButton from '@material-ui/core/IconButton'
 import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
-import AppsIcon from '@material-ui/icons/Apps'
 import Grid from '@material-ui/core/Grid'
 
 import { NDExSignInButton } from 'cytoscape-explore-components'
 
-import logo from '../../assets/images/ndex-logo.svg'
 import AppContext from '../../context/AppState'
+import ClassicModeButton from './ClassicModeButton'
+import NdexHomeButton from './NdexHomeButton'
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -19,27 +18,11 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'flex-start',
       top: theme.spacing(1),
       left: theme.spacing(1),
-      height: '3.5em',
-      padding: 0,
+      height: '3em',
+      padding: theme.spacing(1),
       background: 'rgba(255, 255, 255, 0.95)',
       zIndex: 1000,
       borderRadius: 5
-    },
-    ndexLogo: {
-      height: '3vh',
-    },
-    menuButton: {
-      marginRight: 0,
-    },
-    menuButtonHidden: {
-      display: 'none',
-    },
-    title: {
-      flexGrow: 1,
-      display: 'none',
-      [theme.breakpoints.up('sm')]: {
-        display: 'block',
-      },
     },
     search: {
       position: 'relative',
@@ -80,17 +63,6 @@ const useStyles = makeStyles((theme: Theme) =>
         },
       },
     },
-    formControl: {
-      margin: theme.spacing(0),
-      minWidth: 120,
-    },
-    selectEmpty: {
-      marginTop: theme.spacing(0),
-    },
-    searchType: {
-      width: '20ch',
-      padding: 0,
-    },
   }),
 )
 
@@ -123,13 +95,9 @@ const ToolBar: FC = (props) => {
     <div className={classes.root}>
       <Grid container direction="row" justify="flex-start" alignItems="center" spacing={0}>
         <Grid container direction="row" justify="flex-start" alignItems="center">
-          <IconButton color="default" aria-label="Ndex Home">
-            <img alt="NDEx logo" src={logo} className={classes.ndexLogo} />
-          </IconButton>
-          <IconButton aria-label="open in external apps" aria-haspopup="true" color="inherit">
-            <AppsIcon />
-          </IconButton>
+          <NdexHomeButton />
           <NDExSignInButton size="small" onLoginStateUpdated={loginStateUpdated} />
+          <ClassicModeButton />
         </Grid>
         <Grid container direction="row" justify="flex-end" alignItems="center"></Grid>
       </Grid>
