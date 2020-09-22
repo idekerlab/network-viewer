@@ -1,13 +1,19 @@
 import React, { FC, useContext } from 'react'
+import { useParams } from 'react-router-dom'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import Toolbar from '@material-ui/core/Toolbar'
 import SearchBox from './SearchBox'
 import AdvancedMenu from './AdvancedMenu'
-
+import ExportCxButton from '../ExportCxButton'
 import ExpandButton from './ExpandButton'
+
 
 import OpenInCytoscape from './OpenInCytoscape'
 import Divider from '@material-ui/core/Divider'
+
+import SaveNetworkButton from './SaveNetworkButton'
+
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,13 +38,15 @@ type FooterProps = {
 const FooterPanel: FC<FooterProps> = ({ width }: FooterProps) => {
   const classes = useStyles()
 
+
+
   return (
     <Toolbar variant='dense' className={classes.toolBar} style={{ width: width }}>
       <SearchBox />
-     
       <Divider orientation="vertical" flexItem />
       <div className={classes.grow} />
       <OpenInCytoscape />
+      <SaveNetworkButton />
       <ExpandButton />
       <AdvancedMenu />
     </Toolbar>

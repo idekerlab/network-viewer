@@ -11,7 +11,8 @@ const getTsv = async <T>(_, uuid: string, serverUrl: string, apiVersion: string,
   }
 
   const ndexClient = getNdexClient(`${serverUrl}/${apiVersion}`, credential)
-  return await ndexClient.getRawNetwork(uuid)
+  const cx = await ndexClient.getRawNetwork(uuid)
+  return 
 }
 
 export default function useTsv(uuid: string, serverUrl: string, apiVersion: string, credential: NdexCredential) {
