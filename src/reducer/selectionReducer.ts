@@ -6,10 +6,16 @@ export type Selected = {
   edges: string[]
 }
 
+export type LastSelected = {
+  nodes: string[]
+  edges: string[]
+  from: string
+}
+
 export type SelectionState = {
   main: Selected
   sub: Selected
-  lastSelected: Selected
+  lastSelected: LastSelected
 }
 
 export const EMPTY_SELECTION: SelectionState = {
@@ -24,12 +30,14 @@ export const EMPTY_SELECTION: SelectionState = {
   lastSelected: {
     nodes: [],
     edges: [],
+    from: '',
   },
 }
 
 export type SelectionAction = {
   type: string
   selected: string[]
+  from: string
 }
 
 export const SelectionActions = {
@@ -39,6 +47,7 @@ export const SelectionActions = {
   SET_LAST_SELECTED_EDGE: 'setLastSelectedEdge',
   SET_SUB_NODES: 'setSubNodes',
   SET_SUB_EDGES: 'setSubEdges',
+  SET_LAST_SELECTED_FROM: 'setLastSelectedFrom',
   CLEAR_ALL: 'clearAll',
 }
 
@@ -49,13 +58,18 @@ const selectionReducer = (state: SelectionState, action: SelectionAction): Selec
     case SelectionActions.SET_MAIN_EDGES:
       return { ...state, main: { edges: action.selected, nodes: state.main.nodes } }
     case SelectionActions.SET_LAST_SELECTED_NODE:
-      return { ...state, lastSelected: { nodes: action.selected, edges: [] } }
+      return { ...state, lastSelected: { nodes: action.selected, edges: [], from: action.from } }
     case SelectionActions.SET_LAST_SELECTED_EDGE:
-      return { ...state, lastSelected: { nodes: [], edges: action.selected } }
+      return { ...state, lastSelected: { nodes: [], edges: action.selected, from: action.from } }
     case SelectionActions.SET_SUB_NODES:
-      return { ...state, sub: { nodes: action.selected, edges: state.main.edges } }
+      return { ...state, sub: { nodes: action.selected, edges: state.sub.edges } }
     case SelectionActions.SET_SUB_EDGES:
-      return { ...state, sub: { edges: action.selected, nodes: state.main.nodes } }
+      return { ...state, sub: { edges: action.selected, nodes: state.sub.nodes } }
+    case SelectionActions.SET_LAST_SELECTED_FROM:
+      return {
+        ...state,
+        lastSelected: { nodes: state.lastSelected.nodes, edges: state.lastSelected.edges, from: action.from },
+      }
     case SelectionActions.CLEAR_ALL:
       return EMPTY_SELECTION
     default:

@@ -39,8 +39,21 @@ const SelectionList = (props) => {
     setSelectedNodeAttributes(kvMap)
   }, [data])
 
-  const nodeCount = selection.main.nodes.length
-  const edgeCount = selection.main.edges.length
+  let nodes = []
+  let edges = []
+  let nodeCount
+  let edgeCount
+  if (selection.lastSelected.from === 'main') {
+    nodes = selection.main.nodes
+    edges = selection.main.edges
+  } else {
+    nodes = selection.sub.nodes
+    edges = selection.sub.edges
+  }
+  nodeCount = nodes.length
+  edgeCount = edges.length
+
+  console.log(selection)
 
   return (
     <AutoSizer disableWidth>
@@ -49,14 +62,14 @@ const SelectionList = (props) => {
           <EntryTable
             key={'selected-nodes'}
             label={`Selected Nodes (${nodeCount})`}
-            selectedObjects={selection.main.nodes}
+            selectedObjects={nodes}
             attributes={attributes.nodeAttr}
           />
 
           <EntryTable
             key={'selected-edges'}
             label={`Selected Edges (${edgeCount})`}
-            selectedObjects={selection.main.edges}
+            selectedObjects={edges}
             attributes={attributes.edgeAttr}
           />
         </SplitPane>

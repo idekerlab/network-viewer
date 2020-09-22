@@ -99,17 +99,41 @@ const NewSplitView = ({ renderer, cx }) => {
     },
     setLastSelectedNode: (selected, event) => {
       updatePanelState(selected, event)
-      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_NODE, selected })
+      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_NODE, selected, from: 'main' })
     },
     setLastSelectedEdge: (selected, event) => {
       updatePanelState(selected, event)
-      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_EDGE, selected })
+      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_EDGE, selected, from: 'main' })
+    },
+    setLastSelectedFrom: (selected, event) => {
+      updatePanelState(selected, event)
+      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_FROM, from: 'main' })
     },
   }
 
   const subEventHandlers = {
-    setSelectedNodes: (selected) => dispatch({ type: SelectionActions.SET_SUB_NODES, selected }),
-    setSelectedEdges: (selected) => dispatch({ type: SelectionActions.SET_SUB_EDGES, selected }),
+    //setSelectedNodes: (selected) => dispatch({ type: SelectionActions.SET_SUB_NODES, selected }),
+    //setSelectedEdges: (selected) => dispatch({ type: SelectionActions.SET_SUB_EDGES, selected }),
+    setSelectedNodes: (selected) => {
+      updatePanelState(selected, undefined)
+      return dispatch({ type: SelectionActions.SET_SUB_NODES, selected })
+    },
+    setSelectedEdges: (selected) => {
+      updatePanelState(selected, undefined)
+      return dispatch({ type: SelectionActions.SET_SUB_EDGES, selected })
+    },
+    setLastSelectedNode: (selected, event) => {
+      updatePanelState(selected, event)
+      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_NODE, selected, from: 'sub' })
+    },
+    setLastSelectedEdge: (selected, event) => {
+      updatePanelState(selected, event)
+      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_EDGE, selected, from: 'sub' })
+    },
+    setLastSelectedFrom: (selected, event) => {
+      updatePanelState(selected, event)
+      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_FROM, from: 'sub' })
+    },
   }
 
   const setMain = (cy: CyReference) => cyDispatch({ type: CyActions.SET_MAIN, cyReference: cy })
@@ -185,8 +209,7 @@ const NewSplitView = ({ renderer, cx }) => {
 
   return (
     <div className={classes.root}>
-      <Popup cx={cx} />
-      <Popup cx={cx} objectType={'edge'} />
+      {selection.lastSelected.nodes.length > 0 ? <Popup cx={cx} /> : <Popup cx={cx} objectType={'edge'} />}
 
       <div className={classes.subnet} style={{ height: topHeight }}>
         {showSearchResult ? <NavigationPanel target={'sub'} /> : <div />}
