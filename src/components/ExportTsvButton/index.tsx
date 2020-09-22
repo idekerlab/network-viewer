@@ -1,21 +1,19 @@
 import React from 'react'
 import IconButton from '@material-ui/core/IconButton'
-import DownloadIcon from '@material-ui/icons/CloudDownload'
+import DownloadIcon from '@material-ui/icons/AssignmentReturned';
 
 const DUMMY = {
   data: ['a'],
   test: 'C',
 }
 
-
-
-const ExportCxButton = ({cx}) => {
+const ExportTsvButton = ({cx}) => {
   let disabled = true
   if(cx !== undefined) {
     disabled = false
   }
 
-  const exportCx = (content, fileName, contentType) => {
+  const exportTsv = (content, fileName, contentType) => {
     const a = document.createElement('a')
     const file = new Blob([content], { type: contentType })
     a.href = URL.createObjectURL(file)
@@ -24,7 +22,7 @@ const ExportCxButton = ({cx}) => {
   }
 
   const handleClick = () => {
-    exportCx(JSON.stringify(cx), 'dummy-file-name.json', 'application/json')
+    exportTsv(JSON.stringify(cx), 'dummy-file-name.json', 'application/json')
   }
 
   return (
@@ -34,4 +32,4 @@ const ExportCxButton = ({cx}) => {
   )
 }
 
-export default ExportCxButton
+export default ExportTsvButton

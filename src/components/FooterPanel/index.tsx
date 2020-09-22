@@ -3,15 +3,10 @@ import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import Toolbar from '@material-ui/core/Toolbar'
 import SearchBox from './SearchBox'
 import AdvancedMenu from './AdvancedMenu'
-import { useParams } from 'react-router-dom'
 
 import ExpandButton from './ExpandButton'
-import { DownloadButton, DownloadProps, CyNDExProvider, OpenInCytoscapeButton } from 'cytoscape-explore-components'
 
-import useSearch from '../../hooks/useSearch'
-import AppContext from '../../context/AppState'
 import OpenInCytoscape from './OpenInCytoscape'
-import SaveNetworkToButton from './SaveNetworkToButton'
 import Divider from '@material-ui/core/Divider'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -36,30 +31,13 @@ type FooterProps = {
 
 const FooterPanel: FC<FooterProps> = ({ width }: FooterProps) => {
   const classes = useStyles()
-  const { uuid } = useParams()
-
-  const { query, queryMode } = useContext(AppContext)
-  const searchResult = useSearch(uuid, query, '', queryMode)
-
-  const subnet = searchResult.data
-  let subCx
-  if (subnet !== undefined) {
-    subCx = subnet['cx']
-  }
-
-  const downloadProps: DownloadProps = {
-    data: subCx,
-    tooltip: 'Download query result as CX',
-    fileName: `${uuid} subnet.cx`,
-  }
 
   return (
     <Toolbar variant='dense' className={classes.toolBar} style={{ width: width }}>
       <SearchBox />
-      <div className={classes.grow} />
-      <DownloadButton {...downloadProps} />
+     
       <Divider orientation="vertical" flexItem />
-      <SaveNetworkToButton />
+      <div className={classes.grow} />
       <OpenInCytoscape />
       <ExpandButton />
       <AdvancedMenu />
