@@ -25,10 +25,12 @@ async function loadResource() {
   const resource = await response.json()
   console.log('* Resource file loaded:', resource)
   const ndexUrl = resource['ndexUrl']
+  const viewerTh = resource['viewerThreshold']
 
   const config: AppConfig = {
     ndexUrl,
     ndexHttps: `https://${ndexUrl}`,
+    viewerThreshold: viewerTh
   }
   
   ReactDOM.render(

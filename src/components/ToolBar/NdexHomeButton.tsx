@@ -1,5 +1,5 @@
 import React, { FC, useContext } from 'react'
-import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
+import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import { IconButton, Tooltip } from '@material-ui/core'
 import AppContext from '../../context/AppState'
 import logo from '../../assets/images/ndex-logo.svg'
