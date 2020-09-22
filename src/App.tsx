@@ -91,7 +91,7 @@ const App = ({config}) => {
           </AppContext.Provider>
         </Route>
         <Route path="/">
-          <TopPanel />
+          <TopPanel config={config}/>
         </Route>
       </Switch>
     </BrowserRouter>
