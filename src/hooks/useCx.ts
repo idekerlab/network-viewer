@@ -12,6 +12,7 @@ const getCx = async <T>(
   credential: NdexCredential,
   threshold: number,
   objectCount: number,
+  cxVersion: string
 ) => {
   if (apiVersion === null || serverUrl === null || uuid === null) {
     // If invalid parameters, just return empty result.
@@ -24,7 +25,10 @@ const getCx = async <T>(
   }
 
   const ndexClient = getNdexClient(`${serverUrl}/${apiVersion}`, credential)
-  return await ndexClient.getRawNetwork(uuid)
+  
+  return cxVersion == '2' 
+    ? await ndexClient.getCX2Network(uuid)
+    : await ndexClient.getRawNetwork(uuid)
 }
 
 export default function useCx(
@@ -34,6 +38,7 @@ export default function useCx(
   credential: NdexCredential,
   threshold: number = 5000000,
   objectCount: number = 0,
+  cxVersion: string = '1',
 ) {
-  return useQuery(['cx', uuid, serverUrl, apiVersion, credential, threshold, objectCount], getCx)
+  return useQuery(['cx', uuid, serverUrl, apiVersion, credential, threshold, objectCount, cxVersion], getCx)
 }
