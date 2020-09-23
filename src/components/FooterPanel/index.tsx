@@ -11,9 +11,7 @@ import ExpandButton from './ExpandButton'
 import OpenInCytoscape from './OpenInCytoscape'
 import Divider from '@material-ui/core/Divider'
 
-import SaveNetworkButton from './SaveNetworkButton'
-
-import CircularProgress from '@material-ui/core/CircularProgress'
+import SaveNetworkCXButton from './SaveNetworkCXButton'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -46,7 +44,7 @@ const FooterPanel: FC<FooterProps> = ({ width }: FooterProps) => {
       <Divider orientation="vertical" flexItem />
       <div className={classes.grow} />
       <OpenInCytoscape />
-      <SaveNetworkButton />
+      <SaveNetworkCXButton />
       <ExpandButton />
       <AdvancedMenu />
     </Toolbar>

@@ -36,7 +36,8 @@ const getEdgeInfo = (niceCX, edgeId) => {
     var counter;
     if (niceCX.edgeAttributes && niceCX.edgeAttributes[edgeId]) {
         var edgeAttrs = niceCX.edgeAttributes[edgeId];
-        edgeAttrs.forEach((value, pname) => {
+        Object.keys(edgeAttrs).forEach((pname) => {
+            const value = edgeAttrs[pname];
             if (pname != 'selected') {
                 if (!edgeInfo[pname]) {
                     edgeInfo[pname] = value;
@@ -77,7 +78,8 @@ const getNodeInfo = (niceCX, nodeId) => {
     var counter = 1;
     if (niceCX.nodeAttributes && niceCX.nodeAttributes[nodeId]) {
         var nodeAttrs = niceCX.nodeAttributes[nodeId];
-        nodeAttrs.forEach((value, pname) => {
+        Object.keys(nodeAttrs).forEach((pname) => {
+            const value = nodeAttrs[pname];
             if (pname != "selected") {
                 if (!nodeInfo[pname]) {
                     nodeInfo[pname] = value;
@@ -129,7 +131,7 @@ const getAttributeValue = (attribute) => {
     return returnStr;
 };
 
-export const getTSVOfCurrentNiceCX = (niceCX) => {
+const getTSVOfCurrentNiceCX = (niceCX) => {
 
     /*
      Source		Node name (if Node Name missing, then represents, node Id)
@@ -207,8 +209,6 @@ export const getTSVOfCurrentNiceCX = (niceCX) => {
     headers['Target ID'] = Object.keys(headers).length;
     headers['Target Alias'] = Object.keys(headers).length;
     var targetAliasOrder = headers['Target Alias'];
-
-
 
     for (var key in nodeKeys) {
         var nodeId = nodeKeys[key];
@@ -347,3 +347,10 @@ export const getTSVOfCurrentNiceCX = (niceCX) => {
 
     return fileString;
 };
+
+const cx2tsv = (cx:any) => {
+    const niceCX = cyNetworkUtils.rawCXtoNiceCX(cx);
+    return getTSVOfCurrentNiceCX(niceCX);
+}
+
+export { cx2tsv }

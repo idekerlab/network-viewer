@@ -16,6 +16,7 @@ import { fitContent } from '../../utils/cyjsUtil'
 
 import useSearch from '../../hooks/useSearch'
 import SaveQueryButton from './SaveQueryButton'
+import AdvancedQueryMenu from './AdvancedQueryMenu'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -177,6 +178,7 @@ const SearchBox: FC = () => {
       </IconButton>
       <DownloadButton {...downloadProps} />
       <SaveQueryButton />
+      <AdvancedQueryMenu/>
       <IconButton color="primary" size='small' disableFocusRipple disableRipple className={classes.button} disabled={disableQuery} onClick={handleClear}>
         <CloseIcon />
       </IconButton>

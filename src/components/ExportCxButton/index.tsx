@@ -1,22 +1,15 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import IconButton from '@material-ui/core/IconButton'
 import DownloadIcon from '@material-ui/icons/CloudDownload'
-
-import CircularProgress from '@material-ui/core/CircularProgress'
 
 const DUMMY = {
   data: ['a'],
   test: 'C',
 }
 
-const ExportCxButton = ({cx, startDownload}) => {
-  
-  useEffect(() => {
-    if (startDownload) {
-      handleClick();
-    }
-  }, []);
-  
+
+
+const ExportCxButton = ({cx}) => {
   let disabled = true
   if(cx !== undefined) {
     disabled = false

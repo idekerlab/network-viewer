@@ -16,8 +16,7 @@ const SaveNetworkCXButton = () => {
   const { status, data, error, isFetching } = useCx(uuid, 'http://dev.ndexbio.org', 'v2', ndexCredential);
 
   return (
-    isFetching ? <IconButton><CircularProgress disableShrink size={'24px'} color="secondary"/></IconButton>
-    : <ExportCxButton cx={ status && status == 'success' ? data : null } startDownload={true} />
+    <ExportCxButton cx={ status && status == 'success' ? data : null } />
   )
 }
 
