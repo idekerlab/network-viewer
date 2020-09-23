@@ -1,17 +1,16 @@
 import React from 'react'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
-import Popover from '@material-ui/core/Popover'
+
 import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
-import Typography from '@material-ui/core/Typography'
+
 import IconButton from '@material-ui/core/Button'
 import MoreIcon from '@material-ui/icons/MoreVert'
-import SaveTSVMenuItem from './SaveTSVMenuItem'
+import SaveQueryTSVMenuItem from './SaveQueryTSVMenuItem'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     typography: {
-      padding: theme.spacing(2),
+      //padding: theme.spacing(2),
     },
   }),
 )
@@ -50,7 +49,7 @@ const AdvancedQueryMenu = () => {
           horizontal: 'center',
         }}
       >
-       <SaveTSVMenuItem/>
+       <SaveQueryTSVMenuItem/>
       </Menu>
     </div>
   )

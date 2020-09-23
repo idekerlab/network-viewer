@@ -4,7 +4,7 @@ import useCx from '../../hooks/useCx'
 import AppContext from '../../context/AppState'
 import ExportTsvMenuItem from '../ExportTsvMenuItem'
 
-const SaveNetworkButton = () => {
+const SaveNetworkTSVMenuItem = () => {
 
   const { uuid } = useParams();
 
@@ -17,4 +17,4 @@ const SaveNetworkButton = () => {
   
   }
   
-  export default SaveNetworkButton
+  export default SaveNetworkTSVMenuItem
