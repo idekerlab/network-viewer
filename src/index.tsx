@@ -26,11 +26,13 @@ async function loadResource() {
   console.log('* Resource file loaded:', resource)
   const ndexUrl = resource['ndexUrl']
   const viewerTh = resource['viewerThreshold']
+  const maxNumObjects = resource['maxNumObjects']
 
   const config: AppConfig = {
     ndexUrl,
     ndexHttps: `https://${ndexUrl}`,
-    viewerThreshold: viewerTh
+    viewerThreshold: viewerTh,
+    maxNumObjects
   }
   
   ReactDOM.render(
