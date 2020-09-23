@@ -1,89 +1,117 @@
-import React from 'react'
-import { withStyles, Theme, createStyles, makeStyles } from '@material-ui/core/styles'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableContainer from '@material-ui/core/TableContainer'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
-import Paper from '@material-ui/core/Paper'
-import VirtualizedDataTable from './VirtualizedDataTable'
-
-const StyledTableCell = withStyles((theme: Theme) =>
-  createStyles({
-    head: {
-      backgroundColor: theme.palette.secondary.main,
-      color: theme.palette.common.white,
-      fontSize: '1.3em',
-      fontWeight: 500,
-    },
-    body: {
-      fontSize: '0.8em',
-    },
-  }),
-)(TableCell)
-
-const StyledTableRow = withStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      '&:nth-of-type(odd)': {
-        backgroundColor: theme.palette.action.hover,
-      },
-    },
-  }),
-)(TableRow)
-
-const useStyles = makeStyles({
-  table: {
-    marginTop: '1em',
-  },
-  container: {
-    margin: '0.5em',
-  },
-})
+import React, { useMemo, useEffect, useState } from 'react'
+import Table from './Table'
+import Twinble from './Table2'
 
 const EntryTable = (props) => {
   const { selectedObjects, attributes, label } = props
-  if (attributes === undefined) {
-    return <div />
+  const [state, setState] = useState(true)
+
+  const replacePeriods = (string) => {
+    const regex = /\./gi
+    return string.replace(regex, '(_)')
   }
 
-  const getDataArray = (ids, attributes) => {
+  const startsWithNumber = (string) => {
+    return '0123456789'.includes(string.charAt(0))
+  }
 
-    const data = []
-    let len = ids.length
+  const getColumnWidth = (rows, accessor, header) => {
+    const spacing = 10
+    const maxWidth = 300
 
-    while(len--) {
-      const id = ids[len]
-      const attr = attributes[id]
-      if(attr == undefined) {
+    const cellLength = Math.max(...rows.map((row) => (`${row[accessor]}` || '').length), header.length)
+    return Math.min(maxWidth, cellLength * spacing)
+  }
 
+  const columns = useMemo(() => {
+    const columnsList = []
+    for (let id of selectedObjects) {
+      const attrs = attributes[id]
+      if (attrs === undefined) {
         continue
       }
-      let name = attr.get('name')
-      if(name === undefined) {
-        name = id
-      }
-      const keys =[...attr.keys()]
-      let idx = keys.length
-
-      while(idx--) {
-        const row = {}
-        const key = keys[idx]
-        row['id'] = name
-        row['propName'] = key
-        row['value'] = attr.get(key)
-        data.push(row)
+      for (let attr of attrs) {
+        if (attr[0] !== 'name') {
+          if (Array.isArray(attr[1])) {
+            for (let item of attr[1]) {
+              if (item !== '') {
+                if (!columnsList.includes(attr[0])) {
+                  columnsList.push(attr[0])
+                }
+                break
+              }
+            }
+          } else {
+            if (attr[1] !== '') {
+              if (!columnsList.includes(attr[0])) {
+                columnsList.push(attr[0])
+              }
+            }
+          }
+        }
+        if (columnsList.length + 1 === attrs.length) {
+          break
+        }
       }
     }
-    return data
-  }
+    if (columnsList.length > 0) {
+      columnsList.unshift('name')
+    }
+    return columnsList
+  }, [selectedObjects])
 
-  const dataRows = getDataArray(selectedObjects, attributes)
+  const data = useMemo(() => {
+    const dataList = []
+    for (let id of selectedObjects) {
+      const attrs = attributes[id]
+      if (attrs == undefined) {
+        continue
+      }
+      const row = {}
+      for (let column of columns) {
+        const value = attrs.get(column)
+        if (Array.isArray(value)) {
+          row[replacePeriods(column)] = value.join(', ')
+        } else {
+          row[replacePeriods(column)] = attrs.get(column)
+        }
+      }
+      dataList.push(row)
+    }
+    let nonNumbers = dataList.filter((entry) => !startsWithNumber(entry.name))
+    let numbers = dataList.filter((entry) => startsWithNumber(entry.name))
+    nonNumbers.sort((a, b) => (a.name > b.name ? 1 : -1))
+    numbers.sort((a, b) => (a.name > b.name ? 1 : -1))
+    return nonNumbers.concat(numbers)
+  }, [selectedObjects])
 
-  return (
-    <VirtualizedDataTable label={label} data={dataRows} />
-  )
+  const finalColumns = useMemo(() => {
+    const columnsObject = columns.map((column) => {
+      if (column === 'name') {
+        return {
+          Header: label,
+          accessor: 'name',
+          minWidth: getColumnWidth(data, 'name', label),
+        }
+      } else {
+        return {
+          Header: column,
+          accessor: replacePeriods(column),
+          minWidth: getColumnWidth(data, column, column),
+        }
+      }
+    })
+    return columnsObject
+  }, [selectedObjects])
+
+  useEffect(() => {
+    setState(!state)
+  }, [selectedObjects])
+
+  //The DynamicSizeList used in the Table component has trouble updating
+  //So I'm doing this to force it to make a whole new table every time
+  //Please fix if there's a better way
+  return state ? <Table columns={finalColumns} data={data} /> : <Twinble columns={finalColumns} data={data} />
 }
 
 export default EntryTable

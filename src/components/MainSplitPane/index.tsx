@@ -15,8 +15,6 @@ import ClosedPanel from '../DataPanel/ClosedPanel'
 const V2 = 'v2'
 const V3 = 'v3'
 
-const TH = 7000
-
 const RENDERER = {
   lgr: 'lgr',
   cyjs: 'cyjs',
@@ -67,6 +65,8 @@ const MainSplitPane = () => {
   const defSize = Math.floor(width * 0.65)
 
   const [leftWidth, setLeftWidth] = useState(defSize)
+  const maxObj = config.maxNumObjects
+  const th = config.viewerThreshold
 
   useEffect(() => {
     if (!uiState.dataPanelOpen) {
@@ -82,9 +82,17 @@ const MainSplitPane = () => {
   let apiVersion = null
   let rend = null
 
+  let objectCount = 0
+  let edgeCount = 0
+  let nodeCount = 0
+
   if (summary !== undefined && Object.keys(summary).length !== 0) {
-    const count = summary['edgeCount'] + summary['nodeCount']
-    if (count > TH) {
+    edgeCount = summary['edgeCount']
+    nodeCount = summary['nodeCount']
+
+    objectCount = nodeCount + edgeCount
+
+    if (objectCount > th) {
       apiVersion = V3
       rend = RENDERER.lgr
     } else {
@@ -93,7 +101,7 @@ const MainSplitPane = () => {
     }
   }
 
-  const cxResponse = useCx(uuid, config.ndexHttps, apiVersion, ndexCredential)
+  const cxResponse = useCx(uuid, config.ndexHttps, apiVersion, ndexCredential, maxObj, objectCount)
 
   if (cxResponse.data === undefined || cxResponse.isFetching || rend === null) {
     return (
@@ -114,7 +122,7 @@ const MainSplitPane = () => {
     <div className={classes.wrapper}>
       <SplitPane className={classes.base} split="vertical" minSize={550} size={leftWidth} onDragFinished={handleChange}>
         <div className={classes.leftPanel}>
-          <NetworkPanel cx={cxResponse.data} renderer={rend} />
+          <NetworkPanel cx={cxResponse.data} renderer={rend} objectCount={objectCount} />
           <FooterPanel width={leftWidth} />
         </div>
         <DataPanel uuid={uuid} cx={cxResponse.data} />

@@ -35,17 +35,12 @@ const defNdexCredential: NdexCredential = {
 const App = ({config}) => {
 
   const history = useHistory(defUIState)
+  
   const [uiState, setUIState] = useState(defUIState)
-  const [uuid, setUuid] = useState('')
-  const [summary, setSummary] = useState({})
-  const [style, setStyle] = useState({})
   const [query, setQuery] = useState('')
   const [queryMode, setQueryMode] = useState('direct')
-  const [queryResult, setQueryResult] = useState(null)
 
   const [ndexCredential, setNdexCredential] = useState(defNdexCredential)
-
-  const [selectedNodeAttributes, setSelectedNodeAttributes] = useState({})
 
   const [selection, dispatch] = useReducer(selectionReducer, EMPTY_SELECTION)
   const [cyReference, cyDispatch] = useReducer(cyReducer, INITIAL_CY_REFERENCE)
@@ -62,21 +57,11 @@ const App = ({config}) => {
 
     uiState,
     setUIState,
-    style,
-    setStyle,
-    selectedNodeAttributes,
-    setSelectedNodeAttributes,
-    summary,
-    setSummary,
-    uuid,
-    setUuid,
 
     query,
     setQuery,
     queryMode,
     setQueryMode,
-    queryResult,
-    setQueryResult,
 
     ndexCredential,
     setNdexCredential,

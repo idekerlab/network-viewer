@@ -24,10 +24,12 @@ const ExpandButton = () => {
   const { uiState, setUIState, cyReference } = useContext(AppContext)
 
   const handleClick = () => {
-    setUIState({ ...uiState, showSearchResult: !uiState.showSearchResult })
+    const current = uiState.showSearchResult
+
+    setUIState({ ...uiState, showSearchResult: !current })
     setTimeout(() => {
       fitContent(cyReference)
-      lockMainWindow(cyReference, uiState.showSearchResult)
+      lockMainWindow(cyReference, !current )
     }, 300)
   }
 

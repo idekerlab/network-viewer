@@ -1,4 +1,6 @@
 {
   "version": "0.1.0",
-  "ndexUrl": "dev.ndexbio.org"
+  "ndexUrl": "dev.ndexbio.org",
+  "viewerThreshold": 10000,
+  "maxNumObjects": 5000000
 }

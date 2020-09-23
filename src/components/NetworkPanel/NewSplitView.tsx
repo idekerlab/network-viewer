@@ -15,6 +15,7 @@ import NavigationPanel from '../NavigationPanel'
 import Popup from '../Popup'
 import { getEdgeCount, getNodeCount } from '../../utils/cxUtil'
 import MessageDialog from '../MessageDialog'
+import EmptyView from './EmptyView'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
     lowerPanel: {
       width: '100%',
       flexGrow: 1,
-      borderTop: '2px solid #AAAAAA',
+      borderBottom: '1px solid #AAAAAA',
     },
     title: {
       position: 'fixed',
@@ -54,20 +55,25 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const LAYOUT_TH = 1000
 
-/**
- *
- * For now, Upper panel always uses Cyjs.
- *
- * @param props
- */
-const NewSplitView = ({ renderer, cx }) => {
+type ViewProps = {
+  renderer: string
+  cx: object[]
+  objectCount: number
+}
+
+const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount }: ViewProps) => {
   const classes = useStyles()
   const { uuid } = useParams()
 
   const [busy, setBusy] = useState(false)
 
-  const { query, queryMode, setUIState, uiState, cyReference, cyDispatch, selection, dispatch } = useContext(AppContext)
+  const { query, queryMode, setUIState, uiState, cyReference, cyDispatch, selection, dispatch, config } = useContext(
+    AppContext,
+  )
+
   const searchResult = useSearch(uuid, query, '', queryMode)
+
+  const { maxNumObjects, viewerThreshold } = config
 
   const subnet = searchResult.data
   let subCx
@@ -75,35 +81,67 @@ const NewSplitView = ({ renderer, cx }) => {
     subCx = subnet['cx']
   }
 
-  const updatePanelState = (selected) => {
+  const updatePanelState = (selected, event) => {
     // Position of the pointer
-    const ev = window.event
+    //const ev = window.event
+    const ev = event
     if (ev === undefined) {
       return
     }
 
-    const x = ev['clientX']
-    const y = ev['clientY']
+
     if (selected !== undefined && selected.length !== 0) {
-      setUIState({ ...uiState, pointerPosition: { x, y }, showPropPanel: true })
+      setUIState({ ...uiState, pointerPosition: ev.renderedPosition, showPropPanel: true })
     } else {
       setUIState({ ...uiState, showPropPanel: false })
     }
   }
   const mainEventHandlers = {
     setSelectedNodes: (selected) => {
-      updatePanelState(selected)
+      updatePanelState(selected, undefined)
       return dispatch({ type: SelectionActions.SET_MAIN_NODES, selected })
     },
     setSelectedEdges: (selected) => {
-      updatePanelState(selected)
+      updatePanelState(selected, undefined)
       return dispatch({ type: SelectionActions.SET_MAIN_EDGES, selected })
+    },
+    setLastSelectedNode: (selected, event) => {
+      updatePanelState(selected, event)
+      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_NODE, selected, from: 'main' })
+    },
+    setLastSelectedEdge: (selected, event) => {
+      updatePanelState(selected, event)
+      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_EDGE, selected, from: 'main' })
+    },
+    setLastSelectedFrom: (selected, event) => {
+      updatePanelState(selected, event)
+      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_FROM, from: 'main' })
     },
   }
 
   const subEventHandlers = {
-    setSelectedNodes: (selected) => dispatch({ type: SelectionActions.SET_SUB_NODES, selected }),
-    setSelectedEdges: (selected) => dispatch({ type: SelectionActions.SET_SUB_EDGES, selected }),
+    //setSelectedNodes: (selected) => dispatch({ type: SelectionActions.SET_SUB_NODES, selected }),
+    //setSelectedEdges: (selected) => dispatch({ type: SelectionActions.SET_SUB_EDGES, selected }),
+    setSelectedNodes: (selected) => {
+      updatePanelState(selected, undefined)
+      return dispatch({ type: SelectionActions.SET_SUB_NODES, selected })
+    },
+    setSelectedEdges: (selected) => {
+      updatePanelState(selected, undefined)
+      return dispatch({ type: SelectionActions.SET_SUB_EDGES, selected })
+    },
+    setLastSelectedNode: (selected, event) => {
+      updatePanelState(selected, event)
+      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_NODE, selected, from: 'sub' })
+    },
+    setLastSelectedEdge: (selected, event) => {
+      updatePanelState(selected, event)
+      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_EDGE, selected, from: 'sub' })
+    },
+    setLastSelectedFrom: (selected, event) => {
+      updatePanelState(selected, event)
+      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_FROM, from: 'sub' })
+    },
   }
 
   const setMain = (cy: CyReference) => cyDispatch({ type: CyActions.SET_MAIN, cyReference: cy })
@@ -119,6 +157,16 @@ const NewSplitView = ({ renderer, cx }) => {
   const bottomHeight = height - topHeight
 
   const getMainRenderer = (renderer: string) => {
+    // Case 1: network is huge
+    if (objectCount > maxNumObjects) {
+      return (
+        <EmptyView
+          title="Data is too large"
+          message={`There are ${objectCount} objects in this network and it is too large to display. 
+          Please use query function below to extract subnetworks.`}
+        />
+      )
+    }
     if (renderer !== 'lgr') {
       return (
         <CytoscapeRenderer
@@ -173,23 +221,19 @@ const NewSplitView = ({ renderer, cx }) => {
   }
 
   let lowerOpacity = 1
-  if (showSearchResult) {
-    lowerOpacity = 0.8
-  }
 
   return (
     <div className={classes.root}>
-      <Popup cx={cx} />
-      <Popup cx={cx} objectType={'edge'} />
+      {selection.lastSelected.nodes.length > 0 ? <Popup cx={cx} /> : <Popup cx={cx} objectType={'edge'} />}
 
-      <div className={classes.subnet} style={{ height: topHeight }}>
-        {showSearchResult ? <NavigationPanel target={'sub'} /> : <div />}
-        {getSubRenderer()}
-      </div>
       <div className={classes.lowerPanel} style={{ height: bottomHeight, opacity: lowerOpacity }}>
         <NavigationPanel target={'main'} />
         {!showSearchResult ? <div /> : <Typography className={classes.title}>Overview</Typography>}
         {getMainRenderer(renderer)}
+      </div>
+      <div className={classes.subnet} style={{ height: topHeight }}>
+        {showSearchResult ? <NavigationPanel target={'sub'} /> : <div />}
+        {getSubRenderer()}
       </div>
     </div>
   )
