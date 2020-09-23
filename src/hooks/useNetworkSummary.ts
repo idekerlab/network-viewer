@@ -18,8 +18,7 @@ const getNetworkSummary = async <T>(
     return cache
   }
 
-
-  const ndexClient = getNdexClient(`${serverUrl}/${apiVersion}`, credential)
+  const ndexClient = getNdexClient(`${serverUrl}/v2`, credential)
   const summary = await ndexClient.getNetworkSummary(uuid)
   summaryMap[uuid] = summary
 

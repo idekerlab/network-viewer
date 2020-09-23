@@ -221,23 +221,6 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount }: ViewProps) =
   }
 
   let lowerOpacity = 1
-  const { main } = cyReference
-  // if (showSearchResult && main !== null && main !== undefined) {
-  //   // Disable all controls if necessary
-  //   const currentState = main.boxSelectionEnabled()
-  //   if (currentState) {
-  //     main.boxSelectionEnabled(false)
-  //     main.nodes().ungrabify()
-  //     lowerOpacity = 0.5
-  //   }
-  // } else if (!showSearchResult && main !== null && main !== undefined) {
-  //   const currentState = main.boxSelectionEnabled()
-  //   if (!currentState) {
-  //     main.boxSelectionEnabled(true)
-  //     main.nodes().grabify()
-  //     lowerOpacity = 1
-  //   }
-  // }
 
   return (
     <div className={classes.root}>

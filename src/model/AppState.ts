@@ -17,15 +17,10 @@ type AppState = {
   uiState: UIState
   setUIState: Function
   
-  style: object
-  setStyle: Function
-  
   query: string
   setQuery: Function
   queryMode: string
   setQueryMode: Function
-  queryResult: object
-  setQueryResult: Function
 
   ndexCredential: NdexCredential
   setNdexCredential: Function

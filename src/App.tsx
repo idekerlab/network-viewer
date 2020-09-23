@@ -35,11 +35,10 @@ const defNdexCredential: NdexCredential = {
 const App = ({config}) => {
 
   const history = useHistory(defUIState)
+  
   const [uiState, setUIState] = useState(defUIState)
-  const [style, setStyle] = useState({})
   const [query, setQuery] = useState('')
   const [queryMode, setQueryMode] = useState('direct')
-  const [queryResult, setQueryResult] = useState(null)
 
   const [ndexCredential, setNdexCredential] = useState(defNdexCredential)
 
@@ -58,15 +57,11 @@ const App = ({config}) => {
 
     uiState,
     setUIState,
-    style,
-    setStyle,
 
     query,
     setQuery,
     queryMode,
     setQueryMode,
-    queryResult,
-    setQueryResult,
 
     ndexCredential,
     setNdexCredential,
