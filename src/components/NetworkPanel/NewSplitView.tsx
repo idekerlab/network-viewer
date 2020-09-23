@@ -80,35 +80,65 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount }: ViewProps) =
     subCx = subnet['cx']
   }
 
-  const updatePanelState = (selected) => {
+  const updatePanelState = (selected, event) => {
     // Position of the pointer
-    const ev = window.event
+    //const ev = window.event
+    const ev = event
     if (ev === undefined) {
       return
     }
-
-    const x = ev['clientX']
-    const y = ev['clientY']
     if (selected !== undefined && selected.length !== 0) {
-      setUIState({ ...uiState, pointerPosition: { x, y }, showPropPanel: true })
+      setUIState({ ...uiState, pointerPosition: ev.renderedPosition, showPropPanel: true })
     } else {
       setUIState({ ...uiState, showPropPanel: false })
     }
   }
   const mainEventHandlers = {
     setSelectedNodes: (selected) => {
-      updatePanelState(selected)
+      updatePanelState(selected, undefined)
       return dispatch({ type: SelectionActions.SET_MAIN_NODES, selected })
     },
     setSelectedEdges: (selected) => {
-      updatePanelState(selected)
+      updatePanelState(selected, undefined)
       return dispatch({ type: SelectionActions.SET_MAIN_EDGES, selected })
+    },
+    setLastSelectedNode: (selected, event) => {
+      updatePanelState(selected, event)
+      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_NODE, selected, from: 'main' })
+    },
+    setLastSelectedEdge: (selected, event) => {
+      updatePanelState(selected, event)
+      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_EDGE, selected, from: 'main' })
+    },
+    setLastSelectedFrom: (selected, event) => {
+      updatePanelState(selected, event)
+      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_FROM, from: 'main' })
     },
   }
 
   const subEventHandlers = {
-    setSelectedNodes: (selected) => dispatch({ type: SelectionActions.SET_SUB_NODES, selected }),
-    setSelectedEdges: (selected) => dispatch({ type: SelectionActions.SET_SUB_EDGES, selected }),
+    //setSelectedNodes: (selected) => dispatch({ type: SelectionActions.SET_SUB_NODES, selected }),
+    //setSelectedEdges: (selected) => dispatch({ type: SelectionActions.SET_SUB_EDGES, selected }),
+    setSelectedNodes: (selected) => {
+      updatePanelState(selected, undefined)
+      return dispatch({ type: SelectionActions.SET_SUB_NODES, selected })
+    },
+    setSelectedEdges: (selected) => {
+      updatePanelState(selected, undefined)
+      return dispatch({ type: SelectionActions.SET_SUB_EDGES, selected })
+    },
+    setLastSelectedNode: (selected, event) => {
+      updatePanelState(selected, event)
+      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_NODE, selected, from: 'sub' })
+    },
+    setLastSelectedEdge: (selected, event) => {
+      updatePanelState(selected, event)
+      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_EDGE, selected, from: 'sub' })
+    },
+    setLastSelectedFrom: (selected, event) => {
+      updatePanelState(selected, event)
+      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_FROM, from: 'sub' })
+    },
   }
 
   const setMain = (cy: CyReference) => cyDispatch({ type: CyActions.SET_MAIN, cyReference: cy })
@@ -194,8 +224,7 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount }: ViewProps) =
 
   return (
     <div className={classes.root}>
-      <Popup cx={cx} />
-      <Popup cx={cx} objectType={'edge'} />
+      {selection.lastSelected.nodes.length > 0 ? <Popup cx={cx} /> : <Popup cx={cx} objectType={'edge'} />}
 
       <div className={classes.lowerPanel} style={{ height: bottomHeight, opacity: lowerOpacity }}>
         <NavigationPanel target={'main'} />

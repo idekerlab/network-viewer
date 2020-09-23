@@ -1,5 +1,5 @@
 type Selection = {
-  main: object,
+  main: object
   sub: object
 }
 

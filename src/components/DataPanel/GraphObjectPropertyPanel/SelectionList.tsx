@@ -3,6 +3,8 @@ import { Theme, createStyles, makeStyles } from '@material-ui/core/styles'
 import useSearch from '../../../hooks/useSearch'
 import AppContext from '../../../context/AppState'
 import EntryTable from './EntryTable'
+import { AutoSizer } from 'react-virtualized'
+import SplitPane from 'react-split-pane'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,9 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const SelectionList = (props) => {
   const classes = useStyles()
-
   const { attributes } = props
-
   const { uuid, query, queryMode, setSelectedNodeAttributes, selectedNodeAttributes, selection } = useContext(
     AppContext,
   )
@@ -39,25 +39,42 @@ const SelectionList = (props) => {
     setSelectedNodeAttributes(kvMap)
   }, [data])
 
-  const nodeCount = selection.main.nodes.length
-  const edgeCount = selection.main.edges.length
+  let nodes = []
+  let edges = []
+  let nodeCount
+  let edgeCount
+  if (selection.lastSelected.from === 'main') {
+    nodes = selection.main.nodes
+    edges = selection.main.edges
+  } else {
+    nodes = selection.sub.nodes
+    edges = selection.sub.edges
+  }
+  nodeCount = nodes.length
+  edgeCount = edges.length
+
+  console.log(selection)
 
   return (
-    <div className={classes.root}>
-      <EntryTable
-        key={'selected-nodes'}
-        label={`Selected Nodes (${nodeCount})`}
-        selectedObjects={selection.main.nodes}
-        attributes={attributes.nodeAttr}
-      />
+    <AutoSizer disableWidth>
+      {({ height, width }) => (
+        <SplitPane split="horizontal" defaultSize={height / 2}>
+          <EntryTable
+            key={'selected-nodes'}
+            label={`Selected Nodes (${nodeCount})`}
+            selectedObjects={nodes}
+            attributes={attributes.nodeAttr}
+          />
 
-      <EntryTable
-        key={'selected-edges'}
-        label={`Selected Edges (${edgeCount})`}
-        selectedObjects={selection.main.edges}
-        attributes={attributes.edgeAttr}
-      />
-    </div>
+          <EntryTable
+            key={'selected-edges'}
+            label={`Selected Edges (${edgeCount})`}
+            selectedObjects={edges}
+            attributes={attributes.edgeAttr}
+          />
+        </SplitPane>
+      )}
+    </AutoSizer>
   )
 }
 

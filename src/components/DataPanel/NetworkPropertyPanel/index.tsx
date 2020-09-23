@@ -4,8 +4,9 @@ import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import DescriptionEditor from './DescriptionEditor'
 import Button from '@material-ui/core/Button'
-import { IconButton } from '@material-ui/core'
+import { IconButton, StylesProvider } from '@material-ui/core'
 import PublicIcon from '@material-ui/icons/Public'
+import VpnLockIcon from '@material-ui/icons/VpnLock'
 import PropertyTable from './PropertyTable'
 import useNetworkSummary from '../../../hooks/useNetworkSummary'
 import { useParams } from 'react-router-dom'
@@ -69,6 +70,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: '0.7em',
       paddingBottom: 0,
     },
+    icon: { margin: '12px' },
   }),
 )
 
@@ -93,6 +95,7 @@ const NetworkPropertyPanel = () => {
   const newProps = {
     description: summary['description'],
   }
+  console.log(summary.visibility)
   return (
     <div className={classes.root}>
       <div className={classes.topBar}>
@@ -100,9 +103,11 @@ const NetworkPropertyPanel = () => {
         <Typography className={classes.title}>{summary['name']}</Typography>
       </div>
       <div className={classes.objectCount}>
-        <IconButton>
-          <PublicIcon />
-        </IconButton>
+        {summary.visibility === 'PUBLIC' ? (
+          <PublicIcon className={classes.icon} />
+        ) : (
+          <VpnLockIcon className={classes.icon} />
+        )}
         <Button disabled className={classes.countButton} variant="outlined" color="secondary">
           Nodes: {summary['nodeCount']}
         </Button>
