@@ -1,3 +1,8 @@
+//This code is identical to the code in Table.jsx
+//The DynamicSizeList used in the Table component has trouble updating
+//So I'm doing this to force it to make a whole new table every time
+//Please fix if there's a better way
+
 import React, { useState, useEffect } from 'react'
 import { DynamicSizeList } from 'react-window'
 import { useTable, useBlockLayout } from 'react-table'
@@ -48,7 +53,7 @@ const useStyles = makeStyles((theme) =>
   }),
 )
 
-function Table({ columns, data }) {
+function Table2({ columns, data }) {
   const classes = useStyles()
   const scrollBarWidth = 15
   const [state, setState] = useState(true)
@@ -141,4 +146,4 @@ function Table({ columns, data }) {
   )
 }
 
-export default Table
+export default Table2

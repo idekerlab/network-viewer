@@ -1,12 +1,18 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useEffect, useState } from 'react'
 import Table from './Table'
+import Twinble from './Table2'
 
 const EntryTable = (props) => {
   const { selectedObjects, attributes, label } = props
+  const [state, setState] = useState(true)
 
   const replacePeriods = (string) => {
     const regex = /\./gi
     return string.replace(regex, '(_)')
+  }
+
+  const startsWithNumber = (string) => {
+    return '0123456789'.includes(string.charAt(0))
   }
 
   const getColumnWidth = (rows, accessor, header) => {
@@ -72,7 +78,11 @@ const EntryTable = (props) => {
       }
       dataList.push(row)
     }
-    return dataList
+    let nonNumbers = dataList.filter((entry) => !startsWithNumber(entry.name))
+    let numbers = dataList.filter((entry) => startsWithNumber(entry.name))
+    nonNumbers.sort((a, b) => (a.name > b.name ? 1 : -1))
+    numbers.sort((a, b) => (a.name > b.name ? 1 : -1))
+    return nonNumbers.concat(numbers)
   }, [selectedObjects])
 
   const finalColumns = useMemo(() => {
@@ -91,11 +101,17 @@ const EntryTable = (props) => {
         }
       }
     })
-
     return columnsObject
   }, [selectedObjects])
 
-  return <Table columns={finalColumns} data={data} />
+  useEffect(() => {
+    setState(!state)
+  }, [selectedObjects])
+
+  //The DynamicSizeList used in the Table component has trouble updating
+  //So I'm doing this to force it to make a whole new table every time
+  //Please fix if there's a better way
+  return state ? <Table columns={finalColumns} data={data} /> : <Twinble columns={finalColumns} data={data} />
 }
 
 export default EntryTable

@@ -49,16 +49,22 @@ const Popup: FC<PopupProps> = ({ cx, target = PopupTarget.LAST, objectType = Obj
   const { uiState, setUIState, selection } = useContext(AppContext)
   const { windowHeight, windowWidth } = useWindowDimensions()
 
-  let selectionTarget = selection.lastSelected
+  let selectionTarget
   if (target === PopupTarget.SUB) {
     selectionTarget = selection.sub
   } else if (target === PopupTarget.MAIN) {
     selectionTarget = selection.main
+  } else {
+    if (selection.lastSelected.from === PopupTarget.SUB) {
+      selectionTarget = selection.sub
+    } else {
+      selectionTarget = selection.main
+    }
   }
 
-  let objects = selectionTarget.nodes
+  let objects = selection.lastSelected.nodes
   if (objectType === ObjectType.EDGE) {
-    objects = selectionTarget.edges
+    objects = selection.lastSelected.edges
   }
 
   const { showPropPanel, pointerPosition } = uiState

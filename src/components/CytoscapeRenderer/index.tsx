@@ -89,6 +89,7 @@ const boxSelectHandler = (cy, eventHandlers, event) => {
     const nodeIds = selectedNodes.map((node) => node.data().id)
     const edgeIds = selectedEdges.map((edge) => edge.data().id.slice(1))
 
+    eventHandlers.setLastSelectedFrom(undefined, event)
     eventHandlers.setSelectedNodes(nodeIds)
     eventHandlers.setSelectedEdges(edgeIds)
     console.log('selection done!!!!!!!!', performance.now() - t0)
