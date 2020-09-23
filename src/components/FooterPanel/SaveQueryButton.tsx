@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const SaveNetworkToButton = () => {
+const SaveQueryButton = () => {
   const classes = useStyles()
   const { uuid } = useParams()
 
@@ -78,4 +78,4 @@ const SaveNetworkToButton = () => {
   }
 }
 
-export default SaveNetworkToButton
+export default SaveQueryButton

@@ -1,8 +1,9 @@
 import React, { FC, Fragment, useState, useContext } from 'react'
+import { useParams } from 'react-router-dom'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import InputBase from '@material-ui/core/InputBase'
 import SearchIcon from '@material-ui/icons/Search'
-import DeleteIcon from '@material-ui/icons/Delete'
+import CloseIcon from '@material-ui/icons/Close'
 import InfoIcon from '@material-ui/icons/InfoOutlined'
 
 import FormControl from '@material-ui/core/FormControl'
@@ -10,7 +11,12 @@ import Select from '@material-ui/core/Select'
 import { Button, IconButton } from '@material-ui/core'
 import AppContext from '../../context/AppState'
 import SearchHelpDialog from './SearchHelpDialog'
+import { DownloadButton, DownloadProps } from 'cytoscape-explore-components'
 import { fitContent, lockMainWindow } from '../../utils/cyjsUtil'
+
+import useSearch from '../../hooks/useSearch'
+import SaveQueryButton from './SaveQueryButton'
+import AdvancedQueryMenu from './AdvancedQueryMenu'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -57,7 +63,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const queryMode = {
+const queryModes = {
   direct: 'Direct',
   firstStepNeighborhood: '1-Step Neighborhood',
   firstStepAdjacent: '1-step adjacent',
@@ -71,9 +77,26 @@ const SearchBox: FC = () => {
   const [open, setOpen] = useState(false)
   const [disableQuery, setDisableQuery] = useState(true)
   const [rawQuery, setRawQuery] = useState('')
-  const [searchType, setSearchType] = useState(queryMode.direct)
+  
+  const { uuid } = useParams();
 
-  const { cyReference, setQuery, setQueryMode, setUIState, uiState } = useContext(AppContext)
+  const { cyReference, query, setQuery, queryMode, setQueryMode, setUIState, uiState } = useContext(AppContext)
+
+  const [searchType, setSearchType] = useState(queryModes.direct)
+
+  const searchResult = useSearch(uuid, query, '', queryMode)
+
+  const subnet = searchResult.data
+  let subCx
+  if (subnet !== undefined) {
+    subCx = subnet['cx']
+  }
+
+  const downloadProps: DownloadProps = {
+    data: subCx,
+    tooltip: 'Download query result as CX',
+    fileName: `${uuid} subnet.cx`,
+  }
 
   const handleSearchTypeChange = (evt) => {
     const val = evt.target.value
@@ -145,9 +168,9 @@ const SearchBox: FC = () => {
             id: 'search-type',
           }}
         >
-          {Object.keys(queryMode).map((key) => (
+          {Object.keys(queryModes).map((key) => (
             <option key={key} value={key}>
-              {queryMode[key]}
+              {queryModes[key]}
             </option>
           ))}
         </Select>
@@ -163,16 +186,11 @@ const SearchBox: FC = () => {
       >
         <SearchIcon />
       </IconButton>
-      <IconButton
-        color="primary"
-        size="small"
-        disableFocusRipple
-        disableRipple
-        className={classes.button}
-        disabled={disableQuery}
-        onClick={handleClear}
-      >
-        <DeleteIcon />
+      <DownloadButton {...downloadProps} />
+      <SaveQueryButton />
+      <AdvancedQueryMenu/>
+      <IconButton color="primary" size='small' disableFocusRipple disableRipple className={classes.button} disabled={disableQuery} onClick={handleClear}>
+        <CloseIcon />
       </IconButton>
       <SearchHelpDialog onClose={handleHelpClose} open={open} />
     </div>
