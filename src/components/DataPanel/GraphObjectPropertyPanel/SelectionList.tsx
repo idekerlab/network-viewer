@@ -52,8 +52,6 @@ const SelectionList = (props) => {
   nodeCount = nodes.length
   edgeCount = edges.length
 
-  console.log(selection)
-
   return (
     <AutoSizer disableWidth>
       {({ height, width }) => (

@@ -4,7 +4,6 @@ import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import DescriptionEditor from './DescriptionEditor'
 import Button from '@material-ui/core/Button'
-import { IconButton, StylesProvider } from '@material-ui/core'
 import PublicIcon from '@material-ui/icons/Public'
 import VpnLockIcon from '@material-ui/icons/VpnLock'
 import PropertyTable from './PropertyTable'
@@ -95,7 +94,6 @@ const NetworkPropertyPanel = () => {
   const newProps = {
     description: summary['description'],
   }
-  console.log(summary.visibility)
   return (
     <div className={classes.root}>
       <div className={classes.topBar}>
