@@ -152,10 +152,26 @@ const SearchBox: FC = () => {
           ))}
         </Select>
       </FormControl>
-      <IconButton color="primary" size="small" disableFocusRipple disableRipple　className={classes.button} disabled={disableQuery} onClick={handleClick}>
+      <IconButton
+        color="primary"
+        size="small"
+        disableFocusRipple
+        disableRipple
+        className={classes.button}
+        disabled={disableQuery}
+        onClick={handleClick}
+      >
         <SearchIcon />
       </IconButton>
-      <IconButton color="primary" size='small' disableFocusRipple disableRipple className={classes.button} disabled={disableQuery} onClick={handleClear}>
+      <IconButton
+        color="primary"
+        size="small"
+        disableFocusRipple
+        disableRipple
+        className={classes.button}
+        disabled={disableQuery}
+        onClick={handleClear}
+      >
         <DeleteIcon />
       </IconButton>
       <SearchHelpDialog onClose={handleHelpClose} open={open} />

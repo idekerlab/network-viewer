@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const MainSplitPane = () => {
   const classes = useStyles()
   const { uuid } = useParams()
-  const { uiState, ndexCredential, config } = useContext(AppContext)
+  const { uiState, ndexCredential, config, setUIState } = useContext(AppContext)
   const width = window.innerWidth
   const defSize = Math.floor(width * 0.65)
 
@@ -75,6 +75,10 @@ const MainSplitPane = () => {
       setLeftWidth(defSize)
     }
   }, [uiState.dataPanelOpen])
+
+  useEffect(() => {
+    setUIState({...uiState, leftPanelWidth: leftWidth})
+  }, [leftWidth])
 
   const result = useNetworkSummary(uuid, config.ndexHttps, V2, ndexCredential)
   const summary = result.data
