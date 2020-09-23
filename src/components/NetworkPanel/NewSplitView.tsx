@@ -15,6 +15,7 @@ import NavigationPanel from '../NavigationPanel'
 import Popup from '../Popup'
 import { getEdgeCount, getNodeCount } from '../../utils/cxUtil'
 import MessageDialog from '../MessageDialog'
+import EmptyView from './EmptyView'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
     lowerPanel: {
       width: '100%',
       flexGrow: 1,
-      borderTop: '2px solid #AAAAAA',
+      borderBottom: '1px solid #AAAAAA',
     },
     title: {
       position: 'fixed',
@@ -54,20 +55,24 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const LAYOUT_TH = 1000
 
-/**
- *
- * For now, Upper panel always uses Cyjs.
- *
- * @param props
- */
-const NewSplitView = ({ renderer, cx }) => {
+type ViewProps = {
+  renderer: string
+  cx: object[]
+  objectCount: number
+}
+
+const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount }: ViewProps) => {
   const classes = useStyles()
   const { uuid } = useParams()
 
   const [busy, setBusy] = useState(false)
 
-  const { query, queryMode, setUIState, uiState, cyReference, cyDispatch, selection, dispatch } = useContext(AppContext)
+  const { query, queryMode, setUIState, uiState, cyReference, cyDispatch, selection, dispatch, config } = useContext(
+    AppContext,
+  )
   const searchResult = useSearch(uuid, query, '', queryMode)
+
+  const { maxNumObjects, viewerThreshold } = config
 
   const subnet = searchResult.data
   let subCx
@@ -119,6 +124,16 @@ const NewSplitView = ({ renderer, cx }) => {
   const bottomHeight = height - topHeight
 
   const getMainRenderer = (renderer: string) => {
+    // Case 1: network is huge
+    if (objectCount > maxNumObjects) {
+      return (
+        <EmptyView
+          title="Data is too large"
+          message={`There are ${objectCount} objects in this network and it is too large to display. 
+          Please use query function below to extract subnetworks.`}
+        />
+      )
+    }
     if (renderer !== 'lgr') {
       return (
         <CytoscapeRenderer
@@ -182,14 +197,14 @@ const NewSplitView = ({ renderer, cx }) => {
       <Popup cx={cx} />
       <Popup cx={cx} objectType={'edge'} />
 
-      <div className={classes.subnet} style={{ height: topHeight }}>
-        {showSearchResult ? <NavigationPanel target={'sub'} /> : <div />}
-        {getSubRenderer()}
-      </div>
       <div className={classes.lowerPanel} style={{ height: bottomHeight, opacity: lowerOpacity }}>
         <NavigationPanel target={'main'} />
         {!showSearchResult ? <div /> : <Typography className={classes.title}>Overview</Typography>}
         {getMainRenderer(renderer)}
+      </div>
+      <div className={classes.subnet} style={{ height: topHeight }}>
+        {showSearchResult ? <NavigationPanel target={'sub'} /> : <div />}
+        {getSubRenderer()}
       </div>
     </div>
   )
