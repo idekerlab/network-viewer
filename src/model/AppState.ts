@@ -17,18 +17,9 @@ type AppState = {
   uiState: UIState
   setUIState: Function
   
-  uuid: string
-  setUuid: Function
   style: object
   setStyle: Function
   
-  selectedNodeAttributes: object
-  setSelectedNodeAttributes: Function
-  
-  summary: object
-  setSummary: Function
-
-
   query: string
   setQuery: Function
   queryMode: string

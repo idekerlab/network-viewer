@@ -1,10 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles'
 import useSearch from '../../../hooks/useSearch'
 import AppContext from '../../../context/AppState'
 import EntryTable from './EntryTable'
 import { AutoSizer } from 'react-virtualized'
 import SplitPane from 'react-split-pane'
+import { useParams } from 'react-router-dom'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,9 +24,9 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const SelectionList = (props) => {
-  const classes = useStyles()
+  const { uuid } = useParams()
   const { attributes } = props
-  const { uuid, query, queryMode, setSelectedNodeAttributes, selectedNodeAttributes, selection } = useContext(
+  const { query, queryMode, selection } = useContext(
     AppContext,
   )
   const { status, data, error, isFetching } = useSearch(uuid, query, '', queryMode)
@@ -34,9 +35,7 @@ const SelectionList = (props) => {
     if (data === null || data === undefined) {
       return
     }
-    console.log('######### New data', data)
     const kvMap = data['kvMap']
-    setSelectedNodeAttributes(kvMap)
   }, [data])
 
   let nodes = []

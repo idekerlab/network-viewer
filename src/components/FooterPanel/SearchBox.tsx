@@ -10,7 +10,7 @@ import Select from '@material-ui/core/Select'
 import { Button, IconButton } from '@material-ui/core'
 import AppContext from '../../context/AppState'
 import SearchHelpDialog from './SearchHelpDialog'
-import { fitContent } from '../../utils/cyjsUtil'
+import { fitContent, lockMainWindow } from '../../utils/cyjsUtil'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -95,6 +95,7 @@ const SearchBox: FC = () => {
     setUIState({ ...uiState, showSearchResult: true })
     setTimeout(() => {
       fitContent(cyReference)
+      lockMainWindow(cyReference, true)
     }, 300)
   }
 
@@ -105,6 +106,7 @@ const SearchBox: FC = () => {
     setUIState({ ...uiState, showSearchResult: false })
     setTimeout(() => {
       fitContent(cyReference)
+      lockMainWindow(cyReference, false)
     }, 300)
   }
 
