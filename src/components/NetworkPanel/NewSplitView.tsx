@@ -13,7 +13,7 @@ import CyReference from '../../model/CyReference'
 import { CyActions } from '../../reducer/cyReducer'
 import NavigationPanel from '../NavigationPanel'
 import Popup from '../Popup'
-import { getEdgeCount, getNodeCount } from '../../utils/cxUtil'
+import { getCyjsLayout, getEdgeCount, getNodeCount } from '../../utils/cxUtil'
 import MessageDialog from '../MessageDialog'
 import EmptyView from './EmptyView'
 
@@ -168,11 +168,12 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount }: ViewProps) =
       )
     }
     if (renderer !== 'lgr') {
+      const layout = getCyjsLayout(cx, LAYOUT_TH)
       return (
         <CytoscapeRenderer
           uuid={uuid}
           cx={cx}
-          cyReference={cyReference}
+          layoutName={layout}
           setCyReference={setMain}
           eventHandlers={mainEventHandlers}
         />
@@ -202,17 +203,13 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount }: ViewProps) =
       return <Loading message={'No nodes matching your query were found in this network.'} showLoading={false} />
     }
 
-    let layout = 'cose'
-    if (count > LAYOUT_TH) {
-      layout = 'circle'
-    }
+    const layout = getCyjsLayout(subCx, LAYOUT_TH)
 
     return (
       <CytoscapeRenderer
         uuid={uuid}
         cx={subCx}
         eventHandlers={subEventHandlers}
-        selectedNodes={[]}
         layoutName={layout}
         setBusy={setBusy}
         setCyReference={setSub}
