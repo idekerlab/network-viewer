@@ -26,8 +26,6 @@ export const getAttributeMap = (cx: object[]) => {
     resultObject[key] = value
   }
 
-  console.log('CX and kv', cx, resultObject)
-
   if (isV2) {
     return {
       nodeAttr: getNodeAttrsV2(resultObject),
@@ -132,9 +130,13 @@ const addSourceTarget = (nodeAttr, edges, id2attr) => {
     const target = e['t']
     const s = nodeAttr[source]
     const t = nodeAttr[target]
-    // console.log(s,t)
-    id2attr[id].set('source', s.get('name'))
-    id2attr[id].set('target', t.get('name'))
+
+    if (s !== undefined) {
+      id2attr[id].set('source', s.get('name'))
+    }
+    if (t !== undefined) {
+      id2attr[id].set('target', t.get('name'))
+    }
   }
 }
 
