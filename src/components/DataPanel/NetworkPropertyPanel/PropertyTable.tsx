@@ -42,6 +42,8 @@ const PropertyTable = (props) => {
   const classes = useStyles()
   const { data } = props
 
+  console.log(data)
+
   return (
     <TableContainer className={classes.container}>
       <Table size={'small'}>

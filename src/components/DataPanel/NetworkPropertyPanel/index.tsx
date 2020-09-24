@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button'
 import PublicIcon from '@material-ui/icons/Public'
 import VpnLockIcon from '@material-ui/icons/VpnLock'
 import PropertyTable from './PropertyTable'
+import NetworkProperties from './NetworkProperties.jsx'
 import useNetworkSummary from '../../../hooks/useNetworkSummary'
 import { useParams } from 'react-router-dom'
 import MinimizeButton from './MinimizeButton'
@@ -81,6 +82,8 @@ const NetworkPropertyPanel = () => {
   const summaryResponse = useNetworkSummary(uuid, config.ndexHttps, 'v2', ndexCredential)
   const summary = summaryResponse.data
 
+  console.log(summary)
+
   if (summary === undefined || Object.entries(summary).length === 0) {
     return (
       <div className={classes.root}>
@@ -114,12 +117,14 @@ const NetworkPropertyPanel = () => {
         </Button>
       </div>
       <div className={classes.description}>
-        <Typography className={classes.label} color="inherit" gutterBottom>
+        {/*<Typography className={classes.label} color="inherit" gutterBottom>
           Description:
         </Typography>
         <DescriptionEditor {...newProps} />
+        <PropertyTable data={summary['properties']} />*/}
+      <NetworkProperties data={summary['properties']} description={summary['description']}/>
       </div>
-      <PropertyTable data={summary['properties']} />
+
     </div>
   )
 }
