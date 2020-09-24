@@ -9,11 +9,26 @@ const ROOT_STYLE = {
   height: '100%',
 }
 
-const CytoscapeRenderer = (props) => {
+type CytoscapeRendererProps = {
+  uuid: string
+  cx: object[]
+  eventHandlers: object
+  layoutName?: string
+  setCyReference: Function
+  setBusy?: Function
+}
+
+const CytoscapeRenderer = ({
+  uuid,
+  cx,
+  eventHandlers,
+  layoutName,
+  setCyReference,
+  setBusy,
+}: CytoscapeRendererProps) => {
   const cyEl = useRef(null)
   const [cyInstance, setCyInstance] = useState(null)
 
-  const { uuid, cx, eventHandlers, layoutName, setCyReference, setBusy } = props
   const cyjsNetwork = useCyjs(uuid, cx)
 
   useEffect(() => {
@@ -96,7 +111,6 @@ const boxSelectHandler = (cy, eventHandlers, event) => {
   }, 5)
 }
 const tapHandler = (cy, eventHandlers, event) => {
-  console.log('**********tap:', event)
   const evtTarget = event.target
   const t0 = performance.now()
 
@@ -180,9 +194,6 @@ const updateNetwork = (cyjs, cy) => {
     const newVS = addExtraStyle(cyjs.visualStyle)
     cy.style().fromJson(newVS).update()
     cy.fit()
-    // cy.userPanningEnabled(false)
-    // cy.elements().unselectify()
-    // cy.nodes().ungrabify()
   }
 }
 
