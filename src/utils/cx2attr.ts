@@ -91,14 +91,13 @@ const getEdgeAttrsV2 = (kvMap: object) => {
   return id2attr
 }
 
-const getEdgeAttrs = (nodeArrt, kvMap: object) => {
+const getEdgeAttrs = (nodeAttr, kvMap: object) => {
   const edgeAttr = kvMap['edgeAttributes']
   const edges = kvMap['edges']
-  const nodes = kvMap['nodes']
   const id2attr = {}
 
   if (edgeAttr === undefined) {
-    addSourceTarget(nodeArrt, edges, id2attr)
+    addSourceTarget(nodeAttr, edges, id2attr)
     return id2attr
   }
 
@@ -115,7 +114,7 @@ const getEdgeAttrs = (nodeArrt, kvMap: object) => {
     id2attr[pointer] = current
   }
 
-  addSourceTarget(nodeArrt, edges, id2attr)
+  addSourceTarget(nodeAttr, edges, id2attr)
   return id2attr
 }
 const addSourceTarget = (nodeAttr, edges, id2attr) => {
@@ -132,9 +131,9 @@ const addSourceTarget = (nodeAttr, edges, id2attr) => {
     const target = e['t']
     const s = nodeAttr[source]
     const t = nodeAttr[target]
-    // console.log(s,t)
-    id2attr[id].set('source', s.get('name'))
-    id2attr[id].set('target', t.get('name'))
+
+    id2attr[id].set('source', '')
+    id2attr[id].set('target', '')
   }
 }
 
@@ -144,29 +143,26 @@ const getNodeAttrs = (kvMap: object) => {
 
   const id2attr = {}
 
-  if (nodeAttr === undefined) {
-    return id2attr
-  }
-
-  let len = nodeAttr.length
-  while (len--) {
-    const entry = nodeAttr[len]
-    const pointer = entry['po']
-
-    let current = id2attr[pointer]
-    if (current === undefined) {
-      current = new Map()
-    }
-    current.set(entry['n'], entry['v'])
-    id2attr[pointer] = current
-  }
-
-  len = nodes.length
+  let len = nodes.length
   while (len--) {
     const n = nodes[len]
     const id = n['@id']
     const val = n['n']
+    id2attr[id] = new Map()
     id2attr[id].set('name', val)
+  }
+
+  if (nodeAttr === undefined) {
+    return id2attr
+  }
+
+  len = nodeAttr.length
+  while (len--) {
+    const entry = nodeAttr[len]
+    const pointer = entry['po']
+    let current = id2attr[pointer]
+    current.set(entry['n'], entry['v'])
+    id2attr[pointer] = current
   }
 
   return id2attr
