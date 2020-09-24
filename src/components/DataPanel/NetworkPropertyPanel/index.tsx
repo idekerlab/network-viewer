@@ -82,8 +82,6 @@ const NetworkPropertyPanel = () => {
   const summaryResponse = useNetworkSummary(uuid, config.ndexHttps, 'v2', ndexCredential)
   const summary = summaryResponse.data
 
-  console.log(summary)
-
   if (summary === undefined || Object.entries(summary).length === 0) {
     return (
       <div className={classes.root}>
