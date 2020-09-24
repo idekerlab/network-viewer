@@ -11,7 +11,14 @@ const EntryTable = (props) => {
     return string.replace(regex, '(_)')
   }
 
+  const isEmptyString = (string) => {
+    return string === undefined || string === ''
+  }
+
   const startsWithNumber = (string) => {
+    if (string === undefined || string === '') {
+      return false
+    }
     return '0123456789'.includes(string.charAt(0))
   }
 
@@ -25,13 +32,16 @@ const EntryTable = (props) => {
 
   const columns = useMemo(() => {
     const columnsList = []
+    let hasName = false
     for (let id of selectedObjects) {
       const attrs = attributes[id]
       if (attrs === undefined) {
         continue
       }
       for (let attr of attrs) {
-        if (attr[0] !== 'name') {
+        if (attr[0] === 'name') {
+          hasName = true
+        } else {
           if (Array.isArray(attr[1])) {
             for (let item of attr[1]) {
               if (item !== '') {
@@ -54,7 +64,7 @@ const EntryTable = (props) => {
         }
       }
     }
-    if (columnsList.length > 0) {
+    if (hasName) {
       columnsList.unshift('name')
     }
     return columnsList
@@ -78,11 +88,17 @@ const EntryTable = (props) => {
       }
       dataList.push(row)
     }
-    let nonNumbers = dataList.filter((entry) => !startsWithNumber(entry.name))
-    let numbers = dataList.filter((entry) => startsWithNumber(entry.name))
+
+    const empty = dataList.filter((entry) => isEmptyString(entry.name))
+    const nonEmpty = dataList.filter((entry) => !isEmptyString(entry.name))
+
+    let nonNumbers = nonEmpty.filter((entry) => !startsWithNumber(entry.name))
+    let numbers = nonEmpty.filter((entry) => startsWithNumber(entry.name))
+
     nonNumbers.sort((a, b) => (a.name > b.name ? 1 : -1))
     numbers.sort((a, b) => (a.name > b.name ? 1 : -1))
-    return nonNumbers.concat(numbers)
+
+    return nonNumbers.concat(numbers).concat(empty)
   }, [selectedObjects])
 
   const finalColumns = useMemo(() => {
