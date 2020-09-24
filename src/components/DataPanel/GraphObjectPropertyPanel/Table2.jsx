@@ -1,7 +1,8 @@
-//This code is identical to the code in Table.jsx
-//The DynamicSizeList used in the Table component has trouble updating
-//So I'm doing this to force it to make a whole new table every time
-//Please fix if there's a better way
+/*
+Same as Table.jsx. Done this way to force the table to completely reload instead
+of trying to refresh, which doesn't work.
+Sorry.
+*/
 
 import React, { useState, useEffect } from 'react'
 import { DynamicSizeList } from 'react-window'
@@ -50,10 +51,13 @@ const useStyles = makeStyles((theme) =>
       borderBottom: '1px solid rgb(225, 225, 225)',
       borderCollapse: 'collapse',
     },
+    fullWidth: {
+      minWidth: '100%',
+    },
   }),
 )
 
-function Table2({ columns, data }) {
+function Table({ columns, data }) {
   const classes = useStyles()
   const scrollBarWidth = 15
   const [state, setState] = useState(true)
@@ -65,9 +69,7 @@ function Table2({ columns, data }) {
 
   const defaultColumn = React.useMemo(
     () => ({
-      minWidth: 30,
       width: 150,
-      maxWidth: 400,
     }),
     [],
   )
@@ -127,13 +129,12 @@ function Table2({ columns, data }) {
       </div>
 
       <div {...getTableBodyProps()} className={classes.content}>
-        <AutoSizer disableWidth>
+        <AutoSizer className={classes.fullWidth}>
           {({ height, width }) => (
             <DynamicSizeList
               height={height}
               itemCount={rows.length}
-              width={totalColumnsWidth + scrollBarWidth}
-              //style={{ minWidth: '100%' }}
+              width={totalColumnsWidth + scrollBarWidth > width ? totalColumnsWidth + scrollBarWidth : width}
             >
               {RenderRow}
             </DynamicSizeList>
@@ -146,4 +147,4 @@ function Table2({ columns, data }) {
   )
 }
 
-export default Table2
+export default Table

@@ -45,6 +45,9 @@ const useStyles = makeStyles((theme) =>
       borderBottom: '1px solid rgb(225, 225, 225)',
       borderCollapse: 'collapse',
     },
+    fullWidth: {
+      minWidth: '100%',
+    },
   }),
 )
 
@@ -60,9 +63,7 @@ function Table({ columns, data }) {
 
   const defaultColumn = React.useMemo(
     () => ({
-      minWidth: 30,
       width: 150,
-      maxWidth: 400,
     }),
     [],
   )
@@ -122,13 +123,12 @@ function Table({ columns, data }) {
       </div>
 
       <div {...getTableBodyProps()} className={classes.content}>
-        <AutoSizer disableWidth>
+        <AutoSizer className={classes.fullWidth}>
           {({ height, width }) => (
             <DynamicSizeList
               height={height}
               itemCount={rows.length}
-              width={totalColumnsWidth + scrollBarWidth}
-              //style={{ minWidth: '100%' }}
+              width={totalColumnsWidth + scrollBarWidth > width ? totalColumnsWidth + scrollBarWidth : width}
             >
               {RenderRow}
             </DynamicSizeList>
