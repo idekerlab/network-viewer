@@ -7,6 +7,7 @@ type UIState = {
     y: number
   }
   lastSelectWasNode: boolean
+  leftPanelWidth: number
 }
 
 export default UIState

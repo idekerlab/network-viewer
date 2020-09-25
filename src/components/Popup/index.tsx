@@ -49,25 +49,12 @@ const Popup: FC<PopupProps> = ({ cx, target = PopupTarget.LAST, objectType = Obj
   const { uiState, setUIState, selection } = useContext(AppContext)
   const { windowHeight, windowWidth } = useWindowDimensions()
 
-  let selectionTarget
-  if (target === PopupTarget.SUB) {
-    selectionTarget = selection.sub
-  } else if (target === PopupTarget.MAIN) {
-    selectionTarget = selection.main
-  } else {
-    if (selection.lastSelected.from === PopupTarget.SUB) {
-      selectionTarget = selection.sub
-    } else {
-      selectionTarget = selection.main
-    }
-  }
-
   let objects = selection.lastSelected.nodes
   if (objectType === ObjectType.EDGE) {
     objects = selection.lastSelected.edges
   }
 
-  const { showPropPanel, pointerPosition } = uiState
+  const { showPropPanel, pointerPosition} = uiState
 
   const onClose = () => {
     setUIState({ ...uiState, showPropPanel: false })
@@ -97,7 +84,7 @@ const Popup: FC<PopupProps> = ({ cx, target = PopupTarget.LAST, objectType = Obj
         }
       }
     } else {
-      if (item !== '') {
+      if (item[1] !== '') {
         include = true
       }
     }
@@ -109,18 +96,20 @@ const Popup: FC<PopupProps> = ({ cx, target = PopupTarget.LAST, objectType = Obj
 
   //Calculate position based on pointer position in window
 
-  //Calculate left coordinate
+  
+  //Left or right?
   const width = windowHeight * 0.4
-  let left = pointerPosition.x
-  if (pointerPosition.x + width > windowWidth) {
+  let right = true
+  if (pointerPosition.x + width > uiState.leftPanelWidth) {
     if (pointerPosition.x - width > 0) {
-      left = pointerPosition.x - width
+      right = false
     }
-  }
+  }  
 
-  //Calculate top coordinate
+
+  //Top or bottom
   const maxHeight = windowHeight * 0.5
-  let height = 86 //Title height + body padding
+  let height = 88 //Title height + body padding
   for (let i = 1; i < attrMap.size; i++) {
     height += 40 //List item height
     if (height >= maxHeight) {
@@ -129,21 +118,30 @@ const Popup: FC<PopupProps> = ({ cx, target = PopupTarget.LAST, objectType = Obj
     }
   }
 
-  let top = pointerPosition.y
+  let bottom = true
   if (pointerPosition.y + height > windowHeight) {
     if (pointerPosition.y - height > 0) {
-      top = pointerPosition.y - height
+      bottom = false
     }
   }
 
   const position = {
-    left: left,
-    top: top,
+  }
+  
+  if (right) {
+    position['left'] = pointerPosition.x
+  } else {
+    position['right'] = uiState.leftPanelWidth - pointerPosition.x
+  }
+  if (bottom) {
+    position['top'] = pointerPosition.y
+  } else {
+    position['bottom'] = windowHeight - pointerPosition.y
   }
 
   return (
     <div className={classes.root} style={position}>
-      <PropertyPanel attrMap={attrMap} onClose={onClose} />
+      <PropertyPanel attrMap={attrMap} onClose={onClose}/>
     </div>
   )
 }

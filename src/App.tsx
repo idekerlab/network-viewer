@@ -24,6 +24,7 @@ const defUIState: UIState = {
     y: 500,
   },
   lastSelectWasNode: false,
+  leftPanelWidth: 0
 }
 
 const defNdexCredential: NdexCredential = {
