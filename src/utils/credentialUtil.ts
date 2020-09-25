@@ -12,16 +12,7 @@ const getGoogleHeader = (userInfo) => {
 const getNdexClient = (baseUrl: string, ndexCredential: NdexCredential) => {
   console.log('++++++++++++ BASE URL ++++++++++', baseUrl)
   const ndexClient = new ndex.NDEx(baseUrl)
-  ndexClient.getStatus().then((response) => {
-    console.log('* NDEx Status checked: ' + response.message)
-  })
-
-  if (!ndexCredential.isLogin) {
-    // Client without credential.
-    console.warn('Not logged-in. Public networks only.')
-    return ndexClient
-  }
-
+  
   console.log('* Credential: ' + ndexCredential)
   if (ndexCredential.isGoogle) {
     ndexClient.setAuthToken(ndexCredential.oauth['loginDetails'].tokenId);
@@ -31,6 +22,18 @@ const getNdexClient = (baseUrl: string, ndexCredential: NdexCredential) => {
     ndexClient.setBasicAuth(basicAuth.userId, basicAuth.password)
     console.log('NDEx client with Basic Auth ::', ndexClient)
   }
+
+  ndexClient.getStatus().then((response) => {
+    console.log('* NDEx Status checked: ' + response.message)
+  })
+  
+  if (!ndexCredential.isLogin) {
+    // Client without credential.
+    console.warn('Not logged-in. Public networks only.')
+    return ndexClient
+  }
+
+  
   
   return ndexClient
 }

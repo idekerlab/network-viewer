@@ -98,7 +98,8 @@ const MainSplitPane = () => {
   const result = useNetworkSummary(uuid, config.ndexHttps, V2, ndexCredential)
   const summary = result.data
 
-  let apiVersion = null
+  let apiVersion = V2
+  let cxVersion = null
   let rend = null
 
   let objectCount = 0
@@ -112,15 +113,15 @@ const MainSplitPane = () => {
     objectCount = nodeCount + edgeCount
 
     if (objectCount > th) {
-      apiVersion = V3
+      cxVersion = 2
       rend = RENDERER.lgr
     } else {
-      apiVersion = V2
+      cxVersion = 1
       rend = RENDERER.cyjs
     }
   }
 
-  const cxResponse = useCx(uuid, config.ndexHttps, apiVersion, ndexCredential, maxObj, objectCount)
+  const cxResponse = useCx(uuid, config.ndexHttps, apiVersion, ndexCredential, maxObj, objectCount, cxVersion)
 
   if (cxResponse.data === undefined || cxResponse.isFetching || rend === null) {
     return (
