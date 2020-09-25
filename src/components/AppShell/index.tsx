@@ -6,23 +6,30 @@ import MainSplitPane from '../MainSplitPane'
 import ToolBar from '../ToolBar'
 import AppContext from '../../context/AppState'
 import { useContext } from 'react'
+import FooterPanel from '../FooterPanel'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      position: 'fixed',
-      top: 0,
-      left: 0,
       width: '100%',
       height: '100%',
       display: 'flex',
+      overflow: 'hidden',
       flexDirection: 'column',
+      boxSizing: 'border-box',
     },
-    content: {
+    header: {
+
+    },
+    main: {
       flexGrow: 1,
-      width: '100%',
-      height: '100%',
+      overflow: 'hidden',
+      background: '#EEEEEE',
+      boxSizing: 'border-box',
     },
+    footer: {
+      boxSizing: 'border-box',
+    }
   }),
 )
 
@@ -32,13 +39,15 @@ const AppShell: FC = () => {
 
   return (
     <div className={classes.root}>
-      <CssBaseline />
       <NDExAccountProvider ndexServerURL={config.ndexHttps}>
-        <ToolBar />
 
-        <main className={classes.content}>
+        <main className={classes.main}>
+          <ToolBar />
           <MainSplitPane />
         </main>
+        <footer className={classes.footer}>
+          <FooterPanel />
+        </footer>
       </NDExAccountProvider>
     </div>
   )

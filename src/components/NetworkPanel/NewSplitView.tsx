@@ -21,7 +21,6 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: '100%',
-      height: '100%',
       display: 'flex',
       flexDirection: 'column',
     },
@@ -59,9 +58,10 @@ type ViewProps = {
   renderer: string
   cx: object[]
   objectCount: number
+  height: number
 }
 
-const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount }: ViewProps) => {
+const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: ViewProps) => {
   const classes = useStyles()
   const { uuid } = useParams()
 
@@ -149,8 +149,7 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount }: ViewProps) =
 
   const { showSearchResult } = uiState
 
-  const height = window.innerHeight
-  let topHeight = Math.floor(height * 0.7)
+  let topHeight = Math.floor(height* 0.7)
   if (!showSearchResult) {
     topHeight = 0
   }

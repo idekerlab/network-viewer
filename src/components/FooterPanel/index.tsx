@@ -4,10 +4,7 @@ import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import Toolbar from '@material-ui/core/Toolbar'
 import SearchBox from './SearchBox'
 import AdvancedMenu from './AdvancedMenu'
-import ExportCxButton from '../ExportCxButton'
 import ExpandButton from './ExpandButton'
-
-
 import OpenInCytoscape from './OpenInCytoscape'
 import Divider from '@material-ui/core/Divider'
 
@@ -16,12 +13,11 @@ import SaveNetworkCXButton from './SaveNetworkCXButton'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     toolBar: {
-      position: 'fixed',
-      bottom: 0,
-      left: 0,
-      margin: 0,
-      padding: 0,
-      backgroundColor: 'rgba(255,255,255,0.93)',
+      width: '100%',
+      padding: '0.2em',
+      backgroundColor: '#FFFFFF',
+      boxSizing: 'border-box',
+      borderTop: '1px solid rgba(220,220,220,0.7)'
     },
     grow: {
       flexGrow: 1,
@@ -29,17 +25,12 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-type FooterProps = {
-  width: number
-}
 
-const FooterPanel: FC<FooterProps> = ({ width }: FooterProps) => {
+const FooterPanel: FC = () => {
   const classes = useStyles()
 
-
-
   return (
-    <Toolbar variant='dense' className={classes.toolBar} style={{ width: width }}>
+    <Toolbar variant='dense' className={classes.toolBar}>
       <SearchBox />
       <Divider orientation="vertical" flexItem />
       <div className={classes.grow} />

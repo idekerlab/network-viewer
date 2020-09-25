@@ -1,10 +1,9 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect, useRef, useLayoutEffect } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import NetworkPanel from '../NetworkPanel'
 import DataPanel from '../DataPanel'
 import SplitPane from 'react-split-pane'
 import { useParams } from 'react-router-dom'
-import FooterPanel from '../FooterPanel'
 import useNetworkSummary from '../../hooks/useNetworkSummary'
 import useCx from '../../hooks/useCx'
 import { Typography } from '@material-ui/core'
@@ -24,21 +23,18 @@ const def: string[] = []
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    wrapper: {
+    root: {
       width: '100%',
-      height: '100%',
-      boxSizing: 'border-box',
-      flexGrow: 1,
+      height: '100%'
     },
     base: {
       width: '100%',
-      height: '100%',
-      boxSizing: 'border-box',
+      height: '100%'
     },
     leftPanel: {
       display: 'flex',
+
       flexDirection: 'column',
-      height: '100%',
     },
     initPanel: {
       position: 'fixed',
@@ -59,6 +55,8 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 const MainSplitPane = () => {
   const classes = useStyles()
+  const containerRef = useRef()
+
   const { uuid } = useParams()
   const { uiState, ndexCredential, config } = useContext(AppContext)
   const width = window.innerWidth
@@ -67,6 +65,23 @@ const MainSplitPane = () => {
   const [leftWidth, setLeftWidth] = useState(defSize)
   const maxObj = config.maxNumObjects
   const th = config.viewerThreshold
+
+  const [containerHeight, setContainerHeight] = useState(0)
+
+  const assignNewHeight = () => {
+      const curRef = containerRef?.current ?? { offsetHeight: 0 }
+      if (curRef) {
+        setContainerHeight(curRef.offsetHeight)
+      }
+  }
+  
+  useEffect(()=> {
+    window.addEventListener('resize', assignNewHeight)
+  }, [])
+  
+  useLayoutEffect(() => {
+    assignNewHeight()
+  })
 
   useEffect(() => {
     if (!uiState.dataPanelOpen) {
@@ -118,14 +133,24 @@ const MainSplitPane = () => {
     setLeftWidth(newWidth)
   }
 
+  const splitPaneStyle = {
+    height: containerHeight,
+  }
+
   return (
-    <div className={classes.wrapper}>
-      <SplitPane className={classes.base} split="vertical" minSize={550} size={leftWidth} onDragFinished={handleChange}>
-        <div className={classes.leftPanel}>
-          <NetworkPanel cx={cxResponse.data} renderer={rend} objectCount={objectCount} />
-          <FooterPanel width={leftWidth} />
+    <div ref={containerRef} className={classes.root}>
+      <SplitPane
+        className={classes.base}
+        split="vertical"
+        minSize={550}
+        size={leftWidth}
+        onDragFinished={handleChange}
+        style={splitPaneStyle}
+      >
+        <div className={classes.leftPanel} style={splitPaneStyle}>
+          <NetworkPanel cx={cxResponse.data} renderer={rend} objectCount={objectCount} height={containerHeight} />
         </div>
-        <DataPanel uuid={uuid} cx={cxResponse.data} />
+        <DataPanel uuid={uuid} cx={cxResponse.data} height={containerHeight}/>
       </SplitPane>
       {uiState.dataPanelOpen ? <div /> : <ClosedPanel />}
     </div>

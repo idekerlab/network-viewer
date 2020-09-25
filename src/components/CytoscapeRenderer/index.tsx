@@ -4,7 +4,7 @@ import useCyjs from '../../hooks/useCyjs'
 import Loading from '../NetworkPanel/Loading'
 
 // Style for the network canvas area
-const ROOT_STYLE = {
+let ROOT_STYLE = {
   width: '100%',
   height: '100%',
 }
@@ -15,7 +15,7 @@ type CytoscapeRendererProps = {
   eventHandlers: object
   layoutName?: string
   setCyReference: Function
-  setBusy?: Function
+  setBusy?: Function,
 }
 
 const CytoscapeRenderer = ({
