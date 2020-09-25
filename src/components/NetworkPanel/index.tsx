@@ -8,8 +8,8 @@ import NewSplitView from './NewSplitView'
  *
  * @param props
  */
-const NetworkPanel = ({ renderer, cx, objectCount }) => (
-  <NewSplitView cx={cx} renderer={renderer} objectCount={objectCount} />
+const NetworkPanel = ({ renderer, cx, objectCount, height}) => (
+  <NewSplitView cx={cx} renderer={renderer} objectCount={objectCount} height={height} />
 )
 
 export default NetworkPanel

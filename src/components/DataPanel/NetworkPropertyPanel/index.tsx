@@ -24,8 +24,8 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: 0,
       display: 'flex',
       flexDirection: 'column',
-
-      // backgroundColor: theme.palette.secondary.main,
+      boxSizing: 'border-box',
+      borderBottom: '1px solid rgba(220,220,220,0.7)'
     },
     topBar: {
       display: 'flex',

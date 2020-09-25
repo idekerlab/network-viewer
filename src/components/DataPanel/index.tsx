@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState, useRef, useEffect, useLayoutEffect } from 'react'
 import SplitPane from 'react-split-pane'
 import useAttributes from '../../hooks/useAttributes'
 
@@ -8,30 +8,35 @@ import NetworkPropertyPanel from './NetworkPropertyPanel'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    dataPanel: {
+    container: {
       width: '100%',
-      height: '100vh',
-      backgroundColor: '#FAFAFA',
+      height: '100%',
+      // border: '5px solid green',
+    },
+    dataPanel: {
+      boxSizing: 'border-box',
+      width: '100%',
+      backgroundColor: '#FEFEFE',
+      borderLeft: '1px solid #999999'
     },
   }),
 )
-const DataPanel = (props) => {
-  const {uuid, cx, selection} = props
+const DataPanel = ({ uuid, cx, height }) => {
   const attr: object = useAttributes(uuid, cx)
   const classes = useStyles()
+  
+  const defSize = Math.floor(height * 0.7)
+  const [bottomHeight, setBottomHeight] = useState(defSize)
+  useEffect(()=> {
+    setBottomHeight(height * 0.7)
 
+  }, [height])
 
-  const height = window.innerHeight
-  const defSize = Math.floor(height * 0.45)
-  const [bottomHeight, setBottomHeight] = useState(height-defSize)
 
   const handleChange = (size) => {
-    console.log('change:', size)
-    const windowHeight = window.innerHeight
-    setBottomHeight(windowHeight-size)
-
+    setBottomHeight(height - size)
   }
-    
+
   return (
     <SplitPane
       className={classes.dataPanel}
@@ -39,9 +44,10 @@ const DataPanel = (props) => {
       minSize={150}
       defaultSize={defSize}
       onDragFinished={(size) => handleChange(size)}
+      style={{ height: height }}
     >
       <NetworkPropertyPanel />
-      <GraphObjectPropertyPanel attributes={attr} height={bottomHeight} {...selection}/>
+      <GraphObjectPropertyPanel attributes={attr} height={bottomHeight} />
     </SplitPane>
   )
 }
