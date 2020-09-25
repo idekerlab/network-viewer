@@ -16,8 +16,9 @@ const getNdexClient = (baseUrl: string, ndexCredential: NdexCredential) => {
   console.log('* Credential: ' + ndexCredential)
   if (ndexCredential.isGoogle) {
     ndexClient.setAuthToken(ndexCredential.oauth['loginDetails'].tokenId);
+    //console.log('Auth Token ID: ' + ndexCredential.oauth['loginDetails'].tokenId);
     console.log('NDEx client with OAuth ::', ndexClient)
-  } else {
+  } else if (ndexCredential.basic) {
     const basicAuth = ndexCredential.basic
     ndexClient.setBasicAuth(basicAuth.userId, basicAuth.password)
     console.log('NDEx client with Basic Auth ::', ndexClient)
