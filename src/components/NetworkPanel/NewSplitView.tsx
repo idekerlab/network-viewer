@@ -149,34 +149,6 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
     },
   }
 
-  const lgrEventHandlers = {
-    setSelectedNodes: (selected) => {
-      return dispatch({ type: SelectionActions.SET_MAIN_NODES, selected })
-    },
-    setSelectedEdges: (selected) => {
-      return dispatch({ type: SelectionActions.SET_MAIN_EDGES, selected })
-    },
-    setLastSelectedNode: (selected, event) => {
-      console.log(event)
-      if (event !== undefined) {
-        updatePanelState(selected, event.position[0], event.position[1])
-      }
-      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_NODE, selected, from: 'main' })
-    },
-    setLastSelectedEdge: (selected, event) => {
-      if (event !== undefined) {
-        updatePanelState(selected, event.position[0], event.position[1])
-      }
-      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_EDGE, selected, from: 'main' })
-    },
-    setLastSelectedFrom: (selected, event) => {
-      if (event !== undefined) {
-        updatePanelState(selected, event.position[0], event.position[1])
-      }
-      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_FROM, from: 'main' })
-    },
-  }
-
   const setMain = (cy: CyReference) => cyDispatch({ type: CyActions.SET_MAIN, cyReference: cy })
   const setSub = (cy: CyReference) => cyDispatch({ type: CyActions.SET_SUB, cyReference: cy })
 
