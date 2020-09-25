@@ -18,9 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column',
       boxSizing: 'border-box',
     },
-    header: {
-
-    },
+    header: {},
     main: {
       flexGrow: 1,
       overflow: 'hidden',
@@ -29,7 +27,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     footer: {
       boxSizing: 'border-box',
-    }
+      height: '60px', //If this changes, also update footer size in Popup/index.tsx
+    },
   }),
 )
 
@@ -40,7 +39,6 @@ const AppShell: FC = () => {
   return (
     <div className={classes.root}>
       <NDExAccountProvider ndexServerURL={config.ndexHttps}>
-
         <main className={classes.main}>
           <ToolBar />
           <MainSplitPane />

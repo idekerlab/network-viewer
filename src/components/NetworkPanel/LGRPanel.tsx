@@ -13,8 +13,10 @@ type LGRPanelProps = {
 }
 
 export type EventHandlers = {
-  setSelectedNodes: Function,
+  setSelectedNodes: Function
   setSelectedEdges: Function
+  setLastSelectedNode: Function
+  setLastSelectedEdge: Function
 }
 
 const LGRPanel = ({ eventHandlers, selectedNodes, selectedEdges, cx }: LGRPanelProps) => {
@@ -23,8 +25,8 @@ const LGRPanel = ({ eventHandlers, selectedNodes, selectedEdges, cx }: LGRPanelP
   const [data, setData] = useState<GraphView | null>(null)
 
   // TODO: support multiple selection
-  const _handleNodeClick = (selectedNode: NodeView): void => {
-    console.log('* Node click event:', selectedNode)
+  const _handleNodeClick = (selectedNodeEvent: NodeView, x: number, y: number): void => {
+    console.log('* Node click event:', selectedNodeEvent)
     if (selectedNodes.length !== 0) {
       selectedNodes.forEach((nodeId) => {
         const lastSelectedNode = data.nodeViews.get(nodeId)
@@ -32,12 +34,14 @@ const LGRPanel = ({ eventHandlers, selectedNodes, selectedEdges, cx }: LGRPanelP
         console.log('Clear selection:', lastSelectedNode)
       })
     }
-    const nodeId: string = selectedNode.id
+    const nodeId: string = selectedNodeEvent.id
     eventHandlers.setSelectedNodes([nodeId])
+    eventHandlers.setSelectedEdges([])
+    eventHandlers.setLastSelectedNode([nodeId], { renderedPosition: { x: x, y: y } })
   }
 
-  const _handleEdgeClick = (selectedEdge: EdgeView): void => {
-    console.log('* Edge click event:', selectedEdge)
+  const _handleEdgeClick = (selectedEdgeEvent: EdgeView, x: number, y: number): void => {
+    console.log('* Edge click event:', selectedEdgeEvent)
     if (selectedEdges.length !== 0) {
       selectedEdges.forEach((edgeId) => {
         const lastSelectedEdge = data.edgeViews.get(edgeId)
@@ -45,8 +49,10 @@ const LGRPanel = ({ eventHandlers, selectedNodes, selectedEdges, cx }: LGRPanelP
         console.log('Clear edge selection:', lastSelectedEdge)
       })
     }
-    const edgeId: string = selectedEdge.id
+    const edgeId: string = selectedEdgeEvent.id
     eventHandlers.setSelectedEdges([edgeId])
+    eventHandlers.setSelectedNodes([])
+    eventHandlers.setLastSelectedEdge([edgeId], { renderedPosition: { x: x, y: y } })
   }
 
   const _handleBackgroundClick = (event: object): void => {
@@ -68,7 +74,6 @@ const LGRPanel = ({ eventHandlers, selectedNodes, selectedEdges, cx }: LGRPanelP
     eventHandlers.setSelectedNodes([])
     eventHandlers.setSelectedEdges([])
   }
-
 
   useEffect(() => {
     if (cx !== undefined && data === null) {

@@ -1,14 +1,13 @@
-import React from 'react';
+import React from 'react'
 
-import { makeStyles } from '@material-ui/styles';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Typography from '@material-ui/core/Typography';
-import List from '@material-ui/core/List';
+import { makeStyles } from '@material-ui/styles'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
+import Typography from '@material-ui/core/Typography'
+import List from '@material-ui/core/List'
 
-import Linkify from 'linkifyjs/react';
-import parse from 'html-react-parser';
-
+import Linkify from 'linkifyjs/react'
+import parse from 'html-react-parser'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -31,20 +30,20 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 0,
     marginBottom: 0,
     lineHeight: 1.5,
-    wordWrap: 'break-word'
+    wordWrap: 'break-word',
   },
   evenLessPadding: {
     marginBottom: '-2px',
-    marginTop: '4px'
+    marginTop: '4px',
   },
   descriptionContainer: {
     paddingTop: '0.5em',
-    paddingBottom: '0.75em'
-  }
-}));
+    paddingBottom: '0.75em',
+  },
+}))
 
 const NetworkProperties = (props) => {
-  const {data, description} = props
+  const { data, description } = props
   const classes = useStyles()
 
   let index = 0
@@ -60,35 +59,37 @@ const NetworkProperties = (props) => {
   for (let property of propertiesList) {
     display.push(
       <ListItem key={index++} className={classes.noPadding}>
-        <ListItemText className={classes.noPadding} primary = {
-          <>
-            <Typography variant='caption' color='textSecondary' className={classes.evenLessPadding} component='div'>
-              {property[0]}
-            </Typography>
-            <div>
-              <Typography variant='body2'>
-                {property[1]}
+        <ListItemText
+          className={classes.noPadding}
+          primary={
+            <>
+              <Typography variant="caption" color="textSecondary" className={classes.evenLessPadding} component="div">
+                {property[0]}
               </Typography>
-            </div>
-          </>
-        }/>
-      </ListItem>
+              <div>
+                <Typography variant="body2">{property[1]}</Typography>
+              </div>
+            </>
+          }
+        />
+      </ListItem>,
     )
   }
 
   return (
-      <div className={classes.descriptionContainer}>
-        <List className={classes.noPadding}>{display}</List>
-      </div>
-  );
-};
+    <div className={classes.descriptionContainer}>
+      <List className={classes.noPadding}>{display}</List>
+    </div>
+  )
+}
 
 const formatContent = (string) => {
-  string = string
-      .toString()
-      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script\ *>/gi, '')
+  if (string == undefined) {
+    return
+  }
+  string = string.toString().replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script\ *>/gi, '')
   string = parse(string)
   return <Linkify key={Math.random().toString()}>{string}</Linkify>
 }
 
-export default NetworkProperties;
+export default NetworkProperties
