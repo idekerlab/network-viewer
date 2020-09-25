@@ -25,11 +25,11 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: '100%',
-      height: '100%'
+      height: '100%',
     },
     base: {
       width: '100%',
-      height: '100%'
+      height: '100%',
     },
     leftPanel: {
       display: 'flex',
@@ -69,16 +69,16 @@ const MainSplitPane = () => {
   const [containerHeight, setContainerHeight] = useState(0)
 
   const assignNewHeight = () => {
-      const curRef = containerRef?.current ?? { offsetHeight: 0 }
-      if (curRef) {
-        setContainerHeight(curRef.offsetHeight)
-      }
+    const curRef = containerRef?.current ?? { offsetHeight: 0 }
+    if (curRef) {
+      setContainerHeight(curRef.offsetHeight)
+    }
   }
-  
-  useEffect(()=> {
+
+  useEffect(() => {
     window.addEventListener('resize', assignNewHeight)
   }, [])
-  
+
   useLayoutEffect(() => {
     assignNewHeight()
   })
@@ -92,7 +92,7 @@ const MainSplitPane = () => {
   }, [uiState.dataPanelOpen])
 
   useEffect(() => {
-    setUIState({...uiState, leftPanelWidth: leftWidth})
+    setUIState({ ...uiState, leftPanelWidth: leftWidth })
   }, [leftWidth])
 
   const result = useNetworkSummary(uuid, config.ndexHttps, V2, ndexCredential)
@@ -154,7 +154,7 @@ const MainSplitPane = () => {
         <div className={classes.leftPanel} style={splitPaneStyle}>
           <NetworkPanel cx={cxResponse.data} renderer={rend} objectCount={objectCount} height={containerHeight} />
         </div>
-        <DataPanel uuid={uuid} cx={cxResponse.data} height={containerHeight}/>
+        <DataPanel uuid={uuid} cx={cxResponse.data} height={containerHeight} />
       </SplitPane>
       {uiState.dataPanelOpen ? <div /> : <ClosedPanel />}
     </div>

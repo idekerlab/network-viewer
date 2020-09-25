@@ -15,7 +15,7 @@ type CytoscapeRendererProps = {
   eventHandlers: object
   layoutName?: string
   setCyReference: Function
-  setBusy?: Function,
+  setBusy?: Function
 }
 
 const CytoscapeRenderer = ({
@@ -123,36 +123,29 @@ const tapHandler = (cy, eventHandlers, event) => {
       eventHandlers.setLastSelectedNode([])
       eventHandlers.setLastSelectedEdge([])
     }, 10)
-    // cy.elements().removeClass('faded')
-    // cy.elements().removeClass('highlight')
   } else {
     const data = evtTarget.data()
 
     if (evtTarget.isNode()) {
       console.log('* tap on Node', evtTarget.data())
-      // Clear last one first
-      //eventHandlers.setSelectedEdges([])
-      //eventHandlers.setSelectedNodes([data.id], event)
       setTimeout(() => {
         const selectedNodes = cy.$('node:selected')
         const selectedEdges = cy.$('edge:selected')
         const nodeIds = selectedNodes.map((node) => node.data().id)
         const edgeIds = selectedEdges.map((edge) => edge.data().id.slice(1))
         eventHandlers.setSelectedEdges(edgeIds)
-        eventHandlers.setSelectedNodes(nodeIds, event)
+        eventHandlers.setSelectedNodes(nodeIds)
         eventHandlers.setLastSelectedNode([data.id], event)
       }, 5)
     } else {
       console.log('* tap on Edge', evtTarget.data())
-      //eventHandlers.setSelectedNodes([])
-      //eventHandlers.setSelectedEdges([data.id.slice(1)], event)
       setTimeout(() => {
         const selectedNodes = cy.$('node:selected')
         const selectedEdges = cy.$('edge:selected')
         const nodeIds = selectedNodes.map((node) => node.data().id)
         const edgeIds = selectedEdges.map((edge) => edge.data().id.slice(1))
         eventHandlers.setSelectedEdges(edgeIds)
-        eventHandlers.setSelectedNodes(nodeIds, event)
+        eventHandlers.setSelectedNodes(nodeIds)
         eventHandlers.setLastSelectedEdge([data.id.slice(1)], event)
       }, 5)
     }

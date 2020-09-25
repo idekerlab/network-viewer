@@ -77,8 +77,8 @@ const SearchBox: FC = () => {
   const [open, setOpen] = useState(false)
   const [disableQuery, setDisableQuery] = useState(true)
   const [rawQuery, setRawQuery] = useState('')
-  
-  const { uuid } = useParams();
+
+  const { uuid } = useParams()
 
   const { cyReference, query, setQuery, queryMode, setQueryMode, setUIState, uiState } = useContext(AppContext)
 
@@ -115,7 +115,7 @@ const SearchBox: FC = () => {
 
   const handleClick = () => {
     setQuery(rawQuery)
-    setUIState({ ...uiState, showSearchResult: true })
+    setUIState({ ...uiState, showSearchResult: true, showPropPanel: false })
     setTimeout(() => {
       fitContent(cyReference)
       lockMainWindow(cyReference, true)
@@ -126,7 +126,7 @@ const SearchBox: FC = () => {
     setRawQuery('')
     setQuery('')
     setDisableQuery(true)
-    setUIState({ ...uiState, showSearchResult: false })
+    setUIState({ ...uiState, showSearchResult: false, showPropPanel: false })
     setTimeout(() => {
       fitContent(cyReference)
       lockMainWindow(cyReference, false)
@@ -188,8 +188,16 @@ const SearchBox: FC = () => {
       </IconButton>
       <DownloadButton {...downloadProps} />
       <SaveQueryButton />
-      <AdvancedQueryMenu/>
-      <IconButton color="primary" size='small' disableFocusRipple disableRipple className={classes.button} disabled={disableQuery} onClick={handleClear}>
+      <AdvancedQueryMenu />
+      <IconButton
+        color="primary"
+        size="small"
+        disableFocusRipple
+        disableRipple
+        className={classes.button}
+        disabled={disableQuery}
+        onClick={handleClear}
+      >
         <CloseIcon />
       </IconButton>
       <SearchHelpDialog onClose={handleHelpClose} open={open} />
