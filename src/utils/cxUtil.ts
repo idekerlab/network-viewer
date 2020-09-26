@@ -83,4 +83,34 @@ const getCyjsLayout = (cx: object[], layoutTh: number = 1000): string => {
   }
 }
 
-export { getEntry, getNodeCount, getEdgeCount, getCyjsLayout, CYJS_LAYOUTS }
+const DEF_BG_COLOR = '#FFFFFF'
+const getNetworkBackgroundColor = (cx: object[]): string => {
+  if(cx === undefined || cx === null || !Array.isArray(cx)) {
+    return DEF_BG_COLOR
+  }
+
+  const vp = getEntry('cyVisualProperties', cx)
+  if ( vp === undefined || vp.length === 0 || Object.keys(vp).length === 0) {
+    return DEF_BG_COLOR
+  }
+
+  let bgColor = DEF_BG_COLOR
+  let idx = vp.length
+  while(idx--) {
+    const entry = vp[idx]
+    const target = entry['properties_of']
+    if(target !== 'network') {
+      continue
+    }
+
+    const visualPoperties = entry['properties']
+    const bgPaint = visualPoperties['NETWORK_BACKGROUND_PAINT']
+    if(bgPaint !== undefined) {
+      return bgPaint
+    }
+  }
+
+  return bgColor 
+}
+
+export { getEntry, getNodeCount, getEdgeCount, getCyjsLayout, CYJS_LAYOUTS, getNetworkBackgroundColor }
