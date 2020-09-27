@@ -14,7 +14,6 @@ import selectionReducer, { EMPTY_SELECTION } from './reducer/selectionReducer'
 import cyReducer, { INITIAL_CY_REFERENCE } from './reducer/cyReducer'
 import NdexCredential from './model/NdexCredential'
 
-
 const defUIState: UIState = {
   dataPanelOpen: true,
   showSearchResult: false,
@@ -24,7 +23,7 @@ const defUIState: UIState = {
     y: 500,
   },
   lastSelectWasNode: false,
-  leftPanelWidth: 0
+  leftPanelWidth: 0,
 }
 
 const defNdexCredential: NdexCredential = {
@@ -32,14 +31,13 @@ const defNdexCredential: NdexCredential = {
   isGoogle: false,
 }
 
-
-const App = ({config}) => {
-
+const App = ({ config }) => {
   const history = useHistory(defUIState)
-  
+
   const [uiState, setUIState] = useState(defUIState)
   const [query, setQuery] = useState('')
   const [queryMode, setQueryMode] = useState('direct')
+  const [summary, setSummary] = useState()
 
   const [ndexCredential, setNdexCredential] = useState(defNdexCredential)
 
@@ -66,6 +64,9 @@ const App = ({config}) => {
 
     ndexCredential,
     setNdexCredential,
+
+    summary,
+    setSummary,
   }
 
   return (
@@ -77,7 +78,7 @@ const App = ({config}) => {
           </AppContext.Provider>
         </Route>
         <Route path="/">
-          <TopPanel config={config}/>
+          <TopPanel config={config} />
         </Route>
       </Switch>
     </BrowserRouter>

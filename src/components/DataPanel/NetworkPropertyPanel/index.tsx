@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       boxSizing: 'border-box',
-      borderBottom: '1px solid rgba(220,220,220,0.7)'
+      borderBottom: '1px solid rgba(220,220,220,0.7)',
     },
     topBar: {
       display: 'flex',
@@ -77,12 +77,12 @@ const useStyles = makeStyles((theme: Theme) =>
 const NetworkPropertyPanel = () => {
   const classes = useStyles()
   const { uuid } = useParams()
-  const { ndexCredential, config } = useContext(AppContext)
+  const { ndexCredential, config, setSummary, summary } = useContext(AppContext)
 
   const summaryResponse = useNetworkSummary(uuid, config.ndexHttps, 'v2', ndexCredential)
-  const summary = summaryResponse.data
+  const summaryResponseData = summaryResponse.data
 
-  if (summary === undefined || Object.entries(summary).length === 0) {
+  if (summaryResponseData === undefined || Object.entries(summaryResponseData).length === 0) {
     return (
       <div className={classes.root}>
         <Grid container>
@@ -90,39 +90,34 @@ const NetworkPropertyPanel = () => {
         </Grid>
       </div>
     )
+  } else {
+    if (summary == undefined || summary.owner !== summaryResponseData['owner']) {
+      setSummary({ ...summary, owner: summaryResponseData['owner'], externalId: summaryResponseData['externalId'] })
+    }
   }
 
-  const newProps = {
-    description: summary['description'],
-  }
   return (
     <div className={classes.root}>
       <div className={classes.topBar}>
         <MinimizeButton />
-        <Typography className={classes.title}>{summary['name']}</Typography>
+        <Typography className={classes.title}>{summaryResponseData['name']}</Typography>
       </div>
       <div className={classes.objectCount}>
-        {summary.visibility === 'PUBLIC' ? (
+        {summaryResponseData.visibility === 'PUBLIC' ? (
           <PublicIcon className={classes.icon} />
         ) : (
           <VpnLockIcon className={classes.icon} />
         )}
         <Button disabled className={classes.countButton} variant="outlined" color="secondary">
-          Nodes: {summary['nodeCount']}
+          Nodes: {summaryResponseData['nodeCount']}
         </Button>
         <Button disabled className={classes.countButton} variant="outlined" color="secondary">
-          Edges: {summary['edgeCount']}
+          Edges: {summaryResponseData['edgeCount']}
         </Button>
       </div>
       <div className={classes.description}>
-        {/*<Typography className={classes.label} color="inherit" gutterBottom>
-          Description:
-        </Typography>
-        <DescriptionEditor {...newProps} />
-        <PropertyTable data={summary['properties']} />*/}
-      <NetworkProperties data={summary['properties']} description={summary['description']}/>
+        <NetworkProperties data={summaryResponseData['properties']} description={summaryResponseData['description']} />
       </div>
-
     </div>
   )
 }
