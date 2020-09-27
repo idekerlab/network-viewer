@@ -2,12 +2,9 @@ import React, { useRef, useEffect, useState, Children } from 'react'
 import { createCytoscape } from './create-cytoscape'
 import useCyjs from '../../hooks/useCyjs'
 import Loading from '../NetworkPanel/Loading'
+import { getNetworkBackgroundColor } from '../../utils/cxUtil'
 
 // Style for the network canvas area
-let ROOT_STYLE = {
-  width: '100%',
-  height: '100%',
-}
 
 type CytoscapeRendererProps = {
   uuid: string
@@ -28,6 +25,13 @@ const CytoscapeRenderer = ({
 }: CytoscapeRendererProps) => {
   const cyEl = useRef(null)
   const [cyInstance, setCyInstance] = useState(null)
+
+  const bgColor = getNetworkBackgroundColor(cx)
+  let baseStyle = {
+    width: '100%',
+    height: '100%',
+    backgroundColor: bgColor,
+  }
 
   const cyjsNetwork = useCyjs(uuid, cx)
 
@@ -88,7 +92,7 @@ const CytoscapeRenderer = ({
     }
   }, [cyEl])
 
-  return <div style={ROOT_STYLE} ref={cyEl} />
+  return <div style={baseStyle} ref={cyEl} />
 }
 
 const initializeCy = (cy, eventHandlers) => {
