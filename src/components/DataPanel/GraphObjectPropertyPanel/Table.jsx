@@ -36,6 +36,8 @@ const useStyles = makeStyles((theme) =>
     tableBodyCell: {
       fontSize: '1em',
       padding: '6px 24px 6px 16px',
+      maxHeight: '12em',
+      overflowY: 'auto',
     },
     tableRow: {
       '&:nth-of-type(odd)': {
