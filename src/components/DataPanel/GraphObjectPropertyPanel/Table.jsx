@@ -34,8 +34,10 @@ const useStyles = makeStyles((theme) =>
       padding: '6px 24px 6px 16px',
     },
     tableBodyCell: {
-      fontSize: '1em',
       padding: '6px 24px 6px 16px',
+      fontSize: '1em',
+      maxHeight: '12em',
+      overflowY: 'auto',
     },
     tableRow: {
       '&:nth-of-type(odd)': {
@@ -83,6 +85,7 @@ function Table({ columns, data }) {
 
       const row = rows[index]
       prepareRow(row)
+      console.log(row.cells)
       return (
         <div
           {...row.getRowProps({
