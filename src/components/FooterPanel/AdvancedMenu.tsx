@@ -4,12 +4,17 @@ import Popover from '@material-ui/core/Popover'
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/Button'
 import MoreIcon from '@material-ui/icons/MoreVert'
+import DeleteIcon from '@material-ui/icons/Delete'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     typography: {
       padding: theme.spacing(2),
     },
+    button: {
+      margin: theme.spacing(1),
+
+    }
   }),
 )
 
@@ -30,7 +35,7 @@ const AdvancedMenu = () => {
 
   return (
     <div>
-      <IconButton aria-describedby={id} onClick={handleClick} color="inherit">
+      <IconButton size='small' className={classes.button}  aria-describedby={id} onClick={handleClick} color="inherit">
         <MoreIcon />
       </IconButton>
       <Popover
@@ -47,7 +52,7 @@ const AdvancedMenu = () => {
           horizontal: 'center',
         }}
       >
-        <Typography className={classes.typography}>This is for advanced menu items</Typography>
+        <Typography className={classes.typography}>(Advanced menu items)</Typography>
       </Popover>
     </div>
   )

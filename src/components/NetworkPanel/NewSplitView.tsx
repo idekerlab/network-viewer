@@ -31,7 +31,6 @@ const useStyles = makeStyles((theme: Theme) =>
     lowerPanel: {
       width: '100%',
       flexGrow: 1,
-      borderBottom: '1px solid #AAAAAA',
     },
     title: {
       position: 'fixed',
@@ -194,6 +193,8 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
     }
   }
 
+  let border = 'none'
+
   const getSubRenderer = () => {
     if (subCx === undefined && showSearchResult) {
       // let showLoading = busy
@@ -209,15 +210,19 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
 
     const layout = getCyjsLayout(subCx, LAYOUT_TH)
 
+    // For showing border between top and bottom panels
+    border = '1px solid #BBBBBB'
     return (
-      <CytoscapeRenderer
-        uuid={uuid}
-        cx={subCx}
-        eventHandlers={subEventHandlers}
-        layoutName={layout}
-        setBusy={setBusy}
-        setCyReference={setSub}
-      />
+      <div style={{width: '100%', height: '100%', borderTop: border }}>
+        <CytoscapeRenderer
+          uuid={uuid}
+          cx={subCx}
+          eventHandlers={subEventHandlers}
+          layoutName={layout}
+          setBusy={setBusy}
+          setCyReference={setSub}
+        />
+      </div>
     )
   }
 

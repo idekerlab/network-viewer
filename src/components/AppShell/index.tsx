@@ -1,6 +1,5 @@
 import React, { FC } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
-import CssBaseline from '@material-ui/core/CssBaseline'
 import { NDExAccountProvider } from 'cytoscape-explore-components'
 import MainSplitPane from '../MainSplitPane'
 import ToolBar from '../ToolBar'
@@ -26,8 +25,13 @@ const useStyles = makeStyles((theme: Theme) =>
       boxSizing: 'border-box',
     },
     footer: {
+      overflow: 'hidden',
       boxSizing: 'border-box',
-      height: '60px', //If this changes, also update footer size in Popup/index.tsx
+      padding: 0,
+      margin:0,
+      borderTop: '1px solid rgba(230,230,230,0.7)',
+      width: '100%',
+      height: '4em', //If this changes, also update footer size in Popup/index.tsx
     },
   }),
 )

@@ -1,4 +1,4 @@
-import React, { FC, Fragment, useState, useContext } from 'react'
+import React, { FC, useState, useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import InputBase from '@material-ui/core/InputBase'
@@ -8,7 +8,7 @@ import InfoIcon from '@material-ui/icons/InfoOutlined'
 
 import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
-import { Button, IconButton } from '@material-ui/core'
+import { IconButton } from '@material-ui/core'
 import AppContext from '../../context/AppState'
 import SearchHelpDialog from './SearchHelpDialog'
 import { DownloadButton, DownloadProps } from 'cytoscape-explore-components'
@@ -28,10 +28,10 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.grey[100],
       marginRight: theme.spacing(1),
       marginLeft: theme.spacing(1),
-      padding: theme.spacing(0.2),
+      padding: theme.spacing(0),
     },
     search: {
-      maxWidth: '65em',
+      maxWidth: '60vh',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'flex-start',
@@ -41,13 +41,13 @@ const useStyles = makeStyles((theme: Theme) =>
       color: 'inherit',
     },
     inputInput: {
-      paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(2),
+      paddingLeft: theme.spacing(1),
+      paddingRight: theme.spacing(1),
       transition: theme.transitions.create('width'),
       width: '100%',
     },
     formControl: {
-      minWidth: '12em',
+      minWidth: '15em',
     },
     selectEmpty: {
       marginTop: theme.spacing(0),
@@ -176,8 +176,8 @@ const SearchBox: FC = () => {
         </Select>
       </FormControl>
       <IconButton
-        color="primary"
-        size="small"
+        color='secondary'
+        size='small'
         disableFocusRipple
         disableRipple
         className={classes.button}
@@ -190,7 +190,7 @@ const SearchBox: FC = () => {
       <SaveQueryButton />
       <AdvancedQueryMenu />
       <IconButton
-        color="primary"
+        color='secondary'
         size="small"
         disableFocusRipple
         disableRipple
