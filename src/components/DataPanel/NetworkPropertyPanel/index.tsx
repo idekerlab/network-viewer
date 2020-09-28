@@ -116,7 +116,7 @@ const NetworkPropertyPanel = () => {
         </Button>
       </div>
       <div className={classes.description}>
-        <NetworkProperties summary={summary} />
+        <NetworkProperties summary={summaryResponseData} />
       </div>
     </div>
   )

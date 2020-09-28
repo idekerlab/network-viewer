@@ -162,7 +162,7 @@ const NetworkProperties = (props) => {
   //Middle panel
   const descriptionList = []
   if (description.length > 0) {
-    descriptionList.push(['Description', description])
+    descriptionList.push(['Description', formatContent(description)])
   }
   if (rights || rightsHolder) {
     const rightsTable = (
@@ -170,13 +170,13 @@ const NetworkProperties = (props) => {
         {rights ? (
           <tr>
             <td className={classes.tdTitle}>Rights</td>
-            <td>{rights}</td>
+            <td>{formatContent(rights)}</td>
           </tr>
         ) : null}
         {rightsHolder ? (
           <tr>
             <td className={classes.tdTitle}>Rights holder</td>
-            <td>{rightsHolder}</td>
+            <td>{formatContent(rightsHolder)}</td>
           </tr>
         ) : null}
       </table>
@@ -184,7 +184,7 @@ const NetworkProperties = (props) => {
     descriptionList.push(['Rights', rightsTable])
   }
   if (reference) {
-    descriptionList.push(['Reference', parse(reference)])
+    descriptionList.push(['Reference', formatContent(reference)])
   }
   if (descriptionList.length > 0) {
     const descriptionDisplay = formatDisplay(descriptionList)
