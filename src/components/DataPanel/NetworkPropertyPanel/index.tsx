@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       boxSizing: 'border-box',
-      borderBottom: '1px solid rgba(220,220,220,0.7)'
+      borderBottom: '1px solid rgba(220,220,220,0.7)',
     },
     topBar: {
       display: 'flex',
@@ -120,9 +120,8 @@ const NetworkPropertyPanel = () => {
         </Typography>
         <DescriptionEditor {...newProps} />
         <PropertyTable data={summary['properties']} />*/}
-      <NetworkProperties data={summary['properties']} description={summary['description']}/>
+        <NetworkProperties summary={summary} />
       </div>
-
     </div>
   )
 }

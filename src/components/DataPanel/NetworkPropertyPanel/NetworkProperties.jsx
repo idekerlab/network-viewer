@@ -15,88 +15,203 @@ import parse from 'html-react-parser'
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    padding: '0.2em',
     backgroundColor: '#FFFFFF',
     overflow: 'auto',
     height: '100%',
     boxSizing: 'content-box',
   },
-  padding: {
-    paddingLeft: '1em',
-    paddingTop: '0.75em',
-  },
-  lessPadding: {
-    paddingTop: '2.49px',
-  },
   noPadding: {
-    paddingTop: 0,
-    paddingBottom: 0,
-    marginTop: 0,
-    marginBottom: 0,
-    lineHeight: 1.5,
     wordWrap: 'break-word',
   },
-  evenLessPadding: {
-    marginBottom: '-2px',
-    marginTop: '4px',
+  tdTitle: {
+    whiteSpace: 'nowrap',
+    paddingRight: '1em',
+    paddingLeft: 0,
   },
-  descriptionContainer: {
-    paddingTop: '0.5em',
-    paddingBottom: '0.75em',
+  whiteBackground: {
+    backgroundColor: 'white',
+  },
+  sectionContainer: {
+    paddingTop: '8px',
+  },
+  table: {
+    cellSpacing: 0,
+    borderSpacing: 0,
+    borderCollapse: 'collapse',
+  },
+  listItem: {
+    paddingTop: 0,
   },
 }))
 
+let index = 0
+
 const NetworkProperties = (props) => {
-  const { data, description } = props
+  const { summary } = props
+  const properties = summary.properties
+  const description = summary.description
   const classes = useStyles()
 
-  let index = 0
+  const formatDisplay = (propertiesList) => {
+    const display = []
+    for (let property of propertiesList) {
+      display.push(
+        <ListItem key={index++} className={classes.listItem}>
+          <ListItemText
+            className={classes.noPadding}
+            primary={
+              <>
+                <Typography variant="caption" color="textSecondary" className={classes.evenLessPadding} component="div">
+                  {property[0]}
+                </Typography>
+                <div>
+                  <Typography variant="body2">{property[1]}</Typography>
+                </div>
+              </>
+            }
+          />
+        </ListItem>,
+      )
+    }
+    return display
+  }
 
-  const propertiesList = [['Description', formatContent(description)]]
-  let hasContext = false
-  let context = ''
-  for (let datum of data) {
-    const value = datum.value.trim()
-    const predicate = datum.predicateString.trim()
-    if (value !== '') {
+  const returnList = []
+
+  //Top panel
+  const informationTableContents = []
+  if (summary.owner) {
+    informationTableContents.push(
+      <tr>
+        <td className={classes.tdTitle}>Owner</td>
+        <td>{summary.owner}</td>
+      </tr>,
+    )
+  }
+  if (summary.creationTime) {
+    const creationDate = new Date(summary.creationTime)
+    informationTableContents.push(
+      <tr>
+        <td className={classes.tdTitle}>Created</td>
+        <td>{creationDate.toLocaleDateString() + ' ' + creationDate.toLocaleTimeString()}</td>
+      </tr>,
+    )
+  }
+  if (summary.modificationTime) {
+    const modificationDate = new Date(summary.modificationTime)
+    informationTableContents.push(
+      <tr>
+        <td className={classes.tdTitle}>Last modified</td>
+        <td>{modificationDate.toLocaleDateString() + ' ' + modificationDate.toLocaleTimeString()}</td>
+      </tr>,
+    )
+  }
+  if (summary.externalId) {
+    informationTableContents.push(
+      <tr>
+        <td className={classes.tdTitle}>UUID</td>
+        <td>{summary.externalId}</td>
+      </tr>,
+    )
+  }
+  if (informationTableContents.length > 0) {
+    const informationList = [
+      ['Network information', <table className={classes.table}>{informationTableContents}</table>],
+    ]
+    const informationDisplay = formatDisplay(informationList)
+    returnList.push(<div className={classes.sectionContainer}>{informationDisplay}</div>)
+  }
+
+  //Bottom panel
+  const propertiesTableContent = []
+  let context
+  let rights
+  let rightsHolder
+  let reference
+  for (let property of properties) {
+    const value = property.value.trim()
+    const predicate = property.predicateString.trim()
+    if (value !== '' && !predicate.startsWith('__')) {
       if (predicate === '@context') {
-        hasContext = true
         context = value
+      } else if (predicate === 'rights') {
+        rights = value
+      } else if (predicate === 'rightsHolder') {
+        rightsHolder = value
+      } else if (predicate === 'reference') {
+        reference = value
       } else {
-        propertiesList.push([predicate, formatContent(value)])
+        propertiesTableContent.push(
+          <tr>
+            <td className={classes.tdTitle}>{predicate}</td>
+            <td>{formatContent(value)}</td>
+          </tr>,
+        )
       }
     }
   }
-  if (hasContext) {
+
+  const propertiesList = []
+  if (propertiesTableContent.length > 0) {
+    propertiesList.push(['Network properties', <table className={classes.table}>{propertiesTableContent}</table>])
+  }
+  if (context) {
     propertiesList.push(['@context', formatContext(context)])
   }
 
-  const display = []
-  for (let property of propertiesList) {
-    display.push(
-      <ListItem key={index++} className={classes.noPadding}>
-        <ListItemText
-          className={classes.noPadding}
-          primary={
-            <>
-              <Typography variant="caption" color="textSecondary" className={classes.evenLessPadding} component="div">
-                {property[0]}
-              </Typography>
-              <div>
-                <Typography variant="body2">{property[1]}</Typography>
-              </div>
-            </>
-          }
-        />
-      </ListItem>,
+  //Middle panel
+  const descriptionList = []
+  if (description.length > 0) {
+    descriptionList.push(['Description', description])
+  }
+  if (rights || rightsHolder) {
+    const rightsTable = (
+      <table className={classes.table}>
+        {rights ? (
+          <tr>
+            <td className={classes.tdTitle}>Rights</td>
+            <td>{rights}</td>
+          </tr>
+        ) : null}
+        {rightsHolder ? (
+          <tr>
+            <td className={classes.tdTitle}>Rights holder</td>
+            <td>{rightsHolder}</td>
+          </tr>
+        ) : null}
+      </table>
     )
+    descriptionList.push(['Rights', rightsTable])
+  }
+  if (reference) {
+    descriptionList.push(['Reference', parse(reference)])
+  }
+  if (descriptionList.length > 0) {
+    const descriptionDisplay = formatDisplay(descriptionList)
+    if (returnList.length === 1) {
+      returnList.splice(
+        1,
+        0,
+        <div className={[classes.sectionContainer, classes.whiteBackground].join(' ')}>{descriptionDisplay}</div>,
+      )
+    } else {
+      returnList.splice(1, 0, <div className={classes.sectionContainer}>{descriptionDisplay}</div>)
+    }
   }
 
-  return (
-    <div className={classes.descriptionContainer}>
-      <List className={classes.noPadding}>{display}</List>
-    </div>
-  )
+  //Bottom panel
+  if (propertiesList.length > 0) {
+    const propertiesDisplay = formatDisplay(propertiesList)
+    if (returnList.length === 1) {
+      returnList.push(
+        <div className={[classes.sectionContainer, classes.whiteBackground].join(' ')}>{propertiesDisplay}</div>,
+      )
+    } else {
+      returnList.push(<div className={classes.sectionContainer}>{propertiesDisplay}</div>)
+    }
+  }
+
+  return <>{returnList}</>
 }
 
 const formatContent = (string) => {
@@ -123,7 +238,6 @@ const formatContext = (string) => {
       </tr>,
     )
   }
-
   const details = (
     <table>
       <tbody>{returnArray}</tbody>
@@ -134,7 +248,6 @@ const formatContext = (string) => {
       Click to view the namespaces associated with this network
     </Typography>
   )
-
   return <ExpandPanel summary={summary} details={details} defaultExpanded={false} />
 }
 
