@@ -5,6 +5,8 @@ import CloseIcon from '@material-ui/icons/ArrowRight'
 import OpenIcon from '@material-ui/icons/ArrowLeft'
 import AppContext from '../../../context/AppState'
 import Tooltip from '@material-ui/core/Tooltip'
+import UIState from '../../../model/UIState'
+import { UIStateActions } from '../../../reducer/uiStateReducer'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -24,11 +26,13 @@ const useStyles = makeStyles((theme: Theme) =>
 const MinimizeButton = () => {
   const classes = useStyles()
   const appContext = useContext(AppContext)
-  const { uiState, setUIState } = appContext
+  const { uiState, uiStateDispatch } = appContext
+
+  const setDataPanelOpen = (state: UIState) =>
+    uiStateDispatch({ type: UIStateActions.SET_DATA_PANEL_OPEN, uiState: state })
 
   const handleClick = () => {
-    
-    setUIState({...uiState, dataPanelOpen: !uiState.dataPanelOpen})
+    setDataPanelOpen({ ...uiState, dataPanelOpen: !uiState.dataPanelOpen })
   }
 
   if (uiState.dataPanelOpen) {

@@ -10,6 +10,8 @@ import { Typography } from '@material-ui/core'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import AppContext from '../../context/AppState'
 import ClosedPanel from '../DataPanel/ClosedPanel'
+import UIState from '../../model/UIState'
+import { UIStateActions } from '../../reducer/uiStateReducer'
 
 const V2 = 'v2'
 const V3 = 'v3'
@@ -58,7 +60,7 @@ const MainSplitPane = () => {
   const containerRef = useRef()
 
   const { uuid } = useParams()
-  const { uiState, ndexCredential, config, setUIState } = useContext(AppContext)
+  const { uiState, ndexCredential, config, uiStateDispatch } = useContext(AppContext)
   const width = window.innerWidth
   const defSize = Math.floor(width * 0.65)
 
@@ -91,8 +93,11 @@ const MainSplitPane = () => {
     }
   }, [uiState.dataPanelOpen])
 
+  const setLeftPanelWidth = (state: UIState) =>
+    uiStateDispatch({ type: UIStateActions.SET_LEFT_PANEL_WIDTH, uiState: state })
+
   useEffect(() => {
-    setUIState({ ...uiState, leftPanelWidth: leftWidth })
+    setLeftPanelWidth({ ...uiState, leftPanelWidth: leftWidth })
   }, [leftWidth])
 
   const result = useNetworkSummary(uuid, config.ndexHttps, V2, ndexCredential)

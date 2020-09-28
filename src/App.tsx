@@ -9,22 +9,11 @@ import AppContext from './context/AppState'
 import AppState from './model/AppState'
 import TopPanel from './components/TopPanel'
 
-import UIState from './model/UIState'
+//import UIState from './model/UIState'
 import selectionReducer, { EMPTY_SELECTION } from './reducer/selectionReducer'
 import cyReducer, { INITIAL_CY_REFERENCE } from './reducer/cyReducer'
+import uiStateReducer, { INITIAL_UI_STATE } from './reducer/uiStateReducer'
 import NdexCredential from './model/NdexCredential'
-
-const defUIState: UIState = {
-  dataPanelOpen: true,
-  showSearchResult: false,
-  showPropPanel: false,
-  pointerPosition: {
-    x: 200,
-    y: 500,
-  },
-  lastSelectWasNode: false,
-  leftPanelWidth: 0,
-}
 
 const defNdexCredential: NdexCredential = {
   isLogin: false,
@@ -32,9 +21,8 @@ const defNdexCredential: NdexCredential = {
 }
 
 const App = ({ config }) => {
-  const history = useHistory(defUIState)
+  const history = useHistory(INITIAL_UI_STATE)
 
-  const [uiState, setUIState] = useState(defUIState)
   const [query, setQuery] = useState('')
   const [queryMode, setQueryMode] = useState('direct')
   const [summary, setSummary] = useState()
@@ -43,6 +31,7 @@ const App = ({ config }) => {
 
   const [selection, dispatch] = useReducer(selectionReducer, EMPTY_SELECTION)
   const [cyReference, cyDispatch] = useReducer(cyReducer, INITIAL_CY_REFERENCE)
+  const [uiState, uiStateDispatch] = useReducer(uiStateReducer, INITIAL_UI_STATE)
 
   // TODO: use reducer?
   const defState: AppState = {
@@ -55,7 +44,7 @@ const App = ({ config }) => {
     cyDispatch,
 
     uiState,
-    setUIState,
+    uiStateDispatch,
 
     query,
     setQuery,
