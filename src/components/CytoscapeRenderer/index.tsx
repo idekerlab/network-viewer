@@ -13,6 +13,7 @@ type CytoscapeRendererProps = {
   layoutName?: string
   setCyReference: Function
   setBusy?: Function
+  backgroundColor?: string
 }
 
 const CytoscapeRenderer = ({
@@ -22,15 +23,15 @@ const CytoscapeRenderer = ({
   layoutName,
   setCyReference,
   setBusy,
+  backgroundColor
 }: CytoscapeRendererProps) => {
   const cyEl = useRef(null)
   const [cyInstance, setCyInstance] = useState(null)
 
-  const bgColor = getNetworkBackgroundColor(cx)
   let baseStyle = {
     width: '100%',
     height: '100%',
-    backgroundColor: bgColor,
+    backgroundColor
   }
 
   const cyjsNetwork = useCyjs(uuid, cx)

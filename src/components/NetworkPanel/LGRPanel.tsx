@@ -10,6 +10,7 @@ type LGRPanelProps = {
   selectedEdges: string[]
   // highlight: object
   cx: object[]
+  backgroundColor: string
 }
 
 export type EventHandlers = {
@@ -19,7 +20,7 @@ export type EventHandlers = {
   setLastSelectedEdge: Function
 }
 
-const LGRPanel = ({ eventHandlers, selectedNodes, selectedEdges, cx }: LGRPanelProps) => {
+const LGRPanel = ({ eventHandlers, selectedNodes, selectedEdges, cx, backgroundColor = '#FFFFFF' }: LGRPanelProps) => {
   const [render3d, setRender3d] = useState(false)
   const [painted, setPainted] = useState(false)
   const [data, setData] = useState<GraphView | null>(null)
@@ -113,6 +114,7 @@ const LGRPanel = ({ eventHandlers, selectedNodes, selectedEdges, cx }: LGRPanelP
       onEdgeClick={_handleEdgeClick}
       onBackgroundClick={_handleBackgroundClick}
       render3d={render3d}
+      backgroundColor={backgroundColor}
     />
   )
 }

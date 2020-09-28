@@ -13,7 +13,7 @@ import CyReference from '../../model/CyReference'
 import { CyActions } from '../../reducer/cyReducer'
 import NavigationPanel from '../NavigationPanel'
 import Popup from '../Popup'
-import { getCyjsLayout, getEdgeCount, getNodeCount } from '../../utils/cxUtil'
+import { getCyjsLayout, getEdgeCount, getNetworkBackgroundColor, getNodeCount } from '../../utils/cxUtil'
 import MessageDialog from '../MessageDialog'
 import EmptyView from './EmptyView'
 import { UIStateActions } from '../../reducer/uiStateReducer'
@@ -182,6 +182,8 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
         />
       )
     }
+
+    const bgColor = getNetworkBackgroundColor(cx)
     if (renderer !== 'lgr') {
       const layout = getCyjsLayout(cx, LAYOUT_TH)
       return (
@@ -191,6 +193,7 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
           layoutName={layout}
           setCyReference={setMain}
           eventHandlers={mainEventHandlers}
+          backgroundColor={bgColor}
         />
       )
     } else {
@@ -200,6 +203,7 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
           eventHandlers={mainEventHandlers}
           selectedNodes={selection.main.nodes}
           selectedEdges={selection.main.edges}
+          backgroundColor={bgColor}
         />
       )
     }
@@ -224,6 +228,7 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
 
     // For showing border between top and bottom panels
     border = '1px solid #BBBBBB'
+    const bgColor = getNetworkBackgroundColor(subCx)
     return (
       <div style={{width: '100%', height: '100%', borderTop: border }}>
         <CytoscapeRenderer
@@ -233,6 +238,7 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
           layoutName={layout}
           setBusy={setBusy}
           setCyReference={setSub}
+          backgroundColor={bgColor}
         />
       </div>
     )
