@@ -2,10 +2,9 @@ import React from 'react'
 import SelectionList from './SelectionList'
 
 const GraphObjectPropertyPanel = (props) => {
-  const { height } = props
   const rootStyle = {
     width: '100%',
-    height,
+    height: '100%',
   }
 
   return (

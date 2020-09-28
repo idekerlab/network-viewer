@@ -11,43 +11,25 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       width: '100%',
       height: '100%',
-      // border: '5px solid green',
     },
     dataPanel: {
       boxSizing: 'border-box',
       width: '100%',
       backgroundColor: '#FEFEFE',
-      borderLeft: '1px solid #999999'
+      borderLeft: '1px solid #999999',
     },
   }),
 )
 const DataPanel = ({ uuid, cx, height }) => {
   const attr: object = useAttributes(uuid, cx)
   const classes = useStyles()
-  
+
   const defSize = Math.floor(height * 0.7)
-  const [bottomHeight, setBottomHeight] = useState(defSize)
-  useEffect(()=> {
-    setBottomHeight(height * 0.7)
-
-  }, [height])
-
-
-  const handleChange = (size) => {
-    setBottomHeight(height - size)
-  }
 
   return (
-    <SplitPane
-      className={classes.dataPanel}
-      split="horizontal"
-      minSize={150}
-      defaultSize={defSize}
-      onDragFinished={(size) => handleChange(size)}
-      style={{ height: height }}
-    >
+    <SplitPane className={classes.dataPanel} split="horizontal" minSize={150} defaultSize={defSize}>
       <NetworkPropertyPanel />
-      <GraphObjectPropertyPanel attributes={attr} height={bottomHeight} />
+      <GraphObjectPropertyPanel attributes={attr} />
     </SplitPane>
   )
 }
