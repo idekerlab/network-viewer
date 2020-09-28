@@ -161,7 +161,7 @@ const NetworkProperties = (props) => {
 
   //Middle panel
   const descriptionList = []
-  if (description.length > 0) {
+  if (description !== undefined && description.length > 0) {
     descriptionList.push(['Description', formatContent(description)])
   }
   if (rights || rightsHolder) {
