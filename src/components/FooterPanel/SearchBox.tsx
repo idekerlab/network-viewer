@@ -17,6 +17,8 @@ import { fitContent, lockMainWindow } from '../../utils/cyjsUtil'
 import useSearch from '../../hooks/useSearch'
 import SaveQueryButton from './SaveQueryButton'
 import AdvancedQueryMenu from './AdvancedQueryMenu'
+import UIState from '../../model/UIState'
+import { UIStateActions } from '../../reducer/uiStateReducer'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -80,7 +82,7 @@ const SearchBox: FC = () => {
 
   const { uuid } = useParams()
 
-  const { cyReference, query, setQuery, queryMode, setQueryMode, setUIState, uiState } = useContext(AppContext)
+  const { cyReference, query, setQuery, queryMode, setQueryMode, uiStateDispatch, uiState } = useContext(AppContext)
 
   const [searchType, setSearchType] = useState(queryModes.direct)
 
@@ -113,9 +115,12 @@ const SearchBox: FC = () => {
     setRawQuery(q)
   }
 
+  const setShowSearchResult = (state: UIState) =>
+    uiStateDispatch({ type: UIStateActions.SET_SHOW_SEARCH_RESULT, uiState: state })
+
   const handleClick = () => {
     setQuery(rawQuery)
-    setUIState({ ...uiState, showSearchResult: true, showPropPanel: false })
+    setShowSearchResult({ ...uiState, showSearchResult: true })
     setTimeout(() => {
       fitContent(cyReference)
       lockMainWindow(cyReference, true)
@@ -126,7 +131,7 @@ const SearchBox: FC = () => {
     setRawQuery('')
     setQuery('')
     setDisableQuery(true)
-    setUIState({ ...uiState, showSearchResult: false, showPropPanel: false })
+    setShowSearchResult({ ...uiState, showSearchResult: false })
     setTimeout(() => {
       fitContent(cyReference)
       lockMainWindow(cyReference, false)

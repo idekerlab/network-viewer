@@ -4,6 +4,8 @@ import { useParams } from 'react-router-dom'
 import AppContext from '../../context/AppState'
 import useAttributes from '../../hooks/useAttributes'
 import PropertyPanel from '../PropertyPanel'
+import UIState from '../../model/UIState'
+import { UIStateActions } from '../../reducer/uiStateReducer'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -46,7 +48,7 @@ const Popup: FC<PopupProps> = ({ cx, target = PopupTarget.LAST, objectType = Obj
   const classes = useStyles()
   const { uuid } = useParams()
   const attr = useAttributes(uuid, cx)
-  const { uiState, setUIState, selection } = useContext(AppContext)
+  const { uiState, uiStateDispatch, selection } = useContext(AppContext)
   const { windowHeight, windowWidth } = useWindowDimensions()
   const FOOTER_HEIGHT = 60
 
@@ -57,8 +59,11 @@ const Popup: FC<PopupProps> = ({ cx, target = PopupTarget.LAST, objectType = Obj
 
   const { showPropPanel, pointerPosition } = uiState
 
+  const setShowPropPanelFalse = (state: UIState) =>
+    uiStateDispatch({ type: UIStateActions.SET_SHOW_PROP_PANEL_FALSE, uiState: state })
+
   const onClose = () => {
-    setUIState({ ...uiState, showPropPanel: false })
+    setShowPropPanelFalse({ ...uiState })
   }
 
   if (!showPropPanel || objects.length === 0) {

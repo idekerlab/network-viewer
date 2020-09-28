@@ -16,6 +16,8 @@ import Popup from '../Popup'
 import { getCyjsLayout, getEdgeCount, getNodeCount } from '../../utils/cxUtil'
 import MessageDialog from '../MessageDialog'
 import EmptyView from './EmptyView'
+import { UIStateActions } from '../../reducer/uiStateReducer'
+import UIState from '../../model/UIState'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -66,9 +68,17 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
 
   const [busy, setBusy] = useState(false)
 
-  const { query, queryMode, setUIState, uiState, cyReference, cyDispatch, selection, dispatch, config } = useContext(
-    AppContext,
-  )
+  const {
+    query,
+    queryMode,
+    uiStateDispatch,
+    uiState,
+    cyReference,
+    cyDispatch,
+    selection,
+    dispatch,
+    config,
+  } = useContext(AppContext)
 
   const searchResult = useSearch(uuid, query, '', queryMode)
 
@@ -80,15 +90,17 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
     subCx = subnet['cx']
   }
 
+  const setShowPropPanelTrue = (state: UIState) =>
+    uiStateDispatch({ type: UIStateActions.SET_SHOW_PROP_PANEL_TRUE, uiState: state })
+
+  const setShowPropPanelFalse = (state: UIState) =>
+    uiStateDispatch({ type: UIStateActions.SET_SHOW_PROP_PANEL_FALSE, uiState: state })
+
   const updatePanelState = (selected, x, y) => {
     if (selected !== undefined && selected.length !== 0) {
-      setUIState({
-        ...uiState,
-        pointerPosition: { x: x, y: y },
-        showPropPanel: true,
-      })
+      setShowPropPanelTrue({ ...uiState, pointerPosition: { x: x, y: y } })
     } else {
-      setUIState({ ...uiState, showPropPanel: false })
+      setShowPropPanelFalse({ ...uiState })
     }
   }
   const mainEventHandlers = {

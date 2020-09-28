@@ -5,8 +5,9 @@ import AppContext from '../../context/AppState'
 import Tooltip from '@material-ui/core/Tooltip'
 import CloseIcon from '@material-ui/icons/FullscreenExit'
 import ExpandIcon from '@material-ui/icons/Fullscreen'
-import CyReference from '../../model/CyReference'
 import { fitContent, lockMainWindow } from '../../utils/cyjsUtil'
+import { UIStateActions } from '../../reducer/uiStateReducer'
+import UIState from '../../model/UIState'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -21,12 +22,15 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const ExpandButton = () => {
   const classes = useStyles()
-  const { uiState, setUIState, cyReference } = useContext(AppContext)
+  const { uiState, uiStateDispatch, cyReference } = useContext(AppContext)
+
+  const setShowSearchResult = (state: UIState) =>
+    uiStateDispatch({ type: UIStateActions.SET_SHOW_SEARCH_RESULT, uiState: state })
 
   const handleClick = () => {
     const current = uiState.showSearchResult
 
-    setUIState({ ...uiState, showSearchResult: !current, showPropPanel: false })
+    setShowSearchResult({ ...uiState, showSearchResult: !current, showPropPanel: false })
     setTimeout(() => {
       fitContent(cyReference)
       lockMainWindow(cyReference, !current)

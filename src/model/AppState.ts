@@ -15,7 +15,7 @@ type AppState = {
   cyDispatch: any
 
   uiState: UIState
-  setUIState: Function
+  uiStateDispatch: any
 
   query: string
   setQuery: Function
