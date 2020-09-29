@@ -79,9 +79,10 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
     selection,
     dispatch,
     config,
+    ndexCredential
   } = useContext(AppContext)
 
-  const searchResult = useSearch(uuid, query, '', queryMode)
+  const searchResult = useSearch(uuid, query, '', ndexCredential, queryMode)
 
   const { maxNumObjects, viewerThreshold } = config
 
