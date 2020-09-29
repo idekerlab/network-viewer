@@ -22,7 +22,7 @@ const EditMetadataButton: FC = () => {
             setShowButton(false)
           }
         } else {
-          if (result.properties.userName === ndexCredential.oauth['loginDetails'].profileObj.email) {
+          if (result.userName === ndexCredential.basic.userId) {
             if (!showButton) {
               setShowButton(true)
             }
