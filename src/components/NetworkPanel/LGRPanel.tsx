@@ -11,6 +11,7 @@ type LGRPanelProps = {
   // highlight: object
   cx: object[]
   backgroundColor: string
+  layoutName?: string
 }
 
 export type EventHandlers = {
@@ -20,7 +21,7 @@ export type EventHandlers = {
   setLastSelectedEdge: Function
 }
 
-const LGRPanel = ({ eventHandlers, selectedNodes, selectedEdges, cx, backgroundColor = '#FFFFFF' }: LGRPanelProps) => {
+const LGRPanel = ({ eventHandlers, selectedNodes, selectedEdges, cx, backgroundColor = '#FFFFFF', layoutName='preset' }: LGRPanelProps) => {
   const [render3d, setRender3d] = useState(false)
   const [painted, setPainted] = useState(false)
   const [data, setData] = useState<GraphView | null>(null)
@@ -79,7 +80,13 @@ const LGRPanel = ({ eventHandlers, selectedNodes, selectedEdges, cx, backgroundC
   useEffect(() => {
     if (cx !== undefined && data === null) {
       const result = cxVizConverter.convert(cx, 'lnv')
-      const gv = GraphViewFactory.createGraphView(result.nodeViews, result.edgeViews)
+
+      // TODO: add better layout
+      let { nodeViews } = result
+      if(layoutName !== 'preset') {
+        nodeViews = randomCircularLayout(result.nodeViews)
+      }
+      const gv = GraphViewFactory.createGraphView(nodeViews, result.edgeViews)
       setData(gv)
     }
   }, [cx])
@@ -169,6 +176,28 @@ const clearHighlight = (data) => {
     const ev: EdgeView = entry[1]
     ev.color = [155, 155, 155, 200]
   }
+}
+
+const randomCircularLayout = (nodeViews: NodeView[]): NodeView[] => {
+  let idx = nodeViews.length
+  const scalingFactor = 700 // TODO: compute from viewport
+
+  while (idx--) {
+    const nv: NodeView = nodeViews[idx]
+
+    const t = 2 * Math.PI * Math.random()
+    const u = Math.random() + Math.random()
+    let r = 0
+    if (u > 1) {
+      r = 2 - u
+    } else {
+      r = u
+    }
+    const x = r * Math.cos(t) * scalingFactor
+    const y = r * Math.sin(t) * scalingFactor
+    nv.position = [x, y]
+  }
+  return nodeViews
 }
 
 export default LGRPanel

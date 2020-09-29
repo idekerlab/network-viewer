@@ -83,6 +83,16 @@ const getCyjsLayout = (cx: object[], layoutTh: number = 1000): string => {
   }
 }
 
+const getLgrLayout = (cx: object[]): string => {
+  const isLayout: boolean = _isLayoutAvailable(cx)
+
+  if (isLayout) {
+    return 'preset'
+  }
+  
+  return 'random'
+}
+
 const DEF_BG_COLOR = '#FFFFFF'
 const getNetworkBackgroundColor = (cx: object[]): string => {
   if(cx === undefined || cx === null || !Array.isArray(cx)) {
@@ -113,4 +123,4 @@ const getNetworkBackgroundColor = (cx: object[]): string => {
   return bgColor 
 }
 
-export { getEntry, getNodeCount, getEdgeCount, getCyjsLayout, CYJS_LAYOUTS, getNetworkBackgroundColor }
+export { getEntry, getNodeCount, getEdgeCount, getCyjsLayout, getLgrLayout, CYJS_LAYOUTS, getNetworkBackgroundColor }

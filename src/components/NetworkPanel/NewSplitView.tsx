@@ -13,11 +13,12 @@ import CyReference from '../../model/CyReference'
 import { CyActions } from '../../reducer/cyReducer'
 import NavigationPanel from '../NavigationPanel'
 import Popup from '../Popup'
-import { getCyjsLayout, getEdgeCount, getNetworkBackgroundColor, getNodeCount } from '../../utils/cxUtil'
-import MessageDialog from '../MessageDialog'
+import { getCyjsLayout, getEdgeCount, getLgrLayout, getNetworkBackgroundColor, getNodeCount } from '../../utils/cxUtil'
 import EmptyView from './EmptyView'
 import { UIStateActions } from '../../reducer/uiStateReducer'
 import UIState from '../../model/UIState'
+
+const splitBorder = '1px solid #BBBBBB'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -197,6 +198,7 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
         />
       )
     } else {
+      const layout = getLgrLayout(cx)
       return (
         <LGRPanel
           cx={cx}
@@ -204,6 +206,7 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
           selectedNodes={selection.main.nodes}
           selectedEdges={selection.main.edges}
           backgroundColor={bgColor}
+          layoutName={layout}
         />
       )
     }
@@ -227,7 +230,7 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
     const layout = getCyjsLayout(subCx, LAYOUT_TH)
 
     // For showing border between top and bottom panels
-    border = '1px solid #BBBBBB'
+    border = splitBorder
     const bgColor = getNetworkBackgroundColor(subCx)
     return (
       <div style={{width: '100%', height: '100%', borderTop: border }}>
@@ -251,7 +254,7 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
       {selection.lastSelected.nodes.length > 0 ? <Popup cx={cx} /> : <Popup cx={cx} objectType={'edge'} />}
 
       <div className={classes.lowerPanel} style={{ height: bottomHeight, opacity: lowerOpacity }}>
-        <NavigationPanel target={'main'} />
+        {renderer !== 'lgr' ? <NavigationPanel target={'main'} />: <div/>}
         {!showSearchResult ? <div /> : <Typography className={classes.title}>Overview</Typography>}
         {getMainRenderer(renderer)}
       </div>
