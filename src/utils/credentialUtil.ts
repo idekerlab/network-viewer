@@ -9,6 +9,17 @@ const getGoogleHeader = (userInfo) => {
   }
 }
 
+const getAuthorization = (ndexCredential: NdexCredential) => {
+  if (ndexCredential.isGoogle) {
+    const idToken =  ndexCredential.oauth['loginDetails'].tokenId;
+    return  'Bearer ' + idToken;
+  } else if (ndexCredential.basic) {
+    const basicAuth = ndexCredential.basic
+    return 'Basic ' + window.btoa(basicAuth.userId + ':' + basicAuth.password);
+  }
+  return undefined;
+}
+
 const getNdexClient = (baseUrl: string, ndexCredential: NdexCredential) => {
   console.log('++++++++++++ BASE URL ++++++++++', baseUrl)
   const ndexClient = new ndex.NDEx(baseUrl)
@@ -41,4 +52,4 @@ const getNdexClient = (baseUrl: string, ndexCredential: NdexCredential) => {
 
 
 
-export { getGoogleHeader, getNdexClient }
+export { getGoogleHeader, getAuthorization,  getNdexClient }

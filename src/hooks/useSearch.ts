@@ -1,5 +1,7 @@
 import { useQuery } from 'react-query'
 import HttpResponse from '../api/HttpResponse'
+import NdexCredential from '../model/NdexCredential'
+import { getAuthorization } from '../utils/credentialUtil'
 
 const URL = 'http://dev.ndexbio.org/v2/search/network/'
 
@@ -57,7 +59,7 @@ const selectNodes = (cxResult: object[]): string[] => {
   return nodeIds
 }
 
-const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string, mode: string) => {
+const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string,  credential: NdexCredential, mode: string) => {
   if (uuid === undefined || uuid === null || uuid.length === 0) {
     return {}
   }
@@ -75,11 +77,14 @@ const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string
   const queryParam = queryModeParams[mode]
   queryParam['searchString'] = query
 
+  const authorization = getAuthorization(credential);
+
   const settings = {
     method: 'POST',
-    // mode: 'cors',
+    // mode: 'cors',  
     headers: {
       'Content-Type': 'application/json',
+      Authorization: authorization,
     },
     body: JSON.stringify(queryParam),
   }
@@ -158,8 +163,8 @@ const getAttrs = (kvMap: object) => {
   return id2attr
 }
 
-const useSearch = ( uuid: string, query: string, serverUrl: string, mode: string) => {
-  return useQuery(['queryNetwork', uuid, query, serverUrl, mode], queryNetwork)
+const useSearch = ( uuid: string, query: string, serverUrl: string, credential :NdexCredential, mode: string) => {
+  return useQuery(['queryNetwork', uuid, query, serverUrl, credential, mode], queryNetwork)
 }
 
 export default useSearch
