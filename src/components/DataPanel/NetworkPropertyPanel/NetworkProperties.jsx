@@ -128,6 +128,7 @@ const NetworkProperties = (props) => {
   let rights
   let rightsHolder
   let reference
+  let propertyDescription
   for (let property of properties) {
     const value = property.value.trim()
     const predicate = property.predicateString.trim()
@@ -140,6 +141,8 @@ const NetworkProperties = (props) => {
         rightsHolder = value
       } else if (predicate === 'reference') {
         reference = value
+      } else if (predicate === 'description') {
+        propertyDescription = value
       } else {
         propertiesTableContent.push(
           <tr>
@@ -161,8 +164,10 @@ const NetworkProperties = (props) => {
 
   //Middle panel
   const descriptionList = []
-  if (description.length > 0) {
+  if (description && description.length > 0) {
     descriptionList.push(['Description', formatContent(description)])
+  } else if (propertyDescription) {
+    descriptionList.push(['Description', formatContent(propertyDescription)])
   }
   if (rights || rightsHolder) {
     const rightsTable = (

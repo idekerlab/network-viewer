@@ -111,7 +111,6 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
       return dispatch({ type: SelectionActions.SET_MAIN_EDGES, selected })
     },
     setLastSelectedNode: (selected, event) => {
-      console.log(event)
       if (event !== undefined) {
         updatePanelState(selected, event.renderedPosition.x, event.renderedPosition.y)
       }
@@ -225,7 +224,7 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
     // For showing border between top and bottom panels
     border = '1px solid #BBBBBB'
     return (
-      <div style={{width: '100%', height: '100%', borderTop: border }}>
+      <div style={{ width: '100%', height: '100%', borderTop: border }}>
         <CytoscapeRenderer
           uuid={uuid}
           cx={subCx}
