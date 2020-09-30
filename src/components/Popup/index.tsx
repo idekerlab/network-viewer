@@ -79,18 +79,19 @@ const Popup: FC<PopupProps> = ({ cx, target = PopupTarget.LAST, objectType = Obj
   }
 
   //Process attrMap to only display non-empty fields
+  console.log(attrMap)
   const nonEmptyMap = new Map()
   for (let item of attrMap) {
     let include = false
     if (Array.isArray(item[1])) {
       for (let arrayItem of item[1]) {
-        if (arrayItem !== '') {
+        if (arrayItem !== undefined && arrayItem !== '') {
           include = true
           break
         }
       }
     } else {
-      if (item[1] !== '') {
+      if (item[1] !== undefined && item[1] !== '') {
         include = true
       }
     }
