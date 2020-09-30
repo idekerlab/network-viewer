@@ -84,7 +84,7 @@ const SearchBox: FC = () => {
 
   const { cyReference, query, setQuery, queryMode, setQueryMode, uiStateDispatch, uiState, ndexCredential } = useContext(AppContext)
 
-  const [searchType, setSearchType] = useState(queryModes.direct)
+  const [searchType, setSearchType] = useState(queryModes.firstStepNeighborhood)
 
   const searchResult = useSearch(uuid, query, '', ndexCredential, queryMode)
 
@@ -145,10 +145,18 @@ const SearchBox: FC = () => {
     setOpen(true)
   }
 
+  const handleKeyPress = (e): void => {
+    const key = e.key
+    if(key === 'Enter') {
+      handleClick()
+    }
+  }
+
   return (
     <div className={classes.root}>
       <div className={classes.search}>
         <InputBase
+          autoFocus={true}
           placeholder="Enter query terms"
           value={rawQuery}
           classes={{
@@ -157,6 +165,7 @@ const SearchBox: FC = () => {
           }}
           inputProps={{ 'aria-label': 'search' }}
           onChange={handleQueryChange}
+          onKeyPress={handleKeyPress}
         />
       </div>
       <IconButton size={'small'} disableFocusRipple disableRipple className={classes.button} onClick={handleHelpOpen}>
