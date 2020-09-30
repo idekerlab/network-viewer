@@ -3,7 +3,7 @@ import Table from './Table'
 import Twinble from './Table2'
 
 const EntryTable = (props) => {
-  const { selectedObjects, attributes, label } = props
+  const { selectedObjects, attributes, label, exclude } = props
   const [state, setState] = useState(true)
 
   const replacePeriods = (string) => {
@@ -41,6 +41,8 @@ const EntryTable = (props) => {
       for (let attr of attrs) {
         if (attr[0] === 'name') {
           hasName = true
+        } else if (exclude && exclude.includes(attr[0])) {
+          continue
         } else {
           if (Array.isArray(attr[1])) {
             for (let item of attr[1]) {
