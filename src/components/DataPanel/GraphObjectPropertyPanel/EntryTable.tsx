@@ -44,7 +44,7 @@ const EntryTable = (props) => {
         } else {
           if (Array.isArray(attr[1])) {
             for (let item of attr[1]) {
-              if (item !== '') {
+              if (item !== undefined && item !== '') {
                 if (!columnsList.includes(attr[0])) {
                   columnsList.push(attr[0])
                 }
@@ -52,7 +52,7 @@ const EntryTable = (props) => {
               }
             }
           } else {
-            if (attr[1] !== '') {
+            if (attr[1] !== undefined && attr[1] !== '') {
               if (!columnsList.includes(attr[0])) {
                 columnsList.push(attr[0])
               }

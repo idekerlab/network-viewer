@@ -14,7 +14,7 @@ const getCx = async <T>(
   objectCount: number,
   cxVersion: string
 ) => {
-  if (apiVersion === null || serverUrl === null || uuid === null) {
+  if (credential.isLoading || apiVersion === null || serverUrl === null || uuid === null) {
     // If invalid parameters, just return empty result.
     return EMPTY_CX
   }

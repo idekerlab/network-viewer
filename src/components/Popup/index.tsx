@@ -79,18 +79,19 @@ const Popup: FC<PopupProps> = ({ cx, target = PopupTarget.LAST, objectType = Obj
   }
 
   //Process attrMap to only display non-empty fields
+  console.log(attrMap)
   const nonEmptyMap = new Map()
   for (let item of attrMap) {
     let include = false
     if (Array.isArray(item[1])) {
       for (let arrayItem of item[1]) {
-        if (arrayItem !== '') {
+        if (arrayItem !== undefined && arrayItem !== '') {
           include = true
           break
         }
       }
     } else {
-      if (item[1] !== '') {
+      if (item[1] !== undefined && item[1] !== '') {
         include = true
       }
     }
@@ -101,9 +102,10 @@ const Popup: FC<PopupProps> = ({ cx, target = PopupTarget.LAST, objectType = Obj
   attrMap = nonEmptyMap
 
   //Calculate position based on pointer position in window
+  const effectiveWindowHeight = windowHeight - FOOTER_HEIGHT
 
   //Left or right?
-  const width = windowHeight * 0.4
+  const width = effectiveWindowHeight * 0.5
   let right = true
   if (pointerPosition.x + width > uiState.leftPanelWidth) {
     if (pointerPosition.x - width > 0) {
@@ -112,7 +114,7 @@ const Popup: FC<PopupProps> = ({ cx, target = PopupTarget.LAST, objectType = Obj
   }
 
   //Top or bottom
-  const maxHeight = windowHeight * 0.5
+  const maxHeight = effectiveWindowHeight * 0.4
   let height = 88 //Title height + body padding
   for (let i = 1; i < attrMap.size; i++) {
     height += 40 //List item height
@@ -124,43 +126,46 @@ const Popup: FC<PopupProps> = ({ cx, target = PopupTarget.LAST, objectType = Obj
 
   let bottom = true
   if (selection.lastSelected.from === 'main') {
-    if (pointerPosition.y + height > windowHeight - FOOTER_HEIGHT) {
+    console.log('height: ' + height)
+    console.log('position: ' + pointerPosition.y)
+    console.log('window - foot: ' + effectiveWindowHeight)
+    if (pointerPosition.y + height > effectiveWindowHeight) {
       if (pointerPosition.y - height > 0) {
         bottom = false
       }
     }
   } else {
-    if (pointerPosition.y + height > windowHeight * 0.7) {
-      if (pointerPosition.y - height > windowHeight * -0.3) {
+    if (pointerPosition.y + height > effectiveWindowHeight * 0.7) {
+      if (pointerPosition.y - height > effectiveWindowHeight * -0.3) {
         bottom = false
-      } else {
-        console.log('oop')
       }
     }
   }
 
-  const position = {}
+  const style = {
+    maxHeight: maxHeight,
+  }
   if (right) {
-    position['left'] = pointerPosition.x
+    style['left'] = pointerPosition.x
   } else {
-    position['right'] = uiState.leftPanelWidth - pointerPosition.x
+    style['right'] = uiState.leftPanelWidth - pointerPosition.x
   }
   if (bottom) {
     if (selection.lastSelected.from === 'main') {
-      position['top'] = pointerPosition.y
+      style['top'] = pointerPosition.y
     } else {
-      position['top'] = pointerPosition.y + (windowHeight - FOOTER_HEIGHT) * 0.3
+      style['top'] = pointerPosition.y + effectiveWindowHeight * 0.3
     }
   } else {
     if (selection.lastSelected.from === 'main') {
-      position['bottom'] = windowHeight - FOOTER_HEIGHT - pointerPosition.y
+      style['bottom'] = effectiveWindowHeight - pointerPosition.y
     } else {
-      position['bottom'] = (windowHeight - FOOTER_HEIGHT) * 0.7 - pointerPosition.y
+      style['bottom'] = effectiveWindowHeight * 0.7 - pointerPosition.y
     }
   }
 
   return (
-    <div className={classes.root} style={position}>
+    <div className={classes.root} style={style}>
       <PropertyPanel attrMap={attrMap} onClose={onClose} />
     </div>
   )

@@ -149,9 +149,9 @@ const getNodeAttrs = (kvMap: object) => {
   while (len--) {
     const n = nodes[len]
     const id = n['@id']
-    const val = n['n']
     id2attr[id] = new Map()
-    id2attr[id].set('name', val)
+    id2attr[id].set('name', n['n'])
+    id2attr[id].set('Represents', n['r'])
   }
 
   if (nodeAttr === undefined) {
