@@ -1,4 +1,5 @@
 type NdexCredential = {
+  isLoading: boolean
   isLogin: boolean
   isGoogle: boolean
   oauth?: object
