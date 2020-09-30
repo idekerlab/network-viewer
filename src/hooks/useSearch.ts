@@ -59,18 +59,18 @@ const selectNodes = (cxResult: object[]): string[] => {
   return nodeIds
 }
 
-const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string,  credential: NdexCredential, mode: string) => {
+const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string, credential: NdexCredential, mode: string) => {
   if (uuid === undefined || uuid === null || uuid.length === 0) {
     return {}
   }
-  
+
   if (query === undefined || query === null || query.length === 0) {
     return {}
   }
 
   console.log('#######Network Query: ', mode, query, uuid)
   let url = `${URL}${uuid}/query`
-  if(mode === 'interconnect') {
+  if (mode === 'interconnect') {
     url = `${URL}${uuid}/interconnectquery`
   }
 
@@ -82,10 +82,15 @@ const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string
   const settings = {
     method: 'POST',
     // mode: 'cors',  
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: authorization,
-    },
+    headers: authorization
+      ? {
+        'Content-Type': 'application/json',
+        Authorization: authorization
+      }
+      : {
+        'Content-Type': 'application/json'
+      }
+    ,
     body: JSON.stringify(queryParam),
   }
 
@@ -153,7 +158,7 @@ const getAttrs = (kvMap: object) => {
     const id = n['@id']
     const val = n['n']
     let current = id2attr[id]
-    if(current === undefined) {
+    if (current === undefined) {
       current = new Map()
     }
     current.set('name', val)
@@ -163,7 +168,7 @@ const getAttrs = (kvMap: object) => {
   return id2attr
 }
 
-const useSearch = ( uuid: string, query: string, serverUrl: string, credential :NdexCredential, mode: string) => {
+const useSearch = (uuid: string, query: string, serverUrl: string, credential: NdexCredential, mode: string) => {
   return useQuery(['queryNetwork', uuid, query, serverUrl, credential, mode], queryNetwork)
 }
 
