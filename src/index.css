@@ -1,4 +1,6 @@
-html, body, #root {
+html,
+body,
+#root {
   width: 100%;
   height: 100%;
   margin: 0;
@@ -22,7 +24,6 @@ code {
 .Resizer {
   background: #444444;
   opacity: 0.8;
-  z-index: 5900;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
