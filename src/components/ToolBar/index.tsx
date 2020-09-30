@@ -7,6 +7,8 @@ import { NDExSignInButton } from 'cytoscape-explore-components'
 import AppContext from '../../context/AppState'
 import ClassicModeButton from './ClassicModeButton'
 import NdexHomeButton from './NdexHomeButton'
+import AccountHomeButton from './AccountHomeButton'
+import AdvancedMenu from './AdvancedMenu'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -57,6 +59,7 @@ const ToolBar: FC = (props) => {
         <Grid container direction="row" justify="flex-start" alignItems="center">
           <NdexHomeButton />
           <NDExSignInButton size="small" onLoginStateUpdated={loginStateUpdated} />
+          <AdvancedMenu />
           <ClassicModeButton />
         </Grid>
         <Grid container direction="row" justify="flex-end" alignItems="center"></Grid>

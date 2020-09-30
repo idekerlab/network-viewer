@@ -4,7 +4,6 @@ import Popover from '@material-ui/core/Popover'
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/Button'
 import MoreIcon from '@material-ui/icons/MoreVert'
-import DeleteIcon from '@material-ui/icons/Delete'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
