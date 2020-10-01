@@ -94,6 +94,10 @@ const getLgrLayout = (cx: object[]): string => {
   }
 
   const node = nodes[0]
+  if(node === undefined) {
+    return LGR_LAYOUT.RANDOM
+  }
+  
   if(node.x === undefined || node.y === undefined || (node.x === 0 && node.y === 0)) {
     return LGR_LAYOUT.RANDOM
   }
