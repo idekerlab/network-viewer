@@ -36,11 +36,11 @@ const ToolBar: FC = (props) => {
   const loginStateUpdated = (loginState) => {
     if (loginState) {
       if (loginState.isGoogle) {
-        setNdexCredential({ isLoading: false, isLogin: true, isGoogle: true, oauth: loginState })
+        setNdexCredential({ loaded: true, isLogin: true, isGoogle: true, oauth: loginState })
       } else {
         const details = loginState.loginDetails
         setNdexCredential({
-          isLoading: false,
+          loaded: true,
           isLogin: true,
           isGoogle: false,
           basic: { userId: details.id, password: details.password },
@@ -48,7 +48,7 @@ const ToolBar: FC = (props) => {
       }
     } else {
       setNdexCredential({
-        isLoading: false,
+        loaded: true,
         isLogin: false,
         isGoogle: false,
       })

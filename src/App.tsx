@@ -16,7 +16,7 @@ import uiStateReducer, { INITIAL_UI_STATE } from './reducer/uiStateReducer'
 import NdexCredential from './model/NdexCredential'
 
 const defNdexCredential: NdexCredential = {
-  isLoading: true,
+  loaded: false,
   isLogin: false,
   isGoogle: false,
 }
