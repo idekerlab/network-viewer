@@ -17,6 +17,8 @@ import { getCyjsLayout, getEdgeCount, getLgrLayout, getNetworkBackgroundColor, g
 import EmptyView from './EmptyView'
 import { UIStateActions } from '../../reducer/uiStateReducer'
 import UIState from '../../model/UIState'
+import { isWebGL2supported } from '../../utils/browserTest'
+import MessageDialog from '../MessageDialog'
 
 const splitBorder = '1px solid #BBBBBB'
 
@@ -81,6 +83,15 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
     config,
     ndexCredential,
   } = useContext(AppContext)
+
+  const [isWebGL2, setIsWebGL2] = useState(false)
+
+  useEffect(() => {
+    console.log('* Checking the browser compatibility (WebGL2)')
+    const isSupported: boolean = isWebGL2supported()
+    console.log('WebGL2 = ', isSupported)
+    setIsWebGL2(isSupported)
+  }, [])
 
   const searchResult = useSearch(uuid, query, '', ndexCredential, queryMode)
 
@@ -198,6 +209,16 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
         />
       )
     } else {
+      if(!isWebGL2) {
+        console.log('!!!!!!!!!!!!!!!!!!!!!!!!! WGL2', isWebGL2)
+        return (
+          <EmptyView
+            title="WebGL2 not supported"
+            message={`There are ${objectCount} objects in this network and it is too large to display. 
+            Please use query function below to extract subnetworks.`}
+          />
+        )  
+      }
       const layout = getLgrLayout(cx)
       return (
         <LGRPanel
