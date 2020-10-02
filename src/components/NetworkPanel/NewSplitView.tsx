@@ -79,7 +79,7 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
     selection,
     dispatch,
     config,
-    ndexCredential
+    ndexCredential,
   } = useContext(AppContext)
 
   const searchResult = useSearch(uuid, query, '', ndexCredential, queryMode)
@@ -113,7 +113,6 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
       return dispatch({ type: SelectionActions.SET_MAIN_EDGES, selected })
     },
     setLastSelectedNode: (selected, event) => {
-      console.log(event)
       if (event !== undefined) {
         updatePanelState(selected, event.renderedPosition.x, event.renderedPosition.y)
       }
@@ -234,7 +233,7 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
     border = splitBorder
     const bgColor = getNetworkBackgroundColor(subCx)
     return (
-      <div style={{width: '100%', height: '100%', borderTop: border }}>
+      <div style={{ width: '100%', height: '100%', borderTop: border }}>
         <CytoscapeRenderer
           uuid={uuid}
           cx={subCx}
@@ -255,7 +254,7 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
       {selection.lastSelected.nodes.length > 0 ? <Popup cx={cx} /> : <Popup cx={cx} objectType={'edge'} />}
 
       <div className={classes.lowerPanel} style={{ height: bottomHeight, opacity: lowerOpacity }}>
-        {renderer !== 'lgr' ? <NavigationPanel target={'main'} />: <div/>}
+        {renderer !== 'lgr' ? <NavigationPanel target={'main'} /> : <div />}
         {!showSearchResult ? <div /> : <Typography className={classes.title}>Overview</Typography>}
         {getMainRenderer(renderer)}
       </div>
