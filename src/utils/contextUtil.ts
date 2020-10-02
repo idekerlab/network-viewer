@@ -40,14 +40,6 @@ const processItem = (item, context, parseItem) => {
             '</a>',
         )
       } else {
-        console.log(
-          '<a href=' +
-            context[prefix.toUpperCase()] +
-            id +
-            ' target="_blank" rel="noopener noreferrer">' +
-            item +
-            '</a>',
-        )
         return (
           '<a href=' +
           context[prefix.toUpperCase()] +
