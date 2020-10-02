@@ -92,7 +92,7 @@ const NetworkPropertyPanel = () => {
     )
   } else {
     if (summary == undefined || summary.owner !== summaryResponseData['owner']) {
-      setSummary({ ...summary, owner: summaryResponseData['owner'], externalId: summaryResponseData['externalId'] })
+      setSummary({ ...summary, owner: summaryResponseData['owner'], externalId: summaryResponseData['externalId'], visibility: summaryResponseData['visibility'] })
     }
   }
 
