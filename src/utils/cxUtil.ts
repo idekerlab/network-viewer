@@ -83,14 +83,27 @@ const getCyjsLayout = (cx: object[], layoutTh: number = 1000): string => {
   }
 }
 
+const LGR_LAYOUT = {
+  PRESET: 'preset',
+  RANDOM: 'random'
+}
 const getLgrLayout = (cx: object[]): string => {
-  const isLayout: boolean = _isLayoutAvailable(cx)
+  const nodes = getEntry('nodes', cx)
+  if(nodes === undefined || nodes.length === 0) {
+    return LGR_LAYOUT.PRESET
+  }
 
-  if (isLayout) {
-    return 'preset'
+  const node = nodes[0]
+  if(node === undefined) {
+    return LGR_LAYOUT.RANDOM
   }
   
-  return 'random'
+  if(node.x === undefined || node.y === undefined || (node.x === 0 && node.y === 0)) {
+    return LGR_LAYOUT.RANDOM
+  }
+
+  return 'preset'
+  
 }
 
 const DEF_BG_COLOR = '#FFFFFF'

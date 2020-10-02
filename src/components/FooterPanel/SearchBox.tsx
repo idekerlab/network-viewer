@@ -84,7 +84,7 @@ const SearchBox: FC = () => {
 
   const { cyReference, query, setQuery, queryMode, setQueryMode, uiStateDispatch, uiState, ndexCredential } = useContext(AppContext)
 
-  const [searchType, setSearchType] = useState(queryModes.firstStepNeighborhood)
+  const [searchType, setSearchType] = useState('firstStepNeighborhood')
 
   const searchResult = useSearch(uuid, query, '', ndexCredential, queryMode)
 

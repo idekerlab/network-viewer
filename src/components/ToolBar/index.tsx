@@ -7,6 +7,8 @@ import { NDExSignInButton } from 'cytoscape-explore-components'
 import AppContext from '../../context/AppState'
 import ClassicModeButton from './ClassicModeButton'
 import NdexHomeButton from './NdexHomeButton'
+import AccountHomeButton from './AccountHomeButton'
+import AdvancedMenu from './AdvancedMenu'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,11 +36,11 @@ const ToolBar: FC = (props) => {
   const loginStateUpdated = (loginState) => {
     if (loginState) {
       if (loginState.isGoogle) {
-        setNdexCredential({ isLoading: false, isLogin: true, isGoogle: true, oauth: loginState })
+        setNdexCredential({ loaded: true, isLogin: true, isGoogle: true, oauth: loginState })
       } else {
         const details = loginState.loginDetails
         setNdexCredential({
-          isLoading: false,
+          loaded: true,
           isLogin: true,
           isGoogle: false,
           basic: { userId: details.id, password: details.password },
@@ -46,7 +48,7 @@ const ToolBar: FC = (props) => {
       }
     } else {
       setNdexCredential({
-        isLoading: false,
+        loaded: true,
         isLogin: false,
         isGoogle: false,
       })
@@ -58,7 +60,8 @@ const ToolBar: FC = (props) => {
       <Grid container direction="row" justify="flex-start" alignItems="center" spacing={0}>
         <Grid container direction="row" justify="flex-start" alignItems="center">
           <NdexHomeButton />
-          <NDExSignInButton size="small" onLoginStateUpdated={loginStateUpdated} />
+          <NDExSignInButton size="small" myAccountURL = "http://dev.ndexbio.org/#/myAccount" onLoginStateUpdated={loginStateUpdated} />
+          <AdvancedMenu />
           <ClassicModeButton />
         </Grid>
         <Grid container direction="row" justify="flex-end" alignItems="center"></Grid>

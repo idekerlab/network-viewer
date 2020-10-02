@@ -1,8 +1,8 @@
 import React, { FC, useContext } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
-import { IconButton } from '@material-ui/core'
+import { IconButton, Tooltip } from '@material-ui/core'
 import AppContext from '../../context/AppState'
-import logo from '../../assets/images/ndex-logo.svg'
+import ReturnIcon from '@material-ui/icons/FolderShared'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const NdexHomeButton: FC = () => {
+const AccountHomeButton: FC = () => {
   const classes = useStyles()
   const { config } = useContext(AppContext)
   const baseUrl: string = config.ndexHttps
@@ -28,10 +28,12 @@ const NdexHomeButton: FC = () => {
   }
 
   return (
-    <IconButton aria-label="NDEx Home" onClick={handleClick} >
-      <img alt="NDEx Logo" src={logo} className={classes.ndexLogo} />
-    </IconButton>
+    <Tooltip title="My account home (in Classic Mode)" placement="bottom" arrow>
+      <IconButton aria-label="Account Home" onClick={handleClick}>
+        <ReturnIcon color="secondary" />
+      </IconButton>
+    </Tooltip>
   )
 }
 
-export default NdexHomeButton
+export default AccountHomeButton

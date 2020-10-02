@@ -1,9 +1,10 @@
 import React, { useMemo, useEffect, useState } from 'react'
 import Table from './Table'
 import Twinble from './Table2'
+import { processList, processItem } from '../../../utils/contextUtil'
 
 const EntryTable = (props) => {
-  const { selectedObjects, attributes, label, exclude } = props
+  const { selectedObjects, attributes, label, exclude, context } = props
   const [state, setState] = useState(true)
 
   const replacePeriods = (string) => {
@@ -46,7 +47,7 @@ const EntryTable = (props) => {
         } else {
           if (Array.isArray(attr[1])) {
             for (let item of attr[1]) {
-              if (item !== '') {
+              if (item !== undefined && item !== '') {
                 if (!columnsList.includes(attr[0])) {
                   columnsList.push(attr[0])
                 }
@@ -54,7 +55,7 @@ const EntryTable = (props) => {
               }
             }
           } else {
-            if (attr[1] !== '') {
+            if (attr[1] !== undefined && attr[1] !== '') {
               if (!columnsList.includes(attr[0])) {
                 columnsList.push(attr[0])
               }
@@ -83,9 +84,9 @@ const EntryTable = (props) => {
       for (let column of columns) {
         const value = attrs.get(column)
         if (Array.isArray(value)) {
-          row[replacePeriods(column)] = value.join(', ')
+          row[replacePeriods(column)] = processList(value, context) //value.join(', ')
         } else {
-          row[replacePeriods(column)] = attrs.get(column)
+          row[replacePeriods(column)] = processItem(attrs.get(column), context, true)
         }
       }
       dataList.push(row)
