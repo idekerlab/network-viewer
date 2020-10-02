@@ -70,7 +70,7 @@ const SelectionList = (props) => {
             label={`Selected Edges (${edgeCount})`}
             selectedObjects={edges}
             attributes={attributes.edgeAttr}
-            exclude={['source', 'target']}
+            type={'edge'}
             context={context}
           />
         </SplitPane>
