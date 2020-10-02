@@ -128,7 +128,7 @@ const MainSplitPane = () => {
 
   const cxResponse = useCx(uuid, config.ndexHttps, apiVersion, ndexCredential, maxObj, objectCount, cxVersion)
 
-  if (cxResponse.data === undefined || cxResponse.isFetching || rend === null) {
+  if (cxResponse.data === undefined || cxResponse.data == [] || cxResponse.isFetching || rend === null) {
     return (
       <div className={classes.initPanel}>
         <div className={classes.message}>
