@@ -1,4 +1,5 @@
 import React, { FC, useContext } from 'react'
+import { useParams } from 'react-router-dom'
 import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 
@@ -7,7 +8,6 @@ import { NDExSignInButton } from 'cytoscape-explore-components'
 import AppContext from '../../context/AppState'
 import ClassicModeButton from './ClassicModeButton'
 import NdexHomeButton from './NdexHomeButton'
-import AccountHomeButton from './AccountHomeButton'
 import AdvancedMenu from './AdvancedMenu'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -31,7 +31,9 @@ const useStyles = makeStyles((theme: Theme) =>
 const ToolBar: FC = (props) => {
   const classes = useStyles()
 
-  const { setNdexCredential } = useContext(AppContext)
+  const { uuid } = useParams();
+
+  const { config, summary, ndexCredential, setNdexCredential } = useContext(AppContext)
 
   const loginStateUpdated = (loginState) => {
     if (loginState) {
@@ -47,6 +49,12 @@ const ToolBar: FC = (props) => {
         })
       }
     } else {
+      if (ndexCredential.loaded && ndexCredential.isLogin) {
+        console.log('going from logged in to logged out: ', summary );
+        if (summary.visibility == 'PRIVATE') {
+          window.location.href = 'https://' + config.ndexUrl;
+        }
+      }
       setNdexCredential({
         loaded: true,
         isLogin: false,
