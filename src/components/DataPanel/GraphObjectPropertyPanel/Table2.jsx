@@ -69,7 +69,7 @@ function Table({ columns, data }) {
 
   const defaultColumn = React.useMemo(
     () => ({
-      width: 150,
+      width: 10,
     }),
     [],
   )

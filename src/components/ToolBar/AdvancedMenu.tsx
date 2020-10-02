@@ -4,6 +4,8 @@ import Popover from '@material-ui/core/Popover'
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/Button'
 import MoreIcon from '@material-ui/icons/MoreVert'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -12,8 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     button: {
       margin: theme.spacing(1),
-
-    }
+    },
   }),
 )
 
@@ -34,9 +35,10 @@ const AdvancedMenu = () => {
 
   return (
     <div>
-      <IconButton size='small' className={classes.button}  aria-describedby={id} onClick={handleClick} color="inherit">
+      <IconButton size="small" className={classes.button} aria-describedby={id} onClick={handleClick} color="inherit">
         <MoreIcon />
       </IconButton>
+      {/*
       <Popover
         id={id}
         open={open}
@@ -52,7 +54,51 @@ const AdvancedMenu = () => {
         }}
       >
         <Typography className={classes.typography}>(Advanced menu items)</Typography>
-      </Popover>
+        <Typography>hi</Typography>
+        <Typography>ho</Typography>
+      </Popover>*/}
+      <Menu open={open} anchorEl={anchorEl} onClose={handleClose}>
+        <MenuItem
+          onClick={() => {
+            window.open('https://home.ndexbio.org/about-ndex/')
+            setAnchorEl(null)
+          }}
+        >
+          About
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            window.open('https://home.ndexbio.org/quick-start/')
+            setAnchorEl(null)
+          }}
+        >
+          Docs
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            window.open('https://home.ndexbio.org/report-a-bug/')
+            setAnchorEl(null)
+          }}
+        >
+          Report bug
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            window.open('https://home.ndexbio.org/contact-us/')
+            setAnchorEl(null)
+          }}
+        >
+          Contact Us
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            window.open('https://home.ndexbio.org/faq/')
+            setAnchorEl(null)
+          }}
+        >
+          FAQ
+        </MenuItem>
+      </Menu>
     </div>
   )
 }

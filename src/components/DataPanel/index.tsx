@@ -29,7 +29,7 @@ const DataPanel = ({ uuid, cx, height }) => {
   return (
     <SplitPane className={classes.dataPanel} split="horizontal" minSize={150} defaultSize={defSize}>
       <NetworkPropertyPanel />
-      <GraphObjectPropertyPanel attributes={attr} />
+      <GraphObjectPropertyPanel attributes={attr} cx={cx} />
     </SplitPane>
   )
 }

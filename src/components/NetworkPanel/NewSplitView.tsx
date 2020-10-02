@@ -17,6 +17,8 @@ import { getCyjsLayout, getEdgeCount, getLgrLayout, getNetworkBackgroundColor, g
 import EmptyView from './EmptyView'
 import { UIStateActions } from '../../reducer/uiStateReducer'
 import UIState from '../../model/UIState'
+import { isWebGL2supported } from '../../utils/browserTest'
+import MessageDialog from '../MessageDialog'
 
 const splitBorder = '1px solid #BBBBBB'
 
@@ -79,8 +81,17 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
     selection,
     dispatch,
     config,
-    ndexCredential
+    ndexCredential,
   } = useContext(AppContext)
+
+  const [isWebGL2, setIsWebGL2] = useState(false)
+
+  useEffect(() => {
+    console.log('* Checking the browser compatibility (WebGL2)')
+    const isSupported: boolean = isWebGL2supported()
+    console.log('WebGL2 = ', isSupported)
+    setIsWebGL2(isSupported)
+  }, [])
 
   const searchResult = useSearch(uuid, query, '', ndexCredential, queryMode)
 
@@ -113,7 +124,6 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
       return dispatch({ type: SelectionActions.SET_MAIN_EDGES, selected })
     },
     setLastSelectedNode: (selected, event) => {
-      console.log(event)
       if (event !== undefined) {
         updatePanelState(selected, event.renderedPosition.x, event.renderedPosition.y)
       }
@@ -199,6 +209,16 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
         />
       )
     } else {
+      if(!isWebGL2) {
+        console.log('!!!!!!!!!!!!!!!!!!!!!!!!! WGL2', isWebGL2)
+        return (
+          <EmptyView
+            title="WebGL2 not supported"
+            message={`There are ${objectCount} objects in this network and it is too large to display. 
+            Please use query function below to extract subnetworks.`}
+          />
+        )  
+      }
       const layout = getLgrLayout(cx)
       return (
         <LGRPanel
@@ -234,7 +254,7 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
     border = splitBorder
     const bgColor = getNetworkBackgroundColor(subCx)
     return (
-      <div style={{width: '100%', height: '100%', borderTop: border }}>
+      <div style={{ width: '100%', height: '100%', borderTop: border }}>
         <CytoscapeRenderer
           uuid={uuid}
           cx={subCx}
@@ -255,7 +275,7 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
       {selection.lastSelected.nodes.length > 0 ? <Popup cx={cx} /> : <Popup cx={cx} objectType={'edge'} />}
 
       <div className={classes.lowerPanel} style={{ height: bottomHeight, opacity: lowerOpacity }}>
-        {renderer !== 'lgr' ? <NavigationPanel target={'main'} />: <div/>}
+        {renderer !== 'lgr' ? <NavigationPanel target={'main'} /> : <div />}
         {!showSearchResult ? <div /> : <Typography className={classes.title}>Overview</Typography>}
         {getMainRenderer(renderer)}
       </div>

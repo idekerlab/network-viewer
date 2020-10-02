@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useMemo } from 'react'
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles'
 import useSearch from '../../../hooks/useSearch'
 import AppContext from '../../../context/AppState'
@@ -6,6 +6,7 @@ import EntryTable from './EntryTable'
 import { AutoSizer } from 'react-virtualized'
 import SplitPane from 'react-split-pane'
 import { useParams } from 'react-router-dom'
+import { getContextFromCx } from '../../../utils/contextUtil'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const SelectionList = (props) => {
   const { uuid } = useParams()
-  const { attributes } = props
+  const { attributes, cx } = props
   const { query, queryMode, selection, ndexCredential } = useContext(AppContext)
   const { status, data, error, isFetching } = useSearch(uuid, query, '', ndexCredential, queryMode)
 
@@ -35,6 +36,8 @@ const SelectionList = (props) => {
     }
     const kvMap = data['kvMap']
   }, [data])
+
+  const context = useMemo(() => getContextFromCx(cx), [cx])
 
   let nodes = []
   let edges = []
@@ -59,6 +62,7 @@ const SelectionList = (props) => {
             label={`Selected Nodes (${nodeCount})`}
             selectedObjects={nodes}
             attributes={attributes.nodeAttr}
+            context={context}
           />
 
           <EntryTable
@@ -66,6 +70,8 @@ const SelectionList = (props) => {
             label={`Selected Edges (${edgeCount})`}
             selectedObjects={edges}
             attributes={attributes.edgeAttr}
+            type={'edge'}
+            context={context}
           />
         </SplitPane>
       )}

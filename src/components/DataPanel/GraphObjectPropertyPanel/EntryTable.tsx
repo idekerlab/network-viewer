@@ -1,9 +1,11 @@
 import React, { useMemo, useEffect, useState } from 'react'
 import Table from './Table'
 import Twinble from './Table2'
+import { processList, processItem } from '../../../utils/contextUtil'
+import pixelWidth from 'string-pixel-width'
 
 const EntryTable = (props) => {
-  const { selectedObjects, attributes, label } = props
+  const { selectedObjects, attributes, label, type, context } = props
   const [state, setState] = useState(true)
 
   const replacePeriods = (string) => {
@@ -23,11 +25,14 @@ const EntryTable = (props) => {
   }
 
   const getColumnWidth = (rows, accessor, header) => {
-    const spacing = 10
-    const maxWidth = 300
-
-    const cellLength = Math.max(...rows.map((row) => (`${row[accessor]}` || '').length), header.length)
-    return Math.min(maxWidth, cellLength * spacing)
+    const PADDING = 40
+    const MAX_WIDTH = 300 + PADDING
+    const width =
+      Math.max(
+        ...rows.map((row) => pixelWidth(`${row[accessor]}` || '', { font: 'helvetica', size: 15 })),
+        pixelWidth(header, { font: 'helvetica', size: 15 }),
+      ) + PADDING
+    return Math.min(MAX_WIDTH, width)
   }
 
   const columns = useMemo(() => {
@@ -41,6 +46,8 @@ const EntryTable = (props) => {
       for (let attr of attrs) {
         if (attr[0] === 'name') {
           hasName = true
+        } else if (type === 'edge' && (attr[0] === 'source' || attr[0] === 'target' || attr[0] === 'interaction')) {
+          continue
         } else {
           if (Array.isArray(attr[1])) {
             for (let item of attr[1]) {
@@ -66,6 +73,19 @@ const EntryTable = (props) => {
     }
     if (hasName) {
       columnsList.unshift('name')
+    } else if (type === 'edge') {
+      columnsList.unshift('name')
+      //Add name
+      for (let id of selectedObjects) {
+        const attrs = attributes[id]
+        if (attrs.has('source') && attrs.has('target')) {
+          if ('interaction' in attrs) {
+            attrs.set('name', attrs.get('source') + ' (' + attrs.get('interaction') + ') ' + attrs.get('target'))
+          } else {
+            attrs.set('name', attrs.get('source') + ' (-) ' + attrs.get('target'))
+          }
+        }
+      }
     }
     return columnsList
   }, [selectedObjects])
@@ -81,9 +101,9 @@ const EntryTable = (props) => {
       for (let column of columns) {
         const value = attrs.get(column)
         if (Array.isArray(value)) {
-          row[replacePeriods(column)] = value.join(', ')
+          row[replacePeriods(column)] = processList(value, context)
         } else {
-          row[replacePeriods(column)] = attrs.get(column)
+          row[replacePeriods(column)] = processItem(attrs.get(column), context, true)
         }
       }
       dataList.push(row)

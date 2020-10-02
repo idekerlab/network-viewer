@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, FC } from 'react'
+import React, { useContext, useState, useEffect, FC, useMemo } from 'react'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { useParams } from 'react-router-dom'
 import AppContext from '../../context/AppState'
@@ -6,6 +6,7 @@ import useAttributes from '../../hooks/useAttributes'
 import PropertyPanel from '../PropertyPanel'
 import UIState from '../../model/UIState'
 import { UIStateActions } from '../../reducer/uiStateReducer'
+import { getContextFromCx, processList, processItem } from '../../utils/contextUtil'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -44,13 +45,15 @@ type PopupProps = {
   objectType?: string
 }
 
-const Popup: FC<PopupProps> = ({ cx, target = PopupTarget.LAST, objectType = ObjectType.NODE }: PopupProps) => {
+const Popup: FC<PopupProps> = ({ cx, objectType = ObjectType.NODE }: PopupProps) => {
   const classes = useStyles()
   const { uuid } = useParams()
   const attr = useAttributes(uuid, cx)
   const { uiState, uiStateDispatch, selection } = useContext(AppContext)
   const { windowHeight, windowWidth } = useWindowDimensions()
   const FOOTER_HEIGHT = 60
+
+  const context = useMemo(() => getContextFromCx(cx), [cx])
 
   let objects = selection.lastSelected.nodes
   if (objectType === ObjectType.EDGE) {
@@ -79,7 +82,7 @@ const Popup: FC<PopupProps> = ({ cx, target = PopupTarget.LAST, objectType = Obj
   }
 
   //Process attrMap to only display non-empty fields
-  console.log(attrMap)
+  //and properly display links and lists
   const nonEmptyMap = new Map()
   for (let item of attrMap) {
     let include = false
@@ -96,7 +99,13 @@ const Popup: FC<PopupProps> = ({ cx, target = PopupTarget.LAST, objectType = Obj
       }
     }
     if (include) {
-      nonEmptyMap.set(item[0], item[1])
+      let value
+      if (Array.isArray(item[1])) {
+        value = processList(item[1], context)
+      } else {
+        value = processItem(item[1], context, true)
+      }
+      nonEmptyMap.set(item[0], value)
     }
   }
   attrMap = nonEmptyMap
@@ -126,9 +135,6 @@ const Popup: FC<PopupProps> = ({ cx, target = PopupTarget.LAST, objectType = Obj
 
   let bottom = true
   if (selection.lastSelected.from === 'main') {
-    console.log('height: ' + height)
-    console.log('position: ' + pointerPosition.y)
-    console.log('window - foot: ' + effectiveWindowHeight)
     if (pointerPosition.y + height > effectiveWindowHeight) {
       if (pointerPosition.y - height > 0) {
         bottom = false
