@@ -23,7 +23,7 @@ const processList = (list, context) => {
 }
 
 const processItem = (item, context, parseItem) => {
-  if (context == undefined) {
+  if (context == undefined || item == undefined) {
     return item
   }
 
