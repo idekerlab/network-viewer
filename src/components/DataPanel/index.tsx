@@ -11,26 +11,29 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       width: '100%',
       height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      boxSizing: 'border-box',
     },
     dataPanel: {
-      boxSizing: 'border-box',
+      flexGrow: 1,
       width: '100%',
+      height: '100%',
       backgroundColor: '#FEFEFE',
-      borderLeft: '1px solid #999999',
     },
   }),
 )
-const DataPanel = ({ uuid, cx, height }) => {
+const DataPanel = ({ uuid, cx }) => {
   const attr: object = useAttributes(uuid, cx)
   const classes = useStyles()
 
-  const defSize = Math.floor(height * 0.7)
-
   return (
-    <SplitPane className={classes.dataPanel} split="horizontal" minSize={150} defaultSize={defSize}>
-      <NetworkPropertyPanel />
-      <GraphObjectPropertyPanel attributes={attr} cx={cx} />
-    </SplitPane>
+    <div className={classes.container}>
+      <SplitPane className={classes.dataPanel} split="horizontal" minSize={150} defaultSize={500}>
+        <NetworkPropertyPanel />
+        <GraphObjectPropertyPanel attributes={attr} cx={cx} />
+      </SplitPane>
+    </div>
   )
 }
 

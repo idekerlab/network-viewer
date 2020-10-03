@@ -25,13 +25,13 @@ const def: string[] = []
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      width: '100%',
+    mainSplitRoot: {
+      flexGrow: 1,
+      boxSizing: 'border-box',
+      zIndex: 99,
+      display: 'flex',
       height: '100%',
-    },
-    base: {
-      width: '100%',
-      height: '100%',
+      flexDirection: 'column',
     },
     leftPanel: {
       display: 'flex',
@@ -73,7 +73,11 @@ const MainSplitPane = () => {
   const assignNewHeight = () => {
     const curRef = containerRef?.current ?? { offsetHeight: 0 }
     if (curRef) {
-      setContainerHeight(curRef.offsetHeight)
+      setTimeout(() => {
+        if (curRef.offsetHeight !== containerHeight) {
+          setContainerHeight(curRef.offsetHeight)
+        }
+      }, 100)
     }
   }
 
@@ -148,19 +152,10 @@ const MainSplitPane = () => {
   }
 
   return (
-    <div ref={containerRef} className={classes.root}>
-      <SplitPane
-        className={classes.base}
-        split="vertical"
-        minSize={550}
-        size={leftWidth}
-        onDragFinished={handleChange}
-        style={splitPaneStyle}
-      >
-        <div className={classes.leftPanel} style={splitPaneStyle}>
-          <NetworkPanel cx={cxResponse.data} renderer={rend} objectCount={objectCount} height={containerHeight} />
-        </div>
-        <DataPanel uuid={uuid} cx={cxResponse.data} height={containerHeight} />
+    <div ref={containerRef} className={classes.mainSplitRoot}>
+      <SplitPane split="vertical" minSize={550} size={leftWidth} onDragFinished={handleChange} style={splitPaneStyle}>
+        <NetworkPanel cx={cxResponse.data} renderer={rend} objectCount={objectCount} />
+        <DataPanel uuid={uuid} cx={cxResponse.data} />
       </SplitPane>
       {uiState.dataPanelOpen ? <div /> : <ClosedPanel />}
     </div>
