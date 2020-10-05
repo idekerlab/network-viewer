@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
       width: '100%',
       display: 'flex',
-      flexDirection: 'column'
+      flexDirection: 'column',
     },
     title: {
       position: 'fixed',
@@ -63,9 +63,10 @@ type ViewProps = {
   renderer: string
   cx: object[]
   objectCount: number
+  isWebGL2: boolean
 }
 
-const NetworkPanel: FC<ViewProps> = ({ renderer, cx, objectCount }: ViewProps) => {
+const NetworkPanel: FC<ViewProps> = ({ renderer, cx, objectCount, isWebGL2 }: ViewProps) => {
   const classes = useStyles()
   const { uuid } = useParams()
 
@@ -76,22 +77,14 @@ const NetworkPanel: FC<ViewProps> = ({ renderer, cx, objectCount }: ViewProps) =
     queryMode,
     uiStateDispatch,
     uiState,
-    cyReference,
     cyDispatch,
     selection,
     dispatch,
     config,
     ndexCredential,
+    summary,
+    setSummary,
   } = useContext(AppContext)
-
-  const [isWebGL2, setIsWebGL2] = useState(false)
-
-  useEffect(() => {
-    console.log('* Checking the browser compatibility (WebGL2)')
-    const isSupported: boolean = isWebGL2supported()
-    console.log('WebGL2 = ', isSupported)
-    setIsWebGL2(isSupported)
-  }, [])
 
   const searchResult = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
 
@@ -102,6 +95,12 @@ const NetworkPanel: FC<ViewProps> = ({ renderer, cx, objectCount }: ViewProps) =
   if (subnet !== undefined) {
     subCx = subnet['cx']
   }
+
+  useEffect(() => {
+    if (subCx !== undefined) {
+      setSummary({ ...summary, subnetworkNodeCount: getNodeCount(subCx), subnetworkEdgeCount: getEdgeCount(subCx) })
+    }
+  }, [searchResult])
 
   const setShowPropPanelTrue = (state: UIState) =>
     uiStateDispatch({ type: UIStateActions.SET_SHOW_PROP_PANEL_TRUE, uiState: state })
@@ -185,8 +184,15 @@ const NetworkPanel: FC<ViewProps> = ({ renderer, cx, objectCount }: ViewProps) =
   }
 
   const getMainRenderer = (renderer: string) => {
-    // Case 1: network is huge
-    if (objectCount > maxNumObjects) {
+    // Make sure renderer can display network
+    if (!isWebGL2) {
+      return (
+        <EmptyView
+          title="Browser not Supported"
+          message={`Your browser cannot display large network data. Please use supported browsers, such as Chrome or Firefox, to view large networks.`}
+        />
+      )
+    } else if (objectCount > maxNumObjects) {
       return (
         <EmptyView
           title="Data is too large"
@@ -200,25 +206,16 @@ const NetworkPanel: FC<ViewProps> = ({ renderer, cx, objectCount }: ViewProps) =
     if (renderer !== 'lgr') {
       const layout = getCyjsLayout(cx, LAYOUT_TH)
       return (
-          <CytoscapeRenderer
-            uuid={uuid}
-            cx={cx}
-            layoutName={layout}
-            setCyReference={setMain}
-            eventHandlers={mainEventHandlers}
-            backgroundColor={bgColor}
-          />
+        <CytoscapeRenderer
+          uuid={uuid}
+          cx={cx}
+          layoutName={layout}
+          setCyReference={setMain}
+          eventHandlers={mainEventHandlers}
+          backgroundColor={bgColor}
+        />
       )
     } else {
-      if (!isWebGL2) {
-        return (
-          <EmptyView
-            title="WebGL2 not supported"
-            message={`There are ${objectCount} objects in this network and it is too large to display. 
-            Please use query function below to extract subnetworks.`}
-          />
-        )
-      }
       const layout = getLgrLayout(cx)
       return (
         <LGRPanel
@@ -272,12 +269,12 @@ const NetworkPanel: FC<ViewProps> = ({ renderer, cx, objectCount }: ViewProps) =
     <div className={classes.rootA}>
       {selection.lastSelected.nodes.length > 0 ? <Popup cx={cx} /> : <Popup cx={cx} objectType={'edge'} />}
 
-      <div className={classes.lowerPanel} style={{ height: topHeight}}>
+      <div className={classes.lowerPanel} style={{ height: topHeight }}>
         {renderer !== 'lgr' ? <NavigationPanel target={'main'} /> : <div />}
         {!showSearchResult ? <div /> : <Typography className={classes.title}>Overview</Typography>}
         {getMainRenderer(renderer)}
       </div>
-      <div className={classes.subnet} style={{ height: bottomHeight}}>
+      <div className={classes.subnet} style={{ height: bottomHeight }}>
         {showSearchResult ? <NavigationPanel target={'sub'} /> : <div />}
         {getSubRenderer()}
       </div>

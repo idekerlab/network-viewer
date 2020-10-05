@@ -12,6 +12,7 @@ import AppContext from '../../context/AppState'
 import ClosedPanel from '../DataPanel/ClosedPanel'
 import UIState from '../../model/UIState'
 import { UIStateActions } from '../../reducer/uiStateReducer'
+import { isWebGL2supported } from '../../utils/browserTest'
 
 const V2 = 'v2'
 const V3 = 'v3'
@@ -58,18 +59,18 @@ const useStyles = makeStyles((theme: Theme) =>
 const MainSplitPane = () => {
   const classes = useStyles()
   const containerRef = useRef()
-
   const { uuid } = useParams()
   const { uiState, ndexCredential, config, uiStateDispatch } = useContext(AppContext)
+
   const width = window.innerWidth
   const defSize = Math.floor(width * 0.65)
-
   const [leftWidth, setLeftWidth] = useState(defSize)
   const maxObj = config.maxNumObjects
   const th = config.viewerThreshold
 
   const [containerHeight, setContainerHeight] = useState(0)
 
+  const [isWebGL2, setIsWebGL2] = useState(false)
   const assignNewHeight = () => {
     const curRef = containerRef?.current ?? { offsetHeight: 0 }
     if (curRef) {
@@ -83,6 +84,8 @@ const MainSplitPane = () => {
 
   useEffect(() => {
     window.addEventListener('resize', assignNewHeight)
+    const isSupported: boolean = isWebGL2supported()
+    setIsWebGL2(isSupported)
   }, [])
 
   useLayoutEffect(() => {
@@ -130,13 +133,17 @@ const MainSplitPane = () => {
     }
   }
 
+  if(!isWebGL2) {
+    objectCount = maxObj+1
+  }
+  
   const cxResponse = useCx(uuid, config.ndexHttps, apiVersion, ndexCredential, maxObj, objectCount, cxVersion)
 
   if (cxResponse.data === undefined || cxResponse.data == [] || cxResponse.isFetching || rend === null) {
     return (
       <div className={classes.initPanel}>
         <div className={classes.message}>
-          <Typography variant="h6">Initializing Network Viewer...</Typography>
+          <Typography variant="h6">Loading Network from NDEx Server...</Typography>
           <CircularProgress color={'secondary'} disableShrink />
         </div>
       </div>
@@ -154,7 +161,7 @@ const MainSplitPane = () => {
   return (
     <div ref={containerRef} className={classes.mainSplitRoot}>
       <SplitPane split="vertical" minSize={550} size={leftWidth} onDragFinished={handleChange} style={splitPaneStyle}>
-        <NetworkPanel cx={cxResponse.data} renderer={rend} objectCount={objectCount} />
+        <NetworkPanel cx={cxResponse.data} renderer={rend} objectCount={objectCount} isWebGL2={isWebGL2} />
         <DataPanel uuid={uuid} cx={cxResponse.data} />
       </SplitPane>
       {uiState.dataPanelOpen ? <div /> : <ClosedPanel />}
