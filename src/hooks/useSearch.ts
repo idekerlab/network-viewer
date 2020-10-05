@@ -3,8 +3,6 @@ import HttpResponse from '../api/HttpResponse'
 import NdexCredential from '../model/NdexCredential'
 import { getAuthorization } from '../utils/credentialUtil'
 
-const URL = 'http://dev.ndexbio.org/v2/search/network/'
-
 const EDGE_LIMIT = 5000
 
 const queryModeParams = {
@@ -68,10 +66,10 @@ const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string
     return {}
   }
 
-  console.log('#######Network Query: ', mode, query, uuid)
-  let url = `${URL}${uuid}/query`
+  console.log('#######Network Query: ', serverUrl, mode, query, uuid)
+  let url = `${serverUrl}/v2/search/network/${uuid}/query`
   if (mode === 'interconnect') {
-    url = `${URL}${uuid}/interconnectquery`
+    url = `${serverUrl}/v2/search/network/${uuid}/interconnectquery`
   }
 
   const queryParam = queryModeParams[mode]
