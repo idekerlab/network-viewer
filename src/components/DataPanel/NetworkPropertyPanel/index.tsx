@@ -57,6 +57,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     countButton: {
       marginLeft: theme.spacing(1),
+      whiteSpace: 'nowrap',
     },
     description: {
       padding: 0,
@@ -109,7 +110,12 @@ const NetworkPropertyPanel = () => {
     )
   } else {
     if (summary == undefined || summary.owner !== summaryResponseData['owner']) {
-      setSummary({ ...summary, owner: summaryResponseData['owner'], externalId: summaryResponseData['externalId'], visibility: summaryResponseData['visibility'] })
+      setSummary({
+        ...summary,
+        owner: summaryResponseData['owner'],
+        externalId: summaryResponseData['externalId'],
+        visibility: summaryResponseData['visibility'],
+      })
     }
   }
 
@@ -117,7 +123,9 @@ const NetworkPropertyPanel = () => {
     <div className={classes.root}>
       <div className={classes.topBar}>
         <MinimizeButton />
-        <Typography variant="h5" className={classes.title}>{summaryResponseData['name']}</Typography>
+        <Typography variant="h5" className={classes.title}>
+          {summaryResponseData['name']}
+        </Typography>
       </div>
       <div className={classes.objectCount}>
         <div className={classes.iconContainer}>
