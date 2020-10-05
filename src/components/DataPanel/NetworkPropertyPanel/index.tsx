@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useRef } from 'react'
 import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'flex-start',
-      width: '100%',
+      //width: '100%',
       paddingTop: theme.spacing(1),
       paddingBottom: theme.spacing(1),
     },
@@ -57,6 +57,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     countButton: {
       marginLeft: theme.spacing(1),
+      whiteSpace: 'nowrap',
     },
     description: {
       padding: 0,
@@ -71,13 +72,30 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingBottom: 0,
     },
     icon: { margin: '12px' },
+    iconContainer: {
+      display: 'flex',
+      alignItems: 'center',
+    },
+    subObjectCount: {
+      marginTop: theme.spacing(1),
+    },
   }),
 )
 
 const NetworkPropertyPanel = () => {
   const classes = useStyles()
   const { uuid } = useParams()
-  const { ndexCredential, config, setSummary, summary } = useContext(AppContext)
+  const { ndexCredential, config, setSummary, summary, uiState } = useContext(AppContext)
+  const nodeButton = useRef(null)
+  const edgeButton = useRef(null)
+
+  let nodeWidth = 0
+  let edgeWidth = 0
+
+  if (nodeButton.current !== null) {
+    nodeWidth = nodeButton.current.offsetWidth
+    edgeWidth = edgeButton.current.offsetWidth
+  }
 
   const summaryResponse = useNetworkSummary(uuid, config.ndexHttps, 'v2', ndexCredential)
   const summaryResponseData = summaryResponse.data
@@ -92,7 +110,12 @@ const NetworkPropertyPanel = () => {
     )
   } else {
     if (summary == undefined || summary.owner !== summaryResponseData['owner']) {
-      setSummary({ ...summary, owner: summaryResponseData['owner'], externalId: summaryResponseData['externalId'], visibility: summaryResponseData['visibility'] })
+      setSummary({
+        ...summary,
+        owner: summaryResponseData['owner'],
+        externalId: summaryResponseData['externalId'],
+        visibility: summaryResponseData['visibility'],
+      })
     }
   }
 
@@ -100,20 +123,39 @@ const NetworkPropertyPanel = () => {
     <div className={classes.root}>
       <div className={classes.topBar}>
         <MinimizeButton />
-        <Typography variant="h5" className={classes.title}>{summaryResponseData['name']}</Typography>
+        <Typography variant="h5" className={classes.title}>
+          {summaryResponseData['name']}
+        </Typography>
       </div>
       <div className={classes.objectCount}>
-        {summaryResponseData.visibility === 'PUBLIC' ? (
-          <PublicIcon className={classes.icon} />
-        ) : (
-          <VpnLockIcon className={classes.icon} />
-        )}
-        <Button disabled className={classes.countButton} variant="outlined" color="secondary">
-          Nodes: {summaryResponseData['nodeCount']}
-        </Button>
-        <Button disabled className={classes.countButton} variant="outlined" color="secondary">
-          Edges: {summaryResponseData['edgeCount']}
-        </Button>
+        <div className={classes.iconContainer}>
+          {summaryResponseData.visibility === 'PUBLIC' ? (
+            <PublicIcon className={classes.icon} />
+          ) : (
+            <VpnLockIcon className={classes.icon} />
+          )}
+        </div>
+        <div>
+          <div>
+            <Button disabled className={classes.countButton} variant="outlined" ref={nodeButton}>
+              Nodes: {summaryResponseData['nodeCount']}
+            </Button>
+            <Button disabled className={classes.countButton} variant="outlined" ref={edgeButton}>
+              Edges: {summaryResponseData['edgeCount']}
+            </Button>
+          </div>
+
+          {uiState.showSearchResult ? (
+            <div className={classes.subObjectCount}>
+              <Button disabled className={classes.countButton} variant="outlined" style={{ width: nodeWidth }}>
+                Nodes: {summary.subnetworkNodeCount}
+              </Button>
+              <Button disabled className={classes.countButton} variant="outlined" style={{ width: edgeWidth }}>
+                Edges: {summary.subnetworkEdgeCount}
+              </Button>
+            </div>
+          ) : null}
+        </div>
       </div>
       <div className={classes.description}>
         <NetworkProperties summary={summaryResponseData} />

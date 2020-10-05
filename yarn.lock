@@ -1175,10 +1175,24 @@
     "@math.gl/web-mercator" "^3.2.1"
     d3-hexbin "^0.2.1"
 
-"@deck.gl/core@8.2.8", "@deck.gl/core@^8.2.8":
+"@deck.gl/core@8.2.8":
   version "8.2.8"
   resolved "https://registry.yarnpkg.com/@deck.gl/core/-/core-8.2.8.tgz#d2878b7efc3861cb26b947f99a7d4b5499fcb59d"
   integrity sha512-96HV3MXXx3U27uyTemaWlHKD8tX6tnIrxPHyQcLB6ujG7Q5h0dtat2KrvOU/xfIJyIYK52lIOBBNNn6ph8G33g==
+  dependencies:
+    "@loaders.gl/core" "^2.2.3"
+    "@loaders.gl/images" "^2.2.3"
+    "@luma.gl/core" "^8.2.0"
+    "@math.gl/web-mercator" "^3.2.1"
+    gl-matrix "^3.0.0"
+    math.gl "^3.2.0"
+    mjolnir.js "^2.3.0"
+    probe.gl "^3.2.1"
+
+"@deck.gl/core@^8.2.3":
+  version "8.2.9"
+  resolved "https://registry.yarnpkg.com/@deck.gl/core/-/core-8.2.9.tgz#787ae3ef0d3faa7ebd10b7c9944501839471d713"
+  integrity sha512-cIZNQLPFer2wJBHBUBLLWRdpSjDrW+QA2wsdHc6KEZ/thr/d0mTlzC6zVe6yAZNlTnoLcj+gigsjvpqthl9G+A==
   dependencies:
     "@loaders.gl/core" "^2.2.3"
     "@loaders.gl/images" "^2.2.3"
@@ -1225,10 +1239,20 @@
     d3-dsv "^1.0.8"
     expression-eval "^2.0.0"
 
-"@deck.gl/layers@8.2.8", "@deck.gl/layers@^8.2.8":
+"@deck.gl/layers@8.2.8":
   version "8.2.8"
   resolved "https://registry.yarnpkg.com/@deck.gl/layers/-/layers-8.2.8.tgz#675f13a570504b5de18bd5af2cd363592889ece5"
   integrity sha512-kqmj6ID6uAgIzmooNmbXWwC2UR9ZXo4h9dqFCkB/z4z2ptApgFRxTLoN3Pdrf/q81QArQeI3JIWsaNunpE90Vw==
+  dependencies:
+    "@loaders.gl/images" "^2.2.3"
+    "@mapbox/tiny-sdf" "^1.1.0"
+    "@math.gl/polygon" "^3.2.1"
+    earcut "^2.0.6"
+
+"@deck.gl/layers@^8.2.3":
+  version "8.2.9"
+  resolved "https://registry.yarnpkg.com/@deck.gl/layers/-/layers-8.2.9.tgz#fee73ad3a649b1a86152764c8b813c7e446a4465"
+  integrity sha512-oufFg92nstGGuMfuEz1TD6J5Np3ouG1PzXx+q6ytQj9fNQmJKJw3V2YmL+SxhJSKtPOqKAa1lx1ntmV7NJ5dEQ==
   dependencies:
     "@loaders.gl/images" "^2.2.3"
     "@mapbox/tiny-sdf" "^1.1.0"
@@ -1248,10 +1272,17 @@
     "@luma.gl/experimental" "^8.2.0"
     "@luma.gl/shadertools" "^8.2.0"
 
-"@deck.gl/react@8.2.8", "@deck.gl/react@^8.2.8":
+"@deck.gl/react@8.2.8":
   version "8.2.8"
   resolved "https://registry.yarnpkg.com/@deck.gl/react/-/react-8.2.8.tgz#d7ef4485c38d0955dbd29a43e46ac0ce3bfd288f"
   integrity sha512-JqS7nRXNK7QKmh8WkAVeTmLOAw8TEZdF64zgYU2z68XwHRDEl7IkihwoFaJNpzo8W8qhiM/GLx8MbeLYHfTOsg==
+  dependencies:
+    prop-types "^15.6.0"
+
+"@deck.gl/react@^8.2.3":
+  version "8.2.9"
+  resolved "https://registry.yarnpkg.com/@deck.gl/react/-/react-8.2.9.tgz#48b508771fb21613c5a094fb0bd00188b6ae686c"
+  integrity sha512-hfv2QOuHHKi1G/HtcmKDQDAIh6Puac8Qcf4unftS0ZmwPMTkk1q7uxc/9R2lBr7zMKZRBzoJVjL1jhVZd1k2ig==
   dependencies:
     prop-types "^15.6.0"
 
@@ -4184,10 +4215,10 @@ cytoscape-canvas@3.0.1:
   resolved "https://registry.yarnpkg.com/cytoscape-canvas/-/cytoscape-canvas-3.0.1.tgz#7d963be51e6e5f3f2482b05d22562c8ee941d125"
   integrity sha512-R1nCLnJHGTR5fWEpNQQBPyoigdnfhnk1lOHegzmzz1Kg6yxzVf0hfdRAMa0wPAhtC4kkgyoViiIfZ/zyCqMhEQ==
 
-cytoscape-cx2js@^0.6.5:
-  version "0.6.5"
-  resolved "https://registry.yarnpkg.com/cytoscape-cx2js/-/cytoscape-cx2js-0.6.5.tgz#4d7d444503faf964545f992f7b160acb7132f345"
-  integrity sha512-oUJlyNR+TKnzSBecVM+l/yVWT45x2jRRkLG/X8Eao2VyJyB6Ihe/NUAdRgPXyYjtx4lw3q+5zezXFP/aLaHiXg==
+cytoscape-cx2js@^0.6.6:
+  version "0.6.6"
+  resolved "https://registry.yarnpkg.com/cytoscape-cx2js/-/cytoscape-cx2js-0.6.6.tgz#37a185f738be590a33736067db585744f2de9e4e"
+  integrity sha512-x6NEw0sFMw+JCBHmJV6pmVVQ05NF1mN/CXo2kpPBoluuKd7bzULHl0gZGuAL7gjf0uSEHD8RsKc+8MwPP6gq4Q==
   dependencies:
     cytoscape-canvas "3.0.1"
     lodash "^4.17.10"

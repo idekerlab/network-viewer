@@ -82,6 +82,8 @@ const NetworkPanel: FC<ViewProps> = ({ renderer, cx, objectCount, isWebGL2 }: Vi
     dispatch,
     config,
     ndexCredential,
+    summary,
+    setSummary,
   } = useContext(AppContext)
 
   const searchResult = useSearch(uuid, query, '', ndexCredential, queryMode)
@@ -93,6 +95,12 @@ const NetworkPanel: FC<ViewProps> = ({ renderer, cx, objectCount, isWebGL2 }: Vi
   if (subnet !== undefined) {
     subCx = subnet['cx']
   }
+
+  useEffect(() => {
+    if (subCx !== undefined) {
+      setSummary({ ...summary, subnetworkNodeCount: getNodeCount(subCx), subnetworkEdgeCount: getEdgeCount(subCx) })
+    }
+  }, [searchResult])
 
   const setShowPropPanelTrue = (state: UIState) =>
     uiStateDispatch({ type: UIStateActions.SET_SHOW_PROP_PANEL_TRUE, uiState: state })
