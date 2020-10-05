@@ -24,6 +24,11 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: '1em',
       paddingTop: 0,
       overflowY: 'auto',
+      background:
+        'linear-gradient(#ffffff 33%, rgba(255,255,255, 0)),linear-gradient(rgba(255,255,255, 0), #ffffff 66%) 0 100%,radial-gradient(farthest-side at 50% 0, rgba(89,89,89, 0.5), rgba(0,0,0,0)),radial-gradient(farthest-side at 50% 100%, rgba(89,89,89, 0.5), rgba(0,0,0,0)) 0 100%',
+      backgroundRepeat: 'no-repeat',
+      backgroundAttachment: 'local, local, scroll, scroll',
+      backgroundSize: '100% 60px, 100% 60px, 100% 20px, 100% 20px',
     },
   }),
 )
