@@ -23,7 +23,7 @@ const CytoscapeRenderer = ({
   layoutName,
   setCyReference,
   setBusy,
-  backgroundColor
+  backgroundColor,
 }: CytoscapeRendererProps) => {
   const cyEl = useRef(null)
   const [cyInstance, setCyInstance] = useState(null)
@@ -31,7 +31,7 @@ const CytoscapeRenderer = ({
   let baseStyle = {
     width: '100%',
     height: '100%',
-    backgroundColor
+    backgroundColor,
   }
 
   const cyjsNetwork = useCyjs(uuid, cx)
@@ -71,10 +71,13 @@ const CytoscapeRenderer = ({
         name: layoutName,
         animate: false,
         stop: function () {
-          console.log('CyInstance --------------- Layout done!!')
+          console.log('Initial layout finished')
         },
       })
       layout.run()
+      setTimeout(() => {
+        cyInstance.fit()
+      }, 500)
     }
   }, [cyInstance])
 
@@ -89,7 +92,6 @@ const CytoscapeRenderer = ({
       }
       initializeCy(newCyInstance, eventHandlers)
       setCyInstance(newCyInstance)
-      console.log('#CYEL ############### Cytoscape.js instance created #', newCyInstance)
     }
   }, [cyEl])
 
@@ -112,7 +114,6 @@ const boxSelectHandler = (cy, eventHandlers, event) => {
     eventHandlers.setLastSelectedFrom(undefined, event)
     eventHandlers.setSelectedNodes(nodeIds)
     eventHandlers.setSelectedEdges(edgeIds)
-    console.log('selection done!!!!!!!!', performance.now() - t0)
   }, 5)
 }
 const tapHandler = (cy, eventHandlers, event) => {
@@ -191,7 +192,6 @@ const updateNetwork = (cyjs, cy) => {
 
     const newVS = addExtraStyle(cyjs.visualStyle)
     cy.style().fromJson(newVS).update()
-    cy.fit()
   }
 }
 

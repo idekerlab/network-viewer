@@ -3,6 +3,7 @@ import { NodeView, EdgeView, GraphView, GraphViewFactory, LargeGraphRenderer } f
 
 import * as cxVizConverter from 'cx-viz-converter'
 import Loading from './Loading'
+import { isWebGL2supported } from '../../utils/browserTest'
 
 type LGRPanelProps = {
   eventHandlers: EventHandlers
@@ -21,10 +22,18 @@ export type EventHandlers = {
   setLastSelectedEdge: Function
 }
 
-const LGRPanel = ({ eventHandlers, selectedNodes, selectedEdges, cx, backgroundColor = '#FFFFFF', layoutName='preset' }: LGRPanelProps) => {
+const LGRPanel = ({
+  eventHandlers,
+  selectedNodes,
+  selectedEdges,
+  cx,
+  backgroundColor = '#FFFFFF',
+  layoutName = 'preset',
+}: LGRPanelProps) => {
   const [render3d, setRender3d] = useState(false)
   const [painted, setPainted] = useState(false)
   const [data, setData] = useState<GraphView | null>(null)
+
 
   // TODO: support multiple selection
   const _handleNodeClick = (selectedNodeEvent: NodeView, x: number, y: number): void => {
@@ -77,13 +86,14 @@ const LGRPanel = ({ eventHandlers, selectedNodes, selectedEdges, cx, backgroundC
     eventHandlers.setSelectedEdges([])
   }
 
+
   useEffect(() => {
     if (cx !== undefined && data === null) {
       const result = cxVizConverter.convert(cx, 'lnv')
 
       // TODO: add better layout
       let { nodeViews } = result
-      if(layoutName !== 'preset') {
+      if (layoutName !== 'preset') {
         nodeViews = randomCircularLayout(result.nodeViews)
       }
       const gv = GraphViewFactory.createGraphView(nodeViews, result.edgeViews)

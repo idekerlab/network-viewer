@@ -1175,7 +1175,7 @@
     "@math.gl/web-mercator" "^3.2.1"
     d3-hexbin "^0.2.1"
 
-"@deck.gl/core@8.2.8", "@deck.gl/core@^8.2.3":
+"@deck.gl/core@8.2.8", "@deck.gl/core@^8.2.8":
   version "8.2.8"
   resolved "https://registry.yarnpkg.com/@deck.gl/core/-/core-8.2.8.tgz#d2878b7efc3861cb26b947f99a7d4b5499fcb59d"
   integrity sha512-96HV3MXXx3U27uyTemaWlHKD8tX6tnIrxPHyQcLB6ujG7Q5h0dtat2KrvOU/xfIJyIYK52lIOBBNNn6ph8G33g==
@@ -1225,7 +1225,7 @@
     d3-dsv "^1.0.8"
     expression-eval "^2.0.0"
 
-"@deck.gl/layers@8.2.8", "@deck.gl/layers@^8.2.3":
+"@deck.gl/layers@8.2.8", "@deck.gl/layers@^8.2.8":
   version "8.2.8"
   resolved "https://registry.yarnpkg.com/@deck.gl/layers/-/layers-8.2.8.tgz#675f13a570504b5de18bd5af2cd363592889ece5"
   integrity sha512-kqmj6ID6uAgIzmooNmbXWwC2UR9ZXo4h9dqFCkB/z4z2ptApgFRxTLoN3Pdrf/q81QArQeI3JIWsaNunpE90Vw==
@@ -1248,7 +1248,7 @@
     "@luma.gl/experimental" "^8.2.0"
     "@luma.gl/shadertools" "^8.2.0"
 
-"@deck.gl/react@8.2.8", "@deck.gl/react@^8.2.3":
+"@deck.gl/react@8.2.8", "@deck.gl/react@^8.2.8":
   version "8.2.8"
   resolved "https://registry.yarnpkg.com/@deck.gl/react/-/react-8.2.8.tgz#d7ef4485c38d0955dbd29a43e46ac0ce3bfd288f"
   integrity sha512-JqS7nRXNK7QKmh8WkAVeTmLOAw8TEZdF64zgYU2z68XwHRDEl7IkihwoFaJNpzo8W8qhiM/GLx8MbeLYHfTOsg==

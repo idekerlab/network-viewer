@@ -43,8 +43,8 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingBottom: theme.spacing(1),
     },
     title: {
-      // width: '50%',
-      paddingLeft: theme.spacing(1),
+      paddingTop: theme.spacing(1),
+      paddingLeft: theme.spacing(3),
     },
     editor: {
       position: 'relative',
@@ -109,7 +109,7 @@ const NetworkPropertyPanel = () => {
     )
   } else {
     if (summary == undefined || summary.owner !== summaryResponseData['owner']) {
-      setSummary({ ...summary, owner: summaryResponseData['owner'], externalId: summaryResponseData['externalId'] })
+      setSummary({ ...summary, owner: summaryResponseData['owner'], externalId: summaryResponseData['externalId'], visibility: summaryResponseData['visibility'] })
     }
   }
 
@@ -117,7 +117,7 @@ const NetworkPropertyPanel = () => {
     <div className={classes.root}>
       <div className={classes.topBar}>
         <MinimizeButton />
-        <Typography className={classes.title}>{summaryResponseData['name']}</Typography>
+        <Typography variant="h5" className={classes.title}>{summaryResponseData['name']}</Typography>
       </div>
       <div className={classes.objectCount}>
         <div className={classes.iconContainer}>

@@ -9,24 +9,28 @@ import FooterPanel from '../FooterPanel'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
+    appShell: {
       width: '100%',
       height: '100%',
+      padding: 0,
+      margin:0,
       display: 'flex',
-      overflow: 'hidden',
       flexDirection: 'column',
       boxSizing: 'border-box',
     },
-    header: {},
     main: {
       flexGrow: 1,
-      overflow: 'hidden',
       background: '#EEEEEE',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'stretch', 
       boxSizing: 'border-box',
+      width: '100%',
+      height: '100%',
     },
     footer: {
-      overflow: 'hidden',
       boxSizing: 'border-box',
+      zIndex: 500,
       padding: 0,
       margin:0,
       borderTop: '1px solid rgba(230,230,230,0.7)',
@@ -41,10 +45,12 @@ const AppShell: FC = () => {
   const { config } = useContext(AppContext)
 
   return (
-    <div className={classes.root}>
+    <div className={classes.appShell}>
       <NDExAccountProvider ndexServerURL={config.ndexHttps}>
-        <main className={classes.main}>
+        <header>
           <ToolBar />
+        </header>
+        <main className={classes.main}>
           <MainSplitPane />
         </main>
         <footer className={classes.footer}>
