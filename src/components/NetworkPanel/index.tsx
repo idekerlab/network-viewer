@@ -189,7 +189,10 @@ const NetworkPanel: FC<ViewProps> = ({ renderer, cx, objectCount, isWebGL2 }: Vi
       return (
         <EmptyView
           title="Browser not Supported"
-          message={`Your browser cannot display large network data. Please use supported browsers, such as Chrome or Firefox, to view large networks.`}
+          message={`Your browser cannot display large network data. 
+            Please use supported browsers, such as Chrome or Firefox, 
+            to view large networks. (Still, you can query the network 
+              using the query function below.)`}
         />
       )
     } else if (objectCount > maxNumObjects) {

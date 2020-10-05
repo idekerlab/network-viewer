@@ -13,6 +13,7 @@ import ClosedPanel from '../DataPanel/ClosedPanel'
 import UIState from '../../model/UIState'
 import { UIStateActions } from '../../reducer/uiStateReducer'
 import { isWebGL2supported } from '../../utils/browserTest'
+import Title from '../Title'
 
 const V2 = 'v2'
 const V3 = 'v3'
@@ -109,6 +110,7 @@ const MainSplitPane = () => {
 
   const result = useNetworkSummary(uuid, config.ndexHttps, V2, ndexCredential)
   const summary = result.data
+  let networkName = ''
 
   let apiVersion = V2
   let cxVersion = null
@@ -131,12 +133,14 @@ const MainSplitPane = () => {
       cxVersion = 1
       rend = RENDERER.cyjs
     }
+
+    networkName = summary.name
   }
 
-  if(!isWebGL2) {
-    objectCount = maxObj+1
+  if (!isWebGL2) {
+    objectCount = maxObj + 1
   }
-  
+
   const cxResponse = useCx(uuid, config.ndexHttps, apiVersion, ndexCredential, maxObj, objectCount, cxVersion)
 
   if (cxResponse.data === undefined || cxResponse.data == [] || cxResponse.isFetching || rend === null) {
@@ -159,13 +163,16 @@ const MainSplitPane = () => {
   }
 
   return (
-    <div ref={containerRef} className={classes.mainSplitRoot}>
-      <SplitPane split="vertical" minSize={550} size={leftWidth} onDragFinished={handleChange} style={splitPaneStyle}>
-        <NetworkPanel cx={cxResponse.data} renderer={rend} objectCount={objectCount} isWebGL2={isWebGL2} />
-        <DataPanel uuid={uuid} cx={cxResponse.data} />
-      </SplitPane>
-      {uiState.dataPanelOpen ? <div /> : <ClosedPanel />}
-    </div>
+    <React.Fragment>
+      <Title title={`${networkName} (${uuid})`} />
+      <div ref={containerRef} className={classes.mainSplitRoot}>
+        <SplitPane split="vertical" minSize={550} size={leftWidth} onDragFinished={handleChange} style={splitPaneStyle}>
+          <NetworkPanel cx={cxResponse.data} renderer={rend} objectCount={objectCount} isWebGL2={isWebGL2} />
+          <DataPanel uuid={uuid} cx={cxResponse.data} />
+        </SplitPane>
+        {uiState.dataPanelOpen ? <div /> : <ClosedPanel />}
+      </div>
+    </React.Fragment>
   )
 }
 

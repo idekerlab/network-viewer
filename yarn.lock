@@ -1189,7 +1189,7 @@
     mjolnir.js "^2.3.0"
     probe.gl "^3.2.1"
 
-"@deck.gl/core@^8.2.3":
+"@deck.gl/core@^8.2.8":
   version "8.2.9"
   resolved "https://registry.yarnpkg.com/@deck.gl/core/-/core-8.2.9.tgz#787ae3ef0d3faa7ebd10b7c9944501839471d713"
   integrity sha512-cIZNQLPFer2wJBHBUBLLWRdpSjDrW+QA2wsdHc6KEZ/thr/d0mTlzC6zVe6yAZNlTnoLcj+gigsjvpqthl9G+A==
@@ -1249,7 +1249,7 @@
     "@math.gl/polygon" "^3.2.1"
     earcut "^2.0.6"
 
-"@deck.gl/layers@^8.2.3":
+"@deck.gl/layers@^8.2.8":
   version "8.2.9"
   resolved "https://registry.yarnpkg.com/@deck.gl/layers/-/layers-8.2.9.tgz#fee73ad3a649b1a86152764c8b813c7e446a4465"
   integrity sha512-oufFg92nstGGuMfuEz1TD6J5Np3ouG1PzXx+q6ytQj9fNQmJKJw3V2YmL+SxhJSKtPOqKAa1lx1ntmV7NJ5dEQ==
@@ -1279,7 +1279,7 @@
   dependencies:
     prop-types "^15.6.0"
 
-"@deck.gl/react@^8.2.3":
+"@deck.gl/react@^8.2.8":
   version "8.2.9"
   resolved "https://registry.yarnpkg.com/@deck.gl/react/-/react-8.2.9.tgz#48b508771fb21613c5a094fb0bd00188b6ae686c"
   integrity sha512-hfv2QOuHHKi1G/HtcmKDQDAIh6Puac8Qcf4unftS0ZmwPMTkk1q7uxc/9R2lBr7zMKZRBzoJVjL1jhVZd1k2ig==
@@ -10011,6 +10011,11 @@ react-error-overlay@^6.0.7:
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.7.tgz#1dcfb459ab671d53f660a991513cb2f0a0553108"
   integrity sha512-TAv1KJFh3RhqxNvhzxj6LeT5NWklP6rDr2a0jaTfsZ5wSZWHOGeqQyejUp3xxLfPt2UpyJEcVQB/zyPcmonNFA==
 
+react-fast-compare@^3.1.1:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-3.2.0.tgz#641a9da81b6a6320f270e89724fb45a0b39e43bb"
+  integrity sha512-rtGImPZ0YyLrscKI9xTpV8psd6I8VAtjKCzQDlzyDvqJA8XOW78TXYQwNRNd8g8JZnDu8q9Fu/1v4HPAVwVdHA==
+
 react-google-login@^5.1.21:
   version "5.1.21"
   resolved "https://registry.yarnpkg.com/react-google-login/-/react-google-login-5.1.21.tgz#3d9edc1c08a0cf602a97d70ca406502b747cb890"
@@ -10018,6 +10023,16 @@ react-google-login@^5.1.21:
   dependencies:
     "@types/react" "*"
     prop-types "^15.6.0"
+
+react-helmet@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/react-helmet/-/react-helmet-6.1.0.tgz#a750d5165cb13cf213e44747502652e794468726"
+  integrity sha512-4uMzEY9nlDlgxr61NL3XbKRy1hEkXmKNXhjbAIOVw5vcFrsdYbH2FEwcNyWvWinl103nXgzYNlns9ca+8kFiWw==
+  dependencies:
+    object-assign "^4.1.1"
+    prop-types "^15.7.2"
+    react-fast-compare "^3.1.1"
+    react-side-effect "^2.1.0"
 
 react-is@^16.12.0, react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.0, react-is@^16.8.1, react-is@^16.8.4:
   version "16.13.1"
@@ -10134,6 +10149,11 @@ react-scrollbar-size@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/react-scrollbar-size/-/react-scrollbar-size-3.0.1.tgz#c3366aaacf0408332e1cbd4f60ade7a13389c4fd"
   integrity sha512-O25fZKd8ExvcKBE/suRBbXLN0XKCJo4nR5ur27HyvaHKVvPUDVOD4jXTrZcNHLp26gwwIFJJgE8l9j6aomnzbg==
+
+react-side-effect@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/react-side-effect/-/react-side-effect-2.1.0.tgz#1ce4a8b4445168c487ed24dab886421f74d380d3"
+  integrity sha512-IgmcegOSi5SNX+2Snh1vqmF0Vg/CbkycU9XZbOHJlZ6kMzTmi3yc254oB1WCkgA7OQtIAoLmcSFuHTc/tlcqXg==
 
 react-split-pane@^0.1.92:
   version "0.1.92"

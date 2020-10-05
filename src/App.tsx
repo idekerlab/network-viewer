@@ -1,4 +1,6 @@
-import React, { useState, useReducer, useEffect } from 'react'
+import React, { useState, useReducer } from 'react'
+import { Helmet } from 'react-helmet'
+
 import './App.css'
 import { useHistory } from 'react-router-dom'
 import { Switch, Route, BrowserRouter } from 'react-router-dom'

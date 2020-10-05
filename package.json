@@ -27,6 +27,7 @@
     "react-draft-wysiwyg": "^1.14.5",
     "react-draggable": "^4.4.3",
     "react-google-login": "^5.1.21",
+    "react-helmet": "^6.1.0",
     "react-query": "^2.23.0",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
