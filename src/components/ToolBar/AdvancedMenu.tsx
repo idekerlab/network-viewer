@@ -38,25 +38,6 @@ const AdvancedMenu = () => {
       <IconButton size="small" className={classes.button} aria-describedby={id} onClick={handleClick} color="inherit">
         <MoreIcon />
       </IconButton>
-      {/*
-      <Popover
-        id={id}
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-      >
-        <Typography className={classes.typography}>(Advanced menu items)</Typography>
-        <Typography>hi</Typography>
-        <Typography>ho</Typography>
-      </Popover>*/}
       <Menu open={open} anchorEl={anchorEl} onClose={handleClose}>
         <MenuItem
           onClick={() => {

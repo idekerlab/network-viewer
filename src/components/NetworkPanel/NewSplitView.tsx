@@ -80,6 +80,8 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
     dispatch,
     config,
     ndexCredential,
+    summary,
+    setSummary,
   } = useContext(AppContext)
 
   const searchResult = useSearch(uuid, query, '', ndexCredential, queryMode)
@@ -91,6 +93,11 @@ const NewSplitView: FC<ViewProps> = ({ renderer, cx, objectCount, height }: View
   if (subnet !== undefined) {
     subCx = subnet['cx']
   }
+  useEffect(() => {
+    if (subCx !== undefined) {
+      setSummary({ ...summary, subnetworkNodeCount: getNodeCount(subCx), subnetworkEdgeCount: getEdgeCount(subCx) })
+    }
+  }, [searchResult])
 
   const setShowPropPanelTrue = (state: UIState) =>
     uiStateDispatch({ type: UIStateActions.SET_SHOW_PROP_PANEL_TRUE, uiState: state })

@@ -21,6 +21,8 @@ type Summary = {
   version?: string
   visibility?: string
   warnings?: string[]
+  subnetworkNodeCount?: number
+  subnetworkEdgeCount?: number
 }
 
 export default Summary
