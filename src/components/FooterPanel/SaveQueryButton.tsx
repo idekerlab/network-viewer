@@ -25,8 +25,8 @@ const SaveQueryButton = () => {
   const classes = useStyles()
   const { uuid } = useParams()
 
-  const { query, queryMode, uiState, ndexCredential } = useContext(AppContext)
-  const searchResult = useSearch(uuid, query, '', ndexCredential, queryMode)
+  const { query, queryMode, uiState, ndexCredential, config } = useContext(AppContext)
+  const searchResult = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
 
   const subnet = searchResult.data
   const subCx = subnet !== undefined ? subnet['cx'] : undefined;

@@ -9,11 +9,11 @@ import ExportCxButton from '../ExportCxButton'
 const SaveNetworkCXButton = () => {
   const { uuid } = useParams()
 
-  const { ndexCredential } = useContext(AppContext)
+  const { ndexCredential, config } = useContext(AppContext)
 
   const { status, data, error, isFetching } = useCx(
     uuid,
-    'http://dev.ndexbio.org',
+    config.ndexHttps,
     'v2',
     ndexCredential,
     undefined,

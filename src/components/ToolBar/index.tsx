@@ -68,7 +68,7 @@ const ToolBar: FC = (props) => {
       <Grid container direction="row" justify="flex-start" alignItems="center" spacing={0}>
         <Grid container direction="row" justify="flex-start" alignItems="center">
           <NdexHomeButton />
-          <NDExSignInButton size="small" myAccountURL = "http://dev.ndexbio.org/#/myAccount" onLoginStateUpdated={loginStateUpdated} />
+          <NDExSignInButton size="small" myAccountURL = "https://dev.ndexbio.org/#/myAccount" onLoginStateUpdated={loginStateUpdated} />
           <AdvancedMenu />
           <ClassicModeButton />
         </Grid>

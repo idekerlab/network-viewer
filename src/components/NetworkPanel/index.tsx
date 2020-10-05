@@ -93,7 +93,7 @@ const NetworkPanel: FC<ViewProps> = ({ renderer, cx, objectCount }: ViewProps) =
     setIsWebGL2(isSupported)
   }, [])
 
-  const searchResult = useSearch(uuid, query, '', ndexCredential, queryMode)
+  const searchResult = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
 
   const { maxNumObjects, viewerThreshold } = config
 

@@ -8,9 +8,9 @@ const SaveQueryTSVMenuItem = () => {
 
   const { uuid } = useParams();
 
-  const { query, queryMode, uiState, ndexCredential } = useContext(AppContext)
+  const { query, queryMode, uiState, ndexCredential, config } = useContext(AppContext)
 
-  const { status, data, error, isFetching } = useSearch(uuid, query, '', ndexCredential, queryMode)
+  const { status, data, error, isFetching } = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
 
   const subCx = data !== undefined ? data['cx'] : undefined;
   
