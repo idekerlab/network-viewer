@@ -8,9 +8,9 @@ const SaveNetworkTSVMenuItem = () => {
 
   const { uuid } = useParams();
 
-  const { ndexCredential } = useContext(AppContext);
+  const { ndexCredential, config } = useContext(AppContext);
 
-  const { status, data, error, isFetching } = useCx(uuid, 'http://dev.ndexbio.org', 'v2', ndexCredential);
+  const { status, data, error, isFetching } = useCx(uuid, config.ndexHttps, 'v2', ndexCredential);
 
   
     return (<ExportTsvMenuItem cx={ status && status == 'success' ? data : null} /> )

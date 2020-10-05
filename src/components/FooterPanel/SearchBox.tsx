@@ -82,11 +82,11 @@ const SearchBox: FC = () => {
 
   const { uuid } = useParams()
 
-  const { cyReference, query, setQuery, queryMode, setQueryMode, uiStateDispatch, uiState, ndexCredential } = useContext(AppContext)
+  const { cyReference, query, setQuery, queryMode, setQueryMode, uiStateDispatch, uiState, ndexCredential, config } = useContext(AppContext)
 
   const [searchType, setSearchType] = useState('firstStepNeighborhood')
 
-  const searchResult = useSearch(uuid, query, '', ndexCredential, queryMode)
+  const searchResult = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
 
   const subnet = searchResult.data
   let subCx

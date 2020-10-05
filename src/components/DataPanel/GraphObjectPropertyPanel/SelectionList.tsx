@@ -27,8 +27,8 @@ const useStyles = makeStyles((theme: Theme) =>
 const SelectionList = (props) => {
   const { uuid } = useParams()
   const { attributes, cx } = props
-  const { query, queryMode, selection, ndexCredential } = useContext(AppContext)
-  const { status, data, error, isFetching } = useSearch(uuid, query, '', ndexCredential, queryMode)
+  const { query, queryMode, selection, ndexCredential, config } = useContext(AppContext)
+  const { status, data, error, isFetching } = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
 
   useEffect(() => {
     if (data === null || data === undefined) {
