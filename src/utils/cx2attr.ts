@@ -95,7 +95,7 @@ const getEdgeAttrs = (nodeAttr, kvMap: object) => {
   const id2attr = {}
 
   if (edgeAttr === undefined) {
-    addSourceTarget(nodeAttr, edges, id2attr)
+    addSourceTargetInteraction(nodeAttr, edges, id2attr)
     return id2attr
   }
 
@@ -112,10 +112,10 @@ const getEdgeAttrs = (nodeAttr, kvMap: object) => {
     id2attr[pointer] = current
   }
 
-  addSourceTarget(nodeAttr, edges, id2attr)
+  addSourceTargetInteraction(nodeAttr, edges, id2attr)
   return id2attr
 }
-const addSourceTarget = (nodeAttr, edges, id2attr) => {
+const addSourceTargetInteraction = (nodeAttr, edges, id2attr) => {
   let len = edges.length
   while (len--) {
     const e = edges[len]
@@ -127,6 +127,7 @@ const addSourceTarget = (nodeAttr, edges, id2attr) => {
     }
     const source = e['s']
     const target = e['t']
+    const interaction = e['i']
     const s = nodeAttr[source]
     const t = nodeAttr[target]
 
@@ -135,6 +136,9 @@ const addSourceTarget = (nodeAttr, edges, id2attr) => {
     }
     if (t !== undefined) {
       id2attr[id].set('target', t.get('name'))
+    }
+    if (interaction !== undefined) {
+      id2attr[id].set('interaction', interaction)
     }
   }
 }
