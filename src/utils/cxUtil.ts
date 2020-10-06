@@ -112,8 +112,14 @@ const getNetworkBackgroundColor = (cx: object[]): string => {
     return DEF_BG_COLOR
   }
 
+
+
   const vp = getEntry('cyVisualProperties', cx)
+  const cxVersion = getEntry('CXVersion', cx)
   if ( vp === undefined || vp.length === 0 || Object.keys(vp).length === 0) {
+    if(cxVersion === '2.0') {
+      return _extractBackgroundColorCx2(cx)
+    }
     return DEF_BG_COLOR
   }
 
@@ -134,6 +140,30 @@ const getNetworkBackgroundColor = (cx: object[]): string => {
   }
 
   return bgColor 
+}
+
+const _extractBackgroundColorCx2 = (cx) => {
+  const vp = getEntry('visualProperties', cx)
+  if ( vp === undefined || vp.length === 0 || Object.keys(vp).length === 0) {
+    return DEF_BG_COLOR
+  }
+
+  let bgColor = DEF_BG_COLOR
+  let idx = vp.length
+  while(idx--) {
+    const entry = vp[idx]
+    const target = entry['default']
+    if(target !== undefined) {
+      const networkDefaults = target['network']
+      const bgPaint = networkDefaults['NETWORK_BACKGROUND_COLOR']
+      if(bgPaint !== undefined) {
+        return bgPaint
+      }
+    }
+  }
+
+  return bgColor 
+
 }
 
 export { getEntry, getNodeCount, getEdgeCount, getCyjsLayout, getLgrLayout, CYJS_LAYOUTS, getNetworkBackgroundColor }
