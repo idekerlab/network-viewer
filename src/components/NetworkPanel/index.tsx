@@ -228,6 +228,7 @@ const NetworkPanel: FC<ViewProps> = ({ renderer, cx, objectCount, isWebGL2 }: Vi
           selectedEdges={selection.main.edges}
           backgroundColor={bgColor}
           layoutName={layout}
+          pickable={!showSearchResult}
         />
       )
     }
