@@ -1189,7 +1189,7 @@
     mjolnir.js "^2.3.0"
     probe.gl "^3.2.1"
 
-"@deck.gl/core@^8.2.8":
+"@deck.gl/core@^8.2.3":
   version "8.2.9"
   resolved "https://registry.yarnpkg.com/@deck.gl/core/-/core-8.2.9.tgz#787ae3ef0d3faa7ebd10b7c9944501839471d713"
   integrity sha512-cIZNQLPFer2wJBHBUBLLWRdpSjDrW+QA2wsdHc6KEZ/thr/d0mTlzC6zVe6yAZNlTnoLcj+gigsjvpqthl9G+A==
@@ -1249,7 +1249,7 @@
     "@math.gl/polygon" "^3.2.1"
     earcut "^2.0.6"
 
-"@deck.gl/layers@^8.2.8":
+"@deck.gl/layers@^8.2.3":
   version "8.2.9"
   resolved "https://registry.yarnpkg.com/@deck.gl/layers/-/layers-8.2.9.tgz#fee73ad3a649b1a86152764c8b813c7e446a4465"
   integrity sha512-oufFg92nstGGuMfuEz1TD6J5Np3ouG1PzXx+q6ytQj9fNQmJKJw3V2YmL+SxhJSKtPOqKAa1lx1ntmV7NJ5dEQ==
@@ -1279,7 +1279,7 @@
   dependencies:
     prop-types "^15.6.0"
 
-"@deck.gl/react@^8.2.8":
+"@deck.gl/react@^8.2.3":
   version "8.2.9"
   resolved "https://registry.yarnpkg.com/@deck.gl/react/-/react-8.2.9.tgz#48b508771fb21613c5a094fb0bd00188b6ae686c"
   integrity sha512-hfv2QOuHHKi1G/HtcmKDQDAIh6Puac8Qcf4unftS0ZmwPMTkk1q7uxc/9R2lBr7zMKZRBzoJVjL1jhVZd1k2ig==

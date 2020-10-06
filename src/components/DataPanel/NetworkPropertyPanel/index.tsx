@@ -1,12 +1,7 @@
 import React, { useContext, useRef } from 'react'
-import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
+import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
-import DescriptionEditor from './DescriptionEditor'
-import Button from '@material-ui/core/Button'
-import PublicIcon from '@material-ui/icons/Public'
-import VpnLockIcon from '@material-ui/icons/VpnLock'
-import PropertyTable from './PropertyTable'
 import NetworkProperties from './NetworkProperties.jsx'
 import useNetworkSummary from '../../../hooks/useNetworkSummary'
 import { useParams } from 'react-router-dom'
@@ -86,16 +81,6 @@ const NetworkPropertyPanel = () => {
   const classes = useStyles()
   const { uuid } = useParams()
   const { ndexCredential, config, setSummary, summary, uiState } = useContext(AppContext)
-  const nodeButton = useRef(null)
-  const edgeButton = useRef(null)
-
-  let nodeWidth = 0
-  let edgeWidth = 0
-
-  if (nodeButton.current !== null) {
-    nodeWidth = nodeButton.current.offsetWidth
-    edgeWidth = edgeButton.current.offsetWidth
-  }
 
   const summaryResponse = useNetworkSummary(uuid, config.ndexHttps, 'v2', ndexCredential)
   const summaryResponseData = summaryResponse.data
@@ -115,6 +100,10 @@ const NetworkPropertyPanel = () => {
         owner: summaryResponseData['owner'],
         externalId: summaryResponseData['externalId'],
         visibility: summaryResponseData['visibility'],
+        nodeCount: summaryResponseData['nodeCount'],
+        edgeCount: summaryResponseData['edgeCount'],
+        properties: summaryResponseData['properties'],
+        description: summaryResponseData['description'],
       })
     }
   }
@@ -127,38 +116,8 @@ const NetworkPropertyPanel = () => {
           {summaryResponseData['name']}
         </Typography>
       </div>
-      <div className={classes.objectCount}>
-        <div className={classes.iconContainer}>
-          {summaryResponseData.visibility === 'PUBLIC' ? (
-            <PublicIcon className={classes.icon} />
-          ) : (
-            <VpnLockIcon className={classes.icon} />
-          )}
-        </div>
-        <div>
-          <div>
-            <Button disabled className={classes.countButton} variant="outlined" ref={nodeButton}>
-              Nodes: {summaryResponseData['nodeCount']}
-            </Button>
-            <Button disabled className={classes.countButton} variant="outlined" ref={edgeButton}>
-              Edges: {summaryResponseData['edgeCount']}
-            </Button>
-          </div>
-
-          {uiState.showSearchResult ? (
-            <div className={classes.subObjectCount}>
-              <Button disabled className={classes.countButton} variant="outlined" style={{ width: nodeWidth }}>
-                Nodes: {summary.subnetworkNodeCount}
-              </Button>
-              <Button disabled className={classes.countButton} variant="outlined" style={{ width: edgeWidth }}>
-                Edges: {summary.subnetworkEdgeCount}
-              </Button>
-            </div>
-          ) : null}
-        </div>
-      </div>
       <div className={classes.description}>
-        <NetworkProperties summary={summaryResponseData} />
+        <NetworkProperties />
       </div>
     </div>
   )

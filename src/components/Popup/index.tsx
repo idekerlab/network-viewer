@@ -80,6 +80,7 @@ const Popup: FC<PopupProps> = ({ cx, objectType = ObjectType.NODE }: PopupProps)
 
   const id = objects[0]
   let attrMap = null
+  console.log(attr)
   if (objectType === ObjectType.NODE) {
     attrMap = attr.nodeAttr[id]
   } else {
@@ -89,6 +90,7 @@ const Popup: FC<PopupProps> = ({ cx, objectType = ObjectType.NODE }: PopupProps)
   //Process attrMap to only display non-empty fields
   //and properly display links and lists
   const nonEmptyMap = new Map()
+  console.log(attrMap)
   for (let item of attrMap) {
     let include = false
     if (Array.isArray(item[1])) {

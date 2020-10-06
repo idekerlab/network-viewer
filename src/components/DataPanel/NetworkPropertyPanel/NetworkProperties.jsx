@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 import { makeStyles } from '@material-ui/styles'
 import ListItem from '@material-ui/core/ListItem'
@@ -12,6 +12,9 @@ import ExpandMore from '@material-ui/icons/ExpandMore'
 
 import Linkify from 'linkifyjs/react'
 import parse from 'html-react-parser'
+
+import NetworkInformation from './NetworkInformation'
+import AppContext from '../../../context/AppState'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -46,11 +49,16 @@ const useStyles = makeStyles((theme) => ({
 
 let index = 0
 
-const NetworkProperties = (props) => {
-  const { summary } = props
+const NetworkProperties = () => {
+  const classes = useStyles()
+  const { summary } = useContext(AppContext)
+
+  if (summary === undefined) {
+    return null
+  }
+
   const properties = summary.properties
   const description = summary.description
-  const classes = useStyles()
 
   const formatDisplay = (propertiesList) => {
     const display = []
@@ -116,7 +124,13 @@ const NetworkProperties = (props) => {
   }
   if (informationTableContents.length > 0) {
     const informationList = [
-      ['Network information', <table className={classes.table}>{informationTableContents}</table>],
+      [
+        'Network information',
+        <>
+          <NetworkInformation />
+          <table className={classes.table}>{informationTableContents}</table>
+        </>,
+      ],
     ]
     const informationDisplay = formatDisplay(informationList)
     returnList.push(<div className={classes.sectionContainer}>{informationDisplay}</div>)

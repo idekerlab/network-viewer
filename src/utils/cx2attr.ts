@@ -41,9 +41,8 @@ export const getAttributeMap = (cx: object[]) => {
 }
 
 const getNodeAttrsV2 = (kvMap: object) => {
-  const nodes = kvMap['nodes']
+  const nodes = kvMap['nodes'][0]
   const id2attr = {}
-
   let len = nodes.length
   while (len--) {
     const entry = nodes[len]
@@ -60,7 +59,7 @@ const getNodeAttrsV2 = (kvMap: object) => {
 }
 
 const getEdgeAttrsV2 = (kvMap: object) => {
-  const edges = kvMap['edges']
+  const edges = kvMap['edges'][0]
   const id2attr = {}
 
   if (edges === undefined || edges.length === 0) {
@@ -85,7 +84,6 @@ const getEdgeAttrsV2 = (kvMap: object) => {
     }
     id2attr[id] = current
   }
-
   return id2attr
 }
 
