@@ -100,7 +100,6 @@ const Popup: FC<PopupProps> = ({ cx, objectType = ObjectType.NODE }: PopupProps)
   let hasName = false
   for (let item of attrMap) {
     let include = false
-    console.log(item[0])
     if (objectType === ObjectType.EDGE) {
       if ([EdgeAttributes.SOURCE, EdgeAttributes.TARGET, EdgeAttributes.INTERACTION].includes(item[0])) {
         if (item[0] === EdgeAttributes.SOURCE) {

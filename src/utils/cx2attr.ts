@@ -27,9 +27,10 @@ export const getAttributeMap = (cx: object[]) => {
   }
 
   if (isV2) {
+    const nodeAttr = getNodeAttrsV2(resultObject)
     return {
-      nodeAttr: getNodeAttrsV2(resultObject),
-      edgeAttr: getEdgeAttrsV2(resultObject),
+      nodeAttr: nodeAttr,
+      edgeAttr: getEdgeAttrsV2(nodeAttr, resultObject),
     }
   } else {
     const nodeAttr = getNodeAttrs(resultObject)
@@ -51,19 +52,25 @@ const getNodeAttrsV2 = (kvMap: object) => {
     const current = new Map()
     const keys = Object.keys(attrs)
     keys.forEach((key) => {
-      current.set(key, attrs[key])
+      if (key === 'n') {
+        current.set('name', attrs[key])
+      } else if (key === 'r') {
+        current.set('Represents', attrs[key])
+      } else {
+        current.set(key, attrs[key])
+      }
     })
-    current.set('name', attrs['n'])
     id2attr[entry.id] = current
   }
   return id2attr
 }
 
-const getEdgeAttrsV2 = (kvMap: object) => {
+const getEdgeAttrsV2 = (nodeAttr, kvMap: object) => {
   const edges = kvMap['edges']
   const id2attr = {}
 
   if (edges === undefined || edges.length === 0) {
+    addSourceTargetInteractionV2(nodeAttr, edges, id2attr)
     return id2attr
   }
 
@@ -72,20 +79,20 @@ const getEdgeAttrsV2 = (kvMap: object) => {
     const e = edges[len]
     const id = e['id']
     const current = new Map()
-    const source = e['s']
-    const target = e['t']
-    current.set('source', source)
-    current.set('target', target)
+
     const attrs = e['v']
     if (attrs !== undefined && attrs !== null) {
       const keys = Object.keys(attrs)
       keys.forEach((key) => {
-        current.set(key, attrs[key])
+        if (key !== 'i') {
+          current.set(key, attrs[key])
+        }
       })
     }
     id2attr[id] = current
   }
 
+  addSourceTargetInteractionV2(nodeAttr, edges, id2attr)
   return id2attr
 }
 
@@ -115,6 +122,7 @@ const getEdgeAttrs = (nodeAttr, kvMap: object) => {
   addSourceTargetInteraction(nodeAttr, edges, id2attr)
   return id2attr
 }
+
 const addSourceTargetInteraction = (nodeAttr, edges, id2attr) => {
   let len = edges.length
   while (len--) {
@@ -139,6 +147,35 @@ const addSourceTargetInteraction = (nodeAttr, edges, id2attr) => {
     }
     if (interaction !== undefined) {
       id2attr[id].set('interaction', interaction)
+    }
+  }
+}
+
+const addSourceTargetInteractionV2 = (nodeAttr, edges, id2attr) => {
+  let len = edges.length
+  while (len--) {
+    const e = edges[len]
+    const id = e['id']
+    let current = id2attr[id]
+    if (current === undefined) {
+      current = new Map()
+      id2attr[id] = current
+    }
+    const source = e['s']
+    const s = nodeAttr[source]
+    const target = e['t']
+    const t = nodeAttr[target]
+    const interaction = e['v']
+    const i = interaction['i']
+
+    if (s !== undefined) {
+      id2attr[id].set('source', s.get('name'))
+    }
+    if (t !== undefined) {
+      id2attr[id].set('target', t.get('name'))
+    }
+    if (i !== undefined) {
+      id2attr[id].set('interaction', i)
     }
   }
 }
