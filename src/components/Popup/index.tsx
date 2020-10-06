@@ -44,6 +44,13 @@ const ObjectType = {
   EDGE: 'edge',
 }
 
+const EdgeAttributes = {
+  SOURCE: 'source',
+  TARGET: 'target',
+  INTERACTION: 'interaction',
+  NAME: 'name',
+}
+
 type PopupProps = {
   cx: object[]
   target?: string
@@ -89,8 +96,25 @@ const Popup: FC<PopupProps> = ({ cx, objectType = ObjectType.NODE }: PopupProps)
   //Process attrMap to only display non-empty fields
   //and properly display links and lists
   const nonEmptyMap = new Map()
+  let source, target, interaction
+  let hasName = false
   for (let item of attrMap) {
     let include = false
+    console.log(item[0])
+    if (objectType === ObjectType.EDGE) {
+      if ([EdgeAttributes.SOURCE, EdgeAttributes.TARGET, EdgeAttributes.INTERACTION].includes(item[0])) {
+        if (item[0] === EdgeAttributes.SOURCE) {
+          source = item[1]
+        } else if (item[0] === EdgeAttributes.TARGET) {
+          target = item[1]
+        } else {
+          interaction = item[1]
+        }
+        continue
+      } else if (item[0] === EdgeAttributes.NAME) {
+        hasName = true
+      }
+    }
     if (Array.isArray(item[1])) {
       for (let arrayItem of item[1]) {
         if (arrayItem !== undefined && arrayItem !== '') {
@@ -113,7 +137,16 @@ const Popup: FC<PopupProps> = ({ cx, objectType = ObjectType.NODE }: PopupProps)
       nonEmptyMap.set(item[0], value)
     }
   }
-  attrMap = nonEmptyMap
+
+  if (!hasName) {
+    if (source && target) {
+      if (interaction) {
+        nonEmptyMap.set('name', source + ' (' + interaction + ') ' + target)
+      } else {
+        nonEmptyMap.set('name', source + ' (-) ' + target)
+      }
+    }
+  }
 
   //Calculate position based on pointer position in window
   const effectiveWindowHeight = windowHeight - FOOTER_HEIGHT
@@ -130,7 +163,7 @@ const Popup: FC<PopupProps> = ({ cx, objectType = ObjectType.NODE }: PopupProps)
   //Top or bottom
   const maxHeight = effectiveWindowHeight * 0.4
   let height = 88 //Title height + body padding
-  for (let i = 1; i < attrMap.size; i++) {
+  for (let i = 1; i < nonEmptyMap.size; i++) {
     height += 40 //List item height
     if (height >= maxHeight) {
       height = maxHeight
@@ -177,7 +210,7 @@ const Popup: FC<PopupProps> = ({ cx, objectType = ObjectType.NODE }: PopupProps)
 
   return (
     <div className={classes.root} style={style}>
-      <PropertyPanel attrMap={attrMap} onClose={onClose} />
+      <PropertyPanel attrMap={nonEmptyMap} onClose={onClose} />
     </div>
   )
 }
