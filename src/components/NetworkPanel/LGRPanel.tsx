@@ -192,7 +192,7 @@ const clearHighlight = (data) => {
 
 const randomCircularLayout = (nodeViews: NodeView[]): NodeView[] => {
   let idx = nodeViews.length
-  const scalingFactor = 700 // TODO: compute from viewport
+  const scalingFactor = 4000 // TODO: compute from viewport
 
   while (idx--) {
     const nv: NodeView = nodeViews[idx]
