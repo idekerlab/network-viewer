@@ -7,7 +7,7 @@ const EDGE_LIMIT = 5000
 
 const queryModeParams = {
   direct: {
-    directOnly: true,
+    searchDepth: 1,
     edgeLimit: EDGE_LIMIT
   },
   firstStepNeighborhood: {
@@ -22,7 +22,7 @@ const queryModeParams = {
   },
   interconnect: {
     edgeLimit: EDGE_LIMIT,
-    searchDepth: 1
+    searchDepth: 2
   },
   twoStepNeighborhood: {
     edgeLimit: EDGE_LIMIT,
@@ -68,7 +68,7 @@ const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string
 
   console.log('#######Network Query: ', serverUrl, mode, query, uuid)
   let url = `${serverUrl}/v2/search/network/${uuid}/query`
-  if (mode === 'interconnect') {
+  if (mode === 'interconnect' || mode === 'direct') {
     url = `${serverUrl}/v2/search/network/${uuid}/interconnectquery`
   }
 
