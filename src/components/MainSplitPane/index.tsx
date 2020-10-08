@@ -6,8 +6,6 @@ import SplitPane from 'react-split-pane'
 import { useParams } from 'react-router-dom'
 import useNetworkSummary from '../../hooks/useNetworkSummary'
 import useCx from '../../hooks/useCx'
-import { Typography } from '@material-ui/core'
-import CircularProgress from '@material-ui/core/CircularProgress'
 import AppContext from '../../context/AppState'
 import ClosedPanel from '../DataPanel/ClosedPanel'
 import UIState from '../../model/UIState'
@@ -15,15 +13,14 @@ import { UIStateActions } from '../../reducer/uiStateReducer'
 import { isWebGL2supported } from '../../utils/browserTest'
 import Title from '../Title'
 
+import InitializationPanel from './InitializationPanel'
+
 const V2 = 'v2'
-const V3 = 'v3'
 
 const RENDERER = {
   lgr: 'lgr',
   cyjs: 'cyjs',
 }
-
-const def: string[] = []
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -37,41 +34,74 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     leftPanel: {
       display: 'flex',
-
       flexDirection: 'column',
-    },
-    initPanel: {
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%',
-      color: '#AAAAAA',
-      display: 'grid',
-      placeItems: 'center',
-    },
-    message: {
-      height: '10em',
-      display: 'grid',
-      placeItems: 'center',
     },
   }),
 )
+
+const getDefaultPanelWidth = (): number => {
+  return Math.floor(window.innerWidth * 0.65)
+}
+
+type FetchParams = {
+  cxVersion: string
+  count: number
+  renderer: string
+  name: string
+}
+
+const DFE_FETCH_PARAMS: FetchParams = {
+  cxVersion: '1',
+  count: Number.POSITIVE_INFINITY,
+  renderer: RENDERER.cyjs,
+  name: 'N/A',
+}
+
+const getFetchParams = (summary: object, th: number): FetchParams => {
+  if (summary === undefined) {
+    return DFE_FETCH_PARAMS
+  }
+  const count = summary['edgeCount'] + summary['nodeCount']
+  let cxVersion = '1'
+  let renderer = RENDERER.cyjs
+
+  if (count > th) {
+    cxVersion = '2'
+    renderer = RENDERER.lgr
+  }
+
+  const fetchParams: FetchParams = {
+    cxVersion,
+    count,
+    renderer,
+    name: summary['name'],
+  }
+  return fetchParams
+}
+
 const MainSplitPane = () => {
   const classes = useStyles()
   const containerRef = useRef()
   const { uuid } = useParams()
   const { uiState, ndexCredential, config, uiStateDispatch } = useContext(AppContext)
-
-  const width = window.innerWidth
-  const defSize = Math.floor(width * 0.65)
-  const [leftWidth, setLeftWidth] = useState(defSize)
   const maxObj = config.maxNumObjects
   const th = config.viewerThreshold
 
-  const [containerHeight, setContainerHeight] = useState(0)
+  const summaryResponse = useNetworkSummary(uuid, config.ndexHttps, V2, ndexCredential)
+  const summary = summaryResponse.data
+  const fetchParams = getFetchParams(summary, th)
 
+  const cxResponse = useCx(uuid, config.ndexHttps, V2, ndexCredential, maxObj, fetchParams.count, fetchParams.cxVersion)
+  const cx = cxResponse.data
+
+  // Local states
+  const [leftWidth, setLeftWidth] = useState(getDefaultPanelWidth())
+  const [containerHeight, setContainerHeight] = useState(0)
   const [isWebGL2, setIsWebGL2] = useState(false)
+
+  // True if data is too large
+  const [isDataTooLarge, setIsDataTooLarge] = useState(true)
+
   const assignNewHeight = () => {
     const curRef = containerRef?.current ?? { offsetHeight: 0 }
     if (curRef) {
@@ -94,10 +124,19 @@ const MainSplitPane = () => {
   })
 
   useEffect(() => {
+    if (summary !== undefined && Object.keys(summary).length !== 0) {
+      const count = summary['edgeCount'] + summary['nodeCount']
+      if (count < 1000) {
+        setIsDataTooLarge(false)
+      }
+    }
+  }, [summary])
+
+  useEffect(() => {
     if (!uiState.dataPanelOpen) {
-      setLeftWidth(width)
+      setLeftWidth(window.innerWidth)
     } else {
-      setLeftWidth(defSize)
+      setLeftWidth(getDefaultPanelWidth())
     }
   }, [uiState.dataPanelOpen])
 
@@ -108,52 +147,6 @@ const MainSplitPane = () => {
     setLeftPanelWidth({ ...uiState, leftPanelWidth: leftWidth })
   }, [leftWidth])
 
-  const result = useNetworkSummary(uuid, config.ndexHttps, V2, ndexCredential)
-  const summary = result.data
-  let networkName = ''
-
-  let apiVersion = V2
-  let cxVersion = null
-  let rend = null
-
-  let objectCount = 0
-  let edgeCount = 0
-  let nodeCount = 0
-
-  if (summary !== undefined && Object.keys(summary).length !== 0) {
-    edgeCount = summary['edgeCount']
-    nodeCount = summary['nodeCount']
-
-    objectCount = nodeCount + edgeCount
-
-    if (objectCount > th) {
-      cxVersion = 2
-      rend = RENDERER.lgr
-    } else {
-      cxVersion = 1
-      rend = RENDERER.cyjs
-    }
-
-    networkName = summary.name
-  }
-
-  if (!isWebGL2) {
-    objectCount = maxObj + 1
-  }
-
-  const cxResponse = useCx(uuid, config.ndexHttps, apiVersion, ndexCredential, maxObj, objectCount, cxVersion)
-
-  if (cxResponse.data === undefined || cxResponse.data == [] || cxResponse.isFetching || rend === null) {
-    return (
-      <div className={classes.initPanel}>
-        <div className={classes.message}>
-          <Typography variant="h6">Loading Network from NDEx Server...</Typography>
-          <CircularProgress color={'secondary'} disableShrink />
-        </div>
-      </div>
-    )
-  }
-
   const handleChange = (newWidth) => {
     setLeftWidth(newWidth)
   }
@@ -162,13 +155,32 @@ const MainSplitPane = () => {
     height: containerHeight,
   }
 
+  let { count } = fetchParams
+  if (!isWebGL2) {
+    count = Number.POSITIVE_INFINITY
+  }
+
+  if (summary === undefined || summaryResponse.isLoading) {
+    return <InitializationPanel message={'Checking network summary'} showProgress={false} />
+  }
+
+  if (cx === undefined || cxResponse.isLoading || (Array.isArray(cx) && cx.length === 0)) {
+    return <InitializationPanel message={'Loading network from NDEx server'} showProgress={true} />
+  }
+
   return (
     <React.Fragment>
-      <Title title={`${networkName} (${uuid})`} />
+      <Title title={`${fetchParams.name} (${uuid})`} />
       <div ref={containerRef} className={classes.mainSplitRoot}>
-        <SplitPane split="vertical" minSize={550} size={leftWidth} onDragFinished={handleChange} style={splitPaneStyle}>
-          <NetworkPanel cx={cxResponse.data} renderer={rend} objectCount={objectCount} isWebGL2={isWebGL2} />
-          <DataPanel uuid={uuid} cx={cxResponse.data} />
+        <SplitPane
+          split="vertical"
+          minSize={window.innerWidth * 0.2}
+          size={leftWidth}
+          onDragFinished={handleChange}
+          style={splitPaneStyle}
+        >
+          <NetworkPanel cx={cx} renderer={fetchParams.renderer} objectCount={count} isWebGL2={isWebGL2} />
+          <DataPanel uuid={uuid} cx={cx} />
         </SplitPane>
         {uiState.dataPanelOpen ? <div /> : <ClosedPanel />}
       </div>
