@@ -160,14 +160,17 @@ const MainSplitPane = () => {
     count = Number.POSITIVE_INFINITY
   }
 
+  // Case 1: Summary is not available yet
   if (summary === undefined || summaryResponse.isLoading) {
     return <InitializationPanel message={'Checking network summary'} showProgress={false} />
   }
 
+  // Case 2: Summary is ready, but CX is not
   if (cx === undefined || cxResponse.isLoading || (Array.isArray(cx) && cx.length === 0)) {
     return <InitializationPanel message={'Loading network from NDEx server'} showProgress={true} />
   }
 
+  // Case 3: Data is ready.  Need to draw the network (or data/message panels for large ones)
   return (
     <React.Fragment>
       <Title title={`${fetchParams.name} (${uuid})`} />

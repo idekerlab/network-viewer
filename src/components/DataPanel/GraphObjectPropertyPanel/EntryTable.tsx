@@ -79,7 +79,7 @@ const EntryTable = (props) => {
       for (let id of selectedObjects) {
         const attrs = attributes[id]
         if (attrs.has('source') && attrs.has('target')) {
-          if ('interaction' in attrs) {
+          if (attrs.has('interaction')) {
             attrs.set('name', attrs.get('source') + ' (' + attrs.get('interaction') + ') ' + attrs.get('target'))
           } else {
             attrs.set('name', attrs.get('source') + ' (-) ' + attrs.get('target'))
