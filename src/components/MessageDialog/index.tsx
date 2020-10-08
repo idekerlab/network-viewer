@@ -25,9 +25,13 @@ const MessageDialog: FC<MessageDialogProps> = ({ title='', message='', open, set
         <DialogContentText>{message}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="primary">
-          Dismiss
+        <Button onClick={handleClose} color='secondary' >
+          Close
         </Button>
+  
+        <Button onClick={handleClose} color="default">
+            Proceed
+          </Button>
       </DialogActions>
     </Dialog>
   )

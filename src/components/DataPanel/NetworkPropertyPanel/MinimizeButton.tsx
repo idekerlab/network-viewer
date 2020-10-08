@@ -11,7 +11,7 @@ import { UIStateActions } from '../../../reducer/uiStateReducer'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     button: {
-      height: '3em',
+      height: '1em',
       width: '1em',
       margin: 0,
       borderRadius: 2,

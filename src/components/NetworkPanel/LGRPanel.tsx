@@ -3,7 +3,6 @@ import { NodeView, EdgeView, GraphView, GraphViewFactory, LargeGraphRenderer } f
 
 import * as cxVizConverter from 'cx-viz-converter'
 import Loading from './Loading'
-import { isWebGL2supported } from '../../utils/browserTest'
 
 type LGRPanelProps = {
   eventHandlers: EventHandlers
@@ -13,6 +12,7 @@ type LGRPanelProps = {
   cx: object[]
   backgroundColor: string
   layoutName?: string
+  pickable?: boolean
 }
 
 export type EventHandlers = {
@@ -29,6 +29,7 @@ const LGRPanel = ({
   cx,
   backgroundColor = '#FFFFFF',
   layoutName = 'preset',
+  pickable
 }: LGRPanelProps) => {
   const [render3d, setRender3d] = useState(false)
   const [painted, setPainted] = useState(false)
@@ -132,6 +133,7 @@ const LGRPanel = ({
       onBackgroundClick={_handleBackgroundClick}
       render3d={render3d}
       backgroundColor={backgroundColor}
+      pickable={pickable}
     />
   )
 }
