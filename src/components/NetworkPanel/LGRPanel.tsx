@@ -3,7 +3,6 @@ import { NodeView, EdgeView, GraphView, GraphViewFactory, LargeGraphRenderer } f
 
 import * as cxVizConverter from 'cx-viz-converter'
 import Loading from './Loading'
-import { isWebGL2supported } from '../../utils/browserTest'
 
 type LGRPanelProps = {
   eventHandlers: EventHandlers
