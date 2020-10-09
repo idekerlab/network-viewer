@@ -27,8 +27,8 @@ const useStyles = makeStyles((theme: Theme) =>
 const SelectionList = (props) => {
   const { uuid } = useParams()
   const { attributes, cx } = props
-  const { query, queryMode, selection, ndexCredential, config } = useContext(AppContext)
-  const { status, data, error, isFetching } = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
+  const { query, queryMode, selectionState, ndexCredential, config } = useContext(AppContext)
+  const { data } = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
 
   useEffect(() => {
     if (data === null || data === undefined) {
@@ -43,12 +43,12 @@ const SelectionList = (props) => {
   let edges = []
   let nodeCount
   let edgeCount
-  if (selection.lastSelected.from === 'main') {
-    nodes = selection.main.nodes
-    edges = selection.main.edges
+  if (selectionState.lastSelected['fromMain']) {
+    nodes = selectionState.main['nodes']
+    edges = selectionState.main['edges']
   } else {
-    nodes = selection.sub.nodes
-    edges = selection.sub.edges
+    nodes = selectionState.sub['nodes']
+    edges = selectionState.sub['edges']
   }
   nodeCount = nodes.length
   edgeCount = edges.length

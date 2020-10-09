@@ -25,8 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const MinimizeButton = () => {
   const classes = useStyles()
-  const appContext = useContext(AppContext)
-  const { uiState, uiStateDispatch } = appContext
+  const { uiState, uiStateDispatch } = useContext(AppContext)
 
   const setDataPanelOpen = (state: UIState) =>
     uiStateDispatch({ type: UIStateActions.SET_DATA_PANEL_OPEN, uiState: state })

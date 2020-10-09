@@ -12,7 +12,7 @@ import AppState from './model/AppState'
 import TopPanel from './components/TopPanel'
 
 //import UIState from './model/UIState'
-import selectionReducer, { EMPTY_SELECTION } from './reducer/selectionReducer'
+import selectionStateReducer, { EMPTY_SELECTION } from './reducer/selectionStateReducer'
 import cyReducer, { INITIAL_CY_REFERENCE } from './reducer/cyReducer'
 import uiStateReducer, { INITIAL_UI_STATE } from './reducer/uiStateReducer'
 import NdexCredential from './model/NdexCredential'
@@ -32,16 +32,13 @@ const App = ({ config }) => {
 
   const [ndexCredential, setNdexCredential] = useState(defNdexCredential)
 
-  const [selection, dispatch] = useReducer(selectionReducer, EMPTY_SELECTION)
+  const [selectionState, selectionStateDispatch] = useReducer(selectionStateReducer, EMPTY_SELECTION)
   const [cyReference, cyDispatch] = useReducer(cyReducer, INITIAL_CY_REFERENCE)
   const [uiState, uiStateDispatch] = useReducer(uiStateReducer, INITIAL_UI_STATE)
 
   // TODO: use reducer?
   const defState: AppState = {
     config,
-
-    selection,
-    dispatch,
 
     cyReference,
     cyDispatch,
@@ -59,6 +56,9 @@ const App = ({ config }) => {
 
     summary,
     setSummary,
+
+    selectionState,
+    selectionStateDispatch,
   }
 
   return (
