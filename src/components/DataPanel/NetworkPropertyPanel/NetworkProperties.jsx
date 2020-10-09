@@ -108,7 +108,14 @@ const NetworkProperties = (props) => {
     }
   }
   if (informationTableContents.length > 0) {
-    const informationList = [[null, <table className={classes.table}>{informationTableContents}</table>]]
+    const informationList = [
+      [
+        null,
+        <table className={classes.table}>
+          <tbody>{informationTableContents}</tbody>
+        </table>,
+      ],
+    ]
     informationDisplay = formatDisplay(informationList)
   }
 
@@ -141,7 +148,14 @@ const NetworkProperties = (props) => {
     }
   }
   if (propertiesTableContent.length > 0) {
-    propertiesDisplay = formatDisplay([[null, <table className={classes.table}>{propertiesTableContent}</table>]])
+    propertiesDisplay = formatDisplay([
+      [
+        null,
+        <table className={classes.table}>
+          <tbody>{propertiesTableContent}</tbody>
+        </table>,
+      ],
+    ])
   }
 
   //Description display
