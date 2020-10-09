@@ -13,7 +13,7 @@ const EditMetadataButton: FC = () => {
     ndexCredential.basic.userId === summary.owner
   ) {
     return (
-      <IconButton href={'https://dev.ndexbio.org/#/properties/network/' + summary.externalId + '/null'} target="_blank">
+      <IconButton href={'https://dev.ndexbio.org/#/properties/network/' + summary.externalId + '/null?returnto=nnv'} >
         <EditIcon />
       </IconButton>
     )
