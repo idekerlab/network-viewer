@@ -14,6 +14,7 @@ type Summary = {
   isValid?: boolean
   modificationTime?: number
   nodeCount?: number
+  edgeCount?: number
   owner?: string
   ownerUUID?: string
   properties?: object[]

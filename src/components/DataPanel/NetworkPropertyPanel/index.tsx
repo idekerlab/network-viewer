@@ -12,6 +12,7 @@ import useNetworkSummary from '../../../hooks/useNetworkSummary'
 import { useParams } from 'react-router-dom'
 import MinimizeButton from './MinimizeButton'
 import AppContext from '../../../context/AppState'
+import NetworkDetails from './NetworkDetails'
 
 const API_VER = 'v2'
 
@@ -38,7 +39,6 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'flex-start',
-      //width: '100%',
       paddingTop: theme.spacing(1),
       paddingBottom: theme.spacing(1),
     },
@@ -66,7 +66,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     label: {
       backgroundColor: '#EEEEEE',
-      // paddingTop: theme.spacing(1),
       margin: 0,
       marginLeft: '0.7em',
       paddingBottom: 0,
@@ -115,6 +114,8 @@ const NetworkPropertyPanel = () => {
         owner: summaryResponseData['owner'],
         externalId: summaryResponseData['externalId'],
         visibility: summaryResponseData['visibility'],
+        nodeCount: summaryResponseData['nodeCount'],
+        edgeCount: summaryResponseData['edgeCount'],
       })
     }
   }
@@ -127,36 +128,7 @@ const NetworkPropertyPanel = () => {
           {summaryResponseData['name']}
         </Typography>
       </div>
-      <div className={classes.objectCount}>
-        <div className={classes.iconContainer}>
-          {summaryResponseData.visibility === 'PUBLIC' ? (
-            <PublicIcon className={classes.icon} />
-          ) : (
-            <VpnLockIcon className={classes.icon} />
-          )}
-        </div>
-        <div>
-          <div>
-            <Button disabled className={classes.countButton} variant="outlined" ref={nodeButton}>
-              Nodes: {summaryResponseData['nodeCount']}
-            </Button>
-            <Button disabled className={classes.countButton} variant="outlined" ref={edgeButton}>
-              Edges: {summaryResponseData['edgeCount']}
-            </Button>
-          </div>
-
-          {uiState.showSearchResult ? (
-            <div className={classes.subObjectCount}>
-              <Button disabled className={classes.countButton} variant="outlined" style={{ width: nodeWidth }}>
-                Nodes: {summary.subnetworkNodeCount}
-              </Button>
-              <Button disabled className={classes.countButton} variant="outlined" style={{ width: edgeWidth }}>
-                Edges: {summary.subnetworkEdgeCount}
-              </Button>
-            </div>
-          ) : null}
-        </div>
-      </div>
+      <NetworkDetails />
       <div className={classes.description}>
         <NetworkProperties summary={summaryResponseData} />
       </div>
