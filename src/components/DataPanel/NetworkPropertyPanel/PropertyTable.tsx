@@ -14,7 +14,7 @@ const StyledTableCell = withStyles((theme: Theme) =>
       color: theme.palette.common.white,
     },
     body: {
-      fontSize: '1em'
+      fontSize: '1em',
     },
   }),
 )(TableCell)
@@ -29,20 +29,16 @@ const StyledTableRow = withStyles((theme: Theme) =>
   }),
 )(TableRow)
 
-
-
 const useStyles = makeStyles({
   container: {
     width: '100%',
     minWidth: 150,
-  }
+  },
 })
 
 const PropertyTable = (props) => {
   const classes = useStyles()
   const { data } = props
-
-  console.log(data)
 
   return (
     <TableContainer className={classes.container}>

@@ -16,12 +16,6 @@ export const UIStateActions = {
 export const INITIAL_UI_STATE: UIState = {
   dataPanelOpen: true,
   showSearchResult: false,
-  showPropPanel: false,
-  pointerPosition: {
-    x: 0,
-    y: 0,
-  },
-  lastSelectWasNode: false,
   leftPanelWidth: 0,
 }
 
@@ -30,13 +24,9 @@ const uiStateReducer = (state: UIState, action: UIStateAction): UIState => {
     case UIStateActions.SET_DATA_PANEL_OPEN:
       return { ...state, dataPanelOpen: action.uiState.dataPanelOpen }
     case UIStateActions.SET_SHOW_SEARCH_RESULT:
-      return { ...state, showSearchResult: action.uiState.showSearchResult, showPropPanel: false }
+      return { ...state, showSearchResult: action.uiState.showSearchResult }
     case UIStateActions.SET_LEFT_PANEL_WIDTH:
       return { ...state, leftPanelWidth: action.uiState.leftPanelWidth }
-    case UIStateActions.SET_SHOW_PROP_PANEL_TRUE:
-      return { ...state, showPropPanel: true, pointerPosition: action.uiState.pointerPosition }
-    case UIStateActions.SET_SHOW_PROP_PANEL_FALSE:
-      return { ...state, showPropPanel: false }
     default:
       throw new Error('Invalid action')
   }

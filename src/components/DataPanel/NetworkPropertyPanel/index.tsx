@@ -84,7 +84,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const NetworkPropertyPanel = () => {
   const classes = useStyles()
   const { uuid } = useParams()
-  const { ndexCredential, config, setSummary, summary, uiState } = useContext(AppContext)
+  const { ndexCredential, config, setSummary, summary } = useContext(AppContext)
   const nodeButton = useRef(null)
   const edgeButton = useRef(null)
 

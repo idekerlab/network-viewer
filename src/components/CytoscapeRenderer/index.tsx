@@ -1,8 +1,6 @@
 import React, { useRef, useEffect, useState, Children } from 'react'
 import { createCytoscape } from './create-cytoscape'
 import useCyjs from '../../hooks/useCyjs'
-import Loading from '../NetworkPanel/Loading'
-import { getNetworkBackgroundColor } from '../../utils/cxUtil'
 
 // Style for the network canvas area
 
@@ -110,10 +108,7 @@ const boxSelectHandler = (cy, eventHandlers, event) => {
     const selectedEdges = cy.$('edge:selected')
     const nodeIds = selectedNodes.map((node) => node.data().id)
     const edgeIds = selectedEdges.map((edge) => edge.data().id.slice(1))
-
-    eventHandlers.setLastSelectedFrom(undefined, event)
-    eventHandlers.setSelectedNodes(nodeIds)
-    eventHandlers.setSelectedEdges(edgeIds)
+    eventHandlers.setSelectedNodesAndEdges(nodeIds, edgeIds, null, null, null)
   }, 5)
 }
 const tapHandler = (cy, eventHandlers, event) => {
@@ -124,10 +119,7 @@ const tapHandler = (cy, eventHandlers, event) => {
     console.log('* tap on background2')
 
     setTimeout(() => {
-      eventHandlers.setSelectedEdges([])
-      eventHandlers.setSelectedNodes([])
-      eventHandlers.setLastSelectedNode([])
-      eventHandlers.setLastSelectedEdge([])
+      eventHandlers.clearAll()
     }, 10)
   } else {
     const data = evtTarget.data()
@@ -139,9 +131,7 @@ const tapHandler = (cy, eventHandlers, event) => {
         const selectedEdges = cy.$('edge:selected')
         const nodeIds = selectedNodes.map((node) => node.data().id)
         const edgeIds = selectedEdges.map((edge) => edge.data().id.slice(1))
-        eventHandlers.setSelectedEdges(edgeIds)
-        eventHandlers.setSelectedNodes(nodeIds)
-        eventHandlers.setLastSelectedNode([data.id], event)
+        eventHandlers.setSelectedNodesAndEdges(nodeIds, edgeIds, 'node', [data.id], event.renderedPosition)
       }, 5)
     } else {
       console.log('* tap on Edge', evtTarget.data())
@@ -150,9 +140,7 @@ const tapHandler = (cy, eventHandlers, event) => {
         const selectedEdges = cy.$('edge:selected')
         const nodeIds = selectedNodes.map((node) => node.data().id)
         const edgeIds = selectedEdges.map((edge) => edge.data().id.slice(1))
-        eventHandlers.setSelectedEdges(edgeIds)
-        eventHandlers.setSelectedNodes(nodeIds)
-        eventHandlers.setLastSelectedEdge([data.id.slice(1)], event)
+        eventHandlers.setSelectedNodesAndEdges(nodeIds, edgeIds, 'edge', [data.id.slice(1)], event.renderedPosition)
       }, 5)
     }
   }

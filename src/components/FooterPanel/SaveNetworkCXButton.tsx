@@ -11,15 +11,7 @@ const SaveNetworkCXButton = () => {
 
   const { ndexCredential, config } = useContext(AppContext)
 
-  const { status, data, error, isFetching } = useCx(
-    uuid,
-    config.ndexHttps,
-    'v2',
-    ndexCredential,
-    undefined,
-    undefined,
-    '2',
-  )
+  const { status, data } = useCx(uuid, config.ndexHttps, 'v2', ndexCredential, undefined, undefined, '2')
 
   return <ExportCxButton cx={status && status == 'success' ? data : null} />
 }

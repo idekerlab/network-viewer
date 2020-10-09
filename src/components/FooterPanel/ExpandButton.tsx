@@ -30,7 +30,7 @@ const ExpandButton = () => {
   const handleClick = () => {
     const current = uiState.showSearchResult
 
-    setShowSearchResult({ ...uiState, showSearchResult: !current, showPropPanel: false })
+    setShowSearchResult({ ...uiState, showSearchResult: !current })
     setTimeout(() => {
       fitContent(cyReference)
       lockMainWindow(cyReference, !current)

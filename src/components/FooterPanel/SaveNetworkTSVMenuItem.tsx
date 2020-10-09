@@ -5,16 +5,13 @@ import AppContext from '../../context/AppState'
 import ExportTsvMenuItem from '../ExportTsvMenuItem'
 
 const SaveNetworkTSVMenuItem = () => {
+  const { uuid } = useParams()
 
-  const { uuid } = useParams();
+  const { ndexCredential, config } = useContext(AppContext)
 
-  const { ndexCredential, config } = useContext(AppContext);
+  const { status, data } = useCx(uuid, config.ndexHttps, 'v2', ndexCredential)
 
-  const { status, data, error, isFetching } = useCx(uuid, config.ndexHttps, 'v2', ndexCredential);
+  return <ExportTsvMenuItem cx={status && status == 'success' ? data : null} />
+}
 
-  
-    return (<ExportTsvMenuItem cx={ status && status == 'success' ? data : null} /> )
-  
-  }
-  
-  export default SaveNetworkTSVMenuItem
+export default SaveNetworkTSVMenuItem

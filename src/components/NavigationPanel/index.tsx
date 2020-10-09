@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'fixed',
       zIndex: 3000,
       left: '1em',
-      marginTop: '5em',
+      bottom: '5em',
       width: '3em',
       borderRadius: 6,
       border: '1px solid #DDDDDD',
@@ -29,13 +29,10 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-
 // TODO: support for LGR
 const NavigationPanel = ({ target = 'main' }) => {
   const classes = useStyles()
-
-  const appContext = useContext(AppContext)
-  const { cyReference } = appContext
+  const { cyReference } = useContext(AppContext)
 
   let cy = cyReference.main
   if (target === 'sub') {

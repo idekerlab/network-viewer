@@ -5,7 +5,7 @@ import useSearch from '../../hooks/useSearch'
 import { IconButton } from '@material-ui/core'
 import AppContext from '../../context/AppState'
 import Tooltip from '@material-ui/core/Tooltip'
-import Snackbar from '@material-ui/core/Snackbar';
+import Snackbar from '@material-ui/core/Snackbar'
 
 import { SaveToNDExButton } from 'cytoscape-explore-components'
 
@@ -22,59 +22,57 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const SaveQueryButton = () => {
-  const classes = useStyles()
   const { uuid } = useParams()
 
   const { query, queryMode, uiState, ndexCredential, config } = useContext(AppContext)
   const searchResult = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
 
   const subnet = searchResult.data
-  const subCx = subnet !== undefined ? subnet['cx'] : undefined;
-  
+  const subCx = subnet !== undefined ? subnet['cx'] : undefined
+
   const fetchCX = () => {
-    return new Promise<Object>(function(resolve, reject) {
-      console.log(JSON.stringify(subCx));
-      resolve(subCx);
-    });
+    return new Promise<Object>(function (resolve, reject) {
+      console.log(JSON.stringify(subCx))
+      resolve(subCx)
+    })
   }
 
-  const [snackMessage, setSnackMessage] = React.useState(undefined);
- 
+  const [snackMessage, setSnackMessage] = React.useState(undefined)
+
   const onSuccess = (data) => {
-    console.log(data);
-    setSnackMessage('Network saved to NDEx.');
+    console.log(data)
+    setSnackMessage('Network saved to NDEx.')
   }
 
   const onFailure = (err) => {
-    setSnackMessage('Failed to Save network: ' + err);
+    setSnackMessage('Failed to Save network: ' + err)
   }
 
   const handleClose = () => {
-    setSnackMessage(undefined);
+    setSnackMessage(undefined)
   }
 
   if (uiState.showSearchResult) {
     return (
       <div>
-     
-      <SaveToNDExButton 
-        disabled={ subCx == undefined }
-        fetchCX={ fetchCX } 
-        onSuccess={onSuccess} 
-        onFailure={onFailure}
-        tooltip="Save Query to NDEx"
+        <SaveToNDExButton
+          disabled={subCx == undefined}
+          fetchCX={fetchCX}
+          onSuccess={onSuccess}
+          onFailure={onFailure}
+          tooltip="Save Query to NDEx"
         />
- 
-      <Snackbar open={snackMessage != undefined} 
-      autoHideDuration={6000} 
-      onClose={handleClose}
-      message={snackMessage} />
+
+        <Snackbar
+          open={snackMessage != undefined}
+          autoHideDuration={6000}
+          onClose={handleClose}
+          message={snackMessage}
+        />
       </div>
-      )
-  } else {
-    return (
-      <SaveToNDExButton disabled />
     )
+  } else {
+    return <SaveToNDExButton disabled />
   }
 }
 
