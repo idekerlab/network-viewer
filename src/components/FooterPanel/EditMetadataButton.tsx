@@ -1,16 +1,21 @@
 import React, { FC, useContext } from 'react'
+import { useParams } from 'react-router-dom'
 import IconButton from '@material-ui/core/IconButton'
 import EditIcon from '@material-ui/icons/Edit'
 import AppContext from '../../context/AppState'
+import useNetworkPermissions from '../../hooks/useNetworkPermissions'
 
 const EditMetadataButton: FC = () => {
-  const { summary, ndexCredential } = useContext(AppContext)
+  const { summary, ndexCredential, config } = useContext(AppContext)
+
+  const { uuid } = useParams()
+
+  const permissions = useNetworkPermissions(uuid, config.ndexHttps, 'v2', ndexCredential);
 
   if (
     ndexCredential.isLogin &&
-    !ndexCredential.isGoogle &&
     summary !== undefined &&
-    ndexCredential.basic.userId === summary.owner
+    permissions && permissions.data === 'ADMIN'
   ) {
     return (
       <IconButton href={'https://dev.ndexbio.org/#/properties/network/' + summary.externalId + '/null?returnto=nnv'} >
