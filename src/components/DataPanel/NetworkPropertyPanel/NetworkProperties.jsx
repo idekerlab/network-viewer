@@ -87,7 +87,6 @@ const NetworkProperties = (props) => {
     )
   }
   if (summary.visibility) {
-    console.log(summary)
     if (summary.indexLevel && (summary.indexLevel === 'ALL' || summary.indexLevel === 'META')) {
       informationTableContents.push(
         <tr key="visibility">
