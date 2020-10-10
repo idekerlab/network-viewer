@@ -3,6 +3,7 @@ import { NodeView, EdgeView, GraphView, GraphViewFactory, LargeGraphRenderer } f
 
 import * as cxVizConverter from 'cx-viz-converter'
 import Loading from './Loading'
+import { getEntry } from '../../utils/cxUtil'
 
 type LGRPanelProps = {
   eventHandlers: EventHandlers
@@ -29,12 +30,11 @@ const LGRPanel = ({
   cx,
   backgroundColor = '#FFFFFF',
   layoutName = 'preset',
-  pickable
+  pickable,
 }: LGRPanelProps) => {
   const [render3d, setRender3d] = useState(false)
   const [painted, setPainted] = useState(false)
   const [data, setData] = useState<GraphView | null>(null)
-
 
   // TODO: support multiple selection
   const _handleNodeClick = (selectedNodeEvent: NodeView, x: number, y: number): void => {
@@ -87,15 +87,19 @@ const LGRPanel = ({
     eventHandlers.setSelectedEdges([])
   }
 
-
   useEffect(() => {
     if (cx !== undefined && data === null) {
       const result = cxVizConverter.convert(cx, 'lnv')
 
       // TODO: add better layout
-      let { nodeViews } = result
+      let { nodeViews, edgeViews } = result
       if (layoutName !== 'preset') {
-        nodeViews = randomCircularLayout(result.nodeViews)
+        nodeViews = randomCircularLayout(nodeViews)
+      }
+
+      if (edgeViews !== undefined) {
+        const edges = getEntry('edges', cx)
+        edgeViews = createLayers(edgeViews, edges)
       }
       const gv = GraphViewFactory.createGraphView(nodeViews, result.edgeViews)
       setData(gv)
@@ -210,6 +214,43 @@ const randomCircularLayout = (nodeViews: NodeView[]): NodeView[] => {
     nv.position = [x, y]
   }
   return nodeViews
+}
+
+const createLayers = (edgeViews: EdgeView[], edges: object[]): EdgeView[] => {
+  let edgeIdx = edges.length
+
+  const id2weight = []
+  while (edgeIdx--) {
+    const e = edges[edgeIdx]
+    const v = e['v']
+    if (v !== undefined && v.weight !== undefined) {
+      id2weight.push([e['id'], v.weight])
+    }
+  }
+
+  id2weight.sort((a, b) => b[1] - a[1])
+
+  let idx = edgeViews.length
+  const id2ev: Map<string, EdgeView> = new Map()
+  while (idx--) {
+    const ev = edgeViews[idx]
+    id2ev.set(ev.id, ev)
+  }
+  let size = id2weight.length
+  const topEdges = 100000
+  for(let i = 0; i < size; i++) {
+    const id = id2weight[i][0].toString()
+    const ev = id2ev.get(id)
+
+    if(i < topEdges) {
+      ev['layer'] = 1
+    } else {
+      ev['layer'] = 2
+
+    }
+  }
+
+  return edgeViews
 }
 
 export default LGRPanel
