@@ -2,7 +2,7 @@ import React, { FC, useContext } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import { useParams } from 'react-router-dom'
 
-import Snackbar from '@material-ui/core/Snackbar';
+import Snackbar from '@material-ui/core/Snackbar'
 
 import { CyNDExProvider, OpenInCytoscapeButton } from 'cytoscape-explore-components'
 
@@ -30,54 +30,56 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const OpenInCytoscape: FC = () => {
-  const classes = useStyles()
   const { uuid } = useParams()
 
   const { query, queryMode, ndexCredential, config } = useContext(AppContext)
 
-  const { status, data, error, isFetching } = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
+  const { data } = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
 
-  const subCx = data !== undefined ? data['cx'] : undefined;
+  const subCx = data !== undefined ? data['cx'] : undefined
 
-  const fetchCX = () => new Promise((resolve, reject) => {
-    if (subCx) { 
-      resolve(subCx) 
-    } else {
-      reject('No search result is available')
-    }
-  })
+  const fetchCX = () =>
+    new Promise((resolve, reject) => {
+      if (subCx) {
+        resolve(subCx)
+      } else {
+        reject('No search result is available')
+      }
+    })
 
-  console.log('Open in Cytoscape useSearch: ' + ( subCx !== undefined)) 
+  console.log('Open in Cytoscape useSearch: ' + (subCx !== undefined))
 
-  const [snackMessage, setSnackMessage] = React.useState(undefined);
- 
+  const [snackMessage, setSnackMessage] = React.useState(undefined)
+
   const onSuccess = () => {
-    setSnackMessage('Network opened.');
+    setSnackMessage('Network opened.')
   }
 
   const onFailure = (err) => {
-    setSnackMessage('Failed to load network: ' + err);
+    setSnackMessage('Failed to load network: ' + err)
   }
 
   const handleClose = () => {
-    setSnackMessage(undefined);
+    setSnackMessage(undefined)
   }
 
   const ndexNetworkProperties = {
-    uuid: uuid
+    uuid: uuid,
   }
-
-
 
   return (
     <CyNDExProvider port={1234}>
-      { subCx 
-        ? <OpenInCytoscapeButton size="small" fetchCX={ fetchCX } onSuccess={onSuccess} onFailure={onFailure} />
-        :<OpenInCytoscapeButton size="small" ndexNetworkProperties={ ndexNetworkProperties } onSuccess={onSuccess} onFailure={onFailure} /> }
-      <Snackbar open={snackMessage != undefined} 
-        autoHideDuration={6000} 
-        onClose={handleClose}
-        message={snackMessage} />
+      {subCx ? (
+        <OpenInCytoscapeButton size="small" fetchCX={fetchCX} onSuccess={onSuccess} onFailure={onFailure} />
+      ) : (
+        <OpenInCytoscapeButton
+          size="small"
+          ndexNetworkProperties={ndexNetworkProperties}
+          onSuccess={onSuccess}
+          onFailure={onFailure}
+        />
+      )}
+      <Snackbar open={snackMessage != undefined} autoHideDuration={6000} onClose={handleClose} message={snackMessage} />
     </CyNDExProvider>
   )
 }

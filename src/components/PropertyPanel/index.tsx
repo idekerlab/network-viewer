@@ -43,7 +43,6 @@ const PropertyPanel = ({ attrMap, onClose }) => {
   const handleClose = () => {
     onClose()
   }
-
   return (
     <div className={classes.root}>
       <div className={classes.title}>

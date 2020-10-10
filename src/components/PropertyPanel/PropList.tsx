@@ -44,8 +44,8 @@ const PropList = ({ attrMap }) => {
             >
               {key}
             </Typography>
-            <Typography variant="body2" variantMapping={{ body2: 'div' }} className={classes.bigText}>
-              <Linkify key={Math.random()}>{attrMap.get(key)}</Linkify>
+            <Typography variant="body2" component="div" className={classes.bigText}>
+              <Linkify target="_blank">{attrMap.get(key)}</Linkify>
             </Typography>
           </ListItem>
         )

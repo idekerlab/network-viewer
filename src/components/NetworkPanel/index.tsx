@@ -8,17 +8,16 @@ import { Typography } from '@material-ui/core'
 import useSearch from '../../hooks/useSearch'
 
 import Loading from './Loading'
-import { SelectionAction, SelectionActions } from '../../reducer/selectionReducer'
+import SelectionState from '../../model/SelectionState'
+import { SelectionActions } from '../../reducer/selectionStateReducer'
 import CyReference from '../../model/CyReference'
 import { CyActions } from '../../reducer/cyReducer'
-import NavigationPanel from '../NavigationPanel'
-import Popup from '../Popup'
 import { getCyjsLayout, getEdgeCount, getLgrLayout, getNetworkBackgroundColor, getNodeCount } from '../../utils/cxUtil'
 import EmptyView from './EmptyView'
 import { UIStateActions } from '../../reducer/uiStateReducer'
 import UIState from '../../model/UIState'
-import { isWebGL2supported } from '../../utils/browserTest'
-import MessageDialog from '../MessageDialog'
+import Popup from '../Popup'
+import NavigationPanel from '../NavigationPanel'
 
 const splitBorder = '1px solid #BBBBBB'
 
@@ -78,8 +77,8 @@ const NetworkPanel: FC<ViewProps> = ({ renderer, cx, objectCount, isWebGL2 }: Vi
     uiStateDispatch,
     uiState,
     cyDispatch,
-    selection,
-    dispatch,
+    selectionState,
+    selectionStateDispatch,
     config,
     ndexCredential,
     summary,
@@ -88,7 +87,7 @@ const NetworkPanel: FC<ViewProps> = ({ renderer, cx, objectCount, isWebGL2 }: Vi
 
   const searchResult = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
 
-  const { maxNumObjects, viewerThreshold } = config
+  const { maxNumObjects } = config
 
   const subnet = searchResult.data
   let subCx
@@ -102,72 +101,118 @@ const NetworkPanel: FC<ViewProps> = ({ renderer, cx, objectCount, isWebGL2 }: Vi
     }
   }, [searchResult])
 
-  const setShowPropPanelTrue = (state: UIState) =>
-    uiStateDispatch({ type: UIStateActions.SET_SHOW_PROP_PANEL_TRUE, uiState: state })
-
-  const setShowPropPanelFalse = (state: UIState) =>
-    uiStateDispatch({ type: UIStateActions.SET_SHOW_PROP_PANEL_FALSE, uiState: state })
-
-  const updatePanelState = (selected, x, y) => {
-    if (selected !== undefined && selected.length !== 0) {
-      setShowPropPanelTrue({ ...uiState, pointerPosition: { x: x, y: y } })
-    } else {
-      setShowPropPanelFalse({ ...uiState })
-    }
-  }
   const mainEventHandlers = {
-    setSelectedNodes: (selected) => {
-      return dispatch({ type: SelectionActions.SET_MAIN_NODES, selected })
-    },
-    setSelectedEdges: (selected) => {
-      return dispatch({ type: SelectionActions.SET_MAIN_EDGES, selected })
-    },
-    setLastSelectedNode: (selected, event) => {
-      if (event !== undefined) {
-        updatePanelState(selected, event.renderedPosition.x, event.renderedPosition.y)
+    setSelectedNodesAndEdges: (nodes, edges, lastSelectedType, lastSelectedId, lastSelectedCoordinates) => {
+      if (lastSelectedType) {
+        return selectionStateDispatch({
+          type: SelectionActions.SET_MAIN_NODES_AND_EDGES,
+          selectionState: {
+            ...selectionState,
+            main: { nodes: nodes, edges: edges },
+            lastSelected: {
+              isNode: lastSelectedType === 'node',
+              fromMain: true,
+              id: lastSelectedId,
+              showPropPanel: true,
+              coordinates: lastSelectedCoordinates,
+            },
+          },
+        })
+      } else {
+        return selectionStateDispatch({
+          type: SelectionActions.SET_MAIN_NODES_AND_EDGES,
+          selectionState: {
+            ...selectionState,
+            main: { nodes: nodes, edges: edges },
+            lastSelected: { showPropPanel: false },
+          },
+        })
       }
-      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_NODE, selected, from: 'main' })
     },
-    setLastSelectedEdge: (selected, event) => {
-      if (event !== undefined) {
-        updatePanelState(selected, event.renderedPosition.x, event.renderedPosition.y)
-      }
-      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_EDGE, selected, from: 'main' })
-    },
-    setLastSelectedFrom: (selected, event) => {
-      if (event !== undefined) {
-        updatePanelState(selected, event.renderedPosition.x, event.renderedPosition.y)
-      }
-      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_FROM, from: 'main' })
+    clearAll: () => {
+      return selectionStateDispatch({
+        type: SelectionActions.CLEAR_ALL_MAIN,
+      })
     },
   }
 
   const subEventHandlers = {
-    //setSelectedNodes: (selected) => dispatch({ type: SelectionActions.SET_SUB_NODES, selected }),
-    //setSelectedEdges: (selected) => dispatch({ type: SelectionActions.SET_SUB_EDGES, selected }),
-    setSelectedNodes: (selected) => {
-      return dispatch({ type: SelectionActions.SET_SUB_NODES, selected })
-    },
-    setSelectedEdges: (selected) => {
-      return dispatch({ type: SelectionActions.SET_SUB_EDGES, selected })
-    },
-    setLastSelectedNode: (selected, event) => {
-      if (event !== undefined) {
-        updatePanelState(selected, event.renderedPosition.x, event.renderedPosition.y)
+    setSelectedNodesAndEdges: (nodes, edges, lastSelectedType, lastSelectedId, lastSelectedCoordinates) => {
+      if (lastSelectedType) {
+        return selectionStateDispatch({
+          type: SelectionActions.SET_SUB_NODES_AND_EDGES,
+          selectionState: {
+            ...selectionState,
+            main: { nodes: nodes, edges: edges },
+            lastSelected: {
+              isNode: lastSelectedType === 'node',
+              fromMain: false,
+              id: lastSelectedId,
+              showPropPanel: true,
+              coordinates: lastSelectedCoordinates,
+            },
+          },
+        })
+      } else {
+        return selectionStateDispatch({
+          type: SelectionActions.SET_SUB_NODES_AND_EDGES,
+          selectionState: {
+            ...selectionState,
+            main: { nodes: nodes, edges: edges },
+            lastSelected: { showPropPanel: false },
+          },
+        })
       }
-      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_NODE, selected, from: 'sub' })
     },
-    setLastSelectedEdge: (selected, event) => {
-      if (event !== undefined) {
-        updatePanelState(selected, event.renderedPosition.x, event.renderedPosition.y)
-      }
-      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_EDGE, selected, from: 'sub' })
+    clearAll: () => {
+      return selectionStateDispatch({
+        type: SelectionActions.CLEAR_ALL_SUB,
+      })
     },
-    setLastSelectedFrom: (selected, event) => {
-      if (event !== undefined) {
-        updatePanelState(selected, event.renderedPosition.x, event.renderedPosition.y)
+  }
+
+  const lgrEventHandlers = {
+    setSelectedNodeOrEdge: (id, lastSelectedType, lastSelectedCoordinates) => {
+      if (lastSelectedType === 'node') {
+        return selectionStateDispatch({
+          type: SelectionActions.SET_MAIN_NODES_AND_EDGES,
+          selectionState: {
+            ...selectionState,
+            main: {
+              nodes: [id],
+              edges: [],
+            },
+            lastSelected: {
+              isNode: true,
+              fromMain: true,
+              id: id,
+              showPropPanel: true,
+              coordinates: lastSelectedCoordinates,
+            },
+          },
+        })
+      } else {
+        return selectionStateDispatch({
+          type: SelectionActions.SET_MAIN_NODES_AND_EDGES,
+          selectionState: {
+            ...selectionState,
+            main: {
+              nodes: [],
+              edges: [id],
+            },
+            lastSelected: {
+              isNode: false,
+              fromMain: true,
+              id: id,
+              showPropPanel: true,
+              coordinates: lastSelectedCoordinates,
+            },
+          },
+        })
       }
-      return dispatch({ type: SelectionActions.SET_LAST_SELECTED_FROM, from: 'sub' })
+    },
+    clearAll: () => {
+      return selectionStateDispatch({ type: SelectionActions.CLEAR_ALL_MAIN })
     },
   }
 
@@ -223,9 +268,9 @@ const NetworkPanel: FC<ViewProps> = ({ renderer, cx, objectCount, isWebGL2 }: Vi
       return (
         <LGRPanel
           cx={cx}
-          eventHandlers={mainEventHandlers}
-          selectedNodes={selection.main.nodes}
-          selectedEdges={selection.main.edges}
+          eventHandlers={lgrEventHandlers}
+          selectedNodes={selectionState.main.nodes}
+          selectedEdges={selectionState.main.edges}
           backgroundColor={bgColor}
           layoutName={layout}
           pickable={!showSearchResult}
@@ -271,7 +316,7 @@ const NetworkPanel: FC<ViewProps> = ({ renderer, cx, objectCount, isWebGL2 }: Vi
 
   return (
     <div className={classes.rootA}>
-      {selection.lastSelected.nodes.length > 0 ? <Popup cx={cx} /> : <Popup cx={cx} objectType={'edge'} />}
+      {selectionState.lastSelected['isNode'] ? <Popup cx={cx} /> : <Popup cx={cx} objectType={'edge'} />}
 
       <div className={classes.lowerPanel} style={{ height: topHeight }}>
         {renderer !== 'lgr' ? <NavigationPanel target={'main'} /> : <div />}

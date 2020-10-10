@@ -5,17 +5,15 @@ import AppContext from '../../context/AppState'
 import ExportTsvMenuItem from '../ExportTsvMenuItem'
 
 const SaveQueryTSVMenuItem = () => {
+  const { uuid } = useParams()
 
-  const { uuid } = useParams();
+  const { query, queryMode, ndexCredential, config } = useContext(AppContext)
 
-  const { query, queryMode, uiState, ndexCredential, config } = useContext(AppContext)
+  const { status, data } = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
 
-  const { status, data, error, isFetching } = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
+  const subCx = data !== undefined ? data['cx'] : undefined
 
-  const subCx = data !== undefined ? data['cx'] : undefined;
-  
-    return (<ExportTsvMenuItem cx={ status && status == 'success' ? subCx : null} /> )
-  
-  }
-  
-  export default SaveQueryTSVMenuItem
+  return <ExportTsvMenuItem cx={status && status == 'success' ? subCx : null} />
+}
+
+export default SaveQueryTSVMenuItem

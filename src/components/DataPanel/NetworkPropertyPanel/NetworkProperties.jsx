@@ -1,50 +1,39 @@
 import React from 'react'
 
 import { makeStyles } from '@material-ui/styles'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
 import Typography from '@material-ui/core/Typography'
-import List from '@material-ui/core/List'
-
-import Collapse from '@material-ui/core/Collapse'
-import ExpandLess from '@material-ui/icons/ExpandLess'
-import ExpandMore from '@material-ui/icons/ExpandMore'
+import SearchIcon from '@material-ui/icons/Search'
 
 import Linkify from 'linkifyjs/react'
 import parse from 'html-react-parser'
 
+import CollapsiblePanel from './CollapsiblePanel'
+import NetworkPropertySegment from './NetworkPropertySegment'
+
 const useStyles = makeStyles((theme) => ({
-  container: {
-    backgroundColor: '#FFFFFF',
-    overflow: 'auto',
-    height: '100%',
-    boxSizing: 'content-box',
-  },
-  noPadding: {
-    wordWrap: 'break-word',
-  },
-  tdTitle: {
-    whiteSpace: 'nowrap',
-    paddingRight: '1em',
-    paddingLeft: 0,
-  },
-  whiteBackground: {
-    backgroundColor: 'white',
-  },
-  sectionContainer: {
-    paddingTop: '8px',
-  },
   table: {
     cellSpacing: 0,
     borderSpacing: 0,
     borderCollapse: 'collapse',
   },
-  listItem: {
-    paddingTop: 0,
+  tdTitle: {
+    whiteSpace: 'nowrap',
+    paddingRight: '1em',
+    paddingLeft: 0,
+    verticalAlign: 'top',
+  },
+  tdContent: {
+    wordWrap: 'break-word',
+    wordBreak: 'break-all',
+    verticalAlign: 'top',
+  },
+
+  icon: {
+    verticalAlign: 'middle',
+    height: '0.9em',
+    marginLeft: theme.spacing(1),
   },
 }))
-
-let index = 0
 
 const NetworkProperties = (props) => {
   const { summary } = props
@@ -52,77 +41,85 @@ const NetworkProperties = (props) => {
   const description = summary.description
   const classes = useStyles()
 
-  const formatDisplay = (propertiesList) => {
-    const display = []
-    for (let property of propertiesList) {
-      display.push(
-        <ListItem key={index++} className={classes.listItem}>
-          <ListItemText
-            className={classes.noPadding}
-            primary={
-              <>
-                <Typography variant="caption" color="textSecondary" className={classes.evenLessPadding} component="div">
-                  {property[0]}
-                </Typography>
-                <div>
-                  <Typography variant="body2">{property[1]}</Typography>
-                </div>
-              </>
-            }
-          />
-        </ListItem>,
-      )
-    }
-    return display
-  }
+  let informationDisplay
+  let descriptionDisplay
+  let propertiesDisplay
+  let contextDisplay
 
-  const returnList = []
-
-  //Top panel
+  //Information display
   const informationTableContents = []
   if (summary.owner) {
     informationTableContents.push(
-      <tr>
+      <tr key="owner">
         <td className={classes.tdTitle}>Owner</td>
-        <td>{summary.owner}</td>
+        <td className={classes.tdContent}>{summary.owner}</td>
       </tr>,
     )
   }
   if (summary.creationTime) {
     const creationDate = new Date(summary.creationTime)
     informationTableContents.push(
-      <tr>
+      <tr key="created">
         <td className={classes.tdTitle}>Created</td>
-        <td>{creationDate.toLocaleDateString() + ' ' + creationDate.toLocaleTimeString()}</td>
+        <td className={classes.tdContent}>
+          {creationDate.toLocaleDateString() + ' ' + creationDate.toLocaleTimeString()}
+        </td>
       </tr>,
     )
   }
   if (summary.modificationTime) {
     const modificationDate = new Date(summary.modificationTime)
     informationTableContents.push(
-      <tr>
+      <tr key="lastModified">
         <td className={classes.tdTitle}>Last modified</td>
-        <td>{modificationDate.toLocaleDateString() + ' ' + modificationDate.toLocaleTimeString()}</td>
+        <td className={classes.tdContent}>
+          {modificationDate.toLocaleDateString() + ' ' + modificationDate.toLocaleTimeString()}
+        </td>
       </tr>,
     )
   }
   if (summary.externalId) {
     informationTableContents.push(
-      <tr>
+      <tr key="uuid">
         <td className={classes.tdTitle}>UUID</td>
-        <td>{summary.externalId}</td>
+        <td className={classes.tdContent}>{summary.externalId}</td>
       </tr>,
     )
   }
+  if (summary.visibility) {
+    if (summary.indexLevel && (summary.indexLevel === 'ALL' || summary.indexLevel === 'META')) {
+      informationTableContents.push(
+        <tr key="visibility">
+          <td className={classes.tdTitle}>Visibility</td>
+          <td className={classes.tdContent} valign="center">
+            {summary.visibility}
+
+            <SearchIcon className={classes.icon} />
+          </td>
+        </tr>,
+      )
+    } else {
+      informationTableContents.push(
+        <tr key="visibility">
+          <td className={classes.tdTitle}>Visibility</td>
+          <td className={classes.tdContent}>{summary.visibility}</td>
+        </tr>,
+      )
+    }
+  }
   if (informationTableContents.length > 0) {
     const informationList = [
-      ['Network information', <table className={classes.table}>{informationTableContents}</table>],
+      [
+        null,
+        <table className={classes.table}>
+          <tbody>{informationTableContents}</tbody>
+        </table>,
+      ],
     ]
-    const informationDisplay = formatDisplay(informationList)
-    returnList.push(<div className={classes.sectionContainer}>{informationDisplay}</div>)
+    informationDisplay = formatDisplay(informationList)
   }
 
-  //Bottom panel
+  //Properties display
   const propertiesTableContent = []
   let context
   let rights
@@ -142,43 +139,47 @@ const NetworkProperties = (props) => {
         reference = value
       } else {
         propertiesTableContent.push(
-          <tr>
-            <td className={classes.tdTitle}>{predicate}</td>
-            <td>{formatContent(value)}</td>
+          <tr key={predicate}>
+            <td className={classes.tdTitle}>{formatTitle(predicate)}</td>
+            <td className={classes.tdContent}>{formatContent(value)}</td>
           </tr>,
         )
       }
     }
   }
-
-  const propertiesList = []
   if (propertiesTableContent.length > 0) {
-    propertiesList.push(['Network properties', <table className={classes.table}>{propertiesTableContent}</table>])
-  }
-  if (context) {
-    propertiesList.push(['@context', formatContext(context)])
+    propertiesDisplay = formatDisplay([
+      [
+        null,
+        <table className={classes.table}>
+          <tbody>{propertiesTableContent}</tbody>
+        </table>,
+      ],
+    ])
   }
 
-  //Middle panel
+  //Description display
   const descriptionList = []
   if (description !== undefined && description.length > 0) {
-    descriptionList.push(['Description', formatContent(description)])
+    descriptionList.push([null, formatContent(description)])
   }
   if (rights || rightsHolder) {
     const rightsTable = (
       <table className={classes.table}>
-        {rights ? (
-          <tr>
-            <td className={classes.tdTitle}>Rights</td>
-            <td>{formatContent(rights)}</td>
-          </tr>
-        ) : null}
-        {rightsHolder ? (
-          <tr>
-            <td className={classes.tdTitle}>Rights holder</td>
-            <td>{formatContent(rightsHolder)}</td>
-          </tr>
-        ) : null}
+        <tbody>
+          {rights ? (
+            <tr>
+              <td className={classes.tdTitle}>Rights</td>
+              <td className={classes.tdContent}>{formatContent(rights)}</td>
+            </tr>
+          ) : null}
+          {rightsHolder ? (
+            <tr>
+              <td className={classes.tdTitle}>Rights holder</td>
+              <td className={classes.tdContent}>{formatContent(rightsHolder)}</td>
+            </tr>
+          ) : null}
+        </tbody>
       </table>
     )
     descriptionList.push(['Rights', rightsTable])
@@ -187,31 +188,77 @@ const NetworkProperties = (props) => {
     descriptionList.push(['Reference', formatContent(reference)])
   }
   if (descriptionList.length > 0) {
-    const descriptionDisplay = formatDisplay(descriptionList)
-    if (returnList.length === 1) {
-      returnList.splice(
-        1,
-        0,
-        <div className={[classes.sectionContainer, classes.whiteBackground].join(' ')}>{descriptionDisplay}</div>,
-      )
-    } else {
-      returnList.splice(1, 0, <div className={classes.sectionContainer}>{descriptionDisplay}</div>)
-    }
+    descriptionDisplay = formatDisplay(descriptionList)
   }
 
-  //Bottom panel
-  if (propertiesList.length > 0) {
-    const propertiesDisplay = formatDisplay(propertiesList)
-    if (returnList.length === 1) {
-      returnList.push(
-        <div className={[classes.sectionContainer, classes.whiteBackground].join(' ')}>{propertiesDisplay}</div>,
+  //Context display
+  if (context) {
+    const parsedContext = JSON.parse(context)
+    const contextList = []
+    let index = 0
+    for (const key in parsedContext) {
+      contextList.push(
+        <tr key={index++}>
+          <td className={classes.tdTitle}>
+            <Typography variant="body2">{key}</Typography>
+          </td>
+          <td className={classes.tdContent}>
+            <Typography variant="body2">{parsedContext[key]}</Typography>
+          </td>
+        </tr>,
       )
-    } else {
-      returnList.push(<div className={classes.sectionContainer}>{propertiesDisplay}</div>)
     }
+    contextDisplay = (
+      <table>
+        <tbody>{contextList}</tbody>
+      </table>
+    )
   }
 
-  return <>{returnList}</>
+  let darkBackground = 0
+  return (
+    <>
+      {informationDisplay ? (
+        <CollapsiblePanel
+          openByDefault={false}
+          summary="Network information"
+          children={informationDisplay}
+          backgroundColor={darkBackground++ % 2 === 0 ? 'inherit' : 'white'}
+        />
+      ) : null}
+      {descriptionDisplay ? (
+        <CollapsiblePanel
+          openByDefault={true}
+          summary="Description"
+          children={descriptionDisplay}
+          backgroundColor={darkBackground++ % 2 === 0 ? 'inherit' : 'white'}
+        />
+      ) : null}
+      {propertiesDisplay ? (
+        <CollapsiblePanel
+          openByDefault={false}
+          summary="Properties"
+          children={propertiesDisplay}
+          backgroundColor={darkBackground++ % 2 === 0 ? 'inherit' : 'white'}
+        />
+      ) : null}
+      {contextDisplay ? (
+        <CollapsiblePanel
+          openByDefault={false}
+          summary="@context: View namespaces"
+          children={contextDisplay}
+          backgroundColor={darkBackground++ % 2 === 0 ? 'inherit' : 'white'}
+        />
+      ) : null}
+    </>
+  )
+}
+
+const formatTitle = (string) => {
+  if (string == undefined) {
+    return
+  }
+  return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
 const formatContent = (string) => {
@@ -220,60 +267,16 @@ const formatContent = (string) => {
   }
   string = string.toString().replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script\ *>/gi, '')
   string = parse(string)
-  return <Linkify key={Math.random().toString()}>{string}</Linkify>
+  return <Linkify target="_blank">{string}</Linkify>
 }
 
-const formatContext = (string) => {
-  const returnArray = []
-  const context = JSON.parse(string)
-  for (const key in context) {
-    returnArray.push(
-      <tr key={Math.random().toString()}>
-        <td valign="top">
-          <Typography variant="body2">{key}</Typography>
-        </td>
-        <td valign="top" style={{ wordWrap: 'break-word', wordBreak: 'break-all' }}>
-          <Typography variant="body2">{context[key]}</Typography>
-        </td>
-      </tr>,
-    )
+const formatDisplay = (propertiesList) => {
+  const display = []
+  let index = 0
+  for (let property of propertiesList) {
+    display.push(<NetworkPropertySegment summary={property[0]} details={property[1]} key={index++} />)
   }
-  const details = (
-    <table>
-      <tbody>{returnArray}</tbody>
-    </table>
-  )
-  const summary = (
-    <Typography component="span" variant="body2">
-      Click to view the namespaces associated with this network
-    </Typography>
-  )
-  return <ExpandPanel summary={summary} details={details} defaultExpanded={false} />
-}
-
-function ExpandPanel(props) {
-  const [open, setOpen] = React.useState(props.defaultExpanded)
-  let style
-
-  function handleClick() {
-    setOpen(!open)
-  }
-
-  return (
-    <React.Fragment>
-      <ListItem button onClick={handleClick} key={Math.random()} style={{ padding: 0 }}>
-        <ListItemText primary={props.summary} />
-        {open ? <ExpandLess /> : <ExpandMore />}
-      </ListItem>
-      <Collapse in={open} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          <ListItem style={{ paddingTop: 0, paddingBottom: 0 }}>
-            <ListItemText primary={props.details} />
-          </ListItem>
-        </List>
-      </Collapse>
-    </React.Fragment>
-  )
+  return display
 }
 
 export default NetworkProperties

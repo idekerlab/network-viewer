@@ -82,9 +82,19 @@ const SearchBox: FC = () => {
 
   const { uuid } = useParams()
 
-  const { cyReference, query, setQuery, queryMode, setQueryMode, uiStateDispatch, uiState, ndexCredential, config } = useContext(AppContext)
+  const {
+    cyReference,
+    query,
+    setQuery,
+    queryMode,
+    setQueryMode,
+    uiStateDispatch,
+    uiState,
+    ndexCredential,
+    config,
+  } = useContext(AppContext)
 
-  const [searchType, setSearchType] = useState('firstStepNeighborhood')
+  const [searchType, setSearchType] = useState(queryMode)
 
   const searchResult = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
 
@@ -147,7 +157,7 @@ const SearchBox: FC = () => {
 
   const handleKeyPress = (e): void => {
     const key = e.key
-    if(key === 'Enter') {
+    if (key === 'Enter') {
       handleClick()
     }
   }
@@ -190,8 +200,8 @@ const SearchBox: FC = () => {
         </Select>
       </FormControl>
       <IconButton
-        color='secondary'
-        size='small'
+        color="secondary"
+        size="small"
         disableFocusRipple
         disableRipple
         className={classes.button}
@@ -204,7 +214,7 @@ const SearchBox: FC = () => {
       <SaveQueryButton />
       <AdvancedQueryMenu />
       <IconButton
-        color='secondary'
+        color="secondary"
         size="small"
         disableFocusRipple
         disableRipple

@@ -17,10 +17,8 @@ type LGRPanelProps = {
 }
 
 export type EventHandlers = {
-  setSelectedNodes: Function
-  setSelectedEdges: Function
-  setLastSelectedNode: Function
-  setLastSelectedEdge: Function
+  setSelectedNodeOrEdge: Function
+  clearAll: Function
 }
 
 const LGRPanel = ({
@@ -47,9 +45,8 @@ const LGRPanel = ({
       })
     }
     const nodeId: string = selectedNodeEvent.id
-    eventHandlers.setSelectedNodes([nodeId])
-    eventHandlers.setSelectedEdges([])
-    eventHandlers.setLastSelectedNode([nodeId], { renderedPosition: { x: x, y: y } })
+
+    eventHandlers.setSelectedNodeOrEdge(nodeId, 'node', { x: x, y: y })
   }
 
   const _handleEdgeClick = (selectedEdgeEvent: EdgeView, x: number, y: number): void => {
@@ -62,13 +59,12 @@ const LGRPanel = ({
       })
     }
     const edgeId: string = selectedEdgeEvent.id
-    eventHandlers.setSelectedEdges([edgeId])
-    eventHandlers.setSelectedNodes([])
-    eventHandlers.setLastSelectedEdge([edgeId], { renderedPosition: { x: x, y: y } })
+    eventHandlers.setSelectedNodeOrEdge(edgeId, 'edge', { x: x, y: y })
   }
 
   const _handleBackgroundClick = (event: object): void => {
     clearSelection()
+    eventHandlers.clearAll()
     console.log('Reset election:', selectedNodes, selectedEdges)
   }
 
@@ -83,8 +79,7 @@ const LGRPanel = ({
       lastSelectedEdge.selected = false
       console.log('Clear edge selection:', lastSelectedEdge)
     })
-    eventHandlers.setSelectedNodes([])
-    eventHandlers.setSelectedEdges([])
+    eventHandlers.clearAll()
   }
 
   useEffect(() => {
@@ -105,24 +100,6 @@ const LGRPanel = ({
       setData(gv)
     }
   }, [cx])
-
-  // useEffect(() => {
-  //   console.log('---------Highlight changed', highlight, data)
-
-  //   if (highlight === undefined && highlight === null && Object.keys(highlight).length === 0) {
-  //     return
-  //   }
-
-  //   if (highlight !== null && !painted) {
-  //     applyHighlight(highlight, data)
-  //     setPainted(true)
-  //     console.log('--------------------------- color on!!', highlight, data)
-  //   } else if (highlight === null && painted) {
-  //     console.log('-------CLEAR start!!', highlight, data)
-  //     clearHighlight(data)
-  //     setPainted(false)
-  //   }
-  // }, [highlight])
 
   if (data === null || data === undefined) {
     const loadingMessage = 'Loading large network data.  Please wait......'

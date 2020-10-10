@@ -4,9 +4,8 @@ import { useParams } from 'react-router-dom'
 import AppContext from '../../context/AppState'
 import useAttributes from '../../hooks/useAttributes'
 import PropertyPanel from '../PropertyPanel'
-import UIState from '../../model/UIState'
-import { UIStateActions } from '../../reducer/uiStateReducer'
 import { getContextFromCx, processList, processItem } from '../../utils/contextUtil'
+import { SelectionActions } from '../../reducer/selectionStateReducer'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -61,31 +60,29 @@ const Popup: FC<PopupProps> = ({ cx, objectType = ObjectType.NODE }: PopupProps)
   const classes = useStyles()
   const { uuid } = useParams()
   const attr = useAttributes(uuid, cx)
-  const { uiState, uiStateDispatch, selection } = useContext(AppContext)
+  const { uiState, selectionState, selectionStateDispatch } = useContext(AppContext)
   const { windowHeight, windowWidth } = useWindowDimensions()
   const FOOTER_HEIGHT = 60
 
   const context = useMemo(() => getContextFromCx(cx), [cx])
 
-  let objects = selection.lastSelected.nodes
-  if (objectType === ObjectType.EDGE) {
-    objects = selection.lastSelected.edges
-  }
+  const { lastSelected } = selectionState
 
-  const { showPropPanel, pointerPosition } = uiState
-
-  const setShowPropPanelFalse = (state: UIState) =>
-    uiStateDispatch({ type: UIStateActions.SET_SHOW_PROP_PANEL_FALSE, uiState: state })
+  const setShowPropPanelFalse = () => selectionStateDispatch({ type: SelectionActions.CLOSE_PROP_PANEL })
 
   const onClose = () => {
-    setShowPropPanelFalse({ ...uiState })
+    setShowPropPanelFalse()
   }
 
-  if (!showPropPanel || objects.length === 0) {
+  useEffect(() => {
+    setShowPropPanelFalse()
+  }, [uiState.showSearchResult])
+
+  if (!lastSelected.showPropPanel || selectionState.lastSelected.id == null) {
     return <div />
   }
 
-  const id = objects[0]
+  const id = selectionState.lastSelected.id
   let attrMap = null
   if (objectType === ObjectType.NODE) {
     attrMap = attr.nodeAttr[id]
@@ -149,12 +146,14 @@ const Popup: FC<PopupProps> = ({ cx, objectType = ObjectType.NODE }: PopupProps)
 
   //Calculate position based on pointer position in window
   const effectiveWindowHeight = windowHeight - FOOTER_HEIGHT
+  const x = lastSelected.coordinates.x
+  const y = lastSelected.coordinates.y
 
   //Left or right?
   const width = effectiveWindowHeight * 0.5
   let right = true
-  if (pointerPosition.x + width > uiState.leftPanelWidth) {
-    if (pointerPosition.x - width > 0) {
+  if (lastSelected.coordinates.x + width > uiState.leftPanelWidth) {
+    if (x - width > 0) {
       right = false
     }
   }
@@ -171,15 +170,15 @@ const Popup: FC<PopupProps> = ({ cx, objectType = ObjectType.NODE }: PopupProps)
   }
 
   let bottom = true
-  if (selection.lastSelected.from === 'main') {
-    if (pointerPosition.y + height > effectiveWindowHeight) {
-      if (pointerPosition.y - height > 0) {
+  if (selectionState.lastSelected.fromMain) {
+    if (y + height > effectiveWindowHeight) {
+      if (y - height > 0) {
         bottom = false
       }
     }
   } else {
-    if (pointerPosition.y + height > effectiveWindowHeight * 0.7) {
-      if (pointerPosition.y - height > effectiveWindowHeight * -0.3) {
+    if (y + height > effectiveWindowHeight * 0.7) {
+      if (y - height > effectiveWindowHeight * -0.3) {
         bottom = false
       }
     }
@@ -189,24 +188,23 @@ const Popup: FC<PopupProps> = ({ cx, objectType = ObjectType.NODE }: PopupProps)
     maxHeight: maxHeight,
   }
   if (right) {
-    style['left'] = pointerPosition.x
+    style['left'] = x
   } else {
-    style['right'] = uiState.leftPanelWidth - pointerPosition.x
+    style['right'] = uiState.leftPanelWidth - x
   }
   if (bottom) {
-    if (selection.lastSelected.from === 'main') {
-      style['top'] = pointerPosition.y
+    if (selectionState.lastSelected['fromMain']) {
+      style['top'] = y
     } else {
-      style['top'] = pointerPosition.y + effectiveWindowHeight * 0.3
+      style['top'] = y + effectiveWindowHeight * 0.3
     }
   } else {
-    if (selection.lastSelected.from === 'main') {
-      style['bottom'] = effectiveWindowHeight - pointerPosition.y
+    if (selectionState.lastSelected['fromMain']) {
+      style['bottom'] = effectiveWindowHeight - y
     } else {
-      style['bottom'] = effectiveWindowHeight * 0.7 - pointerPosition.y
+      style['bottom'] = effectiveWindowHeight * 0.7 - y
     }
   }
-
   return (
     <div className={classes.root} style={style}>
       <PropertyPanel attrMap={nonEmptyMap} onClose={onClose} />

@@ -1,7 +1,4 @@
-import React, { useContext, useState, FC } from 'react'
-import { useParams } from 'react-router-dom'
-import useNetworkSummary from '../../hooks/useNetworkSummary'
-import AppContext from '../../context/AppState'
+import React, { useState, FC } from 'react'
 import MessageDialog from '../MessageDialog'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
