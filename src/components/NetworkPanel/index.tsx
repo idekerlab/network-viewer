@@ -1,5 +1,5 @@
 import React, { FC, useContext, useEffect, Suspense, useState } from 'react'
-import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
+import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import LGRPanel from './LGRPanel'
 import CytoscapeRenderer from '../CytoscapeRenderer'
 import AppContext from '../../context/AppState'
@@ -8,14 +8,11 @@ import { Typography } from '@material-ui/core'
 import useSearch from '../../hooks/useSearch'
 
 import Loading from './Loading'
-import SelectionState from '../../model/SelectionState'
 import { SelectionActions } from '../../reducer/selectionStateReducer'
 import CyReference from '../../model/CyReference'
 import { CyActions } from '../../reducer/cyReducer'
 import { getCyjsLayout, getEdgeCount, getLgrLayout, getNetworkBackgroundColor, getNodeCount } from '../../utils/cxUtil'
 import EmptyView from './EmptyView'
-import { UIStateActions } from '../../reducer/uiStateReducer'
-import UIState from '../../model/UIState'
 import Popup from '../Popup'
 import NavigationPanel from '../NavigationPanel'
 
@@ -37,6 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       display: 'flex',
       flexDirection: 'column',
+      position: 'relative',
     },
     title: {
       position: 'fixed',
