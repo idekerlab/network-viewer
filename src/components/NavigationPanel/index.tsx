@@ -12,14 +12,14 @@ import AppContext from '../../context/AppState'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      position: 'fixed',
       zIndex: 3000,
-      left: '1em',
-      bottom: '5em',
       width: '3em',
       borderRadius: 6,
       border: '1px solid #DDDDDD',
       backgroundColor: '#FFFFFF',
+      position: 'absolute',
+      right: '2em',
+      bottom: '2em',
     },
     subnet: {
       width: '100%',
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
 // TODO: support for LGR
 const NavigationPanel = ({ target = 'main' }) => {
   const classes = useStyles()
-  const { cyReference } = useContext(AppContext)
+  const { cyReference, uiState } = useContext(AppContext)
 
   let cy = cyReference.main
   if (target === 'sub') {
