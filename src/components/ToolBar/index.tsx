@@ -68,7 +68,7 @@ const ToolBar: FC = (props) => {
           <NdexHomeButton />
           <NDExSignInButton
             size="small"
-            myAccountURL="https://dev.ndexbio.org/#/myAccount"
+            myAccountURL={'https://'+config.ndexUrl+'/#/myAccount'}
             onLoginStateUpdated={loginStateUpdated}
           />
           <AdvancedMenu />

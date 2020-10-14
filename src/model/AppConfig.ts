@@ -1,6 +1,7 @@
 type AppConfig = {
   ndexUrl: string,
   ndexHttps: string,
+  googleClientId: string,
   viewerThreshold: number,
   maxNumObjects: number,
   warningThreshold: number // Show warning data over this size

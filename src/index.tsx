@@ -25,6 +25,7 @@ async function loadResource() {
   const resource = await response.json()
   console.log('* Resource file loaded:', resource)
   const ndexUrl = resource['ndexUrl']
+  const googleClientId = resource['googleClientId']
   const viewerTh = resource['viewerThreshold']
   const maxNumObjects = resource['maxNumObjects']
   const warningThreshold = resource['warningThreshold']
@@ -32,6 +33,7 @@ async function loadResource() {
   const config: AppConfig = {
     ndexUrl,
     ndexHttps: `https://${ndexUrl}`,
+    googleClientId,
     viewerThreshold: viewerTh,
     maxNumObjects,
     warningThreshold
