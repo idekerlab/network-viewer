@@ -120,7 +120,6 @@ const NetworkProperties = (props) => {
 
   //Properties display
   const propertiesTableContent = []
-  let context
   let rights
   let rightsHolder
   let reference
@@ -129,9 +128,8 @@ const NetworkProperties = (props) => {
     const predicate = property.predicateString.trim()
     if (value !== '' && !predicate.startsWith('__')) {
       if (predicate === '@context') {
-        context = value
+        continue
       } else if (predicate === 'rights') {
-        console.log(value)
         if (value.includes('|')) {
           const [url, text] = value.split('|')
           rights = '<a target="_blank" href="' + url + '">' + text + '</a>'
@@ -166,7 +164,7 @@ const NetworkProperties = (props) => {
   //Description display
   const descriptionList = []
   if (description !== undefined && description.length > 0) {
-    descriptionList.push([null, formatContent(description)])
+    descriptionList.push([null, formatDescription(description)])
   }
   if (rights || rightsHolder) {
     const rightsTable = (
@@ -241,6 +239,15 @@ const formatContent = (string) => {
   string = string.toString().replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script\ *>/gi, '')
   string = parse(string)
   return <Linkify target="_blank">{string}</Linkify>
+}
+
+const formatDescription = (string) => {
+  if (string == undefined) {
+    return
+  }
+  string = string.toString().replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script\ *>/gi, '')
+  string = parse(string)
+  return string
 }
 
 const formatDisplay = (propertiesList) => {
