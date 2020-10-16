@@ -18,7 +18,7 @@ const getNetworkPermissions = async <T>(
     return cache
   }
 
-  if (!credential.loaded) {
+  if (!credential.loaded || !credential.isLogin) {
     return undefined
   }
 
