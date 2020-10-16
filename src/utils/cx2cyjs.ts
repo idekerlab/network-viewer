@@ -12,6 +12,11 @@ const cx2cyjs = (uuid: string, cx: any) => {
   const style = cx2js.cyStyleFromNiceCX(niceCX, attributeNameMap)
   const elements = [...elementsObj.nodes, ...elementsObj.edges]
 
+  const attributeNiceCX = {
+      "networkAttributes" : niceCX["networkAttributes"] 
+        ? niceCX["networkAttributes"]: { "elements" : [] }
+    }
+
   return {
     network: {
       data: {
@@ -20,6 +25,7 @@ const cx2cyjs = (uuid: string, cx: any) => {
       elements,
     },
     visualStyle: style,
+    attributeNiceCX: attributeNiceCX
   }
 }
 
