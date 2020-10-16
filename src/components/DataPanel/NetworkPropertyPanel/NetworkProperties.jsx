@@ -44,7 +44,6 @@ const NetworkProperties = (props) => {
   let informationDisplay
   let descriptionDisplay
   let propertiesDisplay
-  let contextDisplay
 
   //Information display
   const informationTableContents = []
@@ -197,30 +196,6 @@ const NetworkProperties = (props) => {
     descriptionDisplay = formatDisplay(descriptionList)
   }
 
-  //Context display
-  if (context) {
-    const parsedContext = JSON.parse(context)
-    const contextList = []
-    let index = 0
-    for (const key in parsedContext) {
-      contextList.push(
-        <tr key={index++}>
-          <td className={classes.tdTitle}>
-            <Typography variant="body2">{key}</Typography>
-          </td>
-          <td className={classes.tdContent}>
-            <Typography variant="body2">{parsedContext[key]}</Typography>
-          </td>
-        </tr>,
-      )
-    }
-    contextDisplay = (
-      <table>
-        <tbody>{contextList}</tbody>
-      </table>
-    )
-  }
-
   let darkBackground = 0
   return (
     <>
@@ -245,14 +220,6 @@ const NetworkProperties = (props) => {
           openByDefault={false}
           summary="Properties"
           children={propertiesDisplay}
-          backgroundColor={darkBackground++ % 2 === 0 ? 'inherit' : 'white'}
-        />
-      ) : null}
-      {contextDisplay ? (
-        <CollapsiblePanel
-          openByDefault={false}
-          summary="@context: View namespaces"
-          children={contextDisplay}
           backgroundColor={darkBackground++ % 2 === 0 ? 'inherit' : 'white'}
         />
       ) : null}
