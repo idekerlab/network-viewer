@@ -18,7 +18,7 @@ const EditMetadataButton: FC = () => {
     permissions && permissions.data === 'ADMIN'
   ) {
     return (
-      <IconButton href={'https://dev.ndexbio.org/#/properties/network/' + summary.externalId + '/null?returnto=nnv'} >
+      <IconButton href={'https://'+config.ndexUrl+'/#/properties/network/' + summary.externalId + '/null?returnto=nnv'} >
         <EditIcon />
       </IconButton>
     )

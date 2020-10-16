@@ -46,7 +46,7 @@ const AppShell: FC = () => {
 
   return (
     <div className={classes.appShell}>
-      <NDExAccountProvider ndexServerURL={config.ndexHttps}>
+      <NDExAccountProvider ndexServerURL={config.ndexHttps} googleClientId={config.googleClientId}>
         <header>
           <ToolBar />
         </header>
