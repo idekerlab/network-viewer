@@ -306,7 +306,7 @@ const NetworkPanel: FC<ViewProps> = ({ renderer, cx, objectCount, isWebGL2 }: Vi
           layoutName={layout}
           setBusy={setBusy}
           setCyReference={setSub}
-          backgroundColor={bgColor}
+          backgroundColor={ bgColor }
         />
       </div>
     )

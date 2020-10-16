@@ -34,7 +34,7 @@ const CytoscapeRenderer = ({
   let baseStyle = {
     width: '100%',
     height: '100%',
-    backgroundColor,
+    backgroundColor : 'rgba(0,0,0,0)',
   }
 
   const cyjsNetwork = useCyjs(uuid, cx)
@@ -45,7 +45,7 @@ const CytoscapeRenderer = ({
       return
     }
 
-    updateNetwork(cyjsNetwork, cyInstance, annotationRenderer)
+    updateNetwork(cyjsNetwork, cyInstance, annotationRenderer, backgroundColor)
 
     if (cyjsNetwork !== {} && cyInstance !== null) {
       if (layoutName !== undefined && cyInstance !== null) {
@@ -68,7 +68,7 @@ const CytoscapeRenderer = ({
       return
     }
 
-    updateNetwork(cyjsNetwork, cyInstance, annotationRenderer)
+    updateNetwork(cyjsNetwork, cyInstance, annotationRenderer, backgroundColor)
 
     if (layoutName !== undefined && cyInstance !== null) {
       const layout = cyInstance.layout({
@@ -178,7 +178,7 @@ const addExtraStyle = (visualStyle) => {
   return visualStyle
 }
 
-const updateNetwork = (cyjs, cy, annotationRenderer) => {
+const updateNetwork = (cyjs, cy, annotationRenderer, backgroundColor) => {
   const { network } = cyjs
   if (network !== undefined && network !== null && cy !== null) {
     const elements = cyjs.network.elements
@@ -189,6 +189,7 @@ const updateNetwork = (cyjs, cy, annotationRenderer) => {
 
     console.log('handling annotations: ', cyjs.annotationNiceCX)
     annotationRenderer.drawAnnotationsFromNiceCX(cy, cyjs.annotationNiceCX);
+    annotationRenderer.drawBackground(cy, backgroundColor);
   }
 }
 
