@@ -1,7 +1,14 @@
 import { CxToJs, CyNetworkUtils } from 'cytoscape-cx2js'
+import { CxToCyCanvas } from 'cyannotation-cx2js';
 
 const utils = new CyNetworkUtils()
 const cx2js = new CxToJs(utils)
+
+const annotationRenderer = new CxToCyCanvas(CxToJs);
+
+const getAnnotationRenderer = () => {
+  return annotationRenderer
+}
 
 const cx2cyjs = (uuid: string, cx: any) => {
   const niceCX = utils.rawCXtoNiceCX(cx)
@@ -12,7 +19,7 @@ const cx2cyjs = (uuid: string, cx: any) => {
   const style = cx2js.cyStyleFromNiceCX(niceCX, attributeNameMap)
   const elements = [...elementsObj.nodes, ...elementsObj.edges]
 
-  const attributeNiceCX = {
+  const annotationNiceCX = {
       "networkAttributes" : niceCX["networkAttributes"] 
         ? niceCX["networkAttributes"]: { "elements" : [] }
     }
@@ -25,8 +32,8 @@ const cx2cyjs = (uuid: string, cx: any) => {
       elements,
     },
     visualStyle: style,
-    attributeNiceCX: attributeNiceCX
+    annotationNiceCX: annotationNiceCX
   }
 }
 
-export { cx2cyjs }
+export { cx2cyjs, getAnnotationRenderer }
