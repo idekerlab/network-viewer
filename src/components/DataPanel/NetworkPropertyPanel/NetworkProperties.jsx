@@ -132,7 +132,13 @@ const NetworkProperties = (props) => {
       if (predicate === '@context') {
         context = value
       } else if (predicate === 'rights') {
-        rights = value
+        console.log(value)
+        if (value.includes('|')) {
+          const [url, text] = value.split('|')
+          rights = '<a target="_blank" href="' + url + '">' + text + '</a>'
+        } else {
+          rights = value
+        }
       } else if (predicate === 'rightsHolder') {
         rightsHolder = value
       } else if (predicate === 'reference') {
