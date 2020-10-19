@@ -111,6 +111,7 @@ const NetworkPropertyPanel = () => {
     if (summary == undefined || summary.owner !== summaryResponseData['owner']) {
       setSummary({
         ...summary,
+        name: summaryResponseData['name'],
         owner: summaryResponseData['owner'],
         externalId: summaryResponseData['externalId'],
         visibility: summaryResponseData['visibility'],
