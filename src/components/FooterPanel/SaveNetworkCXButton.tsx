@@ -13,10 +13,7 @@ const SaveNetworkCXButton = () => {
 
   const { status, data } = useCx(uuid, config.ndexHttps, 'v2', ndexCredential, undefined, undefined, '2')
 
-  return <ExportCxButton cx={status && status == 'success' ? data : null} />
-
   const fileName = summary ? summary.name + '.cx' : 'network.cx'
-
 
   return <ExportCxButton cx={status && status == 'success' ? data : null} fileName={fileName} />
 }
