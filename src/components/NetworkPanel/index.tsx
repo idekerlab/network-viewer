@@ -15,6 +15,7 @@ import { getCyjsLayout, getEdgeCount, getLgrLayout, getNetworkBackgroundColor, g
 import EmptyView from './EmptyView'
 import Popup from '../Popup'
 import NavigationPanel from '../NavigationPanel'
+import { isNull } from 'util'
 
 const splitBorder = '1px solid #BBBBBB'
 
@@ -122,7 +123,13 @@ const NetworkPanel: FC<ViewProps> = ({ renderer, cx, objectCount, isWebGL2 }: Vi
           selectionState: {
             ...selectionState,
             main: { nodes: nodes, edges: edges },
-            lastSelected: { showPropPanel: false },
+            lastSelected: {
+              isNode: null,
+              fromMain: true,
+              id: null,
+              showPropPanel: false,
+              coordinates: null,
+            },
           },
         })
       }
@@ -306,7 +313,7 @@ const NetworkPanel: FC<ViewProps> = ({ renderer, cx, objectCount, isWebGL2 }: Vi
           layoutName={layout}
           setBusy={setBusy}
           setCyReference={setSub}
-          backgroundColor={ bgColor }
+          backgroundColor={bgColor}
         />
       </div>
     )

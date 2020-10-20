@@ -44,9 +44,10 @@ const EntryTable = (props) => {
         continue
       }
       for (let attr of attrs) {
-        if (attr[0] === 'name') {
-          hasName = true
-        } else if (type === 'edge' && (attr[0] === 'source' || attr[0] === 'target' || attr[0] === 'interaction')) {
+        if (
+          attr[0] === 'name' ||
+          (type === 'edge' && (attr[0] === 'source' || attr[0] === 'target' || attr[0] === 'interaction'))
+        ) {
           continue
         } else {
           if (Array.isArray(attr[1])) {
@@ -71,18 +72,18 @@ const EntryTable = (props) => {
         }
       }
     }
-    if (hasName) {
+    if (type === 'edge') {
       columnsList.unshift('name')
-    } else if (type === 'edge') {
-      columnsList.unshift('name')
-      //Add name
+      //Add name for edges that don't have one
       for (let id of selectedObjects) {
         const attrs = attributes[id]
-        if (attrs.has('source') && attrs.has('target')) {
-          if (attrs.has('interaction')) {
-            attrs.set('name', attrs.get('source') + ' (' + attrs.get('interaction') + ') ' + attrs.get('target'))
-          } else {
-            attrs.set('name', attrs.get('source') + ' (-) ' + attrs.get('target'))
+        if (!attrs.has('name')) {
+          if (attrs.has('source') && attrs.has('target')) {
+            if (attrs.has('interaction')) {
+              attrs.set('name', attrs.get('source') + ' (' + attrs.get('interaction') + ') ' + attrs.get('target'))
+            } else {
+              attrs.set('name', attrs.get('source') + ' (-) ' + attrs.get('target'))
+            }
           }
         }
       }

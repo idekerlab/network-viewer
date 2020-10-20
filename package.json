@@ -24,6 +24,7 @@
     "linkifyjs": "^2.1.9",
     "ndex-client": "link:../ndex-js-client",
     "react": "^16.13.1",
+    "react-copy-to-clipboard": "^5.0.2",
     "react-cytoscapejs": "^1.2.1",
     "react-dom": "^16.13.1",
     "react-draft-wysiwyg": "^1.14.5",
