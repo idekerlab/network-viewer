@@ -152,40 +152,18 @@ const Popup: FC<PopupProps> = ({ cx, objectType = ObjectType.NODE }: PopupProps)
   //Left or right?
   const width = effectiveWindowHeight * 0.5
   let right = true
-  if (lastSelected.coordinates.x + width > uiState.leftPanelWidth) {
-    if (x - width > 0) {
-      right = false
-    }
+  if (x > uiState.leftPanelWidth / 2) {
+    right = false
   }
 
-  //Top or bottom
-  const maxHeight = effectiveWindowHeight * 0.4
-  let height = 88 //Title height + body padding
-  for (let i = 1; i < nonEmptyMap.size; i++) {
-    height += 40 //List item height
-    if (height >= maxHeight) {
-      height = maxHeight
-      break
-    }
-  }
-
+  //Bottom or top?
   let bottom = true
-  if (selectionState.lastSelected.fromMain) {
-    if (y + height > effectiveWindowHeight) {
-      if (y - height > 0) {
-        bottom = false
-      }
-    }
-  } else {
-    if (y + height > effectiveWindowHeight * 0.7) {
-      if (y - height > effectiveWindowHeight * -0.3) {
-        bottom = false
-      }
-    }
+  if (y > effectiveWindowHeight / 2) {
+    bottom = false
   }
 
   const style = {
-    maxHeight: maxHeight,
+    maxHeight: effectiveWindowHeight * 0.4,
   }
   if (right) {
     style['left'] = x

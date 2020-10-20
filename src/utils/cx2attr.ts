@@ -124,6 +124,9 @@ const getEdgeAttrs = (nodeAttr, kvMap: object) => {
 }
 
 const addSourceTargetInteraction = (nodeAttr, edges, id2attr) => {
+  if (edges == undefined) {
+    return
+  }
   let len = edges.length
   while (len--) {
     const e = edges[len]
@@ -152,6 +155,9 @@ const addSourceTargetInteraction = (nodeAttr, edges, id2attr) => {
 }
 
 const addSourceTargetInteractionV2 = (nodeAttr, edges, id2attr) => {
+  if (edges == undefined) {
+    return
+  }
   let len = edges.length
   while (len--) {
     const e = edges[len]

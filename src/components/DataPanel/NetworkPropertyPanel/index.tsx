@@ -14,7 +14,6 @@ import MinimizeButton from './MinimizeButton'
 import AppContext from '../../../context/AppState'
 import NetworkDetails from './NetworkDetails'
 
-const API_VER = 'v2'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -117,6 +116,7 @@ const NetworkPropertyPanel = () => {
         visibility: summaryResponseData['visibility'],
         nodeCount: summaryResponseData['nodeCount'],
         edgeCount: summaryResponseData['edgeCount'],
+        doi: summaryResponseData['doi'],
       })
     }
   }
