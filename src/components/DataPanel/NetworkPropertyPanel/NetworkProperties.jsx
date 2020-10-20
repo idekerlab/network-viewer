@@ -9,6 +9,7 @@ import parse from 'html-react-parser'
 
 import CollapsiblePanel from './CollapsiblePanel'
 import NetworkPropertySegment from './NetworkPropertySegment'
+import { Tooltip } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -91,9 +92,7 @@ const NetworkProperties = (props) => {
         <tr key="visibility">
           <td className={classes.tdTitle}>Visibility</td>
           <td className={classes.tdContent} valign="center">
-            {summary.visibility}
-
-            <SearchIcon className={classes.icon} />
+            P{summary.visibility.toLowerCase().slice(1)} (searchable)
           </td>
         </tr>,
       )
@@ -101,7 +100,7 @@ const NetworkProperties = (props) => {
       informationTableContents.push(
         <tr key="visibility">
           <td className={classes.tdTitle}>Visibility</td>
-          <td className={classes.tdContent}>{summary.visibility}</td>
+          <td className={classes.tdContent}>P{summary.visibility.toLowerCase().slice(1)} (not searchable)</td>
         </tr>,
       )
     }
