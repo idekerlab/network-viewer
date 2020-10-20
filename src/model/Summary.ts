@@ -24,6 +24,7 @@ type Summary = {
   warnings?: string[]
   subnetworkNodeCount?: number
   subnetworkEdgeCount?: number
+  doi?: string
 }
 
 export default Summary

@@ -116,6 +116,7 @@ const NetworkPropertyPanel = () => {
         visibility: summaryResponseData['visibility'],
         nodeCount: summaryResponseData['nodeCount'],
         edgeCount: summaryResponseData['edgeCount'],
+        doi: summaryResponseData['doi'],
       })
     }
   }
