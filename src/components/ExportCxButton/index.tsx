@@ -1,17 +1,16 @@
 import React from 'react'
 import IconButton from '@material-ui/core/IconButton'
 import DownloadIcon from '@material-ui/icons/CloudDownload'
+import { Tooltip } from '@material-ui/core'
 
 const DUMMY = {
   data: ['a'],
   test: 'C',
 }
 
-
-
-const ExportCxButton = ({cx}) => {
+const ExportCxButton = ({ cx }) => {
   let disabled = true
-  if(cx !== undefined) {
+  if (cx !== undefined) {
     disabled = false
   }
 
@@ -28,9 +27,11 @@ const ExportCxButton = ({cx}) => {
   }
 
   return (
-    <IconButton disabled={disabled} onClick={handleClick}>
-      <DownloadIcon />
-    </IconButton>
+    <Tooltip title="Download this network in JSON format">
+      <IconButton disabled={disabled} onClick={handleClick}>
+        <DownloadIcon />
+      </IconButton>
+    </Tooltip>
   )
 }
 

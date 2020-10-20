@@ -1,6 +1,5 @@
 import React, { FC } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
-import {AppBar, Toolbar} from '@material-ui/core'
 import SearchBox from './SearchBox'
 import ExpandButton from './ExpandButton'
 import OpenInCytoscape from './OpenInCytoscape'
@@ -29,7 +28,7 @@ const FooterPanel: FC = () => {
   const classes = useStyles()
 
   return (
-    <div  className={classes.toolBar}>
+    <div className={classes.toolBar}>
       <SearchBox />
       <div className={classes.grow} />
       <OpenInCytoscape />
@@ -37,7 +36,6 @@ const FooterPanel: FC = () => {
       <EditMetadataButton />
       <ExpandButton />
     </div>
-
   )
 }
 
