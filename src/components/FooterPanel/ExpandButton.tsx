@@ -46,13 +46,7 @@ const ExpandButton = () => {
       </Tooltip>
     )
   } else {
-    return (
-      <Tooltip title="Collapse main view" placement="top" arrow>
-        <IconButton className={classes.button} size="small" onClick={handleClick}>
-          <CloseIcon />
-        </IconButton>
-      </Tooltip>
-    )
+    return null
   }
 }
 
