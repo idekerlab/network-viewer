@@ -14,7 +14,7 @@ const getCx = async <T>(
   objectCount: number,
   cxVersion: string
 ) => {
-  if (!credential.loaded || apiVersion === null || serverUrl === null || uuid === null) {
+  if (!credential.loaded || apiVersion === null || serverUrl === null || uuid === null || objectCount == null) {
     // If invalid parameters, just return empty result.
     return EMPTY_CX
   }
@@ -23,6 +23,8 @@ const getCx = async <T>(
     console.warn(`Network is too big (>${threshold})`)
     return EMPTY_CX
   }
+
+  //console.log(`getting CX: ${uuid} ${serverUrl} ${apiVersion} ${credential} ${threshold} ${objectCount} ${cxVersion}`)
 
   const ndexClient = getNdexClient(`${serverUrl}/${apiVersion}`, credential)
   
@@ -36,7 +38,7 @@ export default function useCx(
   serverUrl: string,
   apiVersion: string,
   credential: NdexCredential,
-  threshold: number = 5000000,
+  threshold: number = 2000000,
   objectCount: number = 0,
   cxVersion: string = '1',
 ) {
