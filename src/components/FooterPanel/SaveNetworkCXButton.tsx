@@ -9,11 +9,13 @@ import ExportCxButton from '../ExportCxButton'
 const SaveNetworkCXButton = () => {
   const { uuid } = useParams()
 
-  const { ndexCredential, config } = useContext(AppContext)
+  const { ndexCredential, config, summary } = useContext(AppContext)
 
-  const { status, data } = useCx(uuid, config.ndexHttps, 'v2', ndexCredential, undefined, undefined, '2')
+  const { status, data } = useCx(uuid, config.ndexHttps, 'v2', ndexCredential, undefined, undefined, '1')
 
-  return <ExportCxButton cx={status && status == 'success' ? data : null} />
+  const fileName = summary ? summary.name + '.cx' : 'network.cx'
+
+  return <ExportCxButton cx={status && status == 'success' ? data : null} fileName={fileName} />
 }
 
 export default SaveNetworkCXButton
