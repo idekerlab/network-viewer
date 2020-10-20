@@ -11,7 +11,9 @@ const SaveNetworkCXButton = () => {
 
   const { ndexCredential, config, summary } = useContext(AppContext)
 
-  const { status, data } = useCx(uuid, config.ndexHttps, 'v2', ndexCredential, undefined, undefined, '1')
+  const objectCount = summary ? summary['edgeCount'] + summary['nodeCount'] : null;
+
+  const { status, data } = useCx(uuid, config.ndexHttps, 'v2', ndexCredential, config.maxNumObjects, objectCount, '1')
 
   const fileName = summary ? summary.name + '.cx' : 'network.cx'
 
