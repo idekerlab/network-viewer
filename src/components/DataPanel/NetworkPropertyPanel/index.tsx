@@ -14,7 +14,6 @@ import MinimizeButton from './MinimizeButton'
 import AppContext from '../../../context/AppState'
 import NetworkDetails from './NetworkDetails'
 
-const API_VER = 'v2'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

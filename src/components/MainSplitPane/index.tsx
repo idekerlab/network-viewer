@@ -165,10 +165,10 @@ const MainSplitPane = () => {
     return <InitializationPanel message={'Checking network summary'} showProgress={false} />
   }
 
-  // Case 2: Summary is ready, but CX is not
-  if (cx === undefined || cxResponse.isLoading || (Array.isArray(cx) && cx.length === 0)) {
-    return <InitializationPanel message={'Loading network from NDEx server'} showProgress={true} />
-  }
+  // // Case 2: Summary is ready, but CX is not
+  // if (cx === undefined || cxResponse.isLoading || (Array.isArray(cx) && cx.length === 0)) {
+  //   return <InitializationPanel message={'Loading network from NDEx server'} showProgress={true} />
+  // }
 
   // Case 3: Data is ready.  Need to draw the network (or data/message panels for large ones)
   return (
@@ -182,7 +182,11 @@ const MainSplitPane = () => {
           onDragFinished={handleChange}
           style={splitPaneStyle}
         >
-          <NetworkPanel cx={cx} renderer={fetchParams.renderer} objectCount={count} isWebGL2={isWebGL2} />
+          {cx === undefined || cxResponse.isLoading || (Array.isArray(cx) && cx.length === 0) ? (
+            <InitializationPanel message={'Loading network from NDEx server'} showProgress={true} />
+          ) : (
+            <NetworkPanel cx={cx} renderer={fetchParams.renderer} objectCount={count} isWebGL2={isWebGL2} />
+          )}
           <DataPanel uuid={uuid} cx={cx} />
         </SplitPane>
         {uiState.dataPanelOpen ? <div /> : <ClosedPanel />}

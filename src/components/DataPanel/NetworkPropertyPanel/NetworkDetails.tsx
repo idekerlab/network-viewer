@@ -1,4 +1,7 @@
-import { Button, createStyles, makeStyles, Theme } from '@material-ui/core'
+import { Chip, createStyles, makeStyles, Theme, Tooltip } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
+import WarningIcon from '@material-ui/icons/AnnouncementOutlined'
+import ErrorIcon from '@material-ui/icons/ErrorOutline'
 import React, { useContext, useRef, useState, useEffect } from 'react'
 import AppContext from '../../../context/AppState'
 
@@ -7,52 +10,91 @@ const useStyles = makeStyles((theme: Theme) =>
     networkDetails: {
       margin: theme.spacing(1),
     },
-    subnetworkDetails: {
-      marginTop: theme.spacing(1),
+    item: {
+      marginRight: theme.spacing(1),
     },
-    edgeButton: {
-      marginLeft: theme.spacing(1),
+    label: {
+      marginRight: theme.spacing(1),
+    },
+    row: {
+      display: 'flex',
+      alignItems: 'center',
+      boxSizing: 'border-box',
+      padding: theme.spacing(1),
+    },
+    warning: {
+      color: 'deeppink',
+    },
+    error: {
+      color: 'red',
     },
   }),
 )
 
 const NetworkDetails = () => {
   const classes = useStyles()
-  const { summary, uiState } = useContext(AppContext)
-  const nodeRef = useRef(null)
-  const edgeRef = useRef(null)
-  const [nodeWidth, setNodeWidth] = useState('')
-  const [edgeWidth, setEdgeWidth] = useState('')
-
-  useEffect(() => {
-    if (uiState.showSearchResult && nodeRef.current !== null) {
-      setNodeWidth(nodeRef.current.offsetWidth)
-      setEdgeWidth(edgeRef.current.offsetWidth)
-    }
-  }, [uiState.showSearchResult])
+  const { summary, uiState, config } = useContext(AppContext)
+  const { viewerThreshold, warningThreshold } = config
 
   if (summary === undefined) {
     return null
   }
+  const getInformationIcon = (objectCount: number) => {
+    if (objectCount >= viewerThreshold && objectCount < warningThreshold) {
+      return (
+        <Tooltip arrow title="Large network loaded: showing network in simplified mode">
+          <WarningIcon fontSize="large" className={classes.warning} />
+        </Tooltip>
+      )
+    } else if (objectCount >= warningThreshold) {
+      return (
+        <Tooltip arrow title="Network is too large to display">
+          <ErrorIcon fontSize="large" className={classes.error} />
+        </Tooltip>
+      )
+
+    }
+  }
 
   return (
     <div className={classes.networkDetails}>
-      <div>
-        <Button disabled variant="outlined" ref={nodeRef}>
-          Nodes: {summary.nodeCount}
-        </Button>
-        <Button disabled variant="outlined" ref={edgeRef} className={classes.edgeButton}>
-          Edges: {summary.edgeCount}
-        </Button>
+      <div className={classes.row}>
+        <Typography className={classes.label} variant="subtitle2">
+          Network Size:
+        </Typography>
+        <Chip
+          size="small"
+          color="secondary"
+          label={`Nodes: ${summary.nodeCount}`}
+          variant="outlined"
+          className={classes.item}
+        />
+        <Chip
+          size="small"
+          color="secondary"
+          label={`Edges: ${summary.edgeCount}`}
+          variant="outlined"
+          className={classes.item}
+        />
+        {getInformationIcon(summary.edgeCount+summary.nodeCount)}
       </div>
       {uiState.showSearchResult ? (
-        <div className={classes.subnetworkDetails}>
-          <Button disabled variant="outlined" style={{ width: nodeWidth }}>
-            Nodes: {summary.subnetworkNodeCount}
-          </Button>
-          <Button disabled variant="outlined" style={{ width: edgeWidth }} className={classes.edgeButton}>
-            Edges: {summary.subnetworkEdgeCount}
-          </Button>
+        <div className={classes.row}>
+          <Typography className={classes.label} variant="subtitle2">
+            Query Result:
+          </Typography>
+          <Chip
+            size="small"
+            label={`Nodes: ${summary.subnetworkNodeCount}`}
+            variant="outlined"
+            className={classes.item}
+          />
+          <Chip
+            size="small"
+            label={`Edges: ${summary.subnetworkEdgeCount}`}
+            variant="outlined"
+            className={classes.item}
+          />
         </div>
       ) : null}
     </div>

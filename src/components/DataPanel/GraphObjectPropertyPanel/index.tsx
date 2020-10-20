@@ -1,7 +1,7 @@
 import React from 'react'
 import SelectionList from './SelectionList'
 
-const GraphObjectPropertyPanel = (props) => {
+const GraphObjectPropertyPanel = ({attributes, cx}) => {
   const rootStyle = {
     width: '100%',
     height: '100%',
@@ -9,7 +9,7 @@ const GraphObjectPropertyPanel = (props) => {
 
   return (
     <div style={rootStyle}>
-      <SelectionList {...props} />
+      {cx === undefined ? <div /> : <SelectionList attributes={attributes} cx={cx} />}
     </div>
   )
 }
