@@ -98,6 +98,7 @@ const NetworkPropertyPanel = () => {
 
   const summaryResponse = useNetworkSummary(uuid, config.ndexHttps, 'v2', ndexCredential)
   const summaryResponseData = summaryResponse.data
+  console.log(summaryResponseData)
 
   if (summaryResponseData === undefined || Object.entries(summaryResponseData).length === 0) {
     return (
@@ -116,6 +117,7 @@ const NetworkPropertyPanel = () => {
         visibility: summaryResponseData['visibility'],
         nodeCount: summaryResponseData['nodeCount'],
         edgeCount: summaryResponseData['edgeCount'],
+        doi: summaryResponseData['doi'],
       })
     }
   }
