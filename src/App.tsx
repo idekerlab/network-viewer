@@ -27,7 +27,7 @@ const App = ({ config }) => {
   const history = useHistory(INITIAL_UI_STATE)
 
   const [query, setQuery] = useState('')
-  const [queryMode, setQueryMode] = useState('direct')
+  const [queryMode, setQueryMode] = useState('firstStepNeighborhood')
   const [summary, setSummary] = useState()
 
   const [ndexCredential, setNdexCredential] = useState(defNdexCredential)
