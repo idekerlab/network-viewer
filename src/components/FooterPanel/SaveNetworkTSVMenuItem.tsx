@@ -9,7 +9,9 @@ const SaveNetworkTSVMenuItem = () => {
 
   const { ndexCredential, config, summary } = useContext(AppContext)
 
-  const { status, data } = useCx(uuid, config.ndexHttps, 'v2', ndexCredential)
+  const objectCount = summary ? summary['edgeCount'] + summary['nodeCount'] : null;
+
+  const { status, data } = useCx(uuid, config.ndexHttps, 'v2', ndexCredential, config.maxNumObjects, objectCount)
 
   const fileName = summary ? summary.name + '.tsv' : 'network.tsv'
 

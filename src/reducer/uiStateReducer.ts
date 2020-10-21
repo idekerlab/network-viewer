@@ -8,7 +8,7 @@ export type UIStateAction = {
 export const UIStateActions = {
   SET_DATA_PANEL_OPEN: 'setDataPanelOpen',
   SET_SHOW_SEARCH_RESULT: 'setShowSearchResult',
-  SET_LEFT_PANEL_WIDTH: 'setLeftPanelWidth',
+  SET_RIGHT_PANEL_WIDTH: 'setRightPanelWidth',
   SET_SHOW_PROP_PANEL_TRUE: 'setShowPropPanelTrue',
   SET_SHOW_PROP_PANEL_FALSE: 'setShowPropPanelFalse',
 }
@@ -16,7 +16,7 @@ export const UIStateActions = {
 export const INITIAL_UI_STATE: UIState = {
   dataPanelOpen: true,
   showSearchResult: false,
-  leftPanelWidth: 0,
+  rightPanelWidth: 0,
 }
 
 const uiStateReducer = (state: UIState, action: UIStateAction): UIState => {
@@ -25,8 +25,8 @@ const uiStateReducer = (state: UIState, action: UIStateAction): UIState => {
       return { ...state, dataPanelOpen: action.uiState.dataPanelOpen }
     case UIStateActions.SET_SHOW_SEARCH_RESULT:
       return { ...state, showSearchResult: action.uiState.showSearchResult }
-    case UIStateActions.SET_LEFT_PANEL_WIDTH:
-      return { ...state, leftPanelWidth: action.uiState.leftPanelWidth }
+    case UIStateActions.SET_RIGHT_PANEL_WIDTH:
+      return { ...state, rightPanelWidth: action.uiState.rightPanelWidth }
     default:
       throw new Error('Invalid action')
   }

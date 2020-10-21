@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       height: '100%',
       placeItems: 'center',
-      zIndex: 2000,
+      zIndex: 400,
       background: '#FAFAFA',
     },
     item: {
@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     message: {
       padding: '2em',
-      color: '#999999'
+      color: '#999999',
     },
   }),
 )
@@ -31,7 +31,7 @@ type LoadingProps = {
   showLoading?: boolean
 }
 
-const Loading: FC<LoadingProps> = ({ message, showLoading=true }: LoadingProps) => {
+const Loading: FC<LoadingProps> = ({ message, showLoading = true }: LoadingProps) => {
   const classes = useStyles()
   return (
     <div className={classes.root}>

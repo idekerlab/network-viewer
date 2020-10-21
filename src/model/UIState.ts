@@ -1,7 +1,7 @@
 type UIState = {
   dataPanelOpen: boolean
   showSearchResult: boolean
-  leftPanelWidth: number
+  rightPanelWidth: number
 }
 
 export default UIState
