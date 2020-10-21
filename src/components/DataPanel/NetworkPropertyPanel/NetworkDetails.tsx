@@ -79,10 +79,7 @@ const NetworkDetails = () => {
           {summary.doi === 'Pending' ? (
             <Chip label={'DOI: Pending'} size="small" variant="outlined" className={classes.item} />
           ) : (
-            <Tooltip
-              title={doiCopiedHoverText ? 'Copied!' : 'Copy network DOI to clipboard'}
-              className={classes.item}
-            >
+            <Tooltip title={doiCopiedHoverText ? 'Copied!' : 'Copy network DOI to clipboard'} className={classes.item}>
               <CopyToClipboard text={summary.doi} onCopy={copyDoi}>
                 <Chip
                   clickable
@@ -117,7 +114,7 @@ const NetworkDetails = () => {
         />
         {getInformationIcon(summary.edgeCount + summary.nodeCount)}
       </div>
-      {uiState.showSearchResult ? (
+      {uiState.showSearchResult && summary.subnetworkNodeCount !== undefined ? (
         <div className={classes.row}>
           <Typography className={classes.label} variant="subtitle2">
             Query Result:

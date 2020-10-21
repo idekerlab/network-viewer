@@ -156,10 +156,10 @@ const SearchBox: FC = () => {
   }
 
   const handleKeyPress = (e): void => {
-    if(rawQuery.length === 0) {
+    if (rawQuery.length === 0) {
       return
     }
-    
+
     const key = e.key
     if (key === 'Enter') {
       handleClick()
