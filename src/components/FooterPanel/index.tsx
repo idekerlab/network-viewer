@@ -17,6 +17,8 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%',
       backgroundColor: '#FFFFFF',
       boxSizing: 'border-box',
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2),
     },
     grow: {
       flexGrow: 1,

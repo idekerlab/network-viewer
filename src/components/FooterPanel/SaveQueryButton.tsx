@@ -6,7 +6,6 @@ import AppContext from '../../context/AppState'
 import Snackbar from '@material-ui/core/Snackbar'
 
 import { SaveToNDExButton } from 'cytoscape-explore-components'
-import { Tooltip } from '@material-ui/core'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -52,15 +51,13 @@ const SaveQueryButton = () => {
   if (uiState.showSearchResult) {
     return (
       <div>
-        <Tooltip title="Clone this network and save a copy to your account">
-          <SaveToNDExButton
-            disabled={subCx == undefined}
-            fetchCX={fetchCX}
-            onSuccess={onSuccess}
-            onFailure={onFailure}
-            tooltip="Save Query to NDEx"
-          />
-        </Tooltip>
+        <SaveToNDExButton
+          disabled={subCx == undefined}
+          fetchCX={fetchCX}
+          onSuccess={onSuccess}
+          onFailure={onFailure}
+          tooltip="Clone this network and save a copy to your account"
+        />
         <Snackbar
           open={snackMessage != undefined}
           autoHideDuration={6000}
