@@ -12,7 +12,7 @@ import AppContext from '../../context/AppState'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      zIndex: 3000,
+      zIndex: 300,
       width: '3em',
       borderRadius: 6,
       border: '1px solid #DDDDDD',

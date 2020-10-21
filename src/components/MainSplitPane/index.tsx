@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
     mainSplitRoot: {
       flexGrow: 1,
       boxSizing: 'border-box',
-      zIndex: 99,
+      zIndex: 100,
       display: 'flex',
       height: '100%',
       flexDirection: 'column',
@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const getDefaultPanelWidth = (): number => {
-  return Math.floor(window.innerWidth * 0.65)
+  return Math.floor(window.innerWidth * 0.35)
 }
 
 type FetchParams = {
@@ -93,14 +93,18 @@ const MainSplitPane = () => {
   const summary = summaryResponse.data
   const fetchParams = getFetchParams(summary, th)
 
-  const cxResponse = useCx(uuid, config.ndexHttps, V2, ndexCredential, maxObj, fetchParams.count, fetchParams.cxVersion)
-  const cx = cxResponse.data
+  // First, give null as UUID to hold immediate loading.
+  const [curUuid, setCurUuid] = useState(null)
+  const cxResponse = useCx(curUuid, config.ndexHttps, V2, ndexCredential, maxObj, fetchParams.count, fetchParams.cxVersion)
+  const originalCx = cxResponse.data
 
   // Local states
-  const [leftWidth, setLeftWidth] = useState(getDefaultPanelWidth())
+  const [rightWidth, setRightWidth] = useState(getDefaultPanelWidth())
   const [containerHeight, setContainerHeight] = useState(0)
   const [isWebGL2, setIsWebGL2] = useState(false)
+  const [count, setCount] = useState(0)
   const [proceed, setProceed] = useState(false)
+  const windowWidth = useWindowWidth()
 
   // True if data is too large
   const [isDataTooLarge, setIsDataTooLarge] = useState(true)
@@ -129,39 +133,41 @@ const MainSplitPane = () => {
   useEffect(() => {
     if (summary !== undefined && Object.keys(summary).length !== 0) {
       const count = summary['edgeCount'] + summary['nodeCount']
-      if (count < 1000) {
+      setCount(count)
+
+      if (count < config.maxNumObjects) {
         setIsDataTooLarge(false)
+        if(isWebGL2) {
+          setCurUuid(uuid)
+        }
       }
+
     }
   }, [summary])
 
   useEffect(() => {
     if (!uiState.dataPanelOpen) {
-      setLeftWidth(window.innerWidth)
+      setRightWidth(0)
     } else {
-      setLeftWidth(getDefaultPanelWidth())
+      setRightWidth(getDefaultPanelWidth())
     }
   }, [uiState.dataPanelOpen])
 
-  const setLeftPanelWidth = (state: UIState) =>
-    uiStateDispatch({ type: UIStateActions.SET_LEFT_PANEL_WIDTH, uiState: state })
+  const setRightPanelWidth = (state: UIState) =>
+    uiStateDispatch({ type: UIStateActions.SET_RIGHT_PANEL_WIDTH, uiState: state })
 
   useEffect(() => {
-    setLeftPanelWidth({ ...uiState, leftPanelWidth: leftWidth })
-  }, [leftWidth])
+    setRightPanelWidth({ ...uiState, rightPanelWidth: rightWidth })
+  }, [rightWidth])
 
   const handleChange = (newWidth) => {
-    setLeftWidth(newWidth)
+    setRightWidth(windowWidth - newWidth)
   }
 
   const splitPaneStyle = {
     height: containerHeight,
   }
 
-  let { count } = fetchParams
-  if (!isWebGL2) {
-    count = Number.POSITIVE_INFINITY
-  }
 
   // Check Summary error
   if(summaryResponse.isError) {
@@ -183,19 +189,24 @@ const MainSplitPane = () => {
     return <InitializationPanel message={'Click to go bak to top page'} showProgress={false} />
   }
 
-  // Case 3: Data is ready.  Need to draw the network (or data/message panels for large ones)
+
+  // Initiate loading if browser is compatible.
+
+  let cx = originalCx
+
+  // Step 4: Data is ready.  Need to draw the network (or data/message panels for large ones)
   return (
     <React.Fragment>
       <Title title={`${fetchParams.name} (${uuid})`} />
       <div ref={containerRef} className={classes.mainSplitRoot}>
         <SplitPane
           split="vertical"
-          minSize={window.innerWidth * 0.2}
-          size={leftWidth}
+          minSize={windowWidth * 0.2}
+          size={windowWidth - rightWidth}
           onDragFinished={handleChange}
           style={splitPaneStyle}
         >
-          {cx === undefined || cxResponse.isLoading || (Array.isArray(cx) && cx.length === 0) ? (
+          {cx === undefined || cxResponse.isLoading ? (
             <InitializationPanel message={'Loading network data from NDEx server...'} showProgress={true} />
           ) : (
             <NetworkPanel cx={cx} renderer={fetchParams.renderer} objectCount={count} isWebGL2={isWebGL2} />
@@ -206,6 +217,26 @@ const MainSplitPane = () => {
       </div>
     </React.Fragment>
   )
+}
+
+const getWindowWidth = () => {
+  const { innerWidth: windowWidth } = window
+  return windowWidth
+}
+
+const useWindowWidth = () => {
+  const [windowWidth, setWindowWidth] = useState(getWindowWidth())
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowWidth(getWindowWidth())
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  return windowWidth
 }
 
 export default MainSplitPane

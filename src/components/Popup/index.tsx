@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: '#FFFFFF',
       borderRadius: 8,
       border: '1px solid #999999',
-      zIndex: 1500,
+      zIndex: 200,
       padding: '1em',
       paddingTop: 0,
       overflowY: 'auto',
@@ -152,7 +152,7 @@ const Popup: FC<PopupProps> = ({ cx, objectType = ObjectType.NODE }: PopupProps)
   //Left or right?
   const width = effectiveWindowHeight * 0.5
   let right = true
-  if (x > uiState.leftPanelWidth / 2) {
+  if (x > (windowWidth - uiState.rightPanelWidth) / 2) {
     right = false
   }
 
@@ -168,7 +168,7 @@ const Popup: FC<PopupProps> = ({ cx, objectType = ObjectType.NODE }: PopupProps)
   if (right) {
     style['left'] = x
   } else {
-    style['right'] = uiState.leftPanelWidth - x
+    style['right'] = windowWidth - uiState.rightPanelWidth - x
   }
   if (bottom) {
     if (selectionState.lastSelected['fromMain']) {

@@ -64,7 +64,7 @@ const InitPanel: FC<InitPanelProps> = ({ message, showProgress = false, summary,
       if (total <= config.warningThreshold) {
         const hasLayout = summary['hasLayout']
 
-        if (!hasLayout) {
+        if (!hasLayout && total > config.viewerThreshold) {
           setDialogTitle(`No layout available`)
           setDialogMessage('Do you want to load the network anyway? (Random layout will be applied to the network)')
           setOpen(true)
@@ -73,9 +73,9 @@ const InitPanel: FC<InitPanelProps> = ({ message, showProgress = false, summary,
           setProceed(true)
         }
       } else {
-        // Network is very large
-        setDialogMessage(`Large network detected: ${total}`)
-        setOpen(true)
+        // Network is huge.  Simply pass the empty CX and show warning panel
+        setOpen(false)
+        setProceed(true)
       }
     }
   }, [summary])
