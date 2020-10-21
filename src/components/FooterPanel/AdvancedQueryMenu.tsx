@@ -6,6 +6,7 @@ import Menu from '@material-ui/core/Menu'
 import IconButton from '@material-ui/core/Button'
 import MoreIcon from '@material-ui/icons/MoreVert'
 import SaveQueryTSVMenuItem from './SaveQueryTSVMenuItem'
+import { Tooltip } from '@material-ui/core'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,9 +33,11 @@ const AdvancedQueryMenu = () => {
 
   return (
     <div>
-      <IconButton aria-describedby={id} onClick={handleClick} color="inherit">
-        <MoreIcon />
-      </IconButton>
+      <Tooltip title="Search query advanced menu">
+        <IconButton aria-describedby={id} onClick={handleClick} color="inherit">
+          <MoreIcon />
+        </IconButton>
+      </Tooltip>
       <Menu
         id={id}
         open={open}
@@ -49,7 +52,7 @@ const AdvancedQueryMenu = () => {
           horizontal: 'center',
         }}
       >
-       <SaveQueryTSVMenuItem/>
+        <SaveQueryTSVMenuItem />
       </Menu>
     </div>
   )
