@@ -172,7 +172,6 @@ const addSourceTargetInteractionV2 = (nodeAttr, edges, id2attr) => {
     const target = e['t']
     const t = nodeAttr[target]
     const interaction = e['v']
-    const i = interaction['i']
 
     if (s !== undefined) {
       id2attr[id].set('source', s.get('name'))
@@ -180,7 +179,8 @@ const addSourceTargetInteractionV2 = (nodeAttr, edges, id2attr) => {
     if (t !== undefined) {
       id2attr[id].set('target', t.get('name'))
     }
-    if (i !== undefined) {
+    if (interaction !== undefined) {
+      const i = interaction['i']
       id2attr[id].set('interaction', i)
     }
   }

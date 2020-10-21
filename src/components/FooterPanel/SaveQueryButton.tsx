@@ -2,14 +2,10 @@ import React, { useContext } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import { useParams } from 'react-router-dom'
 import useSearch from '../../hooks/useSearch'
-import { IconButton } from '@material-ui/core'
 import AppContext from '../../context/AppState'
-import Tooltip from '@material-ui/core/Tooltip'
 import Snackbar from '@material-ui/core/Snackbar'
 
 import { SaveToNDExButton } from 'cytoscape-explore-components'
-
-import UploadIcon from '@material-ui/icons/CloudUpload'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -60,9 +56,8 @@ const SaveQueryButton = () => {
           fetchCX={fetchCX}
           onSuccess={onSuccess}
           onFailure={onFailure}
-          tooltip="Save Query to NDEx"
+          tooltip="Clone this network and save a copy to your account"
         />
-
         <Snackbar
           open={snackMessage != undefined}
           autoHideDuration={6000}
