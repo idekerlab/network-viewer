@@ -1,6 +1,10 @@
 import parse from 'html-react-parser'
 
 const getContextFromCx = (cx) => {
+  if (cx == undefined) {
+    return {}
+  }
+
   for (let obj of cx) {
     if (obj['networkAttributes']) {
       for (let item of obj['networkAttributes']) {

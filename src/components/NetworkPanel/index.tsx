@@ -29,8 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     subnet: {
       width: '100%',
-      zIndex: 10
-
+      zIndex: 10,
     },
     lowerPanel: {
       flexGrow: 1,
@@ -325,8 +324,7 @@ const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2 }: Vi
 
   return (
     <div className={classes.rootA}>
-      {selectionState.lastSelected['isNode'] ? <Popup cx={cx} /> : <Popup cx={cx} objectType={'edge'} />}
-
+      <Popup cx={objectCount > maxNumObjects ? subCx : cx} />
       <div className={classes.lowerPanel} style={{ height: topHeight }}>
         {renderer !== 'lgr' ? <NavigationPanel target={'main'} /> : <div />}
         {!showSearchResult ? <div /> : <Typography className={classes.title}>Overview</Typography>}
