@@ -5,6 +5,7 @@ import useCx from '../../hooks/useCx'
 import AppContext from '../../context/AppState'
 
 import IconButton from '@material-ui/core/IconButton'
+import Tooltip from '@material-ui/core/Tooltip'
 import DownloadIcon from '@material-ui/icons/CloudDownload'
 
 const SaveNetworkCXButton = () => {
@@ -32,9 +33,11 @@ const SaveNetworkCXButton = () => {
     exportCx()
   }
 
-  return <IconButton disabled={!summary} onClick={handleClick}>
-    <DownloadIcon />
-  </IconButton>
+  return <Tooltip title="Download this network in CX format">
+    <IconButton disabled={!summary} onClick={handleClick}>
+      <DownloadIcon />
+    </IconButton>
+  </Tooltip>
 }
 
 export default SaveNetworkCXButton
