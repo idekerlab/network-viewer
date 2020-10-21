@@ -4,20 +4,37 @@ import { useParams } from 'react-router-dom'
 import useCx from '../../hooks/useCx'
 import AppContext from '../../context/AppState'
 
-import ExportCxButton from '../ExportCxButton'
+import IconButton from '@material-ui/core/IconButton'
+import DownloadIcon from '@material-ui/icons/CloudDownload'
 
 const SaveNetworkCXButton = () => {
   const { uuid } = useParams()
 
   const { ndexCredential, config, summary } = useContext(AppContext)
 
-  const objectCount = summary ? summary['edgeCount'] + summary['nodeCount'] : null;
+  const exportCx = () => {
+    const a = document.createElement('a')
+    // const file = new Blob([content], { type: contentType })
+    let credentialProp = ''
+    if (ndexCredential.isLogin) {
+      if (ndexCredential.isGoogle) {
+        credentialProp = "&id_token=" + ndexCredential.oauth['loginDetails'].tokenId;
+      } else {
+        credentialProp = "&auth_token=" + btoa(ndexCredential.basic.userId + ':' + ndexCredential.basic.password);
+      }
+    }
 
-  const { status, data } = useCx(uuid, config.ndexHttps, 'v2', ndexCredential, config.maxNumObjects, objectCount, '1')
+    a.href = `${config.ndexHttps}/v2/network/${uuid}?download=true${credentialProp}`
+    a.click()
+  }
 
-  const fileName = summary ? summary.name + '.cx' : 'network.cx'
+  const handleClick = () => {
+    exportCx()
+  }
 
-  return <ExportCxButton cx={status && status == 'success' ? data : null} fileName={fileName} />
+  return <IconButton disabled={!summary} onClick={handleClick}>
+    <DownloadIcon />
+  </IconButton>
 }
 
 export default SaveNetworkCXButton
