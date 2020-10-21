@@ -16,9 +16,9 @@ const ClassicModeButton: FC = () => {
   }
 
   return (
-    <Tooltip title="View this network in the Classic Mode" placement="top" arrow>
+    <Tooltip title="Open this network in the Classic Mode" placement="top" arrow>
       <Button variant="outlined" color="default" size="small" endIcon={<ReturnIcon />} onClick={handleClick}>
-        Classic Mode
+        Switch to Classic Mode
       </Button>
     </Tooltip>
   )
