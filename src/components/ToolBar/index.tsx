@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '3em',
       padding: theme.spacing(1),
       background: 'rgba(255, 255, 255, 0.95)',
-      zIndex: 1000,
+      zIndex: 300,
       borderRadius: 5,
     },
   }),
@@ -68,7 +68,7 @@ const ToolBar: FC = (props) => {
           <NdexHomeButton />
           <NDExSignInButton
             size="small"
-            myAccountURL={'https://'+config.ndexUrl+'/#/myAccount'}
+            myAccountURL={'https://' + config.ndexUrl + '/#/myAccount'}
             onLoginStateUpdated={loginStateUpdated}
           />
           <AdvancedMenu />

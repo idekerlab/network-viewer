@@ -9,7 +9,6 @@ import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import AppsIcon from '@material-ui/icons/Apps'
 
-
 import logo from '../../assets/images/ndex-logo.svg'
 
 const drawerWidth = 300
@@ -30,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '1em',
     },
     appBar: {
-      zIndex: theme.zIndex.drawer + 1,
+      zIndex: 300,
       transition: theme.transitions.create(['width', 'margin'], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,

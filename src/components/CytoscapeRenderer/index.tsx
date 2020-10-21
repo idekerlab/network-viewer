@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState, Children } from 'react'
 import { createCytoscape } from './create-cytoscape'
 
-
 import useCyjs from '../../hooks/useCyjs'
 import { getAnnotationRenderer } from '../../utils/cx2cyjs'
 
@@ -16,8 +15,6 @@ type CytoscapeRendererProps = {
   setBusy?: Function
   backgroundColor?: string
 }
-
-
 
 const CytoscapeRenderer = ({
   uuid,
@@ -34,7 +31,7 @@ const CytoscapeRenderer = ({
   let baseStyle = {
     width: '100%',
     height: '100%',
-    backgroundColor : 'rgba(0,0,0,0)',
+    backgroundColor: 'rgba(0,0,0,0)',
   }
 
   const cyjsNetwork = useCyjs(uuid, cx)
@@ -188,8 +185,8 @@ const updateNetwork = (cyjs, cy, annotationRenderer, backgroundColor) => {
     cy.style().fromJson(newVS).update()
 
     console.log('handling annotations: ', cyjs.annotationNiceCX)
-    annotationRenderer.drawAnnotationsFromNiceCX(cy, cyjs.annotationNiceCX);
-    annotationRenderer.drawBackground(cy, backgroundColor);
+    annotationRenderer.drawAnnotationsFromNiceCX(cy, cyjs.annotationNiceCX)
+    annotationRenderer.drawBackground(cy, backgroundColor)
   }
 }
 

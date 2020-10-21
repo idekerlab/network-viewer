@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
     mainSplitRoot: {
       flexGrow: 1,
       boxSizing: 'border-box',
-      zIndex: 99,
+      zIndex: 100,
       display: 'flex',
       height: '100%',
       flexDirection: 'column',
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const getDefaultPanelWidth = (): number => {
-  return Math.floor(window.innerWidth * 0.65)
+  return Math.floor(window.innerWidth * 0.35)
 }
 
 type FetchParams = {
@@ -95,9 +95,10 @@ const MainSplitPane = () => {
   const cx = cxResponse.data
 
   // Local states
-  const [leftWidth, setLeftWidth] = useState(getDefaultPanelWidth())
+  const [rightWidth, setRightWidth] = useState(getDefaultPanelWidth())
   const [containerHeight, setContainerHeight] = useState(0)
   const [isWebGL2, setIsWebGL2] = useState(false)
+  const windowWidth = useWindowWidth()
 
   // True if data is too large
   const [isDataTooLarge, setIsDataTooLarge] = useState(true)
@@ -134,21 +135,21 @@ const MainSplitPane = () => {
 
   useEffect(() => {
     if (!uiState.dataPanelOpen) {
-      setLeftWidth(window.innerWidth)
+      setRightWidth(0)
     } else {
-      setLeftWidth(getDefaultPanelWidth())
+      setRightWidth(getDefaultPanelWidth())
     }
   }, [uiState.dataPanelOpen])
 
-  const setLeftPanelWidth = (state: UIState) =>
-    uiStateDispatch({ type: UIStateActions.SET_LEFT_PANEL_WIDTH, uiState: state })
+  const setRightPanelWidth = (state: UIState) =>
+    uiStateDispatch({ type: UIStateActions.SET_RIGHT_PANEL_WIDTH, uiState: state })
 
   useEffect(() => {
-    setLeftPanelWidth({ ...uiState, leftPanelWidth: leftWidth })
-  }, [leftWidth])
+    setRightPanelWidth({ ...uiState, rightPanelWidth: rightWidth })
+  }, [rightWidth])
 
   const handleChange = (newWidth) => {
-    setLeftWidth(newWidth)
+    setRightWidth(windowWidth - newWidth)
   }
 
   const splitPaneStyle = {
@@ -177,8 +178,8 @@ const MainSplitPane = () => {
       <div ref={containerRef} className={classes.mainSplitRoot}>
         <SplitPane
           split="vertical"
-          minSize={window.innerWidth * 0.2}
-          size={leftWidth}
+          minSize={windowWidth * 0.2}
+          size={windowWidth - rightWidth}
           onDragFinished={handleChange}
           style={splitPaneStyle}
         >
@@ -193,6 +194,26 @@ const MainSplitPane = () => {
       </div>
     </React.Fragment>
   )
+}
+
+const getWindowWidth = () => {
+  const { innerWidth: windowWidth } = window
+  return windowWidth
+}
+
+const useWindowWidth = () => {
+  const [windowWidth, setWindowWidth] = useState(getWindowWidth())
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowWidth(getWindowWidth())
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  return windowWidth
 }
 
 export default MainSplitPane
