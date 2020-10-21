@@ -2,13 +2,6 @@ import React from 'react'
 import IconButton from '@material-ui/core/IconButton'
 import DownloadIcon from '@material-ui/icons/CloudDownload'
 
-const DUMMY = {
-  data: ['a'],
-  test: 'C',
-}
-
-
-
 const ExportCxButton = ({cx, fileName}) => {
   let disabled = true
   if(cx !== undefined) {
