@@ -149,7 +149,7 @@ const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2 }: Vi
           type: SelectionActions.SET_SUB_NODES_AND_EDGES,
           selectionState: {
             ...selectionState,
-            main: { nodes: nodes, edges: edges },
+            sub: { nodes: nodes, edges: edges },
             lastSelected: {
               isNode: lastSelectedType === 'node',
               fromMain: false,
@@ -164,7 +164,7 @@ const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2 }: Vi
           type: SelectionActions.SET_SUB_NODES_AND_EDGES,
           selectionState: {
             ...selectionState,
-            main: { nodes: nodes, edges: edges },
+            sub: { nodes: nodes, edges: edges },
             lastSelected: { showPropPanel: false },
           },
         })
