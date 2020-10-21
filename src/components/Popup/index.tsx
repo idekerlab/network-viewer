@@ -56,14 +56,14 @@ type PopupProps = {
   objectType?: string
 }
 
-const Popup: FC<PopupProps> = ({ cx, objectType = ObjectType.NODE }: PopupProps) => {
+const Popup: FC<PopupProps> = ({ cx }: PopupProps) => {
   const classes = useStyles()
   const { uuid } = useParams()
-  const attr = useAttributes(uuid, cx)
   const { uiState, selectionState, selectionStateDispatch } = useContext(AppContext)
   const { windowHeight, windowWidth } = useWindowDimensions()
   const FOOTER_HEIGHT = 60
 
+  const attr = useAttributes(uuid, cx)
   const context = useMemo(() => getContextFromCx(cx), [cx])
 
   const { lastSelected } = selectionState
@@ -78,13 +78,13 @@ const Popup: FC<PopupProps> = ({ cx, objectType = ObjectType.NODE }: PopupProps)
     setShowPropPanelFalse()
   }, [uiState.showSearchResult])
 
-  if (!lastSelected.showPropPanel || selectionState.lastSelected.id == null) {
+  if (cx == undefined || !lastSelected.showPropPanel || selectionState.lastSelected.id == null) {
     return <div />
   }
 
   const id = selectionState.lastSelected.id
   let attrMap = null
-  if (objectType === ObjectType.NODE) {
+  if (selectionState.lastSelected.isNode) {
     attrMap = attr.nodeAttr[id]
   } else {
     attrMap = attr.edgeAttr[id]
@@ -97,7 +97,7 @@ const Popup: FC<PopupProps> = ({ cx, objectType = ObjectType.NODE }: PopupProps)
   let hasName = false
   for (let item of attrMap) {
     let include = false
-    if (objectType === ObjectType.EDGE) {
+    if (!selectionState.lastSelected.isNode) {
       if ([EdgeAttributes.SOURCE, EdgeAttributes.TARGET, EdgeAttributes.INTERACTION].includes(item[0])) {
         if (item[0] === EdgeAttributes.SOURCE) {
           source = item[1]
@@ -150,7 +150,6 @@ const Popup: FC<PopupProps> = ({ cx, objectType = ObjectType.NODE }: PopupProps)
   const y = lastSelected.coordinates.y
 
   //Left or right?
-  const width = effectiveWindowHeight * 0.5
   let right = true
   if (x > (windowWidth - uiState.rightPanelWidth) / 2) {
     right = false
@@ -158,8 +157,14 @@ const Popup: FC<PopupProps> = ({ cx, objectType = ObjectType.NODE }: PopupProps)
 
   //Bottom or top?
   let bottom = true
-  if (y > effectiveWindowHeight / 2) {
-    bottom = false
+  if (selectionState.lastSelected.fromMain) {
+    if (y > effectiveWindowHeight / 2) {
+      bottom = false
+    }
+  } else {
+    if (effectiveWindowHeight * 0.3 + y > effectiveWindowHeight / 2) {
+      bottom = false
+    }
   }
 
   const style = {
@@ -171,13 +176,13 @@ const Popup: FC<PopupProps> = ({ cx, objectType = ObjectType.NODE }: PopupProps)
     style['right'] = windowWidth - uiState.rightPanelWidth - x
   }
   if (bottom) {
-    if (selectionState.lastSelected['fromMain']) {
+    if (selectionState.lastSelected.fromMain) {
       style['top'] = y
     } else {
       style['top'] = y + effectiveWindowHeight * 0.3
     }
   } else {
-    if (selectionState.lastSelected['fromMain']) {
+    if (selectionState.lastSelected.fromMain) {
       style['bottom'] = effectiveWindowHeight - y
     } else {
       style['bottom'] = effectiveWindowHeight * 0.7 - y

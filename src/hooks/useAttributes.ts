@@ -5,7 +5,7 @@ export default function useAttributes(uuid: string, cx: object[]) {
   const [attr, setAttr] = useState(null)
   const [id, setUuid] = useState(null)
 
-  if(uuid === undefined || uuid === null || cx === undefined || cx === null || cx.length === 0) {
+  if (uuid === undefined || uuid === null || cx === undefined || cx === null || cx.length === 0) {
     return {}
   }
 
