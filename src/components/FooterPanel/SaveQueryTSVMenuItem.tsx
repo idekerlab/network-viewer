@@ -7,13 +7,15 @@ import ExportTsvMenuItem from '../ExportTsvMenuItem'
 const SaveQueryTSVMenuItem = () => {
   const { uuid } = useParams()
 
-  const { query, queryMode, ndexCredential, config } = useContext(AppContext)
+  const { query, queryMode, ndexCredential, config, summary} = useContext(AppContext)
 
   const { status, data } = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
 
   const subCx = data !== undefined ? data['cx'] : undefined
 
-  return <ExportTsvMenuItem cx={status && status == 'success' ? subCx : null} />
+  const fileName = uuid ? uuid + ' subnet.tsv' : 'subnet.tsv'
+
+  return <ExportTsvMenuItem cx={status && status == 'success' ? subCx : null} fileName={fileName}/>
 }
 
 export default SaveQueryTSVMenuItem

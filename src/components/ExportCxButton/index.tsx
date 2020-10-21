@@ -8,7 +8,7 @@ const DUMMY = {
   test: 'C',
 }
 
-const ExportCxButton = ({ cx }) => {
+const ExportCxButton = ({ cx, fileName }) => {
   let disabled = true
   if (cx !== undefined) {
     disabled = false
@@ -23,7 +23,7 @@ const ExportCxButton = ({ cx }) => {
   }
 
   const handleClick = () => {
-    exportCx(JSON.stringify(cx), 'dummy-file-name.json', 'application/json')
+    exportCx(JSON.stringify(cx), fileName, 'application/json')
   }
 
   return (

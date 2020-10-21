@@ -14,7 +14,6 @@ import MinimizeButton from './MinimizeButton'
 import AppContext from '../../../context/AppState'
 import NetworkDetails from './NetworkDetails'
 
-const API_VER = 'v2'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -111,6 +110,7 @@ const NetworkPropertyPanel = () => {
     if (summary == undefined || summary.owner !== summaryResponseData['owner']) {
       setSummary({
         ...summary,
+        name: summaryResponseData['name'],
         owner: summaryResponseData['owner'],
         externalId: summaryResponseData['externalId'],
         visibility: summaryResponseData['visibility'],

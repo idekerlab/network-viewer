@@ -14,14 +14,12 @@ const getEntry = (tag: string, cx: object[]) => {
 
   let len = cx.length
 
-  while (len--) {
-    const entry = cx[len]
+  for (let entry of cx) {
     const value = entry[tag]
     if (value !== undefined) {
       return value
     }
   }
-
   return {}
 }
 
@@ -34,6 +32,7 @@ const getEdgeCount = (cx): number => {
 
 const _getObjectCount = (tag: string, cx: object[]) => {
   const objs = getEntry(tag, cx)
+
   if (objs === undefined) {
     return 0
   }
@@ -64,7 +63,7 @@ const CYJS_LAYOUTS = {
   COSE: 'cose',
   CIRCLE: 'circle',
   GRID: 'grid',
-  PRESET: 'preset'
+  PRESET: 'preset',
 }
 
 const getCyjsLayout = (cx: object[], layoutTh: number = 1000): string => {
@@ -73,10 +72,10 @@ const getCyjsLayout = (cx: object[], layoutTh: number = 1000): string => {
   if (isLayout) {
     return CYJS_LAYOUTS.PRESET
   }
-  
+
   const numObj = getNodeCount(cx) + getEdgeCount(cx)
 
-  if(numObj < layoutTh) {
+  if (numObj < layoutTh) {
     return CYJS_LAYOUTS.COSE
   } else {
     return CYJS_LAYOUTS.CIRCLE
@@ -85,39 +84,36 @@ const getCyjsLayout = (cx: object[], layoutTh: number = 1000): string => {
 
 const LGR_LAYOUT = {
   PRESET: 'preset',
-  RANDOM: 'random'
+  RANDOM: 'random',
 }
 const getLgrLayout = (cx: object[]): string => {
   const nodes = getEntry('nodes', cx)
-  if(nodes === undefined || nodes.length === 0) {
+  if (nodes === undefined || nodes.length === 0) {
     return LGR_LAYOUT.PRESET
   }
 
   const node = nodes[0]
-  if(node === undefined) {
+  if (node === undefined) {
     return LGR_LAYOUT.RANDOM
   }
-  
-  if(node.x === undefined || node.y === undefined || (node.x === 0 && node.y === 0)) {
+
+  if (node.x === undefined || node.y === undefined || (node.x === 0 && node.y === 0)) {
     return LGR_LAYOUT.RANDOM
   }
 
   return 'preset'
-  
 }
 
 const DEF_BG_COLOR = '#FFFFFF'
 const getNetworkBackgroundColor = (cx: object[]): string => {
-  if(cx === undefined || cx === null || !Array.isArray(cx)) {
+  if (cx === undefined || cx === null || !Array.isArray(cx)) {
     return DEF_BG_COLOR
   }
 
-
-
   const vp = getEntry('cyVisualProperties', cx)
   const cxVersion = getEntry('CXVersion', cx)
-  if ( vp === undefined || vp.length === 0 || Object.keys(vp).length === 0) {
-    if(cxVersion === '2.0') {
+  if (vp === undefined || vp.length === 0 || Object.keys(vp).length === 0) {
+    if (cxVersion === '2.0') {
       return _extractBackgroundColorCx2(cx)
     }
     return DEF_BG_COLOR
@@ -125,45 +121,44 @@ const getNetworkBackgroundColor = (cx: object[]): string => {
 
   let bgColor = DEF_BG_COLOR
   let idx = vp.length
-  while(idx--) {
+  while (idx--) {
     const entry = vp[idx]
     const target = entry['properties_of']
-    if(target !== 'network') {
+    if (target !== 'network') {
       continue
     }
 
     const visualPoperties = entry['properties']
     const bgPaint = visualPoperties['NETWORK_BACKGROUND_PAINT']
-    if(bgPaint !== undefined) {
+    if (bgPaint !== undefined) {
       return bgPaint
     }
   }
 
-  return bgColor 
+  return bgColor
 }
 
 const _extractBackgroundColorCx2 = (cx) => {
   const vp = getEntry('visualProperties', cx)
-  if ( vp === undefined || vp.length === 0 || Object.keys(vp).length === 0) {
+  if (vp === undefined || vp.length === 0 || Object.keys(vp).length === 0) {
     return DEF_BG_COLOR
   }
 
   let bgColor = DEF_BG_COLOR
   let idx = vp.length
-  while(idx--) {
+  while (idx--) {
     const entry = vp[idx]
     const target = entry['default']
-    if(target !== undefined) {
+    if (target !== undefined) {
       const networkDefaults = target['network']
       const bgPaint = networkDefaults['NETWORK_BACKGROUND_COLOR']
-      if(bgPaint !== undefined) {
+      if (bgPaint !== undefined) {
         return bgPaint
       }
     }
   }
 
-  return bgColor 
-
+  return bgColor
 }
 
 export { getEntry, getNodeCount, getEdgeCount, getCyjsLayout, getLgrLayout, CYJS_LAYOUTS, getNetworkBackgroundColor }

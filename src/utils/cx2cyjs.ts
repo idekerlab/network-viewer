@@ -4,7 +4,7 @@ import { CxToCyCanvas } from 'cyannotation-cx2js';
 const utils = new CyNetworkUtils()
 const cx2js = new CxToJs(utils)
 
-const annotationRenderer = new CxToCyCanvas(CxToJs);
+const annotationRenderer = new CxToCyCanvas(cx2js);
 
 const getAnnotationRenderer = () => {
   return annotationRenderer

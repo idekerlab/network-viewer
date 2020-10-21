@@ -6,7 +6,7 @@ import DownloadIcon from '@material-ui/icons/CloudDownload'
 
 import { cx2tsv } from '../../utils/cx2tsv'
 
-const ExportTsvButton = ({cx}) => {
+const ExportTsvButton = ({cx, fileName}) => {
   
   let disabled = true
   if(cx !== undefined) {
@@ -23,7 +23,7 @@ const ExportTsvButton = ({cx}) => {
 
   const handleClick = () => {
     const tsvString = cx2tsv(cx);
-    exportTsv(tsvString, 'dummy-file-name.json', 'application/json')
+    exportTsv(tsvString, fileName, 'application/json')
   }
 
   return (

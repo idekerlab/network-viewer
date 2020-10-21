@@ -10,11 +10,11 @@ const getNetworkSummary = async <T>(
   uuid: string,
   serverUrl: string,
   apiVersion: string,
-  credential: NdexCredential
+  credential: NdexCredential,
 ) => {
   const cache = summaryMap[uuid]
 
-  if(cache !== undefined) {
+  if (cache !== undefined) {
     return cache
   }
 
@@ -23,9 +23,11 @@ const getNetworkSummary = async <T>(
   }
 
   const ndexClient = getNdexClient(`${serverUrl}/v2`, credential)
-  const summary = await ndexClient.getNetworkSummary(uuid)
-  summaryMap[uuid] = summary
 
+  let summary
+  summary = await ndexClient.getNetworkSummary(uuid)
+
+  summaryMap[uuid] = summary
   return summary
 }
 
@@ -35,5 +37,11 @@ export default function useNetworkSummary(
   apiVersion: string = 'v2',
   credential: NdexCredential,
 ) {
-  return useQuery(['networkSummary', uuid, serverUrl, apiVersion, credential], getNetworkSummary)
+  const res = useQuery(['networkSummary', uuid, serverUrl, apiVersion, credential], getNetworkSummary, {
+    onError: (e) => {
+      console.error('* Fetch summary error:', e)
+    },
+  })
+
+  return res
 }
