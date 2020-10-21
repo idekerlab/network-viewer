@@ -8,7 +8,7 @@
     "name": "Launch Chrome",
     "request": "launch",
     "type": "pwa-chrome",
-    "url":  "http://localhost:3000/networks/25704eb4-c038-11ea-86e2-525400c25d22",
+    "url":  "http://localhost:3000/viewer/networks",
     "webRoot": "${workspaceFolder}"
   },
   ]

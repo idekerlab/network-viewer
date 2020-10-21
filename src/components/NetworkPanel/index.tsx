@@ -29,6 +29,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     subnet: {
       width: '100%',
+      zIndex: 10
+
     },
     lowerPanel: {
       flexGrow: 1,
@@ -59,15 +61,15 @@ const LAYOUT_TH = 1000
 
 type ViewProps = {
   renderer: string
-  cx: object[]
   objectCount: number
   isWebGL2: boolean
+  cx: object[]
 }
 
-const NetworkPanel: FC<ViewProps> = ({ renderer, cx, objectCount, isWebGL2 }: ViewProps) => {
+const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2 }: ViewProps) => {
   const classes = useStyles()
   const { uuid } = useParams()
-
+  const [init, setInit] = useState(false)
   const [busy, setBusy] = useState(false)
 
   const {
@@ -238,6 +240,7 @@ const NetworkPanel: FC<ViewProps> = ({ renderer, cx, objectCount, isWebGL2 }: Vi
     if (!isWebGL2) {
       return (
         <EmptyView
+          showIcons={!uiState.showSearchResult}
           title="Browser not Supported"
           message={`Your browser cannot display large network data. 
             Please use supported browsers, such as Chrome or Firefox, 
@@ -248,9 +251,10 @@ const NetworkPanel: FC<ViewProps> = ({ renderer, cx, objectCount, isWebGL2 }: Vi
     } else if (objectCount > maxNumObjects) {
       return (
         <EmptyView
-          title="Data is too large"
+          showIcons={!uiState.showSearchResult}
+          title="Network Data is too large"
           message={`There are ${objectCount} objects in this network and it is too large to display. 
-          Please use query function below to extract subnetworks.`}
+          Please use query function below to extract sub-networks.`}
         />
       )
     }

@@ -12,6 +12,8 @@ import UIState from '../../model/UIState'
 import { UIStateActions } from '../../reducer/uiStateReducer'
 import { isWebGL2supported } from '../../utils/browserTest'
 import Title from '../Title'
+import {Redirect} from 'react-router'
+
 
 import InitializationPanel from './InitializationPanel'
 
@@ -91,13 +93,17 @@ const MainSplitPane = () => {
   const summary = summaryResponse.data
   const fetchParams = getFetchParams(summary, th)
 
-  const cxResponse = useCx(uuid, config.ndexHttps, V2, ndexCredential, maxObj, fetchParams.count, fetchParams.cxVersion)
-  const cx = cxResponse.data
+  // First, give null as UUID to hold immediate loading.
+  const [curUuid, setCurUuid] = useState(null)
+  const cxResponse = useCx(curUuid, config.ndexHttps, V2, ndexCredential, maxObj, fetchParams.count, fetchParams.cxVersion)
+  const originalCx = cxResponse.data
 
   // Local states
   const [rightWidth, setRightWidth] = useState(getDefaultPanelWidth())
   const [containerHeight, setContainerHeight] = useState(0)
   const [isWebGL2, setIsWebGL2] = useState(false)
+  const [count, setCount] = useState(0)
+  const [proceed, setProceed] = useState(false)
   const windowWidth = useWindowWidth()
 
   // True if data is too large
@@ -127,9 +133,15 @@ const MainSplitPane = () => {
   useEffect(() => {
     if (summary !== undefined && Object.keys(summary).length !== 0) {
       const count = summary['edgeCount'] + summary['nodeCount']
-      if (count < 1000) {
+      setCount(count)
+
+      if (count < config.maxNumObjects) {
         setIsDataTooLarge(false)
+        if(isWebGL2) {
+          setCurUuid(uuid)
+        }
       }
+
     }
   }, [summary])
 
@@ -156,22 +168,33 @@ const MainSplitPane = () => {
     height: containerHeight,
   }
 
-  let { count } = fetchParams
-  if (!isWebGL2) {
-    count = Number.POSITIVE_INFINITY
+
+  // Check Summary error
+  if(summaryResponse.isError) {
+    return <InitializationPanel message={`${summaryResponse.error}`} error={true} />
   }
 
-  // Case 1: Summary is not available yet
+  // Step 1: Summary is not available yet
   if (summary === undefined || summaryResponse.isLoading) {
-    return <InitializationPanel message={'Checking network summary'} showProgress={false} />
+    return <InitializationPanel message={'Loading summary of the network...'} showProgress={true} />
   }
 
-  // // Case 2: Summary is ready, but CX is not
-  // if (cx === undefined || cxResponse.isLoading || (Array.isArray(cx) && cx.length === 0)) {
-  //   return <InitializationPanel message={'Loading network from NDEx server'} showProgress={true} />
-  // }
+  // Step 2: Summary is ready, but CX is not
+  if (summary !== undefined && !proceed) {
+    return <InitializationPanel summary={summary} message={'Checking status of network data...'} setProceed={setProceed} />
+  }
 
-  // Case 3: Data is ready.  Need to draw the network (or data/message panels for large ones)
+  if (!proceed) {
+    // Canceled.  Go back to original page
+    return <InitializationPanel message={'Click to go bak to top page'} showProgress={false} />
+  }
+
+
+  // Initiate loading if browser is compatible.
+
+  let cx = originalCx
+
+  // Step 4: Data is ready.  Need to draw the network (or data/message panels for large ones)
   return (
     <React.Fragment>
       <Title title={`${fetchParams.name} (${uuid})`} />
@@ -183,8 +206,8 @@ const MainSplitPane = () => {
           onDragFinished={handleChange}
           style={splitPaneStyle}
         >
-          {cx === undefined || cxResponse.isLoading || (Array.isArray(cx) && cx.length === 0) ? (
-            <InitializationPanel message={'Loading network from NDEx server'} showProgress={true} />
+          {cx === undefined || cxResponse.isLoading ? (
+            <InitializationPanel message={'Loading network data from NDEx server...'} showProgress={true} />
           ) : (
             <NetworkPanel cx={cx} renderer={fetchParams.renderer} objectCount={count} isWebGL2={isWebGL2} />
           )}
