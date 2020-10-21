@@ -6,6 +6,7 @@ import * as serviceWorker from './serviceWorker'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { ThemeProvider } from '@material-ui/core/styles'
 import theme from './theme'
+import ErrorBoundary from './components/ErrorBoundary'
 
 import { ReactQueryConfigProvider, ReactQueryCacheProvider, QueryCache } from 'react-query'
 import AppConfig from './model/AppConfig'
@@ -36,16 +37,18 @@ async function loadResource() {
     googleClientId,
     viewerThreshold: viewerTh,
     maxNumObjects,
-    warningThreshold
+    warningThreshold,
   }
-  
+
   ReactDOM.render(
     <React.StrictMode>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <ReactQueryConfigProvider config={queryConfig}>
           <ReactQueryCacheProvider queryCache={queryCache}>
-            <App config={config} />
+            <ErrorBoundary>
+              <App config={config} />
+            </ErrorBoundary>
           </ReactQueryCacheProvider>
         </ReactQueryConfigProvider>
       </ThemeProvider>

@@ -8,7 +8,7 @@ import InfoIcon from '@material-ui/icons/InfoOutlined'
 
 import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
-import { IconButton } from '@material-ui/core'
+import { IconButton, Tooltip } from '@material-ui/core'
 import AppContext from '../../context/AppState'
 import SearchHelpDialog from './SearchHelpDialog'
 import { DownloadButton, DownloadProps } from 'cytoscape-explore-components'
@@ -182,9 +182,11 @@ const SearchBox: FC = () => {
           onKeyPress={handleKeyPress}
         />
       </div>
-      <IconButton size={'small'} disableFocusRipple disableRipple className={classes.button} onClick={handleHelpOpen}>
-        <InfoIcon />
-      </IconButton>
+      <Tooltip title="Learn more">
+        <IconButton size={'small'} disableFocusRipple disableRipple className={classes.button} onClick={handleHelpOpen}>
+          <InfoIcon />
+        </IconButton>
+      </Tooltip>
       <FormControl variant="standard" className={classes.formControl}>
         <Select
           native

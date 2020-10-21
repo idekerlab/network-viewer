@@ -63,12 +63,12 @@ type ViewProps = {
   objectCount: number
   isWebGL2: boolean
   cx: object[]
+  setSubCx: Function
 }
 
-const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2 }: ViewProps) => {
+const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2, setSubCx }: ViewProps) => {
   const classes = useStyles()
   const { uuid } = useParams()
-  const [init, setInit] = useState(false)
   const [busy, setBusy] = useState(false)
 
   const {
@@ -93,6 +93,7 @@ const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2 }: Vi
   let subCx
   if (subnet !== undefined) {
     subCx = subnet['cx']
+    setSubCx(subCx)
   }
 
   useEffect(() => {
@@ -149,7 +150,7 @@ const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2 }: Vi
           type: SelectionActions.SET_SUB_NODES_AND_EDGES,
           selectionState: {
             ...selectionState,
-            main: { nodes: nodes, edges: edges },
+            sub: { nodes: nodes, edges: edges },
             lastSelected: {
               isNode: lastSelectedType === 'node',
               fromMain: false,
@@ -164,7 +165,7 @@ const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2 }: Vi
           type: SelectionActions.SET_SUB_NODES_AND_EDGES,
           selectionState: {
             ...selectionState,
-            main: { nodes: nodes, edges: edges },
+            sub: { nodes: nodes, edges: edges },
             lastSelected: { showPropPanel: false },
           },
         })

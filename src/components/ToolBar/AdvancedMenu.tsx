@@ -6,6 +6,7 @@ import IconButton from '@material-ui/core/Button'
 import MoreIcon from '@material-ui/icons/MoreVert'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
+import { Tooltip } from '@material-ui/core'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -35,9 +36,11 @@ const AdvancedMenu = () => {
 
   return (
     <div>
-      <IconButton size="small" className={classes.button} aria-describedby={id} onClick={handleClick} color="inherit">
-        <MoreIcon />
-      </IconButton>
+      <Tooltip title="Advanced menu">
+        <IconButton size="small" className={classes.button} aria-describedby={id} onClick={handleClick} color="inherit">
+          <MoreIcon />
+        </IconButton>
+      </Tooltip>
       <Menu open={open} anchorEl={anchorEl} onClose={handleClose}>
         <MenuItem
           onClick={() => {

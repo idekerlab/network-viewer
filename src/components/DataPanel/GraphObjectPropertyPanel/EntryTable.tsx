@@ -37,7 +37,6 @@ const EntryTable = (props) => {
 
   const columns = useMemo(() => {
     const columnsList = []
-    let hasName = false
     for (let id of selectedObjects) {
       const attrs = attributes[id]
       if (attrs === undefined) {

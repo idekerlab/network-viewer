@@ -43,7 +43,7 @@ const SelectionList = (props) => {
   let edges = []
   let nodeCount
   let edgeCount
-  if (selectionState.lastSelected['fromMain']) {
+  if (selectionState.lastSelected.fromMain) {
     nodes = selectionState.main['nodes']
     edges = selectionState.main['edges']
   } else {
