@@ -59,12 +59,12 @@ const LAYOUT_TH = 1000
 
 type ViewProps = {
   renderer: string
-  cx: object[]
   objectCount: number
   isWebGL2: boolean
+  cx: object[]
 }
 
-const NetworkPanel: FC<ViewProps> = ({ renderer, cx, objectCount, isWebGL2 }: ViewProps) => {
+const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2 }: ViewProps) => {
   const classes = useStyles()
   const { uuid } = useParams()
 
