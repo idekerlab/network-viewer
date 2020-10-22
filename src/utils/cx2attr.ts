@@ -192,6 +192,10 @@ const getNodeAttrs = (kvMap: object) => {
 
   const id2attr = {}
 
+  if(nodes === undefined) {
+    return id2attr
+  }
+
   let len = nodes.length
   while (len--) {
     const n = nodes[len]

@@ -66,7 +66,6 @@ const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string
     return {}
   }
 
-  console.log('#######Network Query: ', serverUrl, mode, query, uuid)
   let url = `${serverUrl}/v2/search/network/${uuid}/query`
   if (mode === 'interconnect' || mode === 'direct') {
     url = `${serverUrl}/v2/search/network/${uuid}/interconnectquery`
