@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       height: '100%',
       flexDirection: 'column',
+      position: 'relative',
     },
     leftPanel: {
       display: 'flex',
@@ -155,9 +156,9 @@ const MainSplitPane = () => {
   }, [summary])
 
   useEffect(() => {
-    if (!uiState.dataPanelOpen) {
+    if (!uiState.dataPanelOpen && rightWidth > 0) {
       setRightWidth(0)
-    } else {
+    } else if (uiState.dataPanelOpen) {
       setRightWidth(getDefaultPanelWidth())
     }
   }, [uiState.dataPanelOpen])
@@ -165,12 +166,21 @@ const MainSplitPane = () => {
   const setRightPanelWidth = (state: UIState) =>
     uiStateDispatch({ type: UIStateActions.SET_RIGHT_PANEL_WIDTH, uiState: state })
 
+  const setDataPanelOpen = (state: UIState) =>
+    uiStateDispatch({ type: UIStateActions.SET_DATA_PANEL_OPEN, uiState: state })
+
   useEffect(() => {
     setRightPanelWidth({ ...uiState, rightPanelWidth: rightWidth })
   }, [rightWidth])
 
   const handleChange = (newWidth) => {
-    setRightWidth(windowWidth - newWidth)
+    const newRightWidth = windowWidth - newWidth
+    if (newRightWidth <= 0) {
+      setDataPanelOpen({ ...uiState, dataPanelOpen: false })
+    } else if (!uiState.dataPanelOpen) {
+      setDataPanelOpen({ ...uiState, dataPanelOpen: true })
+    }
+    setRightWidth(newRightWidth)
   }
 
   const splitPaneStyle = {
@@ -184,22 +194,31 @@ const MainSplitPane = () => {
 
   // Step 1: Summary is not available yet
   if (summary === undefined || summaryResponse.isLoading) {
-    return <InitializationPanel message={'Loading summary of the network...'} showProgress={true} setProceed={setProceed}/>
+    return (
+      <InitializationPanel message={'Loading summary of the network...'} showProgress={true} setProceed={setProceed} />
+    )
   }
 
   if (cxResponse.isError) {
-    return <InitializationPanel summary={summary} message={`${cxResponse.error}`} error={true} setProceed={setProceed}/>
+    return (
+      <InitializationPanel summary={summary} message={`${cxResponse.error}`} error={true} setProceed={setProceed} />
+    )
   }
   // Step 2: Summary is ready, but CX is not
   if (summary !== undefined && !proceed) {
     return (
-      <InitializationPanel summary={summary} message={'Checking status of network data...'} setProceed={setProceed} setNoView={setNoView}/>
+      <InitializationPanel
+        summary={summary}
+        message={'Checking status of network data...'}
+        setProceed={setProceed}
+        setNoView={setNoView}
+      />
     )
   }
 
   if (!proceed) {
     // Canceled.  Go back to original page
-    return <InitializationPanel message={'Click to go bak to top page'} showProgress={false} setProceed={setProceed}/>
+    return <InitializationPanel message={'Click to go bak to top page'} showProgress={false} setProceed={setProceed} />
   }
 
   // Initiate loading if browser is compatible.
@@ -214,9 +233,14 @@ const MainSplitPane = () => {
           size={windowWidth - rightWidth}
           onDragFinished={handleChange}
           style={splitPaneStyle}
+          maxSize={0}
         >
           {originalCx === undefined || cxResponse.isLoading ? (
-            <InitializationPanel message={'Loading network data from NDEx server...'} showProgress={true} setProceed={setProceed}/>
+            <InitializationPanel
+              message={'Loading network data from NDEx server...'}
+              showProgress={true}
+              setProceed={setProceed}
+            />
           ) : (
             <NetworkPanel
               noView={noView}
@@ -227,9 +251,8 @@ const MainSplitPane = () => {
               setSubCx={setSubCx}
             />
           )}
-          <DataPanel uuid={uuid} cx={isDataTooLarge ? subCx : originalCx} />
+          {uiState.dataPanelOpen ? <DataPanel uuid={uuid} cx={isDataTooLarge ? subCx : originalCx} /> : <ClosedPanel />}
         </SplitPane>
-        {uiState.dataPanelOpen ? <div /> : <ClosedPanel />}
       </div>
     </React.Fragment>
   )

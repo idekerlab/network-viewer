@@ -16,7 +16,6 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: 0,
       borderRadius: 2,
       border: '1px solid #AAAAAA',
-      zIndex: 300,
     },
     closeIcon: {
       width: '1em',
