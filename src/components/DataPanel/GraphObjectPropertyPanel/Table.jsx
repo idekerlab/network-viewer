@@ -1,3 +1,9 @@
+/*
+Same as Table.jsx. Done this way to force the table to completely reload instead
+of trying to refresh, which doesn't work.
+Sorry.
+*/
+
 import React, { useState, useEffect } from 'react'
 import { DynamicSizeList } from 'react-window'
 import { useTable, useBlockLayout } from 'react-table'
@@ -106,7 +112,7 @@ function Table({ columns, data }) {
   )
 
   // Render the UI for your table
-  return data.length > 0 ? (
+  return (
     <div {...getTableProps()} className={classes.table}>
       <div className={classes.header}>
         {headerGroups.map((headerGroup) => (
@@ -138,8 +144,6 @@ function Table({ columns, data }) {
         </AutoSizer>
       </div>
     </div>
-  ) : (
-    <div />
   )
 }
 

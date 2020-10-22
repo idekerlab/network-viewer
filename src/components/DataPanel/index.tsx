@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect, useLayoutEffect } from 'react'
 import SplitPane from 'react-split-pane'
-import useAttributes from '../../hooks/useAttributes'
 
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import GraphObjectPropertyPanel from './GraphObjectPropertyPanel'
 import NetworkPropertyPanel from './NetworkPropertyPanel'
+import { AutoSizer } from 'react-virtualized'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -14,6 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       boxSizing: 'border-box',
+      position: 'relative',
     },
     dataPanel: {
       flexGrow: 1,
@@ -23,19 +24,44 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }),
 )
-const DataPanel = ({ uuid, cx }) => {
-  const attr: object = useAttributes(uuid, cx)
+const DataPanel = ({ cx }) => {
   const classes = useStyles()
-
   const defSize = window.innerHeight * 0.7
   const minSize = window.innerHeight * 0.1
 
+  const [totalHeight, setTotalHeight] = useState(0)
+  const [paneHeight, setPaneHeight] = useState(defSize)
+
+  const handleChange = (newHeight) => {
+    if (newHeight >= totalHeight) {
+      setPaneHeight(totalHeight - minSize)
+    } else {
+      setPaneHeight(newHeight)
+    }
+  }
+
   return (
     <div className={classes.container}>
-      <SplitPane className={classes.dataPanel} split="horizontal" minSize={minSize} defaultSize={defSize}>
-        <NetworkPropertyPanel />
-        <GraphObjectPropertyPanel attributes={attr} cx={cx} />
-      </SplitPane>
+      <AutoSizer disableWidth>
+        {({ height, width }) => {
+          if (height !== totalHeight) {
+            setTotalHeight(height)
+          }
+          return (
+            <SplitPane
+              className={classes.dataPanel}
+              split="horizontal"
+              minSize={minSize}
+              size={paneHeight}
+              onDragFinished={handleChange}
+              maxSize={0}
+            >
+              <NetworkPropertyPanel />
+              <GraphObjectPropertyPanel cx={cx} />
+            </SplitPane>
+          )
+        }}
+      </AutoSizer>
     </div>
   )
 }

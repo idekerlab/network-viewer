@@ -91,6 +91,7 @@ const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2, setS
   const { maxNumObjects } = config
 
   const subnet = searchResult.data
+
   let subCx
   if (subnet !== undefined) {
     subCx = subnet['cx']
@@ -223,8 +224,8 @@ const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2, setS
       return selectionStateDispatch({ type: SelectionActions.CLEAR_ALL_MAIN })
     },
   }
-  
-  if(noView) {
+
+  if (noView) {
     return (
       <EmptyView
         showIcons={!uiState.showSearchResult}
