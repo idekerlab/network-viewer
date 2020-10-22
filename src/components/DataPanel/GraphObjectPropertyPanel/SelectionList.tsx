@@ -7,6 +7,7 @@ import { AutoSizer } from 'react-virtualized'
 import SplitPane from 'react-split-pane'
 import { useParams } from 'react-router-dom'
 import { getContextFromCx } from '../../../utils/contextUtil'
+import useAttributes from '../../../hooks/useAttributes'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -26,9 +27,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const SelectionList = (props) => {
   const { uuid } = useParams()
-  const { attributes, cx } = props
+  const { cx } = props
   const { query, queryMode, selectionState, ndexCredential, config } = useContext(AppContext)
   const { data } = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
+
+  const attributes = useAttributes(uuid, cx)
 
   useEffect(() => {
     if (data === null || data === undefined) {

@@ -23,8 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }),
 )
-const DataPanel = ({ uuid, cx }) => {
-  const attr: object = useAttributes(uuid, cx)
+const DataPanel = ({ cx }) => {
   const classes = useStyles()
 
   const defSize = window.innerHeight * 0.7
@@ -34,7 +33,7 @@ const DataPanel = ({ uuid, cx }) => {
     <div className={classes.container}>
       <SplitPane className={classes.dataPanel} split="horizontal" minSize={minSize} defaultSize={defSize}>
         <NetworkPropertyPanel />
-        <GraphObjectPropertyPanel attributes={attr} cx={cx} />
+        <GraphObjectPropertyPanel cx={cx} />
       </SplitPane>
     </div>
   )

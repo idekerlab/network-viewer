@@ -251,7 +251,7 @@ const MainSplitPane = () => {
               setSubCx={setSubCx}
             />
           )}
-          {uiState.dataPanelOpen ? <DataPanel uuid={uuid} cx={isDataTooLarge ? subCx : originalCx} /> : <ClosedPanel />}
+          {uiState.dataPanelOpen ? <DataPanel cx={isDataTooLarge ? subCx : originalCx} /> : <ClosedPanel />}
         </SplitPane>
       </div>
     </React.Fragment>
