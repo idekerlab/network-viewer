@@ -111,6 +111,8 @@ const MainSplitPane = () => {
   const [isWebGL2, setIsWebGL2] = useState(false)
   const [count, setCount] = useState(0)
   const [proceed, setProceed] = useState(false)
+  const [noView, setNoView] = useState(false)
+
   const windowWidth = useWindowWidth()
   const [subCx, setSubCx] = useState(null)
 
@@ -145,7 +147,7 @@ const MainSplitPane = () => {
 
       if (count < config.maxNumObjects) {
         setIsDataTooLarge(false)
-        if (isWebGL2) {
+        if (isWebGL2 && !noView) {
           setCurUuid(uuid)
         }
       }
@@ -177,24 +179,27 @@ const MainSplitPane = () => {
 
   // Check Summary error
   if (summaryResponse.isError) {
-    return <InitializationPanel message={`${summaryResponse.error}`} error={true} />
+    return <InitializationPanel message={`${summaryResponse.error}`} error={true} setProceed={setProceed} />
   }
 
   // Step 1: Summary is not available yet
   if (summary === undefined || summaryResponse.isLoading) {
-    return <InitializationPanel message={'Loading summary of the network...'} showProgress={true} />
+    return <InitializationPanel message={'Loading summary of the network...'} showProgress={true} setProceed={setProceed}/>
   }
 
+  if (cxResponse.isError) {
+    return <InitializationPanel summary={summary} message={`${cxResponse.error}`} error={true} setProceed={setProceed}/>
+  }
   // Step 2: Summary is ready, but CX is not
   if (summary !== undefined && !proceed) {
     return (
-      <InitializationPanel summary={summary} message={'Checking status of network data...'} setProceed={setProceed} />
+      <InitializationPanel summary={summary} message={'Checking status of network data...'} setProceed={setProceed} setNoView={setNoView}/>
     )
   }
 
   if (!proceed) {
     // Canceled.  Go back to original page
-    return <InitializationPanel message={'Click to go bak to top page'} showProgress={false} />
+    return <InitializationPanel message={'Click to go bak to top page'} showProgress={false} setProceed={setProceed}/>
   }
 
   // Initiate loading if browser is compatible.
@@ -211,9 +216,10 @@ const MainSplitPane = () => {
           style={splitPaneStyle}
         >
           {originalCx === undefined || cxResponse.isLoading ? (
-            <InitializationPanel message={'Loading network data from NDEx server...'} showProgress={true} />
+            <InitializationPanel message={'Loading network data from NDEx server...'} showProgress={true} setProceed={setProceed}/>
           ) : (
             <NetworkPanel
+              noView={noView}
               cx={originalCx}
               renderer={fetchParams.renderer}
               objectCount={count}

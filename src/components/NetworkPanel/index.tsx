@@ -64,9 +64,10 @@ type ViewProps = {
   isWebGL2: boolean
   cx: object[]
   setSubCx: Function
+  noView: boolean
 }
 
-const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2, setSubCx }: ViewProps) => {
+const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2, setSubCx, noView }: ViewProps) => {
   const classes = useStyles()
   const { uuid } = useParams()
   const [busy, setBusy] = useState(false)
@@ -222,6 +223,16 @@ const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2, setS
       return selectionStateDispatch({ type: SelectionActions.CLEAR_ALL_MAIN })
     },
   }
+  
+  if(noView) {
+    return (
+      <EmptyView
+        showIcons={!uiState.showSearchResult}
+        title="No network view mode"
+        message={`You can use the query functions below to extract sub-networks.`}
+      />
+    )
+  }
 
   const setMain = (cy: CyReference) => cyDispatch({ type: CyActions.SET_MAIN, cyReference: cy })
   const setSub = (cy: CyReference) => cyDispatch({ type: CyActions.SET_SUB, cyReference: cy })
@@ -241,7 +252,7 @@ const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2, setS
       return (
         <EmptyView
           showIcons={!uiState.showSearchResult}
-          title="Browser not Supported"
+          title="Browser not supported"
           message={`Your browser cannot display large network data. 
             Please use supported browsers, such as Chrome or Firefox, 
             to view large networks. (Still, you can query the network 
@@ -252,9 +263,9 @@ const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2, setS
       return (
         <EmptyView
           showIcons={!uiState.showSearchResult}
-          title="Network Data is too large"
+          title="Network data is too large"
           message={`There are ${objectCount} objects in this network and it is too large to display. 
-          Please use query function below to extract sub-networks.`}
+          You can use the query functions below to extract sub-networks.`}
         />
       )
     }

@@ -16,13 +16,15 @@ export type MessageDialogProps = {
   title?: string
   message?: string
   setProceed?: Function
+  setNoView?: Function
 }
 
-const MessageDialog: FC<MessageDialogProps> = ({ title = '', message = '', open, setOpen, setProceed }) => {
+const MessageDialog: FC<MessageDialogProps> = ({ title = '', message = '', open, setOpen, setProceed, setNoView }) => {
   let history = useHistory()
 
   const handleProceed = () => {
 
+    setNoView(false)
     if(setProceed !== undefined) {
       setProceed(true)
     }
@@ -30,8 +32,10 @@ const MessageDialog: FC<MessageDialogProps> = ({ title = '', message = '', open,
   }
 
   const handleCancel = () => {
+    setNoView(true)
     setOpen(false)
-    history.goBack()
+    setProceed(true)
+    // history.goBack()
   }
 
   return (
@@ -46,7 +50,7 @@ const MessageDialog: FC<MessageDialogProps> = ({ title = '', message = '', open,
         </Button>
 
         <Button onClick={handleProceed} color="secondary">
-          Proceed
+          OK
         </Button>
       </DialogActions>
     </Dialog>

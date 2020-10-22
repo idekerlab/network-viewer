@@ -30,6 +30,8 @@ const LGRPanel = ({
   layoutName = 'preset',
   pickable,
 }: LGRPanelProps) => {
+  const t00 = performance.now()
+
   const [render3d, setRender3d] = useState(false)
   const [painted, setPainted] = useState(false)
   const [data, setData] = useState<GraphView | null>(null)
@@ -84,6 +86,8 @@ const LGRPanel = ({
 
   useEffect(() => {
     if (cx !== undefined && data === null) {
+
+      const t0 = performance.now()
       const result = cxVizConverter.convert(cx, 'lnv')
 
       // TODO: add better layout
@@ -98,6 +102,7 @@ const LGRPanel = ({
       }
       const gv = GraphViewFactory.createGraphView(nodeViews, result.edgeViews)
       setData(gv)
+
     }
   }, [cx])
 
@@ -105,6 +110,8 @@ const LGRPanel = ({
     const loadingMessage = 'Loading large network data.  Please wait......'
     return <Loading message={loadingMessage} />
   }
+
+  console.log('@@@@@@@@@@@@ 2LGR', performance.now() -t00)
 
   return (
     <LargeGraphRenderer

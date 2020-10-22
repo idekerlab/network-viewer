@@ -40,7 +40,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type InitPanelProps = {
   message: string
-  setProceed?: Function
+  setProceed: Function
+  setNoView?: Function
   showProgress?: boolean
   summary?: object
   error?: boolean
@@ -48,7 +49,7 @@ type InitPanelProps = {
   // setIsDataTooLarge: Function
 }
 
-const InitPanel: FC<InitPanelProps> = ({ message, showProgress = false, summary, setProceed, error = false }) => {
+const InitPanel: FC<InitPanelProps> = ({ message, showProgress = false, summary, setProceed, error = false, setNoView }) => {
   const classes = useStyles()
   const { config } = useContext(AppContext)
 
@@ -65,8 +66,8 @@ const InitPanel: FC<InitPanelProps> = ({ message, showProgress = false, summary,
         const hasLayout = summary['hasLayout']
 
         if (!hasLayout && total > config.viewerThreshold) {
-          setDialogTitle(`No layout available`)
-          setDialogMessage('Do you want to load the network anyway? (Random layout will be applied to the network)')
+          setDialogTitle(`No layout available for this network`)
+          setDialogMessage('Do you want to visualize the network with random layout? Or click cancel to explore it without view')
           setOpen(true)
         } else {
           // Small network.  Just load it.
@@ -92,7 +93,7 @@ const InitPanel: FC<InitPanelProps> = ({ message, showProgress = false, summary,
           <ErrorIcon fontSize="inherit" color="error" className={classes.errorIcon} />
           <Typography variant="h5">{message}</Typography>
           <Typography variant="h6">
-            Please reload this page, or click <a href={`${config.ndexHttps}`}>here</a> to go back to home page
+            Please reload this page, or click <a href={`${config.ndexHttps}/#network/${summary['externalId']}`}>here</a> to try in Classic Mode
           </Typography>
         </div>
       </div>
@@ -102,6 +103,7 @@ const InitPanel: FC<InitPanelProps> = ({ message, showProgress = false, summary,
     <React.Fragment>
       <MessageDialog
         setProceed={setProceed}
+        setNoView={setNoView}
         open={open}
         setOpen={handleClose}
         title={dialogTitle}
