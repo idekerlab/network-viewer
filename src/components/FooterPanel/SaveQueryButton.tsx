@@ -56,7 +56,7 @@ const SaveQueryButton = () => {
           fetchCX={fetchCX}
           onSuccess={onSuccess}
           onFailure={onFailure}
-          tooltip="Clone this network and save a copy to your account"
+          tooltip="Save to NDEx"
         />
         <Snackbar
           open={snackMessage != undefined}
