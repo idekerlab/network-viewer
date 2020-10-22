@@ -31,17 +31,22 @@ const getEdgeCount = (cx): number => {
 }
 
 const _getObjectCount = (tag: string, cx: object[]) => {
-  const objs = getEntry(tag, cx)
+  if (cx === undefined || cx === null) {
+    return 0;
+  }
+  
+  let count = 0;
 
-  if (objs === undefined) {
-    return 0
+  for (let entry of cx) {
+    const value = entry[tag]
+    if (value !== undefined) {
+      if (Array.isArray(value)) {
+        count += value.length
+      }
+    }
   }
 
-  if (Array.isArray(objs)) {
-    return objs.length
-  }
-
-  return 0
+  return count;
 }
 
 const _isLayoutAvailable = (cx: object[]): boolean => {
