@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles'
 import useSearch from '../../../hooks/useSearch'
 import AppContext from '../../../context/AppState'
@@ -30,8 +30,11 @@ const SelectionList = (props) => {
   const { cx } = props
   const { query, queryMode, selectionState, ndexCredential, config } = useContext(AppContext)
   const { data } = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
+  const [paneHeight, setPaneHeight] = useState(null)
+  const [totalHeight, setTotalHeight] = useState(null)
 
   const attributes = useAttributes(uuid, cx)
+  const minHeight = 1
 
   useEffect(() => {
     if (data === null || data === undefined) {
@@ -40,7 +43,21 @@ const SelectionList = (props) => {
     const kvMap = data['kvMap']
   }, [data])
 
+  useEffect(() => {
+    if (paneHeight >= totalHeight) {
+      setPaneHeight(totalHeight - minHeight)
+    }
+  }, [totalHeight])
+
   const context = useMemo(() => getContextFromCx(cx), [cx])
+
+  const handleChange = (newHeight) => {
+    if (totalHeight - newHeight < minHeight) {
+      setPaneHeight(totalHeight - minHeight)
+    } else {
+      setPaneHeight(newHeight)
+    }
+  }
 
   let nodes = []
   let edges = []
@@ -58,26 +75,41 @@ const SelectionList = (props) => {
 
   return (
     <AutoSizer disableWidth>
-      {({ height, width }) => (
-        <SplitPane split="horizontal" defaultSize={height / 2}>
-          <EntryTable
-            key={'selected-nodes'}
-            label={`Selected Nodes (${nodeCount})`}
-            selectedObjects={nodes}
-            attributes={attributes.nodeAttr}
-            context={context}
-          />
+      {({ height, width }) => {
+        if (height !== totalHeight) {
+          setTotalHeight(height)
+        }
+        if ((paneHeight == null || paneHeight <= 0) && totalHeight > 0) {
+          setPaneHeight(totalHeight / 2)
+        }
+        return (
+          <SplitPane
+            split="horizontal"
+            size={paneHeight}
+            maxSize={0}
+            onDragFinished={handleChange}
+            primary={'second'}
+            minSize={minHeight}
+          >
+            <EntryTable
+              key={'selected-nodes'}
+              label={`Selected Nodes (${nodeCount})`}
+              selectedObjects={nodes}
+              attributes={attributes.nodeAttr}
+              context={context}
+            />
 
-          <EntryTable
-            key={'selected-edges'}
-            label={`Selected Edges (${edgeCount})`}
-            selectedObjects={edges}
-            attributes={attributes.edgeAttr}
-            type={'edge'}
-            context={context}
-          />
-        </SplitPane>
-      )}
+            <EntryTable
+              key={'selected-edges'}
+              label={`Selected Edges (${edgeCount})`}
+              selectedObjects={edges}
+              attributes={attributes.edgeAttr}
+              type={'edge'}
+              context={context}
+            />
+          </SplitPane>
+        )
+      }}
     </AutoSizer>
   )
 }
