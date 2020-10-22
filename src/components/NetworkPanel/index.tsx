@@ -301,7 +301,23 @@ const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2, setS
 
   let border = 'none'
 
+  const isEdgeLimitExceeded = (cx) => {
+    for (let tag in cx) {
+      const value = cx[tag]
+      const status = value['status']
+      if (status && status.length > 0) {
+        if (status[0].success) {
+          return false
+        } else {
+          return status[0].error === 'EdgeLimitExceeded'
+        }
+      }
+    }
+  }
+
   const getSubRenderer = () => {
+    console.log('sub renderer edge limit exceeded ' + isEdgeLimitExceeded(subCx))
+
     if (subCx === undefined && showSearchResult) {
       // let showLoading = busy
       let message = 'Applying layout...'
