@@ -54,9 +54,10 @@ type PopupProps = {
   cx: object[]
   target?: string
   objectType?: string
+  subHeight: number
 }
 
-const Popup: FC<PopupProps> = ({ cx }: PopupProps) => {
+const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
   const classes = useStyles()
   const { uuid } = useParams()
   const { uiState, selectionState, selectionStateDispatch } = useContext(AppContext)
@@ -145,7 +146,6 @@ const Popup: FC<PopupProps> = ({ cx }: PopupProps) => {
   }
 
   //Calculate position based on pointer position in window
-  const effectiveWindowHeight = windowHeight - FOOTER_HEIGHT
   const x = lastSelected.coordinates.x
   const y = lastSelected.coordinates.y
 
@@ -158,17 +158,17 @@ const Popup: FC<PopupProps> = ({ cx }: PopupProps) => {
   //Bottom or top?
   let bottom = true
   if (selectionState.lastSelected.fromMain) {
-    if (y > effectiveWindowHeight / 2) {
+    if (y > (windowHeight - FOOTER_HEIGHT) / 2) {
       bottom = false
     }
   } else {
-    if (effectiveWindowHeight * 0.3 + y > effectiveWindowHeight / 2) {
+    if (windowHeight - subHeight + y > windowHeight / 2) {
       bottom = false
     }
   }
 
   const style = {
-    maxHeight: effectiveWindowHeight * 0.4,
+    maxHeight: windowHeight * 0.4,
   }
   if (right) {
     style['left'] = x
@@ -179,13 +179,13 @@ const Popup: FC<PopupProps> = ({ cx }: PopupProps) => {
     if (selectionState.lastSelected.fromMain) {
       style['top'] = y
     } else {
-      style['top'] = y + effectiveWindowHeight * 0.3
+      style['top'] = y + (windowHeight - subHeight - FOOTER_HEIGHT)
     }
   } else {
     if (selectionState.lastSelected.fromMain) {
-      style['bottom'] = effectiveWindowHeight - y
+      style['bottom'] = windowHeight - y - FOOTER_HEIGHT
     } else {
-      style['bottom'] = effectiveWindowHeight * 0.7 - y
+      style['bottom'] = subHeight - y
     }
   }
   return (

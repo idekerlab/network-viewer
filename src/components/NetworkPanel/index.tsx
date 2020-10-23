@@ -86,7 +86,7 @@ const NetworkPanel: FC<ViewProps> = ({
   const defSize = window.innerHeight * 0.3
   const minSize = window.innerHeight * 0.1
   const [size, setSize] = useState(defSize)
-  const [totalHeight, setTotalHeight] = useState(null)
+  const [subHeight, setSubHeight] = useState(0)
 
   const {
     query,
@@ -339,36 +339,30 @@ const NetworkPanel: FC<ViewProps> = ({
 
   return (
     <div className={classes.rootA}>
-      <Popup cx={objectCount > maxNumObjects ? subCx : cx} />
+      <Popup cx={objectCount > maxNumObjects ? subCx : cx} subHeight={subHeight} />
       {showSearchResult ? (
-        <AutoSizer disableWidth>
-          {({ height, width }) => {
-            if (height !== totalHeight) {
-              setTotalHeight(height)
-            }
-            return (
-              <SplitPane split="horizontal" size={size} minSize={minSize} maxSize={0} onDragFinished={handleDrag}>
-                <div className={classes.lowerPanel}>
-                  {renderer !== 'lgr' ? <NavigationPanel target={'main'} /> : <div />}
-                  {!showSearchResult ? <div /> : <Typography className={classes.title}>Overview</Typography>}
-                  {getMainRenderer(renderer)}
+        <SplitPane split="horizontal" size={size} minSize={minSize} maxSize={0} onDragFinished={handleDrag}>
+          <div className={classes.lowerPanel}>
+            {renderer !== 'lgr' ? <NavigationPanel target={'main'} /> : <div />}
+            {!showSearchResult ? <div /> : <Typography className={classes.title}>Overview</Typography>}
+            {getMainRenderer(renderer)}
+          </div>
+          <AutoSizer disableWidth>
+            {({ height, width }) => {
+              if (height !== subHeight) {
+                setSubHeight(height)
+              }
+              return (
+                <div className={classes.subnet} style={{ height: height }}>
+                  {showSearchResult ? <NavigationPanel target={'sub'} /> : <div />}
+                  {getSubRenderer()}
                 </div>
-                <AutoSizer disableWidth>
-                  {({ height, width }) => {
-                    return (
-                      <div className={classes.subnet} style={{ height: height }}>
-                        {showSearchResult ? <NavigationPanel target={'sub'} /> : <div />}
-                        {getSubRenderer()}
-                      </div>
-                    )
-                  }}
-                </AutoSizer>
-              </SplitPane>
-            )
-          }}
-        </AutoSizer>
+              )
+            }}
+          </AutoSizer>
+        </SplitPane>
       ) : (
-        <div className={classes.lowerPanel}>
+        <div className={classes.lowerPanel} style={{ zIndex: 100 }}>
           {renderer !== 'lgr' ? <NavigationPanel target={'main'} /> : <div />}
           {!showSearchResult ? <div /> : <Typography className={classes.title}>Overview</Typography>}
           {getMainRenderer(renderer)}
