@@ -85,13 +85,14 @@ const EdgeLimitExceededPanel = () => {
           { ndexCredential.isLogin ? 'You can save this sub-network to NDEx to continue working with it.' : 'Please log in so that the result can be saved to your NDEx account' }
         </Typography>
         { ndexCredential.isLogin && <Button onClick={handleSave} variant='contained'>Save Result</Button> }
-      </div>
-      <Snackbar
+        <Snackbar
           open={snackMessage != undefined}
+          anchorOrigin={ {vertical: 'top', horizontal: 'center' }}
           autoHideDuration={6000}
           onClose={handleClose}
           message={snackMessage}
         />
+      </div>
     </div>
   )
 }
