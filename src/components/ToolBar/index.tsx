@@ -61,6 +61,14 @@ const ToolBar: FC = (props) => {
     }
   }
 
+  const getCurrentPrefix  = () =>  {
+    if (window.location.href.startsWith('https')) {
+        return 'https://'
+    } else {
+      return 'http://'
+    }
+  }
+
   return (
     <div className={classes.root}>
       <Grid container direction="row" justify="flex-start" alignItems="center" spacing={0}>
@@ -68,7 +76,7 @@ const ToolBar: FC = (props) => {
           <NdexHomeButton />
           <NDExSignInButton
             size="small"
-            myAccountURL={'https://' + config.ndexUrl + '/#/myAccount'}
+            myAccountURL={getCurrentPrefix() + config.ndexUrl + '/#/myAccount'}
             onLoginStateUpdated={loginStateUpdated}
           />
           <AdvancedMenu />
