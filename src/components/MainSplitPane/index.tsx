@@ -259,9 +259,18 @@ const MainSplitPane = () => {
   }
 
   if (cxResponse.isError) {
-    return (
-      <InitializationPanel summary={summary} message={`${cxResponse.error}`} error={true} setProceed={setProceed} />
-    )
+    if (cxResponse.error['response']
+      && cxResponse.error['response'].data
+      && cxResponse.error['response'].data.message !== 'CX2 network is not available for this network.') {
+      return (
+        <InitializationPanel summary={summary} message={`Missing visualization data. Unable to visualize this network.`} error={true} setProceed={setProceed} />
+      )
+    } else {
+      console.log('CXResponse error data:', cxResponse.error['response'].data)
+      return (
+        <InitializationPanel summary={summary} message={`${cxResponse.error}`} error={true} setProceed={setProceed} />
+      )
+    }
   }
   // Step 2: Summary is ready, but CX is not
   if (summary !== undefined && !proceed) {
