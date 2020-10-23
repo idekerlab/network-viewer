@@ -98,7 +98,7 @@ const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2, setS
     setSubCx(subCx)
   }
 
-  const edgeLimitExceeded = searchResult.data['edgeLimitExceeded']
+  const edgeLimitExceeded = subnet !== undefined ? subnet['edgeLimitExceeded'] : false
 
   useEffect(() => {
     if (subCx !== undefined) {

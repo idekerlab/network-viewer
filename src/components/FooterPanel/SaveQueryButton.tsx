@@ -1,7 +1,8 @@
 import React, { useContext } from 'react'
+import { Button } from '@material-ui/core'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import { useParams } from 'react-router-dom'
-import useSearch from '../../hooks/useSearch'
+import useSearch, { saveQuery } from '../../hooks/useSearch'
 import AppContext from '../../context/AppState'
 import Snackbar from '@material-ui/core/Snackbar'
 
@@ -26,17 +27,23 @@ const SaveQueryButton = () => {
 
   const subnet = searchResult.data
 
-  const edgeLimitExceeded : boolean = subnet !== undefined ? subnet['edgeLimitExceeded'] : false
-  
-  console.log(`SaveQueryButton edgeLimitExceeded: `, edgeLimitExceeded )
+  const edgeLimitExceeded: boolean = subnet !== undefined ? subnet['edgeLimitExceeded'] : false
+
+  console.log(`SaveQueryButton edgeLimitExceeded: `, edgeLimitExceeded)
 
   const subCx = subnet !== undefined ? subnet['cx'] : undefined
 
   const fetchCX = () => {
-    return new Promise<Object>(function (resolve, reject) {
-      console.log(JSON.stringify(subCx))
-      resolve(subCx)
-    })
+      return new Promise<Object>(function (resolve, reject) {
+        console.log(JSON.stringify(subCx))
+        resolve(subCx)
+      })
+  }
+
+  const handleSave = () => {
+    saveQuery(uuid, query, config.ndexHttps, ndexCredential, queryMode).then(() => {
+      setSnackMessage('Network saved to NDEx.')}
+    )
   }
 
   const [snackMessage, setSnackMessage] = React.useState(undefined)
@@ -57,13 +64,15 @@ const SaveQueryButton = () => {
   if (uiState.showSearchResult) {
     return (
       <div>
-        <SaveToNDExButton
+        {!edgeLimitExceeded ? <SaveToNDExButton
           disabled={subCx == undefined}
           fetchCX={fetchCX}
           onSuccess={onSuccess}
           onFailure={onFailure}
           tooltip="Save to NDEx"
-        />
+        /> : 
+          <Button onClick={handleSave}>BIG SAVE</Button>
+        }
         <Snackbar
           open={snackMessage != undefined}
           autoHideDuration={6000}
