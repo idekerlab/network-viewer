@@ -65,7 +65,7 @@ const ToolBar: FC = (props) => {
     if (window.location.href.startsWith('https')) {
         return 'https://'
     } else {
-      return 'http;//'
+      return 'http://'
     }
   }
 
