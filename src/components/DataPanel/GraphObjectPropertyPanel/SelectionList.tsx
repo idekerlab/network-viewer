@@ -29,7 +29,7 @@ const SelectionList = (props) => {
   const { uuid } = useParams()
   const { cx } = props
   const { query, queryMode, selectionState, ndexCredential, config } = useContext(AppContext)
-  const { data } = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
+  const { data } = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode, config.maxEdgeQuery)
   const [paneHeight, setPaneHeight] = useState(null)
   const [totalHeight, setTotalHeight] = useState(null)
 

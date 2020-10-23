@@ -7,7 +7,6 @@ import AppContext from '../../context/AppState'
 import Snackbar from '@material-ui/core/Snackbar'
 
 import { SaveToNDExButton } from 'cytoscape-explore-components'
-import { findAllByDisplayValue } from '@testing-library/react'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,7 +22,7 @@ const SaveQueryButton = () => {
   const { uuid } = useParams()
 
   const { query, queryMode, uiState, ndexCredential, config } = useContext(AppContext)
-  const searchResult = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
+  const searchResult = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode, config.maxEdgeQuery)
 
   const subnet = searchResult.data
 

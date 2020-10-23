@@ -3,20 +3,20 @@ import HttpResponse from '../api/HttpResponse'
 import NdexCredential from '../model/NdexCredential'
 import { getAuthorization } from '../utils/credentialUtil'
 
-const EDGE_LIMIT = 50000
+const DEF_MAX_EDGE = 10000
 
 const edgeLimitParams = {
-  edgeLimit: EDGE_LIMIT,
-  errorWhenLimitIsOver: true
+  edgeLimit: DEF_MAX_EDGE,
+  errorWhenLimitIsOver: true,
 }
 
 const queryModeParams = {
   direct: {
-    searchDepth: 1
+    searchDepth: 1,
   },
   firstStepNeighborhood: {
     directOnly: false,
-    searchDepth: 1
+    searchDepth: 1,
   },
   firstStepAdjacent: {
     directOnly: true,
@@ -31,8 +31,8 @@ const queryModeParams = {
   },
   twoStepAdjacent: {
     directOnly: true,
-    searchDepth: 2
-  }
+    searchDepth: 2,
+  },
 }
 
 const selectNodes = (cxResult: object[]): string[] => {
@@ -70,7 +70,13 @@ const isEdgeLimitExceeded = (cx) => {
   }
 }
 
-export const saveQuery = async(uuid: string, query: string, serverUrl: string, credential: NdexCredential, mode: string) => {
+export const saveQuery = async (
+  uuid: string,
+  query: string,
+  serverUrl: string,
+  credential: NdexCredential,
+  mode: string,
+) => {
   if (uuid === undefined || uuid === null || uuid.length === 0) {
     return {}
   }
@@ -84,31 +90,38 @@ export const saveQuery = async(uuid: string, query: string, serverUrl: string, c
     url = `${serverUrl}/v2/search/network/${uuid}/interconnectquery?save=true`
   }
 
-  const queryParam = queryModeParams[mode];
+  const queryParam = queryModeParams[mode]
   queryParam['searchString'] = query
 
-  const authorization = getAuthorization(credential);
+  const authorization = getAuthorization(credential)
 
   const settings = {
     method: 'POST',
-    // mode: 'cors',  
+    // mode: 'cors',
     headers: authorization
       ? {
-        'Content-Type': 'application/json',
-        Authorization: authorization
-      }
+          'Content-Type': 'application/json',
+          Authorization: authorization,
+        }
       : {
-        'Content-Type': 'application/json'
-      }
-    ,
+          'Content-Type': 'application/json',
+        },
     body: JSON.stringify(queryParam),
   }
 
   console.log('Calling fetch search settings: ', settings)
-  return fetch(url, settings);
+  return fetch(url, settings)
 }
 
-const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string, credential: NdexCredential, mode: string) => {
+const queryNetwork = async <T>(
+  _,
+  uuid: string,
+  query: string,
+  serverUrl: string,
+  credential: NdexCredential,
+  mode: string,
+  maxEdge: number
+) => {
   if (uuid === undefined || uuid === null || uuid.length === 0) {
     return {}
   }
@@ -122,23 +135,23 @@ const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string
     url = `${serverUrl}/v2/search/network/${uuid}/interconnectquery`
   }
 
-  const queryParam = Object.assign(Object.assign({}, queryModeParams[mode], edgeLimitParams));
+  edgeLimitParams['edgeLimit'] = maxEdge
+  const queryParam = Object.assign(Object.assign({}, queryModeParams[mode], edgeLimitParams))
   queryParam['searchString'] = query
 
-  const authorization = getAuthorization(credential);
+  const authorization = getAuthorization(credential)
 
   const settings = {
     method: 'POST',
-    // mode: 'cors',  
+    // mode: 'cors',
     headers: authorization
       ? {
-        'Content-Type': 'application/json',
-        Authorization: authorization
-      }
+          'Content-Type': 'application/json',
+          Authorization: authorization,
+        }
       : {
-        'Content-Type': 'application/json'
-      }
-    ,
+          'Content-Type': 'application/json',
+        },
     body: JSON.stringify(queryParam),
   }
 
@@ -153,7 +166,7 @@ const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string
       kvMap: transformCx(cx),
       // subNetwork: cx2cyjs(uuid, cx),
       cx,
-      edgeLimitExceeded
+      edgeLimitExceeded,
     }
   } catch (ex) {
     console.error('Query API Call error:', ex)
@@ -164,8 +177,6 @@ const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string
 
   return response.parsedBody
 }
-
-
 
 const transformCx = (cx: object[]) => {
   const resultObject = {}
@@ -220,8 +231,15 @@ const getAttrs = (kvMap: object) => {
   return id2attr
 }
 
-const useSearch = (uuid: string, query: string, serverUrl: string, credential: NdexCredential, mode: string) => {
-  return useQuery(['queryNetwork', uuid, query, serverUrl, credential, mode], queryNetwork)
+const useSearch = (
+  uuid: string,
+  query: string,
+  serverUrl: string,
+  credential: NdexCredential,
+  mode: string,
+  maxEdge: number,
+) => {
+  return useQuery(['queryNetwork', uuid, query, serverUrl, credential, mode, maxEdge], queryNetwork)
 }
 
 export default useSearch

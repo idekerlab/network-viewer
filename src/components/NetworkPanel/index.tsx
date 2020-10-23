@@ -103,7 +103,7 @@ const NetworkPanel: FC<ViewProps> = ({
     setSummary,
   } = useContext(AppContext)
 
-  const searchResult = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
+  const searchResult = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode, config.maxEdgeQuery)
 
   const handleDrag = (newSize) => {
     setSize(newSize)

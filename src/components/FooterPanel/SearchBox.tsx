@@ -96,7 +96,7 @@ const SearchBox: FC = () => {
 
   const [searchType, setSearchType] = useState(queryMode)
 
-  const searchResult = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
+  const searchResult = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode, config.maxEdgeQuery)
 
   const subnet = searchResult.data
   let subCx

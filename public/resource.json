@@ -4,6 +4,7 @@
   "googleClientId": "802839698598-mrrd3iq3jl06n6c2fo1pmmc8uugt9ukq.apps.googleusercontent.com",
   "viewerThreshold": 10000,
   "maxNumObjects": 2000000,
+  "maxEdgeQuery": 10000,
   "maxDataSize": 900000000,
   "warningThreshold": 1000000
 }

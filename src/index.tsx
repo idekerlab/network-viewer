@@ -29,6 +29,7 @@ async function loadResource() {
   const googleClientId = resource['googleClientId']
   const viewerTh = resource['viewerThreshold']
   const maxNumObjects = resource['maxNumObjects']
+  const maxEdgeQuery = resource['maxEdgeQuery']
   const maxDataSize = resource['maxDataSize']
   const warningThreshold = resource['warningThreshold']
 
@@ -39,6 +40,7 @@ async function loadResource() {
     viewerThreshold: viewerTh,
     maxNumObjects,
     maxDataSize,
+    maxEdgeQuery,
     warningThreshold,
   }
 

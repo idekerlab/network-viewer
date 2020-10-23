@@ -34,7 +34,7 @@ const OpenInCytoscape: FC = () => {
 
   const { query, queryMode, ndexCredential, config } = useContext(AppContext)
 
-  const { data } = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
+  const { data } = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode, config.maxEdgeQuery)
 
   const subCx = data !== undefined ? data['cx'] : undefined
 

@@ -7,9 +7,9 @@ import ExportTsvMenuItem from '../ExportTsvMenuItem'
 const SaveQueryTSVMenuItem = () => {
   const { uuid } = useParams()
 
-  const { query, queryMode, ndexCredential, config, summary} = useContext(AppContext)
+  const { query, queryMode, ndexCredential, config} = useContext(AppContext)
 
-  const { status, data } = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
+  const { status, data } = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode, config.maxEdgeQuery)
 
   const edgeLimitExceeded : boolean = data !== undefined ? data['edgeLimitExceeded'] : false
 
