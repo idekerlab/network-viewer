@@ -29,6 +29,7 @@ async function loadResource() {
   const googleClientId = resource['googleClientId']
   const viewerTh = resource['viewerThreshold']
   const maxNumObjects = resource['maxNumObjects']
+  const maxDataSize = resource['maxDataSize']
   const warningThreshold = resource['warningThreshold']
 
   const config: AppConfig = {
@@ -37,6 +38,7 @@ async function loadResource() {
     googleClientId,
     viewerThreshold: viewerTh,
     maxNumObjects,
+    maxDataSize,
     warningThreshold,
   }
 
