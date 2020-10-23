@@ -6,6 +6,7 @@ import AppContext from '../../context/AppState'
 import { useParams } from 'react-router-dom'
 import { Typography } from '@material-ui/core'
 import useSearch from '../../hooks/useSearch'
+import { AutoSizer } from 'react-virtualized'
 
 import Loading from './Loading'
 import { SelectionActions } from '../../reducer/selectionStateReducer'
@@ -15,7 +16,7 @@ import { getCyjsLayout, getEdgeCount, getLgrLayout, getNetworkBackgroundColor, g
 import EmptyView from './EmptyView'
 import Popup from '../Popup'
 import NavigationPanel from '../NavigationPanel'
-import { isNull } from 'util'
+import SplitPane from 'react-split-pane'
 
 const splitBorder = '1px solid #BBBBBB'
 
@@ -26,6 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%',
       display: 'flex',
       flexDirection: 'column',
+      position: 'relative',
     },
     subnet: {
       width: '100%',
@@ -37,6 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       position: 'relative',
+      height: '100%',
     },
     title: {
       position: 'fixed',
@@ -71,6 +74,10 @@ const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2, setS
   const classes = useStyles()
   const { uuid } = useParams()
   const [busy, setBusy] = useState(false)
+  const defSize = window.innerHeight * 0.3
+  const minSize = window.innerHeight * 0.1
+  const [size, setSize] = useState(defSize)
+  const [totalHeight, setTotalHeight] = useState(null)
 
   const {
     query,
@@ -88,10 +95,15 @@ const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2, setS
 
   const searchResult = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
 
+  const handleDrag = (newSize) => {
+    setSize(newSize)
+  }
+
   const { maxNumObjects } = config
 
-  const subnet = searchResult.data
+  const { showSearchResult } = uiState
 
+  const subnet = searchResult.data
   let subCx
   if (subnet !== undefined) {
     subCx = subnet['cx']
@@ -238,15 +250,6 @@ const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2, setS
   const setMain = (cy: CyReference) => cyDispatch({ type: CyActions.SET_MAIN, cyReference: cy })
   const setSub = (cy: CyReference) => cyDispatch({ type: CyActions.SET_SUB, cyReference: cy })
 
-  const { showSearchResult } = uiState
-
-  let topHeight: string = '30%'
-  let bottomHeight: string = '70%'
-  if (!showSearchResult) {
-    topHeight = '100%'
-    bottomHeight = '0%'
-  }
-
   const getMainRenderer = (renderer: string) => {
     // Make sure renderer can display network
     if (!isWebGL2) {
@@ -338,15 +341,40 @@ const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2, setS
   return (
     <div className={classes.rootA}>
       <Popup cx={objectCount > maxNumObjects ? subCx : cx} />
-      <div className={classes.lowerPanel} style={{ height: topHeight }}>
-        {renderer !== 'lgr' ? <NavigationPanel target={'main'} /> : <div />}
-        {!showSearchResult ? <div /> : <Typography className={classes.title}>Overview</Typography>}
-        {getMainRenderer(renderer)}
-      </div>
-      <div className={classes.subnet} style={{ height: bottomHeight }}>
-        {showSearchResult ? <NavigationPanel target={'sub'} /> : <div />}
-        {getSubRenderer()}
-      </div>
+      {showSearchResult ? (
+        <AutoSizer disableWidth>
+          {({ height, width }) => {
+            if (height !== totalHeight) {
+              setTotalHeight(height)
+            }
+            return (
+              <SplitPane split="horizontal" size={size} minSize={minSize} maxSize={0} onDragFinished={handleDrag}>
+                <div className={classes.lowerPanel}>
+                  {renderer !== 'lgr' ? <NavigationPanel target={'main'} /> : <div />}
+                  {!showSearchResult ? <div /> : <Typography className={classes.title}>Overview</Typography>}
+                  {getMainRenderer(renderer)}
+                </div>
+                <AutoSizer disableWidth>
+                  {({ height, width }) => {
+                    return (
+                      <div className={classes.subnet} style={{ height: height }}>
+                        {showSearchResult ? <NavigationPanel target={'sub'} /> : <div />}
+                        {getSubRenderer()}
+                      </div>
+                    )
+                  }}
+                </AutoSizer>
+              </SplitPane>
+            )
+          }}
+        </AutoSizer>
+      ) : (
+        <div className={classes.lowerPanel}>
+          {renderer !== 'lgr' ? <NavigationPanel target={'main'} /> : <div />}
+          {!showSearchResult ? <div /> : <Typography className={classes.title}>Overview</Typography>}
+          {getMainRenderer(renderer)}
+        </div>
+      )}
     </div>
   )
 }
