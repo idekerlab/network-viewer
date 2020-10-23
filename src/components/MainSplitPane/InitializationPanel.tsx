@@ -61,6 +61,14 @@ const InitPanel: FC<InitPanelProps> = ({ message, showProgress = false, summary,
   useEffect(() => {
     if (summary !== undefined) {
       const total = summary['nodeCount'] + summary['edgeCount']
+      const cxDataSize = summary['cx2FileSize']
+
+      // Check data size.  If too big, proceed without view
+      if(cxDataSize > config.maxDataSize || total > config.maxNumObjects ) {
+        setOpen(false)
+        setProceed(true)
+        return
+      }
 
       if (total <= config.warningThreshold) {
         const hasLayout = summary['hasLayout']

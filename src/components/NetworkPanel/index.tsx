@@ -15,7 +15,6 @@ import { getCyjsLayout, getEdgeCount, getLgrLayout, getNetworkBackgroundColor, g
 import EmptyView from './EmptyView'
 import Popup from '../Popup'
 import NavigationPanel from '../NavigationPanel'
-import { isNull } from 'util'
 
 const splitBorder = '1px solid #BBBBBB'
 
@@ -61,13 +60,22 @@ const LAYOUT_TH = 1000
 type ViewProps = {
   renderer: string
   objectCount: number
+  cxDataSize: number
   isWebGL2: boolean
   cx: object[]
   setSubCx: Function
   noView: boolean
 }
 
-const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2, setSubCx, noView }: ViewProps) => {
+const NetworkPanel: FC<ViewProps> = ({
+  cx,
+  renderer,
+  objectCount,
+  cxDataSize,
+  isWebGL2,
+  setSubCx,
+  noView,
+}: ViewProps) => {
   const classes = useStyles()
   const { uuid } = useParams()
   const [busy, setBusy] = useState(false)
@@ -227,16 +235,6 @@ const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2, setS
     },
   }
 
-  if (noView) {
-    return (
-      <EmptyView
-        showIcons={!uiState.showSearchResult}
-        title="No network view mode"
-        message={`You can use the query functions below to extract sub-networks.`}
-      />
-    )
-  }
-
   const setMain = (cy: CyReference) => cyDispatch({ type: CyActions.SET_MAIN, cyReference: cy })
   const setSub = (cy: CyReference) => cyDispatch({ type: CyActions.SET_SUB, cyReference: cy })
 
@@ -262,13 +260,19 @@ const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2, setS
               using the query function below.)`}
         />
       )
-    } else if (objectCount > maxNumObjects) {
+    } else if (objectCount > maxNumObjects || cxDataSize > config.maxDataSize || noView) {
+      let title = 'Network data is too large'
+      let message = `There are ${objectCount} objects in this network and it is too large to display. 
+          You can use the query functions below to extract sub-networks.`
+      if (noView) {
+        title = 'No network view mode'
+        message= 'You can use the query functions below to extract sub-networks.'
+      }
       return (
         <EmptyView
           showIcons={!uiState.showSearchResult}
-          title="Network data is too large"
-          message={`There are ${objectCount} objects in this network and it is too large to display. 
-          You can use the query functions below to extract sub-networks.`}
+          title={title}
+          message={message}
         />
       )
     }
