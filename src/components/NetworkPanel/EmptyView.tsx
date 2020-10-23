@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       height: '100%',
       placeItems: 'center',
-      background: '#EEEEEE',
+      background: '#FFFFFF',
       zIndex: 0
     },
     item: {

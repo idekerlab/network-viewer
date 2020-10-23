@@ -12,7 +12,6 @@ import UIState from '../../model/UIState'
 import { UIStateActions } from '../../reducer/uiStateReducer'
 import { isWebGL2supported } from '../../utils/browserTest'
 import Title from '../Title'
-import { Redirect } from 'react-router'
 
 import InitializationPanel from './InitializationPanel'
 
@@ -111,6 +110,7 @@ const MainSplitPane = () => {
   const [containerHeight, setContainerHeight] = useState(0)
   const [isWebGL2, setIsWebGL2] = useState(false)
   const [count, setCount] = useState(0)
+  const [cxDataSize, setCxDataSize] = useState(0)
   const [proceed, setProceed] = useState(false)
   const [noView, setNoView] = useState(false)
 
@@ -144,9 +144,11 @@ const MainSplitPane = () => {
   useEffect(() => {
     if (summary !== undefined && Object.keys(summary).length !== 0) {
       const count = summary['edgeCount'] + summary['nodeCount']
+      const cxSize = summary['cx2FileSize']
       setCount(count)
+      setCxDataSize(cxSize)
 
-      if (count < config.maxNumObjects) {
+      if (count < config.maxNumObjects && cxDataSize < config.maxDataSize) {
         setIsDataTooLarge(false)
         if (isWebGL2 && !noView) {
           setCurUuid(uuid)
@@ -187,6 +189,67 @@ const MainSplitPane = () => {
     height: containerHeight,
   }
 
+  const getNetworkPanel = () => {
+    // If data is huge, just return Network panel
+    if (config.maxDataSize < cxDataSize || config.maxNumObjects < count) {
+      return (
+        <NetworkPanel
+          noView={noView}
+          cx={originalCx}
+          renderer={fetchParams.renderer}
+          objectCount={count}
+          cxDataSize={cxDataSize}
+          isWebGL2={isWebGL2}
+          setSubCx={setSubCx}
+        />
+      )
+    } else if (originalCx === undefined || cxResponse.isLoading) {
+      return (
+        <InitializationPanel
+          message={'Loading network data from NDEx server...'}
+          showProgress={true}
+          setProceed={setProceed}
+        />
+      )
+    }
+    return (
+      <NetworkPanel
+        noView={noView}
+        cx={originalCx}
+        renderer={fetchParams.renderer}
+        objectCount={count}
+        cxDataSize={cxDataSize}
+        isWebGL2={isWebGL2}
+        setSubCx={setSubCx}
+      />
+    )
+  }
+
+  const getBase = () => {
+    return (
+      <React.Fragment>
+        <Title title={`${fetchParams.name} (${uuid})`} />
+        <div ref={containerRef} className={classes.mainSplitRoot}>
+          <SplitPane
+            split="vertical"
+            minSize={windowWidth * 0.2}
+            size={windowWidth - rightWidth}
+            onDragFinished={handleChange}
+            style={splitPaneStyle}
+            maxSize={0}
+          >
+            {getNetworkPanel()}
+            {uiState.dataPanelOpen ? (
+              <DataPanel uuid={uuid} cx={isDataTooLarge ? subCx : originalCx} />
+            ) : (
+              <ClosedPanel />
+            )}
+          </SplitPane>
+        </div>
+      </React.Fragment>
+    )
+  }
+
   // Check Summary error
   if (summaryResponse.isError) {
     return <InitializationPanel message={`${summaryResponse.error}`} error={true} setProceed={setProceed} />
@@ -206,6 +269,11 @@ const MainSplitPane = () => {
   }
   // Step 2: Summary is ready, but CX is not
   if (summary !== undefined && !proceed) {
+    // Too big to display
+    if (config.maxNumObjects < count || config.maxDataSize < cxDataSize) {
+      return getBase()
+    }
+
     return (
       <InitializationPanel
         summary={summary}
@@ -216,46 +284,9 @@ const MainSplitPane = () => {
     )
   }
 
-  if (!proceed) {
-    // Canceled.  Go back to original page
-    return <InitializationPanel message={'Click to go bak to top page'} showProgress={false} setProceed={setProceed} />
-  }
-
   // Initiate loading if browser is compatible.
-  // Step 4: Data is ready.  Need to draw the network (or data/message panels for large ones)
-  return (
-    <React.Fragment>
-      <Title title={`${fetchParams.name} (${uuid})`} />
-      <div ref={containerRef} className={classes.mainSplitRoot}>
-        <SplitPane
-          split="vertical"
-          minSize={windowWidth * 0.2}
-          size={windowWidth - rightWidth}
-          onDragFinished={handleChange}
-          style={splitPaneStyle}
-          maxSize={0}
-        >
-          {originalCx === undefined || cxResponse.isLoading ? (
-            <InitializationPanel
-              message={'Loading network data from NDEx server...'}
-              showProgress={true}
-              setProceed={setProceed}
-            />
-          ) : (
-            <NetworkPanel
-              noView={noView}
-              cx={originalCx}
-              renderer={fetchParams.renderer}
-              objectCount={count}
-              isWebGL2={isWebGL2}
-              setSubCx={setSubCx}
-            />
-          )}
-          {uiState.dataPanelOpen ? <DataPanel uuid={uuid} cx={isDataTooLarge ? subCx : originalCx} /> : <ClosedPanel />}
-        </SplitPane>
-      </div>
-    </React.Fragment>
-  )
+  // Step 4: Data is ready.  Need to draw the network
+  return getBase()
 }
 
 const getWindowWidth = () => {
