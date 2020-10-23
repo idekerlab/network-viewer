@@ -1,4 +1,5 @@
 import React, { useState, FC, useEffect, useContext } from 'react'
+import { useParams } from 'react-router-dom'
 import MessageDialog from './MessageDialog'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
@@ -51,6 +52,9 @@ type InitPanelProps = {
 
 const InitPanel: FC<InitPanelProps> = ({ message, showProgress = false, summary, setProceed, error = false, setNoView }) => {
   const classes = useStyles()
+
+  const { uuid } = useParams()
+
   const { config } = useContext(AppContext)
 
   const [open, setOpen] = useState(false)
@@ -101,7 +105,7 @@ const InitPanel: FC<InitPanelProps> = ({ message, showProgress = false, summary,
           <ErrorIcon fontSize="inherit" color="error" className={classes.errorIcon} />
           <Typography variant="h5">{message}</Typography>
           <Typography variant="h6">
-            Please reload this page, or click <a href={`${config.ndexHttps}/#network/${summary['externalId']}`}>here</a> to try in Classic Mode
+            Please reload this page, or click <a href={`${config.ndexHttps}/#network/${uuid}`}>here</a> to try in Classic Mode
           </Typography>
         </div>
       </div>
