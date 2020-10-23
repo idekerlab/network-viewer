@@ -1,8 +1,8 @@
 import React, { useContext } from 'react'
-import { Button } from '@material-ui/core'
+
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import { useParams } from 'react-router-dom'
-import useSearch, { saveQuery } from '../../hooks/useSearch'
+import useSearch from '../../hooks/useSearch'
 import AppContext from '../../context/AppState'
 import Snackbar from '@material-ui/core/Snackbar'
 
@@ -40,12 +40,6 @@ const SaveQueryButton = () => {
       })
   }
 
-  const handleSave = () => {
-    saveQuery(uuid, query, config.ndexHttps, ndexCredential, queryMode).then(() => {
-      setSnackMessage('Network saved to NDEx.')}
-    )
-  }
-
   const [snackMessage, setSnackMessage] = React.useState(undefined)
 
   const onSuccess = (data) => {
@@ -64,15 +58,13 @@ const SaveQueryButton = () => {
   if (uiState.showSearchResult) {
     return (
       <div>
-        {!edgeLimitExceeded ? <SaveToNDExButton
-          disabled={subCx == undefined}
+        <SaveToNDExButton
+          disabled={subCx == undefined || edgeLimitExceeded}
           fetchCX={fetchCX}
           onSuccess={onSuccess}
           onFailure={onFailure}
           tooltip="Save to NDEx"
-        /> : 
-          <Button onClick={handleSave}>BIG SAVE</Button>
-        }
+        /> 
         <Snackbar
           open={snackMessage != undefined}
           autoHideDuration={6000}

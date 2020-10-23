@@ -17,7 +17,7 @@ const SaveQueryTSVMenuItem = () => {
 
   const fileName = uuid ? uuid + ' subnet.tsv' : 'subnet.tsv'
 
-  return <ExportTsvMenuItem cx={status && status == 'success' ? subCx : null} fileName={fileName}/>
+  return <ExportTsvMenuItem cx={status && status == 'success' && !edgeLimitExceeded ? subCx : null} fileName={fileName}/>
 }
 
 export default SaveQueryTSVMenuItem

@@ -15,6 +15,7 @@ import { getCyjsLayout, getEdgeCount, getLgrLayout, getNetworkBackgroundColor, g
 import EmptyView from './EmptyView'
 import Popup from '../Popup'
 import NavigationPanel from '../NavigationPanel'
+import EdgeLimitExceededPanel from '../FooterPanel/EdgeLimitExceededPanel'
 
 const splitBorder = '1px solid #BBBBBB'
 
@@ -319,12 +320,7 @@ const NetworkPanel: FC<ViewProps> = ({
     }
 
     if (edgeLimitExceeded) {
-      const sizeMessage = 'Your query returned more than 50000 edges and cannot be executed in the browser.\n' + (ndexCredential.isLogin ? 'You can save this sub-network to NDEx to continue working with it.' : 'Please log in so that the result can be saved to your NDEx account');
-
-      return <Loading
-      showLoading = {false}
-      message={sizeMessage}
-      />
+      return <EdgeLimitExceededPanel/>
     }
 
     const count = getNodeCount(subCx) + getEdgeCount(subCx)
