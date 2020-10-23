@@ -3,36 +3,42 @@ import HttpResponse from '../api/HttpResponse'
 import NdexCredential from '../model/NdexCredential'
 import { getAuthorization } from '../utils/credentialUtil'
 
-const EDGE_LIMIT = 5000
+const EDGE_LIMIT = 50000
 
 const queryModeParams = {
   direct: {
     searchDepth: 1,
-    edgeLimit: EDGE_LIMIT
+    edgeLimit: EDGE_LIMIT,
+    errorWhenLimitIsOver: true
   },
   firstStepNeighborhood: {
     directOnly: false,
     searchDepth: 1,
-    edgeLimit: EDGE_LIMIT
+    edgeLimit: EDGE_LIMIT,
+    errorWhenLimitIsOver: true
   },
   firstStepAdjacent: {
     edgeLimit: EDGE_LIMIT,
     directOnly: true,
     searchDepth: 1,
+    errorWhenLimitIsOver: true
   },
   interconnect: {
     edgeLimit: EDGE_LIMIT,
-    searchDepth: 2
+    searchDepth: 2,
+    errorWhenLimitIsOver: true
   },
   twoStepNeighborhood: {
     edgeLimit: EDGE_LIMIT,
     directOnly: false,
     searchDepth: 2,
+    errorWhenLimitIsOver: true
   },
   twoStepAdjacent: {
     edgeLimit: EDGE_LIMIT,
     directOnly: true,
     searchDepth: 2,
+    errorWhenLimitIsOver: true
   },
 }
 

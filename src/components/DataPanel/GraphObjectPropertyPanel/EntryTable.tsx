@@ -39,9 +39,6 @@ const EntryTable = (props) => {
     const columnsList = []
     for (let id of selectedObjects) {
       const attrs = attributes[id]
-      if (attrs === undefined) {
-        continue
-      }
       for (let attr of attrs) {
         if (
           attr[0] === 'name' ||
@@ -71,8 +68,8 @@ const EntryTable = (props) => {
         }
       }
     }
+    columnsList.unshift('name')
     if (type === 'edge') {
-      columnsList.unshift('name')
       //Add name for edges that don't have one
       for (let id of selectedObjects) {
         const attrs = attributes[id]

@@ -42,6 +42,8 @@ const useStyles = makeStyles((theme) =>
     tableBodyCell: {
       fontSize: '1em',
       padding: '6px 24px 6px 16px',
+      maxHeight: '12em',
+      overflowY: 'auto',
     },
     tableRow: {
       '&:nth-of-type(odd)': {
@@ -110,7 +112,7 @@ function Table({ columns, data }) {
   )
 
   // Render the UI for your table
-  return data.length > 0 ? (
+  return (
     <div {...getTableProps()} className={classes.table}>
       <div className={classes.header}>
         {headerGroups.map((headerGroup) => (
@@ -142,8 +144,6 @@ function Table({ columns, data }) {
         </AutoSizer>
       </div>
     </div>
-  ) : (
-    <div />
   )
 }
 

@@ -16,16 +16,18 @@ const isCxV2 = (cx: object[]) => {
 export const getAttributeMap = (cx: object[]) => {
   const isV2 = isCxV2(cx)
   const resultObject = {}
-
   let len = cx.length
   while (len--) {
     const entry = cx[len]
     const key = Object.keys(entry)[0]
     const value = entry[key]
 
-    resultObject[key] = value
+    if (key in resultObject) {
+      resultObject[key].push(...value)
+    } else {
+      resultObject[key] = value
+    }
   }
-
   if (isV2) {
     const nodeAttr = getNodeAttrsV2(resultObject)
     return {
@@ -66,6 +68,7 @@ const getNodeAttrsV2 = (kvMap: object) => {
 }
 
 const getEdgeAttrsV2 = (nodeAttr, kvMap: object) => {
+  console.log(kvMap)
   const edges = kvMap['edges']
   const id2attr = {}
 
@@ -192,7 +195,7 @@ const getNodeAttrs = (kvMap: object) => {
 
   const id2attr = {}
 
-  if(nodes === undefined) {
+  if (nodes === undefined) {
     return id2attr
   }
 

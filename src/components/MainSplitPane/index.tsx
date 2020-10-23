@@ -239,11 +239,7 @@ const MainSplitPane = () => {
             maxSize={0}
           >
             {getNetworkPanel()}
-            {uiState.dataPanelOpen ? (
-              <DataPanel uuid={uuid} cx={isDataTooLarge ? subCx : originalCx} />
-            ) : (
-              <ClosedPanel />
-            )}
+            {uiState.dataPanelOpen ? <DataPanel cx={isDataTooLarge ? subCx : originalCx} /> : <ClosedPanel />}
           </SplitPane>
         </div>
       </React.Fragment>

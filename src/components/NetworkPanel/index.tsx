@@ -15,7 +15,6 @@ import { getCyjsLayout, getEdgeCount, getLgrLayout, getNetworkBackgroundColor, g
 import EmptyView from './EmptyView'
 import Popup from '../Popup'
 import NavigationPanel from '../NavigationPanel'
-import { isNull } from 'util'
 
 const splitBorder = '1px solid #BBBBBB'
 
@@ -100,6 +99,7 @@ const NetworkPanel: FC<ViewProps> = ({
   const { maxNumObjects } = config
 
   const subnet = searchResult.data
+
   let subCx
   if (subnet !== undefined) {
     subCx = subnet['cx']
