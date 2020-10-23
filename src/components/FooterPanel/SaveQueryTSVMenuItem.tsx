@@ -11,11 +11,13 @@ const SaveQueryTSVMenuItem = () => {
 
   const { status, data } = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
 
+  const edgeLimitExceeded : boolean = data !== undefined ? data['edgeLimitExceeded'] : false
+
   const subCx = data !== undefined ? data['cx'] : undefined
 
   const fileName = uuid ? uuid + ' subnet.tsv' : 'subnet.tsv'
 
-  return <ExportTsvMenuItem cx={status && status == 'success' ? subCx : null} fileName={fileName}/>
+  return <ExportTsvMenuItem cx={status && status == 'success' && !edgeLimitExceeded ? subCx : null} fileName={fileName}/>
 }
 
 export default SaveQueryTSVMenuItem

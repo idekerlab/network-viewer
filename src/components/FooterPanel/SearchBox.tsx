@@ -104,6 +104,8 @@ const SearchBox: FC = () => {
     subCx = subnet['cx']
   }
 
+  const edgeLimitExceeded: boolean = subnet !== undefined ? subnet['edgeLimitExceeded'] : false
+
   const downloadProps: DownloadProps = {
     data: subCx,
     tooltip: 'Download query result as CX',
@@ -216,8 +218,8 @@ const SearchBox: FC = () => {
       >
         <SearchIcon />
       </IconButton>
-      <DownloadButton {...downloadProps} />
-      <SaveQueryButton />
+      {!edgeLimitExceeded && <DownloadButton {...downloadProps} />}
+      {!edgeLimitExceeded && <SaveQueryButton /> }
       <AdvancedQueryMenu />
       <IconButton
         color="secondary"

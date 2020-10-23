@@ -1,4 +1,5 @@
 import React, { useContext } from 'react'
+
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import { useParams } from 'react-router-dom'
 import useSearch from '../../hooks/useSearch'
@@ -6,6 +7,7 @@ import AppContext from '../../context/AppState'
 import Snackbar from '@material-ui/core/Snackbar'
 
 import { SaveToNDExButton } from 'cytoscape-explore-components'
+import { findAllByDisplayValue } from '@testing-library/react'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -24,13 +26,18 @@ const SaveQueryButton = () => {
   const searchResult = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
 
   const subnet = searchResult.data
+
+  const edgeLimitExceeded: boolean = subnet !== undefined ? subnet['edgeLimitExceeded'] : false
+
+  console.log(`SaveQueryButton edgeLimitExceeded: `, edgeLimitExceeded)
+
   const subCx = subnet !== undefined ? subnet['cx'] : undefined
 
   const fetchCX = () => {
-    return new Promise<Object>(function (resolve, reject) {
-      console.log(JSON.stringify(subCx))
-      resolve(subCx)
-    })
+      return new Promise<Object>(function (resolve, reject) {
+        console.log(JSON.stringify(subCx))
+        resolve(subCx)
+      })
   }
 
   const [snackMessage, setSnackMessage] = React.useState(undefined)
@@ -52,12 +59,12 @@ const SaveQueryButton = () => {
     return (
       <div>
         <SaveToNDExButton
-          disabled={subCx == undefined}
+          disabled={subCx == undefined || edgeLimitExceeded}
           fetchCX={fetchCX}
           onSuccess={onSuccess}
           onFailure={onFailure}
           tooltip="Save to NDEx"
-        />
+        /> 
         <Snackbar
           open={snackMessage != undefined}
           autoHideDuration={6000}

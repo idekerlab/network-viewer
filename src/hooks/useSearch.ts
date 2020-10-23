@@ -5,41 +5,34 @@ import { getAuthorization } from '../utils/credentialUtil'
 
 const EDGE_LIMIT = 50000
 
+const edgeLimitParams = {
+  edgeLimit: EDGE_LIMIT,
+  errorWhenLimitIsOver: true
+}
+
 const queryModeParams = {
   direct: {
-    searchDepth: 1,
-    edgeLimit: EDGE_LIMIT,
-    errorWhenLimitIsOver: true
+    searchDepth: 1
   },
   firstStepNeighborhood: {
     directOnly: false,
-    searchDepth: 1,
-    edgeLimit: EDGE_LIMIT,
-    errorWhenLimitIsOver: true
+    searchDepth: 1
   },
   firstStepAdjacent: {
-    edgeLimit: EDGE_LIMIT,
     directOnly: true,
     searchDepth: 1,
-    errorWhenLimitIsOver: true
   },
   interconnect: {
-    edgeLimit: EDGE_LIMIT,
     searchDepth: 2,
-    errorWhenLimitIsOver: true
   },
   twoStepNeighborhood: {
-    edgeLimit: EDGE_LIMIT,
     directOnly: false,
     searchDepth: 2,
-    errorWhenLimitIsOver: true
   },
   twoStepAdjacent: {
-    edgeLimit: EDGE_LIMIT,
     directOnly: true,
-    searchDepth: 2,
-    errorWhenLimitIsOver: true
-  },
+    searchDepth: 2
+  }
 }
 
 const selectNodes = (cxResult: object[]): string[] => {
@@ -63,6 +56,58 @@ const selectNodes = (cxResult: object[]): string[] => {
   return nodeIds
 }
 
+const isEdgeLimitExceeded = (cx) => {
+  for (let tag in cx) {
+    const value = cx[tag]
+    const status = value['status']
+    if (status && status.length > 0) {
+      if (status[0].success) {
+        return false
+      } else {
+        return status[0].error === 'EdgeLimitExceeded'
+      }
+    }
+  }
+}
+
+export const saveQuery = async(uuid: string, query: string, serverUrl: string, credential: NdexCredential, mode: string) => {
+  if (uuid === undefined || uuid === null || uuid.length === 0) {
+    return {}
+  }
+
+  if (query === undefined || query === null || query.length === 0) {
+    return {}
+  }
+
+  let url = `${serverUrl}/v2/search/network/${uuid}/query?save=true`
+  if (mode === 'interconnect' || mode === 'direct') {
+    url = `${serverUrl}/v2/search/network/${uuid}/interconnectquery?save=true`
+  }
+
+  const queryParam = queryModeParams[mode];
+  queryParam['searchString'] = query
+
+  const authorization = getAuthorization(credential);
+
+  const settings = {
+    method: 'POST',
+    // mode: 'cors',  
+    headers: authorization
+      ? {
+        'Content-Type': 'application/json',
+        Authorization: authorization
+      }
+      : {
+        'Content-Type': 'application/json'
+      }
+    ,
+    body: JSON.stringify(queryParam),
+  }
+
+  console.log('Calling fetch search settings: ', settings)
+  return fetch(url, settings);
+}
+
 const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string, credential: NdexCredential, mode: string) => {
   if (uuid === undefined || uuid === null || uuid.length === 0) {
     return {}
@@ -77,7 +122,7 @@ const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string
     url = `${serverUrl}/v2/search/network/${uuid}/interconnectquery`
   }
 
-  const queryParam = queryModeParams[mode]
+  const queryParam = Object.assign(Object.assign({}, queryModeParams[mode], edgeLimitParams));
   queryParam['searchString'] = query
 
   const authorization = getAuthorization(credential);
@@ -102,11 +147,13 @@ const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string
 
   try {
     const cx = await response.json()
+    const edgeLimitExceeded = isEdgeLimitExceeded(cx)
     response.parsedBody = {
       nodeIds: selectNodes(cx),
       kvMap: transformCx(cx),
       // subNetwork: cx2cyjs(uuid, cx),
       cx,
+      edgeLimitExceeded
     }
   } catch (ex) {
     console.error('Query API Call error:', ex)
@@ -117,6 +164,8 @@ const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string
 
   return response.parsedBody
 }
+
+
 
 const transformCx = (cx: object[]) => {
   const resultObject = {}

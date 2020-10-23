@@ -16,6 +16,7 @@ import { getCyjsLayout, getEdgeCount, getLgrLayout, getNetworkBackgroundColor, g
 import EmptyView from './EmptyView'
 import Popup from '../Popup'
 import NavigationPanel from '../NavigationPanel'
+import EdgeLimitExceededPanel from '../FooterPanel/EdgeLimitExceededPanel'
 import SplitPane from 'react-split-pane'
 
 const splitBorder = '1px solid #BBBBBB'
@@ -118,6 +119,8 @@ const NetworkPanel: FC<ViewProps> = ({
     subCx = subnet['cx']
     setSubCx(subCx)
   }
+
+  const edgeLimitExceeded = subnet !== undefined ? subnet['edgeLimitExceeded'] : false
 
   useEffect(() => {
     if (subCx !== undefined) {
@@ -304,11 +307,18 @@ const NetworkPanel: FC<ViewProps> = ({
 
   let border = 'none'
 
+  
+
   const getSubRenderer = () => {
+    
     if (subCx === undefined && showSearchResult) {
       // let showLoading = busy
       let message = 'Applying layout...'
       return <Loading message={message} showLoading={true} />
+    }
+
+    if (edgeLimitExceeded) {
+      return <EdgeLimitExceededPanel/>
     }
 
     const count = getNodeCount(subCx) + getEdgeCount(subCx)
