@@ -63,6 +63,20 @@ const selectNodes = (cxResult: object[]): string[] => {
   return nodeIds
 }
 
+const isEdgeLimitExceeded = (cx) => {
+  for (let tag in cx) {
+    const value = cx[tag]
+    const status = value['status']
+    if (status && status.length > 0) {
+      if (status[0].success) {
+        return false
+      } else {
+        return status[0].error === 'EdgeLimitExceeded'
+      }
+    }
+  }
+}
+
 const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string, credential: NdexCredential, mode: string) => {
   if (uuid === undefined || uuid === null || uuid.length === 0) {
     return {}
@@ -102,11 +116,13 @@ const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string
 
   try {
     const cx = await response.json()
+    const edgeLimitExceeded = isEdgeLimitExceeded(cx)
     response.parsedBody = {
       nodeIds: selectNodes(cx),
       kvMap: transformCx(cx),
       // subNetwork: cx2cyjs(uuid, cx),
       cx,
+      edgeLimitExceeded
     }
   } catch (ex) {
     console.error('Query API Call error:', ex)
@@ -117,6 +133,8 @@ const queryNetwork = async <T>(_, uuid: string, query: string, serverUrl: string
 
   return response.parsedBody
 }
+
+
 
 const transformCx = (cx: object[]) => {
   const resultObject = {}

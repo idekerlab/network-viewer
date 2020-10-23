@@ -11,6 +11,10 @@ const SaveQueryTSVMenuItem = () => {
 
   const { status, data } = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
 
+  const edgeLimitExceeded : boolean = data !== undefined ? data['edgeLimitExceeded'] : false
+
+  console.log(`SaveQueryTSVMenuItem edgeLimitExceeded: `, edgeLimitExceeded )
+
   const subCx = data !== undefined ? data['cx'] : undefined
 
   const fileName = uuid ? uuid + ' subnet.tsv' : 'subnet.tsv'

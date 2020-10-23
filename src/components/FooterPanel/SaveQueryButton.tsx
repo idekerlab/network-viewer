@@ -6,6 +6,7 @@ import AppContext from '../../context/AppState'
 import Snackbar from '@material-ui/core/Snackbar'
 
 import { SaveToNDExButton } from 'cytoscape-explore-components'
+import { findAllByDisplayValue } from '@testing-library/react'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -24,6 +25,11 @@ const SaveQueryButton = () => {
   const searchResult = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode)
 
   const subnet = searchResult.data
+
+  const edgeLimitExceeded : boolean = subnet !== undefined ? subnet['edgeLimitExceeded'] : false
+  
+  console.log(`SaveQueryButton edgeLimitExceeded: `, edgeLimitExceeded )
+
   const subCx = subnet !== undefined ? subnet['cx'] : undefined
 
   const fetchCX = () => {

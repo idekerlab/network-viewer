@@ -98,6 +98,8 @@ const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2, setS
     setSubCx(subCx)
   }
 
+  const edgeLimitExceeded = searchResult.data['edgeLimitExceeded']
+
   useEffect(() => {
     if (subCx !== undefined) {
       setSummary({ ...summary, subnetworkNodeCount: getNodeCount(subCx), subnetworkEdgeCount: getEdgeCount(subCx) })
@@ -302,19 +304,7 @@ const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2, setS
 
   let border = 'none'
 
-  const isEdgeLimitExceeded = (cx) => {
-    for (let tag in cx) {
-      const value = cx[tag]
-      const status = value['status']
-      if (status && status.length > 0) {
-        if (status[0].success) {
-          return false
-        } else {
-          return status[0].error === 'EdgeLimitExceeded'
-        }
-      }
-    }
-  }
+  
 
   const getSubRenderer = () => {
     
@@ -323,8 +313,6 @@ const NetworkPanel: FC<ViewProps> = ({ cx, renderer, objectCount, isWebGL2, setS
       let message = 'Applying layout...'
       return <Loading message={message} showLoading={true} />
     }
-
-    const edgeLimitExceeded = isEdgeLimitExceeded(subCx);
 
     if (edgeLimitExceeded) {
       const sizeMessage = 'Your query returned more than 50000 edges and cannot be executed in the browser.\n' + (ndexCredential.isLogin ? 'You can save this sub-network to NDEx to continue working with it.' : 'Please log in so that the result can be saved to your NDEx account');
