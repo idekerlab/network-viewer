@@ -4,7 +4,7 @@ import ReturnIcon from '@material-ui/icons/OpenInBrowser'
 import AppContext from '../../context/AppState'
 import { useParams } from 'react-router-dom'
 
-import { appendWindowProtocol } from '../../utils/httpUtil'
+import { appendWindowProtocol } from '../../utils/protocolUtil'
 
 const ClassicModeButton: FC = () => {
   const { config } = useContext(AppContext)

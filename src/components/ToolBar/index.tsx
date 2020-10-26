@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 
-import { appendWindowProtocol } from '../../utils/httpUtil'
+import { appendWindowProtocol } from '../../utils/protocolUtil'
 
 import { NDExSignInButton } from 'cytoscape-explore-components'
 

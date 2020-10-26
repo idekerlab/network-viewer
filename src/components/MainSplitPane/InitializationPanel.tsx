@@ -8,7 +8,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import ErrorIcon from '@material-ui/icons/ErrorOutline'
 import WarningIcon from '@material-ui/icons/WarningOutlined'
 
-import { appendWindowProtocol } from '../../utils/httpUtil'
+import { appendWindowProtocol } from '../../utils/protocolUtil'
 
 import AppContext from '../../context/AppState'
 
