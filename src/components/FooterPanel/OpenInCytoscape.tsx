@@ -36,7 +36,9 @@ const OpenInCytoscape: FC = () => {
 
   const { data } = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode, config.maxEdgeQuery)
 
-  const subCx = data !== undefined ? data['cx'] : undefined
+  const useQueryResult = data !== undefined && data['cx'] ;
+
+  const subCx = data !== undefined && !data['edgeLimitExceeded'] ? data['cx'] : undefined
 
   const fetchCX = () =>
     new Promise((resolve, reject) => {
@@ -69,8 +71,10 @@ const OpenInCytoscape: FC = () => {
 
   return (
     <CyNDExProvider port={1234}>
-      {subCx ? (
-        <OpenInCytoscapeButton size="small" fetchCX={fetchCX} onSuccess={onSuccess} onFailure={onFailure} />
+      {useQueryResult 
+      ? (
+        subCx ? <OpenInCytoscapeButton size="small" fetchCX={fetchCX} onSuccess={onSuccess} onFailure={onFailure} />
+        : null
       ) : (
         <OpenInCytoscapeButton
           size="small"
