@@ -257,7 +257,7 @@ const NetworkPanel: FC<ViewProps> = ({
 
   const getMainRenderer = (renderer: string) => {
     // Make sure renderer can display network
-    if (!isWebGL2) {
+    if (!isWebGL2 && objectCount > config.viewerThreshold) {
       return (
         <EmptyView
           showIcons={!uiState.showSearchResult}

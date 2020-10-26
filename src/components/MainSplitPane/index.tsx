@@ -152,6 +152,8 @@ const MainSplitPane = () => {
         setIsDataTooLarge(false)
         if (isWebGL2 && !noView) {
           setCurUuid(uuid)
+        } else if(!isWebGL2 && count < config.viewerThreshold) {
+          setCurUuid(uuid)
         }
       }
     }
