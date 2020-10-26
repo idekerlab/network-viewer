@@ -152,7 +152,7 @@ const MainSplitPane = () => {
         setIsDataTooLarge(false)
         if (isWebGL2 && !noView) {
           setCurUuid(uuid)
-        } else if(!isWebGL2 && count < config.viewerThreshold) {
+        } else if (!isWebGL2 && count < config.viewerThreshold) {
           setCurUuid(uuid)
         }
       }
@@ -241,7 +241,11 @@ const MainSplitPane = () => {
             maxSize={0}
           >
             {getNetworkPanel()}
-            {uiState.dataPanelOpen ? <DataPanel cx={isDataTooLarge ? subCx : originalCx} /> : <ClosedPanel />}
+            {uiState.dataPanelOpen ? (
+              <DataPanel cx={uiState.mainNetworkNotDisplayed ? subCx : originalCx} />
+            ) : (
+              <ClosedPanel />
+            )}
           </SplitPane>
         </div>
       </React.Fragment>
@@ -261,11 +265,18 @@ const MainSplitPane = () => {
   }
 
   if (cxResponse.isError) {
-    if (cxResponse.error['response']
-      && cxResponse.error['response'].data
-      && cxResponse.error['response'].data.message !== 'CX2 network is not available for this network.') {
+    if (
+      cxResponse.error['response'] &&
+      cxResponse.error['response'].data &&
+      cxResponse.error['response'].data.message !== 'CX2 network is not available for this network.'
+    ) {
       return (
-        <InitializationPanel summary={summary} message={`Missing visualization data. Unable to visualize this network.`} error={true} setProceed={setProceed} />
+        <InitializationPanel
+          summary={summary}
+          message={`Missing visualization data. Unable to visualize this network.`}
+          error={true}
+          setProceed={setProceed}
+        />
       )
     } else {
       console.log('CXResponse error data:', cxResponse.error['response'].data)

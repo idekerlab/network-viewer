@@ -17,6 +17,8 @@ import Popup from '../Popup'
 import NavigationPanel from '../NavigationPanel'
 import EdgeLimitExceededPanel from '../FooterPanel/EdgeLimitExceededPanel'
 import SplitPane from 'react-split-pane'
+import UIState from '../../model/UIState'
+import { UIStateActions } from '../../reducer/uiStateReducer'
 
 const splitBorder = '1px solid #BBBBBB'
 
@@ -254,10 +256,15 @@ const NetworkPanel: FC<ViewProps> = ({
 
   const setMain = (cy: CyReference) => cyDispatch({ type: CyActions.SET_MAIN, cyReference: cy })
   const setSub = (cy: CyReference) => cyDispatch({ type: CyActions.SET_SUB, cyReference: cy })
+  const setMainNetworkNotDisplayed = (state: UIState) =>
+    uiStateDispatch({ type: UIStateActions.SET_MAIN_NETWORK_NOT_DISPLAYED, uiState: state })
 
   const getMainRenderer = (renderer: string) => {
     // Make sure renderer can display network
     if (!isWebGL2 && objectCount > config.viewerThreshold) {
+      if (!uiState.mainNetworkNotDisplayed) {
+        setMainNetworkNotDisplayed({ ...uiState, mainNetworkNotDisplayed: true })
+      }
       return (
         <EmptyView
           showIcons={!uiState.showSearchResult}
@@ -269,6 +276,9 @@ const NetworkPanel: FC<ViewProps> = ({
         />
       )
     } else if (objectCount > maxNumObjects || cxDataSize > config.maxDataSize || noView) {
+      if (!uiState.mainNetworkNotDisplayed) {
+        setMainNetworkNotDisplayed({ ...uiState, mainNetworkNotDisplayed: true })
+      }
       let title = 'Network data is too large'
       let message = `There are ${objectCount} objects in this network and it is too large to display. 
           You can use the query functions below to extract sub-networks.`
@@ -331,7 +341,7 @@ const NetworkPanel: FC<ViewProps> = ({
       return <Loading message={'No nodes matching your query were found in this network.'} showLoading={false} />
     }
 
-    if (searchResult.status=== 'success' && !searchResult.isLoading && subCx !== undefined && showSearchResult) {
+    if (searchResult.status === 'success' && !searchResult.isLoading && subCx !== undefined && showSearchResult) {
       const layout = getCyjsLayout(subCx, LAYOUT_TH)
       // For showing border between top and bottom panels
       border = splitBorder
@@ -353,13 +363,11 @@ const NetworkPanel: FC<ViewProps> = ({
       const message = 'Could not get the query result.  Please try again.'
       return <Loading message={message} showLoading={true} />
     }
-    
-    
   }
 
   return (
     <div className={classes.rootA}>
-      <Popup cx={objectCount > maxNumObjects ? subCx : cx} subHeight={subHeight} />
+      <Popup cx={uiState.mainNetworkNotDisplayed ? subCx : cx} subHeight={subHeight} />
       {showSearchResult ? (
         <SplitPane split="horizontal" size={size} minSize={minSize} maxSize={0} onDragFinished={handleDrag}>
           <div className={classes.lowerPanel}>
