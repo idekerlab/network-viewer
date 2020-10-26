@@ -3,6 +3,8 @@ import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import { IconButton, Tooltip } from '@material-ui/core'
 import AppContext from '../../context/AppState'
 import logo from '../../assets/images/ndex-logo.svg'
+import { appendWindowProtocol } from '../../utils/protocolUtil'
+
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -15,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const NdexHomeButton: FC = () => {
   const classes = useStyles()
   const { config } = useContext(AppContext)
-  const baseUrl: string = config.ndexHttps
+  const baseUrl: string = appendWindowProtocol(config.ndexUrl)
 
   const handleClick = (): void => {
     window.open(baseUrl, '_self')

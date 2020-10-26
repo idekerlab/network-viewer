@@ -8,6 +8,8 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import ErrorIcon from '@material-ui/icons/ErrorOutline'
 import WarningIcon from '@material-ui/icons/WarningOutlined'
 
+import { appendWindowProtocol } from '../../utils/protocolUtil'
+
 import AppContext from '../../context/AppState'
 
 /**
@@ -105,7 +107,7 @@ const InitPanel: FC<InitPanelProps> = ({ message, showProgress = false, summary,
           <ErrorIcon fontSize="inherit" color="error" className={classes.errorIcon} />
           <Typography variant="h5">{message}</Typography>
           <Typography variant="h6">
-            Please reload this page, or click <a href={`${config.ndexHttps}/#network/${uuid}`}>here</a> to try in Classic Mode
+            Please reload this page, or click <a href={`${appendWindowProtocol(config.ndexUrl)}/#network/${uuid}`}>here</a> to try in Classic Mode
           </Typography>
         </div>
       </div>

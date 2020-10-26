@@ -3,6 +3,8 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 import logo from '../../assets/images/ndex-logo.svg'
 
+import { appendWindowProtocol } from '../../utils/protocolUtil'
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -41,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const TopPage = ({ config }) => {
   const classes = useStyles()
 
-  const url = config.ndexHttps
+  const url = appendWindowProtocol(config.ndexUrl)
 
   const handleClick = () => {
     window.open(url, '_self')

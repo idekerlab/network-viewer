@@ -8,6 +8,8 @@ import IconButton from '@material-ui/core/IconButton'
 import Tooltip from '@material-ui/core/Tooltip'
 import DownloadIcon from '@material-ui/icons/CloudDownload'
 
+import { appendWindowProtocol } from '../../utils/protocolUtil'
+
 const SaveNetworkCXButton = () => {
   const { uuid } = useParams()
 
@@ -25,7 +27,7 @@ const SaveNetworkCXButton = () => {
       }
     }
 
-    a.href = `${config.ndexHttps}/v2/network/${uuid}?download=true${credentialProp}`
+    a.href = `${appendWindowProtocol(config.ndexUrl)}/v2/network/${uuid}?download=true${credentialProp}`
     a.click()
   }
 

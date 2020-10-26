@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom'
 import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 
+import { appendWindowProtocol } from '../../utils/protocolUtil'
+
 import { NDExSignInButton } from 'cytoscape-explore-components'
 
 import AppContext from '../../context/AppState'
@@ -50,7 +52,7 @@ const ToolBar: FC = (props) => {
       if (ndexCredential.loaded && ndexCredential.isLogin) {
         console.log('going from logged in to logged out: ', summary)
         if (summary.visibility == 'PRIVATE') {
-          window.location.href = 'https://' + config.ndexUrl
+          window.location.href = appendWindowProtocol(config.ndexUrl)
         }
       }
       setNdexCredential({
@@ -61,14 +63,6 @@ const ToolBar: FC = (props) => {
     }
   }
 
-  const getCurrentPrefix  = () =>  {
-    if (window.location.href.startsWith('https')) {
-        return 'https://'
-    } else {
-      return 'http://'
-    }
-  }
-
   return (
     <div className={classes.root}>
       <Grid container direction="row" justify="flex-start" alignItems="center" spacing={0}>
@@ -76,7 +70,7 @@ const ToolBar: FC = (props) => {
           <NdexHomeButton />
           <NDExSignInButton
             size="small"
-            myAccountURL={getCurrentPrefix() + config.ndexUrl + '/#/myAccount'}
+            myAccountURL={ appendWindowProtocol(config.ndexUrl + '/#/myAccount') }
             onLoginStateUpdated={loginStateUpdated}
           />
           <AdvancedMenu />

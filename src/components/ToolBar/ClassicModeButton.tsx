@@ -4,11 +4,13 @@ import ReturnIcon from '@material-ui/icons/OpenInBrowser'
 import AppContext from '../../context/AppState'
 import { useParams } from 'react-router-dom'
 
+import { appendWindowProtocol } from '../../utils/protocolUtil'
+
 const ClassicModeButton: FC = () => {
   const { config } = useContext(AppContext)
   const { uuid } = useParams()
 
-  const baseUrl: string = config.ndexHttps
+  const baseUrl: string = appendWindowProtocol(config.ndexUrl)
   const classicUrl = `${baseUrl}/#/network/${uuid}`
 
   const handleClick = (): void => {
