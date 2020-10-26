@@ -74,7 +74,7 @@ const SelectionList = (props) => {
   edgeCount = edges.length
 
   return (
-    <AutoSizer disableWidth>
+    <AutoSizer>
       {({ height, width }) => {
         if (height !== totalHeight) {
           setTotalHeight(height)
@@ -97,6 +97,8 @@ const SelectionList = (props) => {
               selectedObjects={nodes}
               attributes={attributes.nodeAttr}
               context={context}
+              width={width}
+              height={totalHeight - paneHeight}
             />
 
             <EntryTable
@@ -106,6 +108,8 @@ const SelectionList = (props) => {
               attributes={attributes.edgeAttr}
               type={'edge'}
               context={context}
+              width={width}
+              height={paneHeight}
             />
           </SplitPane>
         )

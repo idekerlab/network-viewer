@@ -5,7 +5,7 @@ import { processList, processItem } from '../../../utils/contextUtil'
 import pixelWidth from 'string-pixel-width'
 
 const EntryTable = (props) => {
-  const { selectedObjects, attributes, label, type, context } = props
+  const { selectedObjects, attributes, label, type, context, width, height } = props
   const [state, setState] = useState(true)
 
   const replacePeriods = (string) => {
@@ -144,7 +144,11 @@ const EntryTable = (props) => {
   //The DynamicSizeList used in the Table component has trouble updating
   //So I'm doing this to force it to make a whole new table every time
   //Please fix if there's a better way
-  return state ? <Table columns={finalColumns} data={data} /> : <Twinble columns={finalColumns} data={data} />
+  return (
+    <div style={{ width: width, height: height }}>
+      {state ? <Table columns={finalColumns} data={data} /> : <Twinble columns={finalColumns} data={data} />}
+    </div>
+  )
 }
 
 export default EntryTable

@@ -1,5 +1,5 @@
 /*
-Same as Table.jsx. Done this way to force the table to completely reload instead
+Same as Table2.jsx. Done this way to force the table to completely reload instead
 of trying to refresh, which doesn't work.
 Sorry.
 */
