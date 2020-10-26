@@ -20,16 +20,10 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const SaveQueryButton = () => {
   const { uuid } = useParams()
-
   const { query, queryMode, uiState, ndexCredential, config } = useContext(AppContext)
   const searchResult = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode, config.maxEdgeQuery)
-
   const subnet = searchResult.data
-
   const edgeLimitExceeded: boolean = subnet !== undefined ? subnet['edgeLimitExceeded'] : false
-
-  console.log(`SaveQueryButton edgeLimitExceeded: `, edgeLimitExceeded)
-
   const subCx = subnet !== undefined ? subnet['cx'] : undefined
 
   const fetchCX = () => {

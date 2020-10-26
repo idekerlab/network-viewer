@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState, Children } from 'react'
 import { createCytoscape } from './create-cytoscape'
-
 import useCyjs from '../../hooks/useCyjs'
 import { getAnnotationRenderer } from '../../utils/cx2cyjs'
 

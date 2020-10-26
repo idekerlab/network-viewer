@@ -7,7 +7,6 @@ import { useParams } from 'react-router-dom'
 import { Typography } from '@material-ui/core'
 import useSearch from '../../hooks/useSearch'
 import { AutoSizer } from 'react-virtualized'
-
 import Loading from './Loading'
 import { SelectionActions } from '../../reducer/selectionStateReducer'
 import CyReference from '../../model/CyReference'
@@ -95,6 +94,7 @@ const NetworkPanel: FC<ViewProps> = ({
     uiStateDispatch,
     uiState,
     cyDispatch,
+    cyReference,
     selectionState,
     selectionStateDispatch,
     config,
@@ -110,7 +110,6 @@ const NetworkPanel: FC<ViewProps> = ({
   }
 
   const { maxNumObjects } = config
-
   const { showSearchResult } = uiState
 
   const subnet = searchResult.data
@@ -127,6 +126,10 @@ const NetworkPanel: FC<ViewProps> = ({
       setSummary({ ...summary, subnetworkNodeCount: getNodeCount(subCx), subnetworkEdgeCount: getEdgeCount(subCx) })
     }
   }, [searchResult])
+
+  useEffect(() => {
+    console.log(cyReference)
+  }, [cyReference])
 
   const mainEventHandlers = {
     setSelectedNodesAndEdges: (nodes, edges, lastSelectedType, lastSelectedId, lastSelectedCoordinates) => {
@@ -306,45 +309,52 @@ const NetworkPanel: FC<ViewProps> = ({
   }
 
   let border = 'none'
-
-  
-
   const getSubRenderer = () => {
-    
-    if (subCx === undefined && showSearchResult) {
+    // Case 1:
+    if (!searchResult.isLoading && subCx === undefined && showSearchResult) {
+      const message = 'No search result yet.'
+      return <Loading message={message} showLoading={false} />
+    }
+
+    if (searchResult.isLoading && subCx === undefined && showSearchResult) {
       // let showLoading = busy
-      let message = 'Applying layout...'
+      let message = 'Loading subnetwork...'
       return <Loading message={message} showLoading={true} />
     }
 
     if (edgeLimitExceeded) {
-      return <EdgeLimitExceededPanel/>
+      return <EdgeLimitExceededPanel />
     }
 
     const count = getNodeCount(subCx) + getEdgeCount(subCx)
-
     if (count === 0 && showSearchResult) {
       return <Loading message={'No nodes matching your query were found in this network.'} showLoading={false} />
     }
 
-    const layout = getCyjsLayout(subCx, LAYOUT_TH)
-
-    // For showing border between top and bottom panels
-    border = splitBorder
-    const bgColor = getNetworkBackgroundColor(subCx)
-    return (
-      <div style={{ width: '100%', height: '100%', borderTop: border }}>
-        <CytoscapeRenderer
-          uuid={uuid}
-          cx={subCx}
-          eventHandlers={subEventHandlers}
-          layoutName={layout}
-          setBusy={setBusy}
-          setCyReference={setSub}
-          backgroundColor={bgColor}
-        />
-      </div>
-    )
+    if (searchResult.status=== 'success' && !searchResult.isLoading && subCx !== undefined && showSearchResult) {
+      const layout = getCyjsLayout(subCx, LAYOUT_TH)
+      // For showing border between top and bottom panels
+      border = splitBorder
+      const bgColor = getNetworkBackgroundColor(subCx)
+      return (
+        <div style={{ width: '100%', height: '100%', borderTop: border }}>
+          <CytoscapeRenderer
+            uuid={uuid}
+            cx={subCx}
+            eventHandlers={subEventHandlers}
+            layoutName={layout}
+            setBusy={setBusy}
+            setCyReference={setSub}
+            backgroundColor={bgColor}
+          />
+        </div>
+      )
+    } else {
+      const message = 'Could not get the query result.  Please try again.'
+      return <Loading message={message} showLoading={true} />
+    }
+    
+    
   }
 
   return (
