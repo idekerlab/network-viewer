@@ -52,8 +52,6 @@ const EdgeAttributes = {
 
 type PopupProps = {
   cx: object[]
-  target?: string
-  objectType?: string
   subHeight: number
 }
 
@@ -64,7 +62,7 @@ const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
   const { windowHeight, windowWidth } = useWindowDimensions()
   const FOOTER_HEIGHT = 60
 
-  const attr = useAttributes(uuid, cx)
+  const attr = useAttributes(uuid, cx, uiState.mainNetworkNotDisplayed)
   const context = useMemo(() => getContextFromCx(cx), [cx])
 
   const { lastSelected } = selectionState

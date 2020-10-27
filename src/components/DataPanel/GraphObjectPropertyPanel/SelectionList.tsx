@@ -28,12 +28,12 @@ const useStyles = makeStyles((theme: Theme) =>
 const SelectionList = (props) => {
   const { uuid } = useParams()
   const { cx } = props
-  const { query, queryMode, selectionState, ndexCredential, config } = useContext(AppContext)
+  const { query, queryMode, selectionState, ndexCredential, config, uiState } = useContext(AppContext)
   const { data } = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode, config.maxEdgeQuery)
   const [paneHeight, setPaneHeight] = useState(null)
   const [totalHeight, setTotalHeight] = useState(null)
 
-  const attributes = useAttributes(uuid, cx)
+  const attributes = useAttributes(uuid, cx, uiState.mainNetworkNotDisplayed)
   const minHeight = 1
 
   useEffect(() => {
