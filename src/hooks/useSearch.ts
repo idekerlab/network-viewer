@@ -3,6 +3,8 @@ import HttpResponse from '../api/HttpResponse'
 import NdexCredential from '../model/NdexCredential'
 import { getAuthorization } from '../utils/credentialUtil'
 
+import {useState, useEffect} from 'react'
+
 const DEF_MAX_EDGE = 10000
 
 const edgeLimitParams = {
@@ -122,6 +124,8 @@ const queryNetwork = async <T>(
   mode: string,
   maxEdge: number
 ) => {
+  const t0 = performance.now()
+
   if (uuid === undefined || uuid === null || uuid.length === 0) {
     return {}
   }
@@ -129,6 +133,7 @@ const queryNetwork = async <T>(
   if (query === undefined || query === null || query.length === 0) {
     return {}
   }
+
 
   let url = `${serverUrl}/v2/search/network/${uuid}/query`
   if (mode === 'interconnect' || mode === 'direct') {
@@ -155,7 +160,6 @@ const queryNetwork = async <T>(
     body: JSON.stringify(queryParam),
   }
 
-  console.log('Calling search settings: ', settings)
   const response: HttpResponse<object> = await fetch(url, settings)
 
   try {
@@ -175,6 +179,7 @@ const queryNetwork = async <T>(
     throw new Error(response.statusText)
   }
 
+  console.info('* Network query finished:', performance.now() - t0, response)
   return response.parsedBody
 }
 
@@ -239,7 +244,33 @@ const useSearch = (
   mode: string,
   maxEdge: number,
 ) => {
-  return useQuery(['queryNetwork', uuid, query, serverUrl, credential, mode, maxEdge], queryNetwork)
+
+  // Make this hook stateful to avoid multiple calls
+  const [enabled, setEnabled] = useState(false)
+  const [last, setLast] = useState(null)
+
+  useEffect(() => {
+    const nextQuery = {
+      uuid, query, mode
+    }
+
+    if(nextQuery === last) {
+      setEnabled(false)
+    } else {
+      if(nextQuery === null || query === '') {
+        setEnabled(false)
+      } else {
+        setEnabled(true)
+      }
+      setLast(nextQuery)
+    }
+    
+    return () => {
+    }
+  }, [uuid, query, mode])
+  
+  
+  return useQuery(['queryNetwork', uuid, query, serverUrl, credential, mode, maxEdge], queryNetwork, {enabled: enabled})
 }
 
 export default useSearch

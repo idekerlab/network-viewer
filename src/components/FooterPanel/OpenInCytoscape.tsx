@@ -49,7 +49,7 @@ const OpenInCytoscape: FC = () => {
       }
     })
 
-  console.log('Open in Cytoscape useSearch: ' + (subCx !== undefined))
+  // console.log('Open in Cytoscape useSearch: ' + (subCx !== undefined))
 
   const [snackMessage, setSnackMessage] = React.useState(undefined)
 
