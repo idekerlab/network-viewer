@@ -31,22 +31,19 @@ const getEdgeCount = (cx): number => {
 }
 
 const _getObjectCount = (tag: string, cx: object[]) => {
-  if (cx === undefined || cx === null) {
-    return 0;
-  }
-  
-  let count = 0;
-
-  for (let entry of cx) {
-    const value = entry[tag]
-    if (value !== undefined) {
-      if (Array.isArray(value)) {
-        count += value.length
+  //Find metadata
+  for (const cxObj of cx) {
+    if (cxObj['metaData'] !== undefined) {
+      const metaData = cxObj['metaData']
+      for (const metaObj of metaData) {
+        if (metaObj['name'] === tag) {
+          if (metaObj['elementCount'] !== undefined) {
+            return metaObj['elementCount']
+          }
+        }
       }
     }
   }
-
-  return count;
 }
 
 const _isLayoutAvailable = (cx: object[]): boolean => {
