@@ -43,7 +43,6 @@ const NetworkDetails = () => {
   const { summary, uiState, config } = useContext(AppContext)
   const { viewerThreshold, warningThreshold } = config
   const [doiCopiedHoverText, setDoiCopiedHoverText] = useState(false)
-  const copyRef = useRef(null)
 
   if (summary === undefined) {
     return null
@@ -80,14 +79,8 @@ const NetworkDetails = () => {
             <Chip label={'DOI: Pending'} size="small" variant="outlined" className={classes.item} />
           ) : (
             <Tooltip title={doiCopiedHoverText ? 'Copied!' : 'Copy network DOI to clipboard'} className={classes.item}>
-              <CopyToClipboard text={summary.doi} onCopy={copyDoi}>
-                <Chip
-                  clickable
-                  label={`DOI: ${summary.doi}`}
-                  variant="outlined"
-                  onClick={copyDoi}
-                  onMouseEnter={mouseEnter}
-                />
+              <CopyToClipboard text={'https://doi.org/' + summary.doi} onCopy={copyDoi}>
+                <Chip clickable label={`DOI: ${summary.doi}`} variant="outlined" onMouseEnter={mouseEnter} />
               </CopyToClipboard>
             </Tooltip>
           )}
