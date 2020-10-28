@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column',
       position: 'relative',
       height: '100%',
+      zIndex: 100,
     },
     title: {
       position: 'fixed',
@@ -365,11 +366,21 @@ const NetworkPanel: FC<ViewProps> = ({
     }
   }
 
+  const topStyle = { background: '#FFFFFF', zIndex: 0 }
+  const bottomStyle = {background: '#FFFFFF', zIndex: 10}
   return (
     <div className={classes.rootA}>
       <Popup cx={uiState.mainNetworkNotDisplayed ? subCx : cx} subHeight={subHeight} />
       {showSearchResult ? (
-        <SplitPane split="horizontal" size={size} minSize={minSize} maxSize={0} onDragFinished={handleDrag}>
+        <SplitPane
+          split="horizontal"
+          pane2Style={bottomStyle}
+          pane1Style={topStyle}
+          size={size}
+          minSize={minSize}
+          maxSize={0}
+          onDragFinished={handleDrag}
+        >
           <div className={classes.lowerPanel}>
             {renderer !== 'lgr' ? <NavigationPanel target={'main'} /> : <div />}
             {!showSearchResult ? <div /> : <Typography className={classes.title}>Overview</Typography>}
@@ -390,7 +401,7 @@ const NetworkPanel: FC<ViewProps> = ({
           </AutoSizer>
         </SplitPane>
       ) : (
-        <div className={classes.lowerPanel} style={{ zIndex: 100 }}>
+        <div className={classes.lowerPanel}>
           {renderer !== 'lgr' ? <NavigationPanel target={'main'} /> : <div />}
           {!showSearchResult ? <div /> : <Typography className={classes.title}>Overview</Typography>}
           {getMainRenderer(renderer)}

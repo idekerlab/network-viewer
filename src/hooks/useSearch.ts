@@ -124,8 +124,6 @@ const queryNetwork = async <T>(
   mode: string,
   maxEdge: number
 ) => {
-  const t0 = performance.now()
-
   if (uuid === undefined || uuid === null || uuid.length === 0) {
     return {}
   }
@@ -179,7 +177,6 @@ const queryNetwork = async <T>(
     throw new Error(response.statusText)
   }
 
-  console.info('* Network query finished:', performance.now() - t0, response)
   return response.parsedBody
 }
 

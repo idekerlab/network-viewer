@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'center',
       alignItems: 'center',
       padding: '1em',
-      width: '60%',
+      width: '55%',
     },
     message: {
       padding: '0.5em',
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     warningIcon: {
       color: 'red',
-      fontSize: '7em',
+      fontSize: '6em',
     },
   }),
 )
@@ -61,7 +61,7 @@ const EmptyView: FC<EmptyViewProps> = ({ title = '-', message = '-', showIcons =
       <div className={classes.item}>
         <WarningIcon fontSize="inherit" className={classes.warningIcon} />
         <div className={classes.title}>
-          <Typography className={classes.message} variant="h3">
+          <Typography className={classes.message} variant="h5">
             {title}
           </Typography>
         </div>
