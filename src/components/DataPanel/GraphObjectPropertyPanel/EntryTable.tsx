@@ -39,6 +39,9 @@ const EntryTable = (props) => {
     const columnsList = []
     for (let id of selectedObjects) {
       const attrs = attributes[id]
+      if(attrs === undefined || attrs === null) {
+        continue
+      }
       for (let attr of attrs) {
         if (
           attr[0] === 'name' ||

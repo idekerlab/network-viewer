@@ -3,7 +3,7 @@ import HttpResponse from '../api/HttpResponse'
 import NdexCredential from '../model/NdexCredential'
 import { getAuthorization } from '../utils/credentialUtil'
 
-import {useState, useEffect} from 'react'
+import { useState, useEffect } from 'react'
 
 const DEF_MAX_EDGE = 10000
 
@@ -111,7 +111,6 @@ export const saveQuery = async (
     body: JSON.stringify(queryParam),
   }
 
-  console.log('Calling fetch search settings: ', settings)
   return fetch(url, settings)
 }
 
@@ -122,7 +121,7 @@ const queryNetwork = async <T>(
   serverUrl: string,
   credential: NdexCredential,
   mode: string,
-  maxEdge: number
+  maxEdge: number,
 ) => {
   if (uuid === undefined || uuid === null || uuid.length === 0) {
     return {}
@@ -131,7 +130,6 @@ const queryNetwork = async <T>(
   if (query === undefined || query === null || query.length === 0) {
     return {}
   }
-
 
   let url = `${serverUrl}/v2/search/network/${uuid}/query`
   if (mode === 'interconnect' || mode === 'direct') {
@@ -241,33 +239,35 @@ const useSearch = (
   mode: string,
   maxEdge: number,
 ) => {
-
   // Make this hook stateful to avoid multiple calls
   const [enabled, setEnabled] = useState(false)
   const [last, setLast] = useState(null)
 
   useEffect(() => {
     const nextQuery = {
-      uuid, query, mode
+      uuid,
+      query,
+      mode,
     }
 
-    if(nextQuery === last) {
+    if (nextQuery === last) {
       setEnabled(false)
     } else {
-      if(nextQuery === null || query === '') {
+      if (nextQuery === null || query === '') {
         setEnabled(false)
       } else {
         setEnabled(true)
       }
       setLast(nextQuery)
     }
-    
-    return () => {
-    }
+
+    return () => {}
   }, [uuid, query, mode])
-  
-  
-  return useQuery(['queryNetwork', uuid, query, serverUrl, credential, mode, maxEdge], queryNetwork, {enabled: enabled})
+
+  return useQuery(['queryNetwork', uuid, query, serverUrl, credential, mode, maxEdge], queryNetwork, {
+    enabled: enabled,
+    cacheTime: 1000
+  })
 }
 
 export default useSearch
