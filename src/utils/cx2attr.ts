@@ -43,7 +43,45 @@ export const getAttributeMap = (cx: object[]) => {
   }
 }
 
+const getDefaultValues = (definition: object, tag: string): Map<string, any> => {
+
+  const defValues = new Map<string, any>()
+
+  const defMap = definition[tag]
+  const keys = Object.keys(defMap)
+  keys.forEach(key => {
+    const entry = defMap[key]
+    const val = entry['v']
+    if(val !== undefined) {
+      defValues.set(key, val)
+    }
+  })
+  return defValues
+}
+
+const getAttributeKeys = (definition: object, tag: string): Set<string> => {
+  const defMap = definition[tag]
+  const keys: string[] = Object.keys(defMap)
+  return new Set(keys)
+}
+
 const getNodeAttrsV2 = (kvMap: object) => {
+  const SPECIAL_TAGS = {
+    name: {
+      tag: 'n',
+      label: 'name'
+    },
+    represents: {
+      tag: 'r',
+      label: 'represents'
+    }
+  }
+
+  const attributeDeclarationsTag = 'attributeDeclarations'
+  const attrDefinition = kvMap[attributeDeclarationsTag]
+
+  const defValues = getDefaultValues(attrDefinition[0], 'nodes')
+  const attrKeys = getAttributeKeys(attrDefinition[0], 'nodes')
   const nodes = kvMap['nodes']
   const id2attr = {}
 
@@ -52,14 +90,22 @@ const getNodeAttrsV2 = (kvMap: object) => {
     const entry = nodes[len]
     const attrs = entry['v']
     const current = new Map()
-    const keys = Object.keys(attrs)
-    keys.forEach((key) => {
-      if (key === 'n') {
-        current.set('name', attrs[key])
-      } else if (key === 'r') {
-        current.set('Represents', attrs[key])
+    // const keys = Object.keys(attrs)
+    attrKeys.forEach(key => {
+      if (key === SPECIAL_TAGS.name.label || key === SPECIAL_TAGS.represents.label) {
+        const tag = SPECIAL_TAGS[key]['tag'] 
+        const label = SPECIAL_TAGS[key]['label']
+        const val = attrs[tag]
+        current.set(label, val)
       } else {
-        current.set(key, attrs[key])
+        let value = attrs[key]
+        if(value === undefined) {
+          // Try default value
+          value = defValues.get(key)
+        }
+        if(value !== undefined) {
+          current.set(key, value)
+        }
       }
     })
     id2attr[entry.id] = current
