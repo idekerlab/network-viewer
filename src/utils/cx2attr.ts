@@ -114,7 +114,6 @@ const getNodeAttrsV2 = (kvMap: object) => {
 }
 
 const getEdgeAttrsV2 = (nodeAttr, kvMap: object) => {
-  console.log(kvMap)
   const edges = kvMap['edges']
   const id2attr = {}
 
