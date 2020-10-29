@@ -2,6 +2,15 @@
   "name": "network-viewer",
   "version": "0.2.0",
   "private": true,
+  "description": "New frontend app for NDEx database",
+  "keywords": ["graph", "bioinformatics", "visualization"],
+  "license": "MIT",
+  "author": "Keiichiro Ono <kono@ucsd.edu> (https://idekerlab.ucsd.edu/)",
+  "contributors": ["David Otasek", "Sophie Liu"],
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/idekerlab/network-viewer.git"
+  },
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
@@ -40,8 +49,7 @@
     "react-table": "^7.5.1",
     "react-virtualized": "^9.22.2",
     "react-window": "1.4.0-alpha.1",
-    "string-pixel-width": "^1.10.0",
-    "typescript": "^4.0.2"
+    "string-pixel-width": "^1.10.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -74,7 +82,8 @@
     "eslint": "^7.7.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
-    "prettier": "^2.1.1"
+    "prettier": "^2.1.1",
+    "typescript": "^4.0.2"
   },
   "homepage": "/viewer"
 }
