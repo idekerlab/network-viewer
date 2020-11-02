@@ -51,7 +51,7 @@ const ToolBar: FC = (props) => {
     } else {
       if (ndexCredential.loaded && ndexCredential.isLogin) {
         console.log('going from logged in to logged out: ', summary)
-        if (summary.visibility == 'PRIVATE') {
+        if (!summary || summary.visibility == 'PRIVATE') {
           window.location.href = appendWindowProtocol(config.ndexUrl)
         }
       }
