@@ -1,7 +1,7 @@
 import { cx2cyjs } from '../utils/cx2cyjs'
 import { useState } from 'react'
 
-export default function useCyjs(uuid: string, cx: any) {
+export default function useCyjs(uuid: string, cx: object[]) {
   const [cyjs, setCyjs] = useState(null)
   const [id, setUuid] = useState(null)
 
@@ -10,7 +10,7 @@ export default function useCyjs(uuid: string, cx: any) {
     return {}
   }
 
-  if (id === null && cx.length > 6) {
+  if (id === null && cx.length >= 6) {
     setUuid(uuid)
     setCyjs(cx2cyjs(uuid, cx))
     return cyjs
