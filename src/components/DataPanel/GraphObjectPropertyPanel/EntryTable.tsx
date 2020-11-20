@@ -1,11 +1,24 @@
-import React, { useMemo, useEffect, useState } from 'react'
+import React, { useMemo, useEffect, useState, useContext } from 'react'
 import Table from './Table'
 import Twinble from './Table2'
-import { processList, processItem } from '../../../utils/contextUtil'
+import { processList, processItem, processInternalLink } from '../../../utils/contextUtil'
 import pixelWidth from 'string-pixel-width'
+import AppContext from '../../../context/AppState'
+
+const EdgeAttributes = {
+  SOURCE: 'source',
+  TARGET: 'target',
+  INTERACTION: 'interaction',
+}
+
+const Attributes = {
+  NAME: 'name',
+  NDEX_INTERNAL_LINK: 'ndex:internalLink',
+}
 
 const EntryTable = (props) => {
   const { selectedObjects, attributes, label, type, context, width, height } = props
+  const { config } = useContext(AppContext)
   const [state, setState] = useState(true)
 
   const replacePeriods = (string) => {
@@ -39,13 +52,16 @@ const EntryTable = (props) => {
     const columnsList = []
     for (let id of selectedObjects) {
       const attrs = attributes[id]
-      if(attrs === undefined || attrs === null) {
+      if (attrs === undefined || attrs === null) {
         continue
       }
       for (let attr of attrs) {
         if (
-          attr[0] === 'name' ||
-          (type === 'edge' && (attr[0] === 'source' || attr[0] === 'target' || attr[0] === 'interaction'))
+          attr[0] === Attributes.NAME ||
+          (type === 'edge' &&
+            (attr[0] === EdgeAttributes.SOURCE ||
+              attr[0] === EdgeAttributes.TARGET ||
+              attr[0] === EdgeAttributes.INTERACTION))
         ) {
           continue
         } else {
@@ -71,17 +87,24 @@ const EntryTable = (props) => {
         }
       }
     }
-    columnsList.unshift('name')
+    columnsList.unshift(Attributes.NAME)
     if (type === 'edge') {
       //Add name for edges that don't have one
       for (let id of selectedObjects) {
         const attrs = attributes[id]
-        if (!attrs.has('name')) {
-          if (attrs.has('source') && attrs.has('target')) {
-            if (attrs.has('interaction')) {
-              attrs.set('name', attrs.get('source') + ' (' + attrs.get('interaction') + ') ' + attrs.get('target'))
+        if (!attrs.has(Attributes.NAME)) {
+          if (attrs.has(EdgeAttributes.SOURCE) && attrs.has(EdgeAttributes.TARGET)) {
+            if (attrs.has(EdgeAttributes.INTERACTION)) {
+              attrs.set(
+                Attributes.NAME,
+                attrs.get(EdgeAttributes.SOURCE) +
+                  ' (' +
+                  attrs.get(EdgeAttributes.INTERACTION) +
+                  ') ' +
+                  attrs.get(EdgeAttributes.TARGET),
+              )
             } else {
-              attrs.set('name', attrs.get('source') + ' (-) ' + attrs.get('target'))
+              attrs.set(Attributes.NAME, attrs.get(EdgeAttributes.SOURCE) + ' (-) ' + attrs.get(EdgeAttributes.TARGET))
             }
           }
         }
@@ -103,7 +126,11 @@ const EntryTable = (props) => {
         if (Array.isArray(value)) {
           row[replacePeriods(column)] = processList(value, context)
         } else {
-          row[replacePeriods(column)] = processItem(attrs.get(column), context, true)
+          if (column == Attributes.NDEX_INTERNAL_LINK) {
+            row[column] = processInternalLink(attrs.get(column), config.ndexUrl)
+          } else {
+            row[replacePeriods(column)] = processItem(attrs.get(column), context, true)
+          }
         }
       }
       dataList.push(row)
@@ -123,11 +150,11 @@ const EntryTable = (props) => {
 
   const finalColumns = useMemo(() => {
     const columnsObject = columns.map((column) => {
-      if (column === 'name') {
+      if (column === Attributes.NAME) {
         return {
           Header: label,
-          accessor: 'name',
-          minWidth: getColumnWidth(data, 'name', label),
+          accessor: Attributes.NAME,
+          minWidth: getColumnWidth(data, Attributes.NAME, label),
         }
       } else {
         return {

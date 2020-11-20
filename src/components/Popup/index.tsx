@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import AppContext from '../../context/AppState'
 import useAttributes from '../../hooks/useAttributes'
 import PropertyPanel from '../PropertyPanel'
-import { getContextFromCx, processList, processItem } from '../../utils/contextUtil'
+import { getContextFromCx, processList, processItem, processInternalLink } from '../../utils/contextUtil'
 import { SelectionActions } from '../../reducer/selectionStateReducer'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -50,6 +50,10 @@ const EdgeAttributes = {
   NAME: 'name',
 }
 
+const Attributes = {
+  NDEX_INTERNAL_LINK: 'ndex:internalLink',
+}
+
 type PopupProps = {
   cx: object[]
   subHeight: number
@@ -58,7 +62,7 @@ type PopupProps = {
 const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
   const classes = useStyles()
   const { uuid } = useParams()
-  const { uiState, selectionState, selectionStateDispatch } = useContext(AppContext)
+  const { uiState, selectionState, selectionStateDispatch, config } = useContext(AppContext)
   const { windowHeight, windowWidth } = useWindowDimensions()
   const FOOTER_HEIGHT = 60
 
@@ -127,7 +131,11 @@ const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
       if (Array.isArray(item[1])) {
         value = processList(item[1], context)
       } else {
-        value = processItem(item[1], context, true)
+        if (item[0] == Attributes.NDEX_INTERNAL_LINK) {
+          value = processInternalLink(item[1], config.ndexUrl)
+        } else {
+          value = processItem(item[1], context, true)
+        }
       }
       nonEmptyMap.set(item[0], value)
     }

@@ -31,32 +31,32 @@ const processItem = (item, context, parseItem) => {
     return item
   }
 
+  let returnString = item
   const [prefix, id] = item.split(':')
   if (prefix && id) {
     if (prefix.toUpperCase() in context) {
-      if (parseItem) {
-        return parse(
-          '<a href=' +
-            context[prefix.toUpperCase()] +
-            id +
-            ' target="_blank" rel="noopener noreferrer">' +
-            item +
-            '</a>',
-        )
-      } else {
-        return (
-          '<a href=' +
-          context[prefix.toUpperCase()] +
-          id +
-          ' target="_blank" rel="noopener noreferrer">' +
-          item +
-          '</a>'
-        )
-      }
+      returnString =
+        '<a href=' + context[prefix.toUpperCase()] + id + ' target="_blank" rel="noopener noreferrer">' + item + '</a>'
     }
   }
 
-  return item
+  if (parseItem) {
+    return parse(returnString)
+  }
+
+  return returnString
 }
 
-export { getContextFromCx, processList, processItem }
+const processInternalLink = (item, url) => {
+  return parse(
+    '<a href=https://' +
+      url +
+      '/viewer/networks/' +
+      item +
+      ' target="_blank" rel="noopener noreferrer">' +
+      item +
+      '</a>',
+  )
+}
+
+export { getContextFromCx, processList, processItem, processInternalLink }
