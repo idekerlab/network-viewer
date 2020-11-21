@@ -47,10 +47,14 @@ const EdgeAttributes = {
   SOURCE: 'source',
   TARGET: 'target',
   INTERACTION: 'interaction',
-  NAME: 'name',
+}
+
+const NodeAttributes = {
+  REPRESENTS: 'represents',
 }
 
 const Attributes = {
+  NAME: 'name',
   NDEX_INTERNAL_LINK: 'ndex:internalLink',
 }
 
@@ -97,9 +101,10 @@ const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
   //and properly display links and lists
   const nonEmptyMap = new Map()
   let source, target, interaction
-  let hasName = false
+  let noNameEdge = true
+  let represents
+  const include = []
   for (let item of attrMap) {
-    let include = false
     if (!selectionState.lastSelected.isNode) {
       if ([EdgeAttributes.SOURCE, EdgeAttributes.TARGET, EdgeAttributes.INTERACTION].includes(item[0])) {
         if (item[0] === EdgeAttributes.SOURCE) {
@@ -110,43 +115,51 @@ const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
           interaction = item[1]
         }
         continue
-      } else if (item[0] === EdgeAttributes.NAME) {
-        hasName = true
+      } else if (item[0] === Attributes.NAME) {
+        noNameEdge = false
       }
+    } else {
+      noNameEdge = false
     }
+
     if (Array.isArray(item[1])) {
       for (let arrayItem of item[1]) {
         if (arrayItem !== undefined && arrayItem !== '') {
-          include = true
+          include.push(item)
           break
         }
       }
     } else {
       if (item[1] !== undefined && item[1] !== '') {
-        include = true
+        include.push(item)
       }
-    }
-    if (include) {
-      let value
-      if (Array.isArray(item[1])) {
-        value = processList(item[1], context)
-      } else {
-        if (item[0] == Attributes.NDEX_INTERNAL_LINK) {
-          value = processInternalLink(item[1], config.ndexUrl)
-        } else {
-          value = processItem(item[1], context, true)
-        }
-      }
-      nonEmptyMap.set(item[0], value)
     }
   }
 
-  if (!hasName) {
+  include.sort((a, b) => {
+    return a[0].localeCompare(b[0])
+  })
+
+  for (let item of include) {
+    let value
+    if (Array.isArray(item[1])) {
+      value = processList(item[1], context)
+    } else {
+      if (item[0] == Attributes.NDEX_INTERNAL_LINK) {
+        value = processInternalLink(item[1], config.ndexUrl)
+      } else {
+        value = processItem(item[1], context, true)
+      }
+    }
+    nonEmptyMap.set(item[0], value)
+  }
+
+  if (noNameEdge) {
     if (source && target) {
       if (interaction) {
-        nonEmptyMap.set('name', source + ' (' + interaction + ') ' + target)
+        nonEmptyMap.set(Attributes.NAME, source + ' (' + interaction + ') ' + target)
       } else {
-        nonEmptyMap.set('name', source + ' (-) ' + target)
+        nonEmptyMap.set(Attributes.NAME, source + ' (-) ' + target)
       }
     }
   }

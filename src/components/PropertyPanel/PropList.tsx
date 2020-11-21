@@ -29,7 +29,19 @@ const PropList = ({ attrMap }) => {
   const classes = useStyles()
 
   attrMap.delete('name')
-  const keys = [...attrMap.keys()]
+
+  let represents
+  if (attrMap.has('Represents')) {
+    represents = attrMap.get('Represents')
+    attrMap.delete('Represents')
+  }
+
+  const keys = [...attrMap.keys()].sort((a, b) => a.localeCompare(b))
+
+  if (represents != undefined) {
+    keys.unshift('Represents')
+    attrMap.set('Represents', represents)
+  }
 
   return (
     <List className={classes.root}>

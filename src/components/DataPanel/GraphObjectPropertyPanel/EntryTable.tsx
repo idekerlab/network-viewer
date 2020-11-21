@@ -11,6 +11,10 @@ const EdgeAttributes = {
   INTERACTION: 'interaction',
 }
 
+const NodeAttributes = {
+  REPRESENTS: 'Represents',
+}
+
 const Attributes = {
   NAME: 'name',
   NDEX_INTERNAL_LINK: 'ndex:internalLink',
@@ -149,6 +153,24 @@ const EntryTable = (props) => {
   }, [selectedObjects])
 
   const finalColumns = useMemo(() => {
+    //Put columns in correct order
+    let hasName = false
+    let hasRepresents = false
+    if (columns.includes(Attributes.NAME)) {
+      hasName = true
+      columns.splice(columns.indexOf(Attributes.NAME), 1)
+    }
+    if (columns.includes(NodeAttributes.REPRESENTS)) {
+      hasRepresents = true
+      columns.splice(columns.indexOf(NodeAttributes.REPRESENTS), 1)
+    }
+    columns.sort((a, b) => a.localeCompare(b))
+    if (hasRepresents) {
+      columns.unshift(NodeAttributes.REPRESENTS)
+    }
+    if (hasName) {
+      columns.unshift(Attributes.NAME)
+    }
     const columnsObject = columns.map((column) => {
       if (column === Attributes.NAME) {
         return {
