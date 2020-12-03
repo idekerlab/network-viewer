@@ -3,7 +3,7 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 import logo from '../../assets/images/ndex-logo.svg'
 
-import { appendWindowProtocol } from '../../utils/protocolUtil'
+import { appendWindowProtocol } from '../../utils/locationUtil'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

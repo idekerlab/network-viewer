@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 
-import { appendWindowProtocol } from '../../utils/protocolUtil'
+import { appendWindowProtocol } from '../../utils/locationUtil'
 
 import { NDExSignInButton } from 'cytoscape-explore-components'
 
@@ -11,6 +11,8 @@ import AppContext from '../../context/AppState'
 import ClassicModeButton from './ClassicModeButton'
 import NdexHomeButton from './NdexHomeButton'
 import AdvancedMenu from './AdvancedMenu'
+
+import { getCurrentServer } from '../../utils/locationUtil'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -63,6 +65,8 @@ const ToolBar: FC = (props) => {
     }
   }
 
+  const ndexServerUrl = getCurrentServer();
+
   return (
     <div className={classes.root}>
       <Grid container direction="row" justify="flex-start" alignItems="center" spacing={0}>
@@ -70,7 +74,7 @@ const ToolBar: FC = (props) => {
           <NdexHomeButton />
           <NDExSignInButton
             size="small"
-            myAccountURL={ appendWindowProtocol(config.ndexUrl + '/#/myAccount') }
+            myAccountURL={ ndexServerUrl + '/#/myAccount' }
             onLoginStateUpdated={loginStateUpdated}
           />
           <AdvancedMenu />

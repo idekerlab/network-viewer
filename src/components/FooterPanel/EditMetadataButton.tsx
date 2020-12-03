@@ -6,7 +6,7 @@ import AppContext from '../../context/AppState'
 import useNetworkPermissions from '../../hooks/useNetworkPermissions'
 import { Tooltip } from '@material-ui/core'
 
-import { appendWindowProtocol } from '../../utils/protocolUtil'
+import { appendWindowProtocol } from '../../utils/locationUtil'
 
 const EditMetadataButton: FC = () => {
   const { summary, ndexCredential, config } = useContext(AppContext)

@@ -3,7 +3,7 @@ import { IconButton, Tooltip } from '@material-ui/core'
 import AppContext from '../../context/AppState'
 import ReturnIcon from '@material-ui/icons/FolderShared'
 
-import { appendWindowProtocol } from '../../utils/protocolUtil'
+import { appendWindowProtocol } from '../../utils/locationUtil'
 
 const AccountHomeButton: FC = () => {
   const { config } = useContext(AppContext)
