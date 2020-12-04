@@ -3,11 +3,11 @@ import { IconButton, Tooltip } from '@material-ui/core'
 import AppContext from '../../context/AppState'
 import ReturnIcon from '@material-ui/icons/FolderShared'
 
-import { appendWindowProtocol } from '../../utils/locationUtil'
+import { getCurrentServer } from '../../utils/locationUtil'
 
 const AccountHomeButton: FC = () => {
   const { config } = useContext(AppContext)
-  const baseUrl: string = appendWindowProtocol(config.ndexUrl)
+  const baseUrl: string = getCurrentServer();
 
   const handleClick = (): void => {
     window.open(baseUrl, '_self')

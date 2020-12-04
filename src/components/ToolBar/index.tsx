@@ -3,8 +3,6 @@ import { useParams } from 'react-router-dom'
 import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 
-import { appendWindowProtocol } from '../../utils/locationUtil'
-
 import { NDExSignInButton } from 'cytoscape-explore-components'
 
 import AppContext from '../../context/AppState'
@@ -37,6 +35,8 @@ const ToolBar: FC = (props) => {
 
   const { config, summary, ndexCredential, setNdexCredential } = useContext(AppContext)
 
+  const ndexServerUrl = getCurrentServer();
+
   const loginStateUpdated = (loginState) => {
     if (loginState) {
       if (loginState.isGoogle) {
@@ -54,7 +54,7 @@ const ToolBar: FC = (props) => {
       if (ndexCredential.loaded && ndexCredential.isLogin) {
         console.log('going from logged in to logged out: ', summary)
         if (!summary || summary.visibility == 'PRIVATE') {
-          window.location.href = appendWindowProtocol(config.ndexUrl)
+          window.location.href = ndexServerUrl;
         }
       }
       setNdexCredential({
@@ -65,7 +65,7 @@ const ToolBar: FC = (props) => {
     }
   }
 
-  const ndexServerUrl = getCurrentServer();
+ 
 
   return (
     <div className={classes.root}>
