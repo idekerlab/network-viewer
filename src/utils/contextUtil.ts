@@ -26,6 +26,14 @@ const processList = (list, context) => {
   return parse(listString.slice(0, -2))
 }
 
+const processListAsText = (list) => {
+  let listString = ''
+  for (let item of list) {
+    listString += item + ', '
+  }
+  return listString.slice(0, -2)
+}
+
 const processItem = (item, context, parseItem) => {
   if (context == undefined || item == undefined) {
     return item
@@ -59,4 +67,4 @@ const processInternalLink = (item, url) => {
   )
 }
 
-export { getContextFromCx, processList, processItem, processInternalLink }
+export { getContextFromCx, processList, processItem, processInternalLink, processListAsText }
