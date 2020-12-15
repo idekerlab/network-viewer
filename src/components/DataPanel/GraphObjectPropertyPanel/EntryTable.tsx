@@ -196,13 +196,13 @@ const EntryTable = (props) => {
         return {
           Header: label,
           accessor: Attributes.NAME,
-          minWidth: getColumnWidth(data[1], Attributes.NAME, label),
+          width: getColumnWidth(data[1], Attributes.NAME, label),
         }
       } else {
         return {
           Header: column,
           accessor: replacePeriods(column),
-          minWidth: getColumnWidth(data[1], column, column),
+          width: getColumnWidth(data[1], column, column),
         }
       }
     })
