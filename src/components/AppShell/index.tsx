@@ -37,6 +37,10 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       height: '4em', //If this changes, also update footer size in Popup/index.tsx
     },
+    sandbox: {
+      position: 'absolute',
+      left: '-999em',
+    },
   }),
 )
 
@@ -57,6 +61,7 @@ const AppShell: FC = () => {
           <FooterPanel />
         </footer>
       </NDExAccountProvider>
+      <div id="sandbox"></div>
     </div>
   )
 }

@@ -6,7 +6,7 @@ Sorry.
 
 import React, { useState, useEffect } from 'react'
 import { DynamicSizeList } from 'react-window'
-import { useTable, useBlockLayout } from 'react-table'
+import { useTable, useBlockLayout, useResizeColumns } from 'react-table'
 import { AutoSizer } from 'react-virtualized'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 
@@ -32,18 +32,24 @@ const useStyles = makeStyles((theme) =>
       backgroundColor: theme.palette.secondary.main,
       display: 'flex',
       alignItems: 'center',
+      height: '100%',
     },
     tableHeaderCell: {
       backgroundColor: theme.palette.secondary.main,
       color: theme.palette.common.white,
       fontSize: '0.875rem',
-      padding: '6px 24px 6px 16px',
+      padding: '6px',
+      paddingRight: '12px',
+      height: '100%',
+      verticalAlign: 'bottom',
     },
     tableBodyCell: {
       fontSize: '1em',
-      padding: '6px 24px 6px 16px',
+      padding: '6px',
+      paddingRight: '12px',
       maxHeight: '12em',
       overflowY: 'auto',
+      position: 'relative',
     },
     tableRow: {
       '&:nth-of-type(odd)': {
@@ -56,33 +62,46 @@ const useStyles = makeStyles((theme) =>
     fullWidth: {
       minWidth: '100%',
     },
+    resizer: {
+      display: 'inline-block',
+      background: 'black',
+      width: '1px',
+      height: '100%',
+      position: 'absolute',
+      right: 0,
+      top: 0,
+      transform: 'translateX(50%)',
+      zIndex: 1,
+      touchAction: 'none',
+    },
   }),
 )
 
 function Table({ columns, data }) {
   const classes = useStyles()
   const scrollBarWidth = 15
-  const [state, setState] = useState(true)
+  const [arbitraryState, setState] = useState(true)
 
   useEffect(() => {
-    setState(!state)
+    setState(!arbitraryState)
   }, [columns, data])
   // Use the state and functions returned from useTable to build your UI
 
   const defaultColumn = React.useMemo(
     () => ({
-      width: 10,
+      minWidth: 10,
     }),
     [],
   )
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, totalColumnsWidth, prepareRow } = useTable(
+  const { getTableProps, getTableBodyProps, headerGroups, rows, totalColumnsWidth, prepareRow, state } = useTable(
     {
       columns,
       data,
       defaultColumn,
     },
     useBlockLayout,
+    useResizeColumns,
   )
 
   const RenderRow = React.useCallback(
@@ -123,7 +142,11 @@ function Table({ columns, data }) {
           >
             {headerGroup.headers.map((column) => (
               <div {...column.getHeaderProps()} className={'th ' + classes.tableHeaderCell}>
-                {column.render('Header')}
+                <div style={{}}>{column.render('Header')}</div>
+                <div
+                  {...column.getResizerProps()}
+                  className={classes.resizer + (column.isResizing ? ' isResizing' : '')}
+                />
               </div>
             ))}
           </div>
@@ -132,15 +155,18 @@ function Table({ columns, data }) {
 
       <div {...getTableBodyProps()} className={classes.content}>
         <AutoSizer className={classes.fullWidth}>
-          {({ height, width }) => (
-            <DynamicSizeList
-              height={height}
-              itemCount={rows.length}
-              width={totalColumnsWidth + scrollBarWidth > width ? totalColumnsWidth + scrollBarWidth : width}
-            >
-              {RenderRow}
-            </DynamicSizeList>
-          )}
+          {({ height, width }) => {
+            console.log(JSON.stringify(state, null, 2))
+            return (
+              <DynamicSizeList
+                height={height}
+                itemCount={rows.length}
+                width={totalColumnsWidth + scrollBarWidth > width ? totalColumnsWidth + scrollBarWidth : width}
+              >
+                {RenderRow}
+              </DynamicSizeList>
+            )
+          }}
         </AutoSizer>
       </div>
     </div>
