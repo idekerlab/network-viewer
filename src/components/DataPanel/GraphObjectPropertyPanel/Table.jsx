@@ -156,7 +156,7 @@ function Table({ columns, data }) {
       <div {...getTableBodyProps()} className={classes.content}>
         <AutoSizer className={classes.fullWidth}>
           {({ height, width }) => {
-            console.log(JSON.stringify(state, null, 2))
+            //console.log(JSON.stringify(state, null, 2))
             return (
               <DynamicSizeList
                 height={height}
