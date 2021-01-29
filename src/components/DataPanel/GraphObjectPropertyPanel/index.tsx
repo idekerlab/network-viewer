@@ -17,6 +17,7 @@ const GraphObjectPropertyPanel = ({ cx }) => {
     const widths = {}
     let widthSum = 0
     const sandbox = document.getElementById('sandbox')
+    sandbox.style.display="block"
     for (let i = 32; i < 127; i++) {
       let letter = String.fromCharCode(i)
       if (letter === ' ') {
@@ -25,6 +26,7 @@ const GraphObjectPropertyPanel = ({ cx }) => {
       widths[letter] = getLetterWidth(sandbox, letter)
       widthSum += widths[letter]
     }
+    sandbox.style.display="none"
     widths['default'] = widthSum / (127 - 32)
     return widths
   }, [])
