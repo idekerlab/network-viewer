@@ -6,7 +6,7 @@ import AppContext from '../../context/AppState'
 import useNetworkPermissions from '../../hooks/useNetworkPermissions'
 import { Tooltip } from '@material-ui/core'
 
-import { appendWindowProtocol } from '../../utils/protocolUtil'
+import { getCurrentServer } from '../../utils/locationUtil'
 
 const EditMetadataButton: FC = () => {
   const { summary, ndexCredential, config } = useContext(AppContext)
@@ -19,7 +19,7 @@ const EditMetadataButton: FC = () => {
     return (
       <Tooltip title="Edit network properties">
         <IconButton
-          href={appendWindowProtocol(config.ndexUrl) + '/#/properties/network/' + summary.externalId + '/null?returnto=nnv'}
+          href={getCurrentServer() + '/#/properties/network/' + summary.externalId + '/null?returnto=nnv'}
         >
           <EditIcon />
         </IconButton>
