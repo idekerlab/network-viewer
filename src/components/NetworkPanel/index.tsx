@@ -122,11 +122,20 @@ const NetworkPanel: FC<ViewProps> = ({
     setSubCx(subCx)
   }
 
+  const getObjectCount = (countFunction, subCx) => {
+    const count = countFunction(subCx);
+    return count ? count : 0;
+  }
+
   const edgeLimitExceeded = subnet !== undefined ? subnet['edgeLimitExceeded'] : false
 
+ 
   useEffect(() => {
     if (subCx !== undefined) {
-      setSummary({ ...summary, subnetworkNodeCount: getNodeCount(subCx), subnetworkEdgeCount: getEdgeCount(subCx) })
+      const subnetworkNodeCount = getObjectCount(getNodeCount, subCx);
+      const subnetworkEdgeCount = getObjectCount(getEdgeCount, subCx);
+    
+      setSummary({ ...summary, subnetworkNodeCount: subnetworkNodeCount, subnetworkEdgeCount: subnetworkEdgeCount })
     }
   }, [searchResult])
 
@@ -333,11 +342,14 @@ const NetworkPanel: FC<ViewProps> = ({
       return <Loading message={message} showLoading={true} />
     }
 
+    
+
     if (edgeLimitExceeded) {
       return <EdgeLimitExceededPanel />
     }
 
-    const count = getNodeCount(subCx) + getEdgeCount(subCx)
+    const count = summary.subnetworkNodeCount + summary.subnetworkEdgeCount;
+  
     if (count === 0 && showSearchResult) {
       return <Loading message={'No nodes matching your query were found in this network.'} showLoading={false} />
     }

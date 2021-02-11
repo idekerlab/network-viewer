@@ -92,6 +92,7 @@ const SearchBox: FC = () => {
     uiState,
     ndexCredential,
     config,
+    summary
   } = useContext(AppContext)
 
   const [searchType, setSearchType] = useState(queryMode)
@@ -105,6 +106,7 @@ const SearchBox: FC = () => {
   }
 
   const edgeLimitExceeded: boolean = subnet !== undefined ? subnet['edgeLimitExceeded'] : false
+  const summaryObjectCount = summary ? summary.subnetworkNodeCount + summary.subnetworkEdgeCount : 0;
 
   const downloadProps: DownloadProps = {
     data: subCx,
@@ -218,9 +220,9 @@ const SearchBox: FC = () => {
       >
         <SearchIcon />
       </IconButton>
-      {!edgeLimitExceeded && <DownloadButton {...downloadProps} />}
-      {!edgeLimitExceeded && <SaveQueryButton /> }
-      <AdvancedQueryMenu />
+      {!edgeLimitExceeded && summaryObjectCount > 0 && <DownloadButton {...downloadProps} />}
+      {!edgeLimitExceeded && summaryObjectCount > 0 && <SaveQueryButton /> }
+      {summaryObjectCount > 0 && <AdvancedQueryMenu /> }
       <IconButton
         color="secondary"
         size="small"
