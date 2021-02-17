@@ -20,11 +20,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const SaveQueryButton = () => {
   const { uuid } = useParams()
-  const { query, queryMode, uiState, ndexCredential, config } = useContext(AppContext)
+  const { query, queryMode, uiState, ndexCredential, config, summary } = useContext(AppContext)
   const searchResult = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode, config.maxEdgeQuery)
   const subnet = searchResult.data
   const edgeLimitExceeded: boolean = subnet !== undefined ? subnet['edgeLimitExceeded'] : false
-  const subCx = subnet !== undefined ? subnet['cx'] : undefined
+  const summaryObjectCount = summary ? summary.subnetworkNodeCount + summary.subnetworkEdgeCount : 0;
+
+  const subCx = subnet !== undefined && summaryObjectCount > 0 ? subnet['cx'] : undefined
 
   const fetchCX = () => {
       return new Promise<Object>(function (resolve, reject) {
