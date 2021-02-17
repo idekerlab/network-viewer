@@ -9,8 +9,13 @@ const getContextFromCx = (cx) => {
     if (obj['networkAttributes']) {
       for (let item of obj['networkAttributes']) {
         if (item['n'] === '@context') {
-          const oldContext = JSON.parse(item['v'])
-          return Object.keys(oldContext).reduce((c, k) => ((c[k.toUpperCase()] = oldContext[k]), c), {})
+          try {
+            const oldContext = JSON.parse(item['v'])
+            return Object.keys(oldContext).reduce((c, k) => ((c[k.toUpperCase()] = oldContext[k]), c), {})
+          } catch (error) {
+            console.error("Could not parse @context network attribute as JSON: ", error);
+            return {}
+          }
         }
       }
     }
