@@ -109,7 +109,7 @@ const SearchBox: FC = () => {
   const summaryObjectCount = summary ? summary.subnetworkNodeCount + summary.subnetworkEdgeCount : 0;
 
   const downloadProps: DownloadProps = {
-    data: subCx,
+    data: summaryObjectCount > 0 ? subCx : undefined,
     tooltip: 'Download query result as CX',
     fileName: `${uuid} subnet.cx`,
   }
@@ -220,9 +220,9 @@ const SearchBox: FC = () => {
       >
         <SearchIcon />
       </IconButton>
-      {!edgeLimitExceeded && summaryObjectCount > 0 && <DownloadButton {...downloadProps} />}
-      {!edgeLimitExceeded && summaryObjectCount > 0 && <SaveQueryButton /> }
-      {summaryObjectCount > 0 && <AdvancedQueryMenu /> }
+      {!edgeLimitExceeded && <DownloadButton {...downloadProps} />}
+      {!edgeLimitExceeded && <SaveQueryButton /> }
+      <AdvancedQueryMenu />
       <IconButton
         color="secondary"
         size="small"
