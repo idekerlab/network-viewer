@@ -1,6 +1,6 @@
 {
   "name": "network-viewer",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": true,
   "description": "New frontend app for NDEx database",
   "keywords": ["graph", "bioinformatics", "visualization"],
