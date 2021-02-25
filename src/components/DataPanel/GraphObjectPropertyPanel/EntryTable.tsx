@@ -1,11 +1,28 @@
-import React, { useMemo, useEffect, useState } from 'react'
+import React, { useMemo, useEffect, useState, useContext } from 'react'
 import Table from './Table'
 import Twinble from './Table2'
-import { processList, processItem } from '../../../utils/contextUtil'
+import { processList, processItem, processInternalLink, processListAsText } from '../../../utils/contextUtil'
 import pixelWidth from 'string-pixel-width'
+import AppContext from '../../../context/AppState'
+
+const EdgeAttributes = {
+  SOURCE: 'source',
+  TARGET: 'target',
+  INTERACTION: 'interaction',
+}
+
+const NodeAttributes = {
+  REPRESENTS: 'Represents',
+}
+
+const Attributes = {
+  NAME: 'name',
+  NDEX_INTERNAL_LINK: 'ndex:internalLink',
+}
 
 const EntryTable = (props) => {
-  const { selectedObjects, attributes, label, type, context, width, height } = props
+  const { selectedObjects, attributes, label, type, context, width, height, letterWidths } = props
+  const { config } = useContext(AppContext)
   const [state, setState] = useState(true)
 
   const replacePeriods = (string) => {
@@ -24,14 +41,29 @@ const EntryTable = (props) => {
     return '0123456789'.includes(string.charAt(0))
   }
 
+  const getWidth = (phrase) => {
+    if (phrase === undefined) {
+      phrase = ''
+    }
+    let width = 0
+    for (let i = 0; i < phrase.length; i++) {
+      let letter = phrase[i]
+      if (letter === ' ') {
+        letter = '&nbsp'
+      }
+      if (letterWidths[letter] == undefined) {
+        width += letterWidths['default']
+      } else {
+        width += letterWidths[letter]
+      }
+    }
+    return width
+  }
+
   const getColumnWidth = (rows, accessor, header) => {
-    const PADDING = 40
+    const PADDING = 18
     const MAX_WIDTH = 300 + PADDING
-    const width =
-      Math.max(
-        ...rows.map((row) => pixelWidth(`${row[accessor]}` || '', { font: 'helvetica', size: 15 })),
-        pixelWidth(header, { font: 'helvetica', size: 15 }),
-      ) + PADDING
+    const width = Math.max(...rows.map((row) => getWidth(`${row[accessor]}` || '')), getWidth(header)) + PADDING
     return Math.min(MAX_WIDTH, width)
   }
 
@@ -39,13 +71,16 @@ const EntryTable = (props) => {
     const columnsList = []
     for (let id of selectedObjects) {
       const attrs = attributes[id]
-      if(attrs === undefined || attrs === null) {
+      if (attrs === undefined || attrs === null) {
         continue
       }
       for (let attr of attrs) {
         if (
-          attr[0] === 'name' ||
-          (type === 'edge' && (attr[0] === 'source' || attr[0] === 'target' || attr[0] === 'interaction'))
+          attr[0] === Attributes.NAME ||
+          (type === 'edge' &&
+            (attr[0] === EdgeAttributes.SOURCE ||
+              attr[0] === EdgeAttributes.TARGET ||
+              attr[0] === EdgeAttributes.INTERACTION))
         ) {
           continue
         } else {
@@ -71,17 +106,24 @@ const EntryTable = (props) => {
         }
       }
     }
-    columnsList.unshift('name')
+    columnsList.unshift(Attributes.NAME)
     if (type === 'edge') {
       //Add name for edges that don't have one
       for (let id of selectedObjects) {
         const attrs = attributes[id]
-        if (!attrs.has('name')) {
-          if (attrs.has('source') && attrs.has('target')) {
-            if (attrs.has('interaction')) {
-              attrs.set('name', attrs.get('source') + ' (' + attrs.get('interaction') + ') ' + attrs.get('target'))
+        if (!attrs.has(Attributes.NAME)) {
+          if (attrs.has(EdgeAttributes.SOURCE) && attrs.has(EdgeAttributes.TARGET)) {
+            if (attrs.has(EdgeAttributes.INTERACTION)) {
+              attrs.set(
+                Attributes.NAME,
+                attrs.get(EdgeAttributes.SOURCE) +
+                  ' (' +
+                  attrs.get(EdgeAttributes.INTERACTION) +
+                  ') ' +
+                  attrs.get(EdgeAttributes.TARGET),
+              )
             } else {
-              attrs.set('name', attrs.get('source') + ' (-) ' + attrs.get('target'))
+              attrs.set(Attributes.NAME, attrs.get(EdgeAttributes.SOURCE) + ' (-) ' + attrs.get(EdgeAttributes.TARGET))
             }
           }
         }
@@ -92,21 +134,30 @@ const EntryTable = (props) => {
 
   const data = useMemo(() => {
     const dataList = []
+    const textDataList = []
     for (let id of selectedObjects) {
       const attrs = attributes[id]
       if (attrs == undefined) {
         continue
       }
       const row = {}
+      const textRow = {}
       for (let column of columns) {
         const value = attrs.get(column)
         if (Array.isArray(value)) {
           row[replacePeriods(column)] = processList(value, context)
+          textRow[replacePeriods(column)] = processListAsText(value)
         } else {
-          row[replacePeriods(column)] = processItem(attrs.get(column), context, true)
+          if (column == Attributes.NDEX_INTERNAL_LINK) {
+            row[column] = processInternalLink(attrs.get(column), config.ndexUrl)
+          } else {
+            row[replacePeriods(column)] = processItem(attrs.get(column), context, true)
+          }
+          textRow[replacePeriods(column)] = attrs.get(column)
         }
       }
       dataList.push(row)
+      textDataList.push(textRow)
     }
 
     const empty = dataList.filter((entry) => isEmptyString(entry.name))
@@ -118,22 +169,40 @@ const EntryTable = (props) => {
     nonNumbers.sort((a, b) => (a.name > b.name ? 1 : -1))
     numbers.sort((a, b) => (a.name > b.name ? 1 : -1))
 
-    return nonNumbers.concat(numbers).concat(empty)
+    return [nonNumbers.concat(numbers).concat(empty), textDataList]
   }, [selectedObjects])
 
   const finalColumns = useMemo(() => {
+    //Put columns in correct order
+    let hasName = false
+    let hasRepresents = false
+    if (columns.includes(Attributes.NAME)) {
+      hasName = true
+      columns.splice(columns.indexOf(Attributes.NAME), 1)
+    }
+    if (columns.includes(NodeAttributes.REPRESENTS)) {
+      hasRepresents = true
+      columns.splice(columns.indexOf(NodeAttributes.REPRESENTS), 1)
+    }
+    columns.sort((a, b) => a.localeCompare(b))
+    if (hasRepresents) {
+      columns.unshift(NodeAttributes.REPRESENTS)
+    }
+    if (hasName) {
+      columns.unshift(Attributes.NAME)
+    }
     const columnsObject = columns.map((column) => {
-      if (column === 'name') {
+      if (column === Attributes.NAME) {
         return {
           Header: label,
-          accessor: 'name',
-          minWidth: getColumnWidth(data, 'name', label),
+          accessor: Attributes.NAME,
+          width: getColumnWidth(data[1], Attributes.NAME, label),
         }
       } else {
         return {
           Header: column,
           accessor: replacePeriods(column),
-          minWidth: getColumnWidth(data, column, column),
+          width: getColumnWidth(data[1], column, column),
         }
       }
     })
@@ -149,7 +218,7 @@ const EntryTable = (props) => {
   //Please fix if there's a better way
   return (
     <div style={{ width: width, height: height }}>
-      {state ? <Table columns={finalColumns} data={data} /> : <Twinble columns={finalColumns} data={data} />}
+      {state ? <Table columns={finalColumns} data={data[0]} /> : <Twinble columns={finalColumns} data={data[0]} />}
     </div>
   )
 }

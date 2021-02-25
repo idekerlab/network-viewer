@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const SelectionList = (props) => {
   const { uuid } = useParams()
-  const { cx } = props
+  const { cx, letterWidths } = props
   const { query, queryMode, selectionState, ndexCredential, config, uiState } = useContext(AppContext)
   const { data } = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode, config.maxEdgeQuery)
   const [paneHeight, setPaneHeight] = useState(null)
@@ -74,47 +74,50 @@ const SelectionList = (props) => {
   edgeCount = edges.length
 
   return (
-    <AutoSizer>
-      {({ height, width }) => {
-        if (height !== totalHeight) {
-          setTotalHeight(height)
-        }
-        if ((paneHeight == null || paneHeight <= 0) && totalHeight > 0) {
-          setPaneHeight(totalHeight / 2)
-        }
-        return (
-          <SplitPane
-            split="horizontal"
-            size={paneHeight}
-            maxSize={0}
-            onDragFinished={handleChange}
-            primary={'second'}
-            minSize={minHeight}
-          >
-            <EntryTable
-              key={'selected-nodes'}
-              label={`Selected Nodes (${nodeCount})`}
-              selectedObjects={nodes}
-              attributes={attributes.nodeAttr}
-              context={context}
-              width={width}
-              height={totalHeight - paneHeight}
-            />
-
-            <EntryTable
-              key={'selected-edges'}
-              label={`Selected Edges (${edgeCount})`}
-              selectedObjects={edges}
-              attributes={attributes.edgeAttr}
-              type={'edge'}
-              context={context}
-              width={width}
-              height={paneHeight}
-            />
-          </SplitPane>
-        )
-      }}
-    </AutoSizer>
+    <>
+      <AutoSizer>
+        {({ height, width }) => {
+          if (height !== totalHeight) {
+            setTotalHeight(height)
+          }
+          if ((paneHeight == null || paneHeight <= 0) && totalHeight > 0) {
+            setPaneHeight(totalHeight / 2)
+          }
+          return (
+            <SplitPane
+              split="horizontal"
+              size={paneHeight}
+              maxSize={0}
+              onDragFinished={handleChange}
+              primary={'second'}
+              minSize={minHeight}
+            >
+              <EntryTable
+                key={'selected-nodes'}
+                label={`Selected Nodes (${nodeCount})`}
+                selectedObjects={nodes}
+                attributes={attributes.nodeAttr}
+                context={context}
+                width={width}
+                height={totalHeight - paneHeight}
+                letterWidths={letterWidths}
+              />
+              <EntryTable
+                key={'selected-edges'}
+                label={`Selected Edges (${edgeCount})`}
+                selectedObjects={edges}
+                attributes={attributes.edgeAttr}
+                type={'edge'}
+                context={context}
+                width={width}
+                height={paneHeight}
+                letterWidths={letterWidths}
+              />
+            </SplitPane>
+          )
+        }}
+      </AutoSizer>
+    </>
   )
 }
 

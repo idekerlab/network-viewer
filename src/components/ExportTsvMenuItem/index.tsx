@@ -27,7 +27,7 @@ const ExportTsvButton = ({cx, fileName}) => {
   }
 
   return (
-    <MenuItem onClick={ handleClick }>
+    <MenuItem onClick={ handleClick } disabled={disabled}>
     <ListItemIcon>
       <DownloadIcon fontSize="small" />
     </ListItemIcon>
