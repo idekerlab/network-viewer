@@ -32,7 +32,9 @@ const useStyles = makeStyles((theme: Theme) =>
 const OpenInCytoscape: FC = () => {
   const { uuid } = useParams()
 
-  const { query, queryMode, ndexCredential, config } = useContext(AppContext)
+  const { query, queryMode, ndexCredential, config, summary } = useContext(AppContext)
+
+  console.log('OpenInCytoscape summary: ', summary);
 
   const { data } = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode, config.maxEdgeQuery)
 
@@ -67,6 +69,7 @@ const OpenInCytoscape: FC = () => {
 
   const ndexNetworkProperties = {
     uuid: uuid,
+    summary: summary
   }
 
   return (
