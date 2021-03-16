@@ -70,7 +70,7 @@ const OpenInCytoscape: FC = () => {
   }
 
   const metaDataResponse = useNetworkMetaData(uuid, config.ndexHttps, 'v2', ndexCredential)
-  const metaData = metaDataResponse.data
+  const metaData = metaDataResponse.data ? metaDataResponse.data.metaData : undefined
 
   const ndexNetworkProperties = {
     uuid: uuid,
