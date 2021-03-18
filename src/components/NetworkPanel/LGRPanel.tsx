@@ -30,7 +30,6 @@ const LGRPanel = ({
   layoutName = 'preset',
   pickable,
 }: LGRPanelProps) => {
-  const t00 = performance.now()
 
   const [render3d, setRender3d] = useState(false)
   const [painted, setPainted] = useState(false)
@@ -95,6 +94,7 @@ const LGRPanel = ({
       if (layoutName !== 'preset') {
         nodeViews = randomCircularLayout(nodeViews)
       }
+      // nodeViews = gridLayout(nodeViews)
 
       if (edgeViews !== undefined) {
         const edges = getEntry('edges', cx)
@@ -110,8 +110,6 @@ const LGRPanel = ({
     const loadingMessage = 'Loading large network data.  Please wait......'
     return <Loading message={loadingMessage} />
   }
-
-  console.log('@@@@@@@@@@@@ 2LGR', performance.now() -t00)
 
   return (
     <LargeGraphRenderer
@@ -181,6 +179,28 @@ const clearHighlight = (data) => {
 const randomCircularLayout = (nodeViews: NodeView[]): NodeView[] => {
   let idx = nodeViews.length
   const scalingFactor = 4000 // TODO: compute from viewport
+
+  while (idx--) {
+    const nv: NodeView = nodeViews[idx]
+
+    const t = 2 * Math.PI * Math.random()
+    const u = Math.random() + Math.random()
+    let r = 0
+    if (u > 1) {
+      r = 2 - u
+    } else {
+      r = u
+    }
+    const x = r * Math.cos(t) * scalingFactor
+    const y = r * Math.sin(t) * scalingFactor
+    nv.position = [x, y]
+  }
+  return nodeViews
+}
+
+const gridLayout = (nodeViews: NodeView[]): NodeView[] => {
+  let idx = nodeViews.length
+  const scalingFactor = 940 // TODO: compute from viewport
 
   while (idx--) {
     const nv: NodeView = nodeViews[idx]
