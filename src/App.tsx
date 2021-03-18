@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom'
 import { Switch, Route, BrowserRouter } from 'react-router-dom'
 
 import AppShell from './components/AppShell'
+import AccountShell from './components/AccountShell'
 
 import AppContext from './context/AppState'
 import AppState from './model/AppState'
@@ -69,9 +70,20 @@ const App = ({ config }) => {
             <AppShell />
           </AppContext.Provider>
         </Route>
+        <Route path="/signup">
+          <AppContext.Provider value={defState}>
+            <AccountShell />
+          </AppContext.Provider>
+        </Route>
+        <Route path="/recoverPassword">
+          <AppContext.Provider value={defState}>
+            <AccountShell />
+          </AppContext.Provider>
+        </Route>
         <Route path="/">
           <TopPanel config={config} />
         </Route>
+       
       </Switch>
     </BrowserRouter>
   )
