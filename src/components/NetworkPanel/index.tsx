@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect, Suspense, useState } from 'react'
+import React, { FC, useContext, useEffect, Suspense, useState, useRef } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import LGRPanel from './LGRPanel'
 import CytoscapeRenderer from '../CytoscapeRenderer'
@@ -115,12 +115,22 @@ const NetworkPanel: FC<ViewProps> = ({
   const { maxNumObjects } = config
   const { showSearchResult } = uiState
 
+  const usePrevious = val => {
+    const ref = useRef()
+    useEffect(() => {
+      ref.current = val
+    })
+    return ref.current
+  }
+
   const subnet = searchResult.data
   let subCx
   if (subnet !== undefined) {
     subCx = subnet['cx']
     setSubCx(subCx)
   }
+
+  const last = usePrevious(subCx)
 
   const getObjectCount = (countFunction, subCx) => {
     const count = countFunction(subCx);
@@ -129,19 +139,18 @@ const NetworkPanel: FC<ViewProps> = ({
 
   const edgeLimitExceeded = subnet !== undefined ? subnet['edgeLimitExceeded'] : false
 
- 
   useEffect(() => {
-    if (subCx !== undefined) {
+    if(subCx === undefined) {
+      return
+    }
+
+    if (last !== subCx) {
       const subnetworkNodeCount = getObjectCount(getNodeCount, subCx);
       const subnetworkEdgeCount = getObjectCount(getEdgeCount, subCx);
     
       setSummary({ ...summary, subnetworkNodeCount: subnetworkNodeCount, subnetworkEdgeCount: subnetworkEdgeCount })
     }
   }, [searchResult])
-
-  useEffect(() => {
-    console.log(cyReference)
-  }, [cyReference])
 
   const mainEventHandlers = {
     setSelectedNodesAndEdges: (nodes, edges, lastSelectedType, lastSelectedId, lastSelectedCoordinates) => {

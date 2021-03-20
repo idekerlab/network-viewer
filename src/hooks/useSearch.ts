@@ -115,7 +115,6 @@ export const saveQuery = async (
 }
 
 const queryNetwork = async <T>(
-  _,
   uuid: string,
   query: string,
   serverUrl: string,
@@ -264,10 +263,14 @@ const useSearch = (
     return () => {}
   }, [uuid, query, mode])
 
-  return useQuery(['queryNetwork', uuid, query, serverUrl, credential, mode, maxEdge], queryNetwork, {
-    enabled: enabled,
-    cacheTime: 1000
-  })
+  return useQuery(
+    ['queryNetwork', uuid, query, serverUrl, credential, mode, maxEdge],
+    () => queryNetwork(uuid, query, serverUrl, credential, mode, maxEdge),
+    {
+      enabled: enabled,
+      cacheTime: 1000,
+    },
+  )
 }
 
 export default useSearch

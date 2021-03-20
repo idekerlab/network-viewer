@@ -60,7 +60,6 @@ const useHighlight = (query: string, mode: string, cx: object[]) => {
   const selected = { nodeIds, edgeIds, queryNodes }
   setHighlight(selected)
   setIsRunning(false)
-  console.log('-----------> HL updated', selected)
   return selected
 }
 
