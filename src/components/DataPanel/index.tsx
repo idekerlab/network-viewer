@@ -56,7 +56,7 @@ const DataPanel = ({ cx }) => {
               onDragFinished={handleChange}
               maxSize={0}
             >
-              <NetworkPropertyPanel />
+              <NetworkPropertyPanel cx={cx} />
               <GraphObjectPropertyPanel cx={cx} />
             </SplitPane>
           )
