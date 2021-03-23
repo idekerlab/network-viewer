@@ -1,15 +1,13 @@
+import { NdexSignUpPanel } from 'cytoscape-explore-components'
+import { handleNDExSignOn } from 'cytoscape-explore-components'
+
+import { getCurrentServer } from '../../utils/locationUtil'
+
 import React, { FC } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
-import { NDExAccountProvider } from 'cytoscape-explore-components'
 
 import AppContext from '../../context/AppState'
 import { useContext } from 'react'
-
-import AccountSignUpPane from '../AccountSignUpPane' 
-
-
-
-
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,19 +23,20 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const AccountShell: FC = () => {
+
+const AccountSignUpPane: FC = () => {
   const classes = useStyles()
   const { config } = useContext(AppContext)
 
-  
+  const baseUrl: string = getCurrentServer();
+
+  const onSuccessLogin = () => {
+    console.log("Here we are.");
+  }
 
   return (
-    <div className={classes.accountShell}>
-      <NDExAccountProvider ndexServerURL={config.ndexHttps} googleClientId={config.googleClientId}>
-        <AccountSignUpPane />
-      </NDExAccountProvider>
-    </div>
+    <NdexSignUpPanel handleNDExSignOn={handleNDExSignOn} onSuccessLogin={onSuccessLogin}/>
   )
 }
 
-export default AccountShell
+export default AccountSignUpPane
