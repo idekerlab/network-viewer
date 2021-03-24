@@ -89,7 +89,9 @@ const MainSplitPane = () => {
   const th = config.viewerThreshold
 
   const summaryResponse = useNetworkSummary(uuid, config.ndexHttps, V2, ndexCredential)
-  const summary = summaryResponse.data
+  // @ts-ignore
+  const summary: object = summaryResponse.data
+  // @ts-ignore
   const fetchParams = getFetchParams(summary, th)
 
   // First, give null as UUID to hold immediate loading.
@@ -103,7 +105,9 @@ const MainSplitPane = () => {
     fetchParams.count,
     fetchParams.cxVersion,
   )
-  const originalCx = cxResponse.data
+  
+  // @ts-ignore
+  const originalCx: object[] = cxResponse.data
 
   // Local states
   const [rightWidth, setRightWidth] = useState(getDefaultPanelWidth())

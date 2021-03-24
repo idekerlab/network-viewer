@@ -8,14 +8,15 @@ import { ThemeProvider } from '@material-ui/core/styles'
 import theme from './theme'
 import ErrorBoundary from './components/ErrorBoundary'
 
-import { ReactQueryConfigProvider, ReactQueryCacheProvider, QueryCache } from 'react-query'
+import { QueryClientProvider, QueryCache, QueryClient } from 'react-query'
 import AppConfig from './model/AppConfig'
 
 const ROOT_TAG = 'root'
 
 // This avoids too many fetch calls from remote API
-const queryConfig: object = { queries: { refetchOnWindowFocus: false } }
+const queryConfig = { queries: { refetchOnWindowFocus: false } }
 const queryCache = new QueryCache()
+const queryClient = new QueryClient({ queryCache, defaultOptions: queryConfig })
 
 async function loadResource() {
   const response = await fetch(`${process.env.PUBLIC_URL}/resource.json`)
@@ -48,13 +49,11 @@ async function loadResource() {
     <React.StrictMode>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <ReactQueryConfigProvider config={queryConfig}>
-          <ReactQueryCacheProvider queryCache={queryCache}>
-            <ErrorBoundary>
-              <App config={config} />
-            </ErrorBoundary>
-          </ReactQueryCacheProvider>
-        </ReactQueryConfigProvider>
+        <QueryClientProvider client={queryClient}>
+          <ErrorBoundary>
+            <App config={config} />
+          </ErrorBoundary>
+        </QueryClientProvider>
       </ThemeProvider>
     </React.StrictMode>,
     document.getElementById(ROOT_TAG),
