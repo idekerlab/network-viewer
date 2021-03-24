@@ -1204,24 +1204,10 @@
     cartocolor "^4.0.2"
     d3-scale "^3.2.3"
 
-"@deck.gl/core@8.4.11":
+"@deck.gl/core@8.4.11", "@deck.gl/core@^8.2.8":
   version "8.4.11"
   resolved "https://registry.yarnpkg.com/@deck.gl/core/-/core-8.4.11.tgz#abbea95edcc97bce24d3625e7aa2242c9c1d0e37"
   integrity sha512-H3qlb5O1OCaDbsw8y2bvFzwn8L+oj2z8CD407wOEmi4XGQ8wmkVViLocfqnOYixz7/mvJ7gWd/wqIoWrTjIYUg==
-  dependencies:
-    "@loaders.gl/core" "^2.3.13"
-    "@loaders.gl/images" "^2.3.13"
-    "@luma.gl/core" "^8.4.1"
-    "@math.gl/web-mercator" "^3.4.2"
-    gl-matrix "^3.0.0"
-    math.gl "^3.4.2"
-    mjolnir.js "^2.5.0"
-    probe.gl "^3.2.1"
-
-"@deck.gl/core@^8.4.10":
-  version "8.4.10"
-  resolved "https://registry.yarnpkg.com/@deck.gl/core/-/core-8.4.10.tgz#de0c545d9e8728d2c5a91ee674d016607ac24e75"
-  integrity sha512-/BqDyDXo4PHRfSQC0gsTjhpCiBtfyIV7O+rnCxF6yEbJ59NzpvLbycceIuwO8nF1rrmVMB5I87lZ9oiV06wlaQ==
   dependencies:
     "@loaders.gl/core" "^2.3.13"
     "@loaders.gl/images" "^2.3.13"
@@ -1269,20 +1255,10 @@
     d3-dsv "^1.0.8"
     expression-eval "^2.0.0"
 
-"@deck.gl/layers@8.4.11":
+"@deck.gl/layers@8.4.11", "@deck.gl/layers@^8.2.8":
   version "8.4.11"
   resolved "https://registry.yarnpkg.com/@deck.gl/layers/-/layers-8.4.11.tgz#4e066a540aa4e062349f97133ba9577c1fd970c4"
   integrity sha512-j5GgIFR9SIdJFkWxwjD+s2xG6peS351ckV+WJhQQaqrXJeBEls7sqoEIyrsvc1JuOoI4kh3XbgsUfhs6dsg4lQ==
-  dependencies:
-    "@loaders.gl/images" "^2.3.13"
-    "@mapbox/tiny-sdf" "^1.1.0"
-    "@math.gl/polygon" "^3.4.2"
-    earcut "^2.0.6"
-
-"@deck.gl/layers@^8.4.10":
-  version "8.4.10"
-  resolved "https://registry.yarnpkg.com/@deck.gl/layers/-/layers-8.4.10.tgz#82db12767a850b092a50904276f9879d243860e5"
-  integrity sha512-sYAT8wMAiD/+Sz3Kk5nnW0nZOZkKu7G/yJG/7QWHsmI6DLGekzy50E8MZWe0cuUoJFLi2VkMW/W0hNAr5x06Yg==
   dependencies:
     "@loaders.gl/images" "^2.3.13"
     "@mapbox/tiny-sdf" "^1.1.0"
@@ -1303,17 +1279,10 @@
     "@luma.gl/experimental" "^8.4.1"
     "@luma.gl/shadertools" "^8.4.1"
 
-"@deck.gl/react@8.4.11":
+"@deck.gl/react@8.4.11", "@deck.gl/react@^8.2.8":
   version "8.4.11"
   resolved "https://registry.yarnpkg.com/@deck.gl/react/-/react-8.4.11.tgz#c116cc9fd733600ab2dd5f8176c94f758353958d"
   integrity sha512-G1/WjT6fu5Faxxbe5HuRbuANi2qFOG9ehZ5RBqL8Cp6on75crD/QVHqiDcgWMiOKtZxjGsYE9Xpy5MA9ymHNQw==
-  dependencies:
-    prop-types "^15.6.0"
-
-"@deck.gl/react@^8.4.10":
-  version "8.4.10"
-  resolved "https://registry.yarnpkg.com/@deck.gl/react/-/react-8.4.10.tgz#ea5a8b5129c5f74888d469b33b14a32eae508c9d"
-  integrity sha512-w21CzMAosa6gXCWGA61jV+G6mjTvFEpWLslIybvUYKr5eQIHi65lKNXEo7H7ri0Asr3M5yZ8OgH8+tdR68k/LQ==
   dependencies:
     prop-types "^15.6.0"
 
@@ -3033,7 +3002,8 @@ axios@^0.18.0:
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.18.1.tgz#ff3f0de2e7b5d180e757ad98000f1081b87bcea3"
   integrity sha512-0BfJq4NSfQXd+SkFdrvFbG7addhYSBA2mQwISr46pD6E5iqkWg02RAs8vyTT/j0RTnoYmeXauBuSv1qKwR179g==
   dependencies:
-    follow-redirects "^1.10.0"
+    follow-redirects "1.5.10"
+    is-buffer "^2.0.2"
 
 axobject-query@^2.2.0:
   version "2.2.0"
@@ -4597,13 +4567,6 @@ debug@4, debug@^4.0.1, debug@^4.1.0, debug@^4.1.1:
   dependencies:
     ms "2.1.2"
 
-debug@=3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
-  integrity sha512-OX8XqP7/1a9cqkxYw2yXss15f26NKWBpDXQd0/uK/KPqdQhxbPa994hnzjcE2VqQpDslf55723cKPUOGSmMY3g==
-  dependencies:
-    ms "2.0.0"
-
 debug@^3.1.1, debug@^3.2.6:
   version "3.2.7"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.2.7.tgz#72580b7e9145fb39b6676f9c5e5fb100b934179a"
@@ -5842,7 +5805,7 @@ flush-write-stream@^1.0.0:
     inherits "^2.0.3"
     readable-stream "^2.3.6"
 
-follow-redirects@^1.0.0:
+follow-redirects@^1.0.0, follow-redirects@^1.10.0:
   version "1.13.3"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.3.tgz#e5598ad50174c1bc4e872301e82ac2cd97f90267"
   integrity sha512-DUgl6+HDzB0iEptNQEXLx/KhTmDb8tZUHSeLqpnjpknR70H0nC2t9N73BK6fN4hOvJ84pKlIQVQ4k5FFlBedKA==
@@ -6855,11 +6818,6 @@ is-buffer@^1.1.5:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/is-buffer/-/is-buffer-1.1.6.tgz#efaa2ea9daa0d7ab2ea13a97b2b8ad51fefbe8be"
   integrity sha512-NcdALwpXkTm5Zvvbk7owOUSvVvBKDgKP5/ewfXEznmQFfs4ZRmanOeKBTjRVjka3QFoN6XJ+9F3USqfHqTaU5w==
-
-is-buffer@^2.0.2:
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/is-buffer/-/is-buffer-2.0.5.tgz#ebc252e400d22ff8d77fa09888821a24a658c191"
-  integrity sha512-i2R6zNFDwgEHJyQUtJEk0XFi1i0dPFn/oqjK3/vPCcDeJvW5NQ83V8QbicfF1SupOaB0h8ntgBC2YiE7dfyctQ==
 
 is-callable@^1.1.4, is-callable@^1.2.3:
   version "1.2.3"
