@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from 'react'
+import React, { useState, useReducer, FC } from 'react'
 import { Helmet } from 'react-helmet'
 
 import './App.css'
@@ -11,11 +11,14 @@ import AppContext from './context/AppState'
 import AppState from './model/AppState'
 import TopPanel from './components/TopPanel'
 
-//import UIState from './model/UIState'
-import selectionStateReducer, { EMPTY_SELECTION } from './reducer/selectionStateReducer'
+import selectionStateReducer, {
+  EMPTY_SELECTION,
+} from './reducer/selectionStateReducer'
 import cyReducer, { INITIAL_CY_REFERENCE } from './reducer/cyReducer'
 import uiStateReducer, { INITIAL_UI_STATE } from './reducer/uiStateReducer'
 import NdexCredential from './model/NdexCredential'
+import Summary from './model/Summary'
+import AppConfig from './model/AppConfig'
 
 const defNdexCredential: NdexCredential = {
   loaded: false,
@@ -23,18 +26,28 @@ const defNdexCredential: NdexCredential = {
   isGoogle: false,
 }
 
+const defSummary: Summary = {
+  name: 'N/A',
+}
+
 const App = ({ config }) => {
   const history = useHistory(INITIAL_UI_STATE)
 
   const [query, setQuery] = useState('')
   const [queryMode, setQueryMode] = useState('firstStepNeighborhood')
-  const [summary, setSummary] = useState()
+  const [summary, setSummary] = useState(defSummary)
 
   const [ndexCredential, setNdexCredential] = useState(defNdexCredential)
 
-  const [selectionState, selectionStateDispatch] = useReducer(selectionStateReducer, EMPTY_SELECTION)
+  const [selectionState, selectionStateDispatch] = useReducer(
+    selectionStateReducer,
+    EMPTY_SELECTION,
+  )
   const [cyReference, cyDispatch] = useReducer(cyReducer, INITIAL_CY_REFERENCE)
-  const [uiState, uiStateDispatch] = useReducer(uiStateReducer, INITIAL_UI_STATE)
+  const [uiState, uiStateDispatch] = useReducer(
+    uiStateReducer,
+    INITIAL_UI_STATE,
+  )
 
   // TODO: use reducer?
   const defState: AppState = {
