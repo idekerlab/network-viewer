@@ -9,7 +9,7 @@ import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 
 import AppContext from '../../context/AppState'
 import { useContext } from 'react'
-import { Typography } from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
 
 import logo from '../../assets/images/ndex-logo.svg'
 
@@ -26,6 +26,19 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     ndexLogo: {
       height: '3em',
+      'vertical-align': 'middle'
+    },
+    titleText: {
+      'vertical-align': 'middle',
+      'padding-left': '1em',
+      'line-height': '2em'
+    },
+    homeButton: {
+      'background-color': '#337ab7',
+      textTransform: 'none'
+    },
+    footer : {
+      'text-align' : 'center'
     }
   }),
 )
@@ -37,17 +50,32 @@ const AccountSignUpPane: FC = () => {
 
   const baseUrl: string = getCurrentServer();
 
-  const [showHomeLink, setShowHomeLink] = useState(false);
+  const [showHomeLink, setShowHomeLink] = useState(true);
 
   const onSuccessLogin = () => {
-    console.log("Here we are.");
+    window.open(baseUrl + '/#/myAccount', '_self')
+  }
+
+  const handleHomeClick = () => {
+    window.open(baseUrl, '_self');
+  }
+
+  const handleNDExSignOnAndForward = (userInfo, onSuccessLogin) => {
+    setShowHomeLink(true);
+    handleNDExSignOn(userInfo, onSuccessLogin);
   }
 
   return (
     <Container maxWidth="sm">
-      <img alt="NDEx Logo" src={logo} className={classes.ndexLogo} /><Typography variant="subtitle1" display="inline">Sign Up for NDEx</Typography>
+      <div>
+        <img alt="NDEx Logo" src={logo} className={classes.ndexLogo} /><Typography variant="subtitle1" display="inline" className={classes.titleText}>Sign Up for NDEx</Typography>
+      </div>
       <NdexSignUpPanel handleNDExSignOn={handleNDExSignOn} onSuccessLogin={onSuccessLogin} />
-      { showHomeLink && "Go home!"}
+      { showHomeLink &&
+        <div className={classes.footer}>
+         <Button onClick={handleHomeClick} className={classes.homeButton}>Go to NDEx Home Page</Button>
+        </div>
+      }
     </Container>
   )
 }
