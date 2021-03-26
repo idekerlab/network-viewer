@@ -98,7 +98,7 @@ const getNodeAttrsV2 = (kvMap: object) => {
         const val = attrs[tag]
         current.set(label, val)
       } else {
-        let value = attrs[key]
+        let value = attrs ? attrs[key] : undefined
         if(value === undefined) {
           // Try default value
           value = defValues.get(key)
