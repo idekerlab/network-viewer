@@ -45,7 +45,7 @@ const QueryButton = (props) => {
   // 2 = disabled, too many nodes selected
   const [buttonState, setButtonState] = useState(0)
   const queryDelimiters = [', ', ',']
-  const maxQueryLengths = [8200, null]
+  const maxQueryLengths = [8200, 8200]
   const tooltipMessages = ['Select nodes to run a query', '', 'Too many nodes were selected. Try a smaller number.']
 
   //Get available node attributes
