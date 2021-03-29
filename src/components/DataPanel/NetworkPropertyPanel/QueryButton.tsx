@@ -49,7 +49,7 @@ const QueryButton = (props) => {
   const availableQueries = ['IQuery', 'MSigDB']
   const availableQueryUrls = [
     'http://iquery.ndexbio.org/?genes=',
-    'https://www.gsea-msigdb.org/gsea/msigdb/annotate.jsp?geneIdList=',
+    'https://www.gsea-msigdb.org/gsea/analysisApi?speciesName=Human&username=ndex_user&op=annotate&geneIdList=',
   ]
   const [chosenQuery, setChosenQuery] = useState(0)
 
