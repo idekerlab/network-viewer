@@ -50,7 +50,7 @@ const AccountSignUpPane: FC = () => {
 
   const baseUrl: string = getCurrentServer();
 
-  const [showHomeLink, setShowHomeLink] = useState(true);
+  const [showHomeLink, setShowHomeLink] = useState(false);
 
   const onSuccessLogin = () => {
     window.open(baseUrl + '/#/myAccount', '_self')
@@ -60,9 +60,8 @@ const AccountSignUpPane: FC = () => {
     window.open(baseUrl, '_self');
   }
 
-  const handleNDExSignOnAndForward = (userInfo, onSuccessLogin) => {
+  const onWaitForEmailValidation = (userInfo, onSuccessLogin) => {
     setShowHomeLink(true);
-    handleNDExSignOn(userInfo, onSuccessLogin);
   }
 
   return (
@@ -70,7 +69,7 @@ const AccountSignUpPane: FC = () => {
       <div>
         <img alt="NDEx Logo" src={logo} className={classes.ndexLogo} /><Typography variant="subtitle1" display="inline" className={classes.titleText}>Sign Up for NDEx</Typography>
       </div>
-      <NdexSignUpPanel handleNDExSignOn={handleNDExSignOn} onSuccessLogin={onSuccessLogin} />
+      <NdexSignUpPanel handleNDExSignOn={handleNDExSignOn} onSuccessLogin={onSuccessLogin} onWaitForEmailValidation={onWaitForEmailValidation}/>
       { showHomeLink &&
         <div className={classes.footer}>
          <Button onClick={handleHomeClick} className={classes.homeButton}>Go to NDEx Home Page</Button>
