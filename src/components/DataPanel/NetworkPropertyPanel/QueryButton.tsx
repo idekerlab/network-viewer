@@ -70,7 +70,7 @@ const QueryButton = (props) => {
   const [buttonState, setButtonState] = useState(0)
 
   const queryDelimiters = [', ', ',']
-  const maxQueryLengths = [82, 8200]
+  const maxQueryLengths = [8200, 8200]
 
   const [percentToReduceQuery, setPercentToReduceQuery] = useState('')
   const tooltipMessages = [
