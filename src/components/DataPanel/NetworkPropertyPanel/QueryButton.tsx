@@ -1,5 +1,11 @@
-import { Button, FormControl, InputLabel, makeStyles, MenuItem, Select, Tooltip } from '@material-ui/core'
 import React, { useContext, useState, useEffect } from 'react'
+import {
+  Button,
+  FormControl,
+  makeStyles,
+  Select,
+  Tooltip,
+} from '@material-ui/core'
 import AppContext from '../../../context/AppState'
 import useAttributes from '../../../hooks/useAttributes'
 import { useParams } from 'react-router-dom'
@@ -17,6 +23,12 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
     },
   },
+  tooltipText: {
+    fontSize: '0.875rem',
+    textAlign: 'center',
+    padding: theme.spacing(0.5),
+    lineHeight: 1.15,
+  },
 }))
 
 const QueryButton = (props) => {
@@ -25,36 +37,80 @@ const QueryButton = (props) => {
   const { selectionState, uiState } = useContext(AppContext)
   const { uuid } = useParams()
   const { cx } = props
-  const allNodeAttributes = useAttributes(uuid, cx, uiState.mainNetworkNotDisplayed)['nodeAttr']
+  const allNodeAttributes = useAttributes(
+    uuid,
+    cx,
+    uiState.mainNetworkNotDisplayed,
+  )['nodeAttr']
 
   //State information
-  const [selectedNodes, setSelectedNodes] = useState([])
-  const [chosenAttribute, setChosenAttribute] = useState(0)
-  const [availableAttributes, setAvailableAttributes] = useState([])
-  const [chosenQuery, setChosenQuery] = useState(0)
+  const [initialLoad, setInitialLoad] = useState(true)
+
   const availableQueries = ['IQuery', 'MSigDB']
   const availableQueryUrls = [
     'http://iquery.ndexbio.org/?genes=',
     'https://www.gsea-msigdb.org/gsea/msigdb/annotate.jsp?geneIdList=',
   ]
+  const [chosenQuery, setChosenQuery] = useState(0)
+
+  const [availableAttributes, setAvailableAttributes] = useState([])
+  const [chosenAttribute, setChosenAttribute] = useState(0)
+
+  const availableSelectionTypes = ['all', 'selected']
+  const [chosenSelectionType, setChosenSelectionType] = useState(0)
+
+  const [selectedNodes, setSelectedNodes] = useState([])
   const [queryURL, setQueryURL] = useState('')
 
   //Button state:
-  // 0 = disabled, no nodes selected
-  // 1 = enabled
-  // 2 = disabled, too many nodes selected
+  // 0 = enabled
+  // 1 = disabled, no nodes selected
+  // 2 = disabled, network contains too many nodes to query all
+  // 3 = disabled, too many nodes selected
   const [buttonState, setButtonState] = useState(0)
+
   const queryDelimiters = [', ', ',']
-  const maxQueryLengths = [8200, 8200]
-  const tooltipMessages = ['Select nodes to run a query', '', 'Too many nodes were selected. Try a smaller number.']
+  const maxQueryLengths = [82, 8200]
+
+  const [percentToReduceQuery, setPercentToReduceQuery] = useState('')
+  const tooltipMessages = [
+    <div className={classes.tooltipText}>Select nodes to run a query.</div>,
+    <>
+      <div className={classes.tooltipText}>
+        This network contains too many nodes to query the{' '}
+        <strong>{availableAttributes[chosenAttribute]}</strong> attribute of all
+        nodes.
+      </div>
+      <div className={classes.tooltipText}>
+        Try selecting a subset or changing the attribute queried.
+      </div>
+    </>,
+    <>
+      <div className={classes.tooltipText}>
+        Too many nodes are selected to run this query.
+      </div>
+      <div className={classes.tooltipText}>
+        Try narrowing your selection by about {percentToReduceQuery}%, or
+        changing the type of query/attribute queried.
+      </div>
+    </>,
+  ]
 
   //Get available node attributes
   useEffect(() => {
-    let nodes
-    if (selectionState.lastSelected.fromMain) {
-      nodes = selectionState.main['nodes']
+    let nodes = []
+    if (chosenSelectionType === 0) {
+      //Use all nodes
+      if (allNodeAttributes !== undefined) {
+        nodes = Object.keys(allNodeAttributes)
+      }
     } else {
-      nodes = selectionState.sub['nodes']
+      //Use selected nodes
+      if (selectionState.lastSelected.fromMain) {
+        nodes = selectionState.main['nodes']
+      } else {
+        nodes = selectionState.sub['nodes']
+      }
     }
     setSelectedNodes(nodes)
 
@@ -74,19 +130,21 @@ const QueryButton = (props) => {
     const availableAttributesTempList = Array.from(availableAttributesTemp)
     setAvailableAttributes(availableAttributesTempList)
 
-    const newIndex = availableAttributesTempList.indexOf(availableAttributes[chosenAttribute])
+    const newIndex = availableAttributesTempList.indexOf(
+      availableAttributes[chosenAttribute],
+    )
     if (newIndex === -1) {
       setChosenAttribute(0)
     } else {
       setChosenAttribute(newIndex)
     }
-  }, [selectionState])
+  }, [selectionState, chosenSelectionType])
 
   //Check what button state should be
   useEffect(() => {
     //Check if any nodes selected
-    if (selectedNodes.length === 0) {
-      setButtonState(0)
+    if (selectedNodes === undefined || selectedNodes.length === 0) {
+      setButtonState(1)
     } else {
       //Find node names to build query string
       const nodeNames = []
@@ -111,14 +169,36 @@ const QueryButton = (props) => {
       urlString = urlString.slice(0, -delimiter.length)
       //Check if currently selected query type has length limit
       if (maxQueryLengths[chosenQuery] == null) {
-        setButtonState(1)
+        //Button enabled
+        setButtonState(0)
         setQueryURL(urlString)
       } else {
         //Compare query string to max length
         if (urlString.length > maxQueryLengths[chosenQuery]) {
-          setButtonState(2)
+          //If selection type is 'all'
+          if (chosenSelectionType === 0) {
+            //Button disabled because selection type is all and query is too long
+            setButtonState(2)
+            if (initialLoad) {
+              setChosenSelectionType(1)
+              setInitialLoad(false)
+            }
+          } else {
+            //Button disabled because query is too long
+            setButtonState(3)
+
+            //Find out how much query should be decreased by
+            const queryOverflow =
+              urlString.length - maxQueryLengths[chosenQuery]
+            const queryLength =
+              urlString.length - availableQueryUrls[chosenQuery].length
+            setPercentToReduceQuery(
+              Math.round((queryOverflow / queryLength) * 100).toString(),
+            )
+          }
         } else {
-          setButtonState(1)
+          //Button enabled
+          setButtonState(0)
           setQueryURL(urlString)
         }
       }
@@ -131,7 +211,10 @@ const QueryButton = (props) => {
   }
   const handleAttributeMenuChange = (event) => {
     setChosenAttribute(event.target.value)
-    console.log(availableAttributes[chosenAttribute])
+  }
+  const handleSelectionTypeMenuChange = (event) => {
+    //Return value as number
+    setChosenSelectionType(+event.target.value)
   }
 
   //Handle button click and query
@@ -153,7 +236,11 @@ const QueryButton = (props) => {
       </FormControl>
       using the
       <FormControl variant="standard" className={classes.formControl}>
-        <Select native value={chosenAttribute} onChange={handleAttributeMenuChange}>
+        <Select
+          native
+          value={chosenAttribute}
+          onChange={handleAttributeMenuChange}
+        >
           {availableAttributes.map((name, index) => (
             <option key={name} value={index}>
               {name}
@@ -161,15 +248,41 @@ const QueryButton = (props) => {
           ))}
         </Select>
       </FormControl>
-      attribute of selected nodes.
-      {buttonState === 1 ? (
-        <Button variant="contained" color="primary" className={classes.button} onClick={handleButtonClick}>
+      attribute of{' '}
+      <FormControl variant="standard" className={classes.formControl}>
+        <Select
+          native
+          value={chosenSelectionType}
+          onChange={handleSelectionTypeMenuChange}
+        >
+          {availableSelectionTypes.map((name, index) => (
+            <option key={name} value={index}>
+              {name}
+            </option>
+          ))}
+        </Select>
+      </FormControl>{' '}
+      nodes.
+      {/* If button state is enabled */}
+      {buttonState === 0 ? (
+        <Button
+          variant="contained"
+          color="primary"
+          className={classes.button}
+          onClick={handleButtonClick}
+        >
           Go
         </Button>
       ) : (
-        <Tooltip arrow title={<span style={{ fontSize: '0.875rem' }}>{tooltipMessages[buttonState]}</span>}>
+        <Tooltip arrow title={tooltipMessages[buttonState - 1]}>
           <span>
-            <Button variant="contained" color="primary" className={classes.button} onClick={handleButtonClick} disabled>
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.button}
+              onClick={handleButtonClick}
+              disabled
+            >
               Go
             </Button>
           </span>
