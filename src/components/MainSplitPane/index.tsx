@@ -88,7 +88,9 @@ const MainSplitPane = () => {
   const maxObj = config.maxNumObjects
   const th = config.viewerThreshold
 
-  const summaryResponse = useNetworkSummary(uuid, config.ndexHttps, V2, ndexCredential)
+  let summaryResponse = null
+    summaryResponse = useNetworkSummary(uuid, config.ndexHttps, V2, ndexCredential)
+
   // @ts-ignore
   const summary: object = summaryResponse.data
   // @ts-ignore
