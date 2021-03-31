@@ -19,7 +19,6 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     '&.MuiButton-contained': {
-      backgroundColor: '#1565c0',
       margin: theme.spacing(1),
     },
   },
