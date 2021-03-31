@@ -1,15 +1,9 @@
-import React, { FC } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import { NDExAccountProvider } from 'cytoscape-explore-components'
 
 import AppContext from '../../context/AppState'
-import { useContext } from 'react'
-
-import AccountSignUpPane from '../AccountSignUpPane' 
-
-
-
-
+import { useContext, FC } from 'react'
+import PropTypes from 'prop-types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -17,7 +11,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       height: '100%',
       padding: 0,
-      margin: 0,
+      'margin-top': '2em',
       display: 'flex',
       flexDirection: 'column',
       boxSizing: 'border-box',
@@ -25,19 +19,22 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const AccountShell: FC = () => {
+const AccountShell: FC = (props) => {
   const classes = useStyles()
   const { config } = useContext(AppContext)
 
-  
 
   return (
     <div className={classes.accountShell}>
       <NDExAccountProvider ndexServerURL={config.ndexHttps} googleClientId={config.googleClientId}>
-        <AccountSignUpPane />
+        { props.children }
       </NDExAccountProvider>
     </div>
   )
+}
+
+AccountShell.propTypes = {
+  children: PropTypes.node.isRequired
 }
 
 export default AccountShell

@@ -7,6 +7,7 @@ import { Switch, Route, BrowserRouter } from 'react-router-dom'
 
 import AppShell from './components/AppShell'
 import AccountShell from './components/AccountShell'
+import AccountSignUpPane from './components/AccountSignUpPane' 
 
 import AppContext from './context/AppState'
 import AppState from './model/AppState'
@@ -85,7 +86,9 @@ const App = ({ config }) => {
         </Route>
         <Route path="/signup">
           <AppContext.Provider value={defState}>
-            <AccountShell />
+            <AccountShell>
+              <AccountSignUpPane/>
+            </AccountShell>
           </AppContext.Provider>
         </Route>
         <Route path="/recoverPassword">

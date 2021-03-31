@@ -3,12 +3,11 @@ import { handleNDExSignOn } from 'cytoscape-explore-components'
 
 import { getCurrentServer } from '../../utils/locationUtil'
 
-import React, { FC, useState } from 'react'
+import { FC, useState } from 'react'
 import Container from '@material-ui/core/Container';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 
-import AppContext from '../../context/AppState'
-import { useContext } from 'react'
+import { useEffect } from 'react'
 import { Button, Typography } from '@material-ui/core';
 
 import logo from '../../assets/images/ndex-logo.svg'
@@ -46,7 +45,10 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const AccountSignUpPane: FC = () => {
   const classes = useStyles()
-  const { config } = useContext(AppContext)
+ 
+  useEffect(() => {
+    document.title = "Sign Up for NDEx"
+  }, []);
 
   const baseUrl: string = getCurrentServer();
 
