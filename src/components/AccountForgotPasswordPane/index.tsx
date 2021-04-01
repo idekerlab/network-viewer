@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
       'line-height': '2em'
     },
     homeButton: {
+      'color': 'white',
       'background-color': '#337ab7',
       textTransform: 'none'
     },
