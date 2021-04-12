@@ -7,6 +7,8 @@ import Snackbar from '@material-ui/core/Snackbar'
 import { CyNDExProvider, OpenInCytoscapeButton } from 'cytoscape-explore-components'
 
 import useSearch from '../../hooks/useSearch'
+import useCX from '../../hooks/useCx'
+import useNetworkMetaData from '../../hooks/useNetworkMetaData'
 
 import AppContext from '../../context/AppState'
 
@@ -29,10 +31,12 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
+const V2 = 'v2'
+
 const OpenInCytoscape: FC = () => {
   const { uuid } = useParams()
 
-  const { query, queryMode, ndexCredential, config } = useContext(AppContext)
+  const { query, queryMode, ndexCredential, config, summary } = useContext(AppContext)
 
   const { data } = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode, config.maxEdgeQuery)
 
@@ -65,8 +69,13 @@ const OpenInCytoscape: FC = () => {
     setSnackMessage(undefined)
   }
 
+  const metaDataResponse = useNetworkMetaData(uuid, config.ndexHttps, 'v2', ndexCredential)
+  const metaData = metaDataResponse.data ? metaDataResponse.data.metaData : undefined
+
   const ndexNetworkProperties = {
     uuid: uuid,
+    summary: summary,
+    metaData: metaData
   }
 
   return (

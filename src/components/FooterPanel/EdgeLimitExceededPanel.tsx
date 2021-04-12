@@ -81,10 +81,10 @@ const EdgeLimitExceededPanel = () => {
           </Typography>
         </div>
         <Typography className={classes.message} variant="subtitle1">
-          Your query returned more than {config.maxEdgeQuery} edges and cannot be executed in the browser.<br/> 
+          Your query returned more than {config.maxEdgeQuery} and cannot be displayed in the browser.<br/> 
           { ndexCredential.isLogin ? 'You can save this sub-network to NDEx to continue working with it.' : 'Please log in so that the result can be saved to your NDEx account' }
         </Typography>
-        { ndexCredential.isLogin && <Button onClick={handleSave} variant='contained'>Save Result</Button> }
+        { ndexCredential.isLogin && <Button onClick={handleSave} variant='contained'>Save Result to NDEx</Button> }
         <Snackbar
           open={snackMessage != undefined}
           anchorOrigin={ {vertical: 'top', horizontal: 'center' }}
