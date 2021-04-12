@@ -1218,10 +1218,10 @@
     mjolnir.js "^2.5.0"
     probe.gl "^3.2.1"
 
-"@deck.gl/core@^8.4.10":
-  version "8.4.10"
-  resolved "https://registry.yarnpkg.com/@deck.gl/core/-/core-8.4.10.tgz#de0c545d9e8728d2c5a91ee674d016607ac24e75"
-  integrity sha512-/BqDyDXo4PHRfSQC0gsTjhpCiBtfyIV7O+rnCxF6yEbJ59NzpvLbycceIuwO8nF1rrmVMB5I87lZ9oiV06wlaQ==
+"@deck.gl/core@^8.2.8":
+  version "8.4.13"
+  resolved "https://registry.yarnpkg.com/@deck.gl/core/-/core-8.4.13.tgz#161c4f2fbc3b37dcfd00b1e2ac7a05602aed9bd6"
+  integrity sha512-KG4329inlDMhWOE78/Vj11mmi/rpFyqlf89ac1i+qzIzszmfjFGp1ISDxQevUl3XJao7C79iH117PSHp+mp6yw==
   dependencies:
     "@loaders.gl/core" "^2.3.13"
     "@loaders.gl/images" "^2.3.13"
@@ -1279,10 +1279,10 @@
     "@math.gl/polygon" "^3.4.2"
     earcut "^2.0.6"
 
-"@deck.gl/layers@^8.4.10":
-  version "8.4.10"
-  resolved "https://registry.yarnpkg.com/@deck.gl/layers/-/layers-8.4.10.tgz#82db12767a850b092a50904276f9879d243860e5"
-  integrity sha512-sYAT8wMAiD/+Sz3Kk5nnW0nZOZkKu7G/yJG/7QWHsmI6DLGekzy50E8MZWe0cuUoJFLi2VkMW/W0hNAr5x06Yg==
+"@deck.gl/layers@^8.2.8":
+  version "8.4.13"
+  resolved "https://registry.yarnpkg.com/@deck.gl/layers/-/layers-8.4.13.tgz#11ca59b91a0ccd7320bba45080b2c9aa206b7ef7"
+  integrity sha512-05pMoSowe/0s5S/hXM15DW1DZAh60mx7VR/3FddncBAswxsTl3i5W9VQTciN9h2KEczZKSBIichsTuEiSHoXKQ==
   dependencies:
     "@loaders.gl/images" "^2.3.13"
     "@mapbox/tiny-sdf" "^1.1.0"
@@ -1310,10 +1310,10 @@
   dependencies:
     prop-types "^15.6.0"
 
-"@deck.gl/react@^8.4.10":
-  version "8.4.10"
-  resolved "https://registry.yarnpkg.com/@deck.gl/react/-/react-8.4.10.tgz#ea5a8b5129c5f74888d469b33b14a32eae508c9d"
-  integrity sha512-w21CzMAosa6gXCWGA61jV+G6mjTvFEpWLslIybvUYKr5eQIHi65lKNXEo7H7ri0Asr3M5yZ8OgH8+tdR68k/LQ==
+"@deck.gl/react@^8.2.8":
+  version "8.4.13"
+  resolved "https://registry.yarnpkg.com/@deck.gl/react/-/react-8.4.13.tgz#d9e3c12eced60ad5e115e0d5483e4c7f58289437"
+  integrity sha512-dBUBZfNVREEwTqb/OzyhxpMOxRBIUB5JvN10NB/vbdnl6F5we02ehrwO/AMhq+8oRnApOEvwsIFtyRxBFfgq6A==
   dependencies:
     prop-types "^15.6.0"
 
