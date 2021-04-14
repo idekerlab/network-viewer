@@ -12,7 +12,7 @@ const ShareLinkMenuItem = ({uuid}) => {
     <ListItemIcon>
       <LinkIcon fontSize="small" />
     </ListItemIcon>
-    <Typography variant="inherit">Share Link</Typography>
+    <Typography variant="inherit">Share</Typography>
   </MenuItem>
   )
 }
