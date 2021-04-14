@@ -1,6 +1,6 @@
 {
   "name": "network-viewer",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": true,
   "description": "New frontend app for NDEx database",
   "keywords": [
@@ -29,6 +29,7 @@
     "cyannotation-cx2js": "^0.8.5",
     "cytoscape": "^3.16.1",
     "cytoscape-canvas": "^3.0.1",
+    "cytoscape-explore-components": "link:../ce-components",
     "cytoscape-cx2js": "^0.6.6",
     "deck.gl": "^8.4.11",
     "draft-js": "^0.11.7",

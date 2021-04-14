@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const NetworkProperties = (props) => {
-  const { summary } = props
+  const { summary, cx } = props
   const properties = summary.properties
   const description = summary.description
   const classes = useStyles()

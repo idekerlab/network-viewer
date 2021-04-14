@@ -14,7 +14,6 @@ import MinimizeButton from './MinimizeButton'
 import AppContext from '../../../context/AppState'
 import NetworkDetails from './NetworkDetails'
 
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -80,12 +79,13 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const NetworkPropertyPanel = () => {
+const NetworkPropertyPanel = (props) => {
   const classes = useStyles()
   const { uuid } = useParams()
   const { ndexCredential, config, setSummary, summary } = useContext(AppContext)
   const nodeButton = useRef(null)
   const edgeButton = useRef(null)
+  const { cx } = props
 
   let nodeWidth = 0
   let edgeWidth = 0
@@ -129,7 +129,7 @@ const NetworkPropertyPanel = () => {
           {summaryResponseData['name']}
         </Typography>
       </div>
-      <NetworkDetails />
+      <NetworkDetails cx={cx} />
       <div className={classes.description}>
         <NetworkProperties summary={summaryResponseData} />
       </div>

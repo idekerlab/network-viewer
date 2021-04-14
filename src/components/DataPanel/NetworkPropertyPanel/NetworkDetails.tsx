@@ -5,6 +5,7 @@ import ErrorIcon from '@material-ui/icons/ErrorOutline'
 import React, { useContext, useRef, useState, useEffect } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import AppContext from '../../../context/AppState'
+import QueryButton from './QueryButton'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -38,11 +39,12 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const NetworkDetails = () => {
+const NetworkDetails = (props) => {
   const classes = useStyles()
   const { summary, uiState, config } = useContext(AppContext)
   const { viewerThreshold, warningThreshold } = config
   const [doiCopiedHoverText, setDoiCopiedHoverText] = useState(false)
+  const { cx } = props
 
   if (summary === undefined) {
     return null
@@ -106,6 +108,9 @@ const NetworkDetails = () => {
           className={classes.item}
         />
         {getInformationIcon(summary.edgeCount + summary.nodeCount)}
+      </div>
+      <div className={classes.row}>
+        <QueryButton cx={cx} />
       </div>
       {uiState.showSearchResult && summary.subnetworkNodeCount !== undefined ? (
         <div className={classes.row}>
