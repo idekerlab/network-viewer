@@ -4,7 +4,7 @@ import SearchBox from './SearchBox'
 import ExpandButton from './ExpandButton'
 import OpenInCytoscape from './OpenInCytoscape'
 import EditMetadataButton from './EditMetadataButton'
-
+import ShareMenu from './ShareMenu'
 import SaveNetworkCXButton from './SaveNetworkCXButton'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -36,6 +36,7 @@ const FooterPanel: FC = () => {
       <OpenInCytoscape />
       <SaveNetworkCXButton />
       <EditMetadataButton />
+      <ShareMenu />
       <ExpandButton />
     </div>
   )
