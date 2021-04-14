@@ -3,9 +3,11 @@ import { Typography } from '@material-ui/core'
 import WarningIcon from '@material-ui/icons/AnnouncementOutlined'
 import ErrorIcon from '@material-ui/icons/ErrorOutline'
 import React, { useContext, useRef, useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import AppContext from '../../../context/AppState'
 import QueryButton from './QueryButton'
+import DeleteDOIButton from '../../DeleteDOIButton'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -41,6 +43,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const NetworkDetails = (props) => {
   const classes = useStyles()
+
+  const { uuid } = useParams()
   const { summary, uiState, config } = useContext(AppContext)
   const { viewerThreshold, warningThreshold } = config
   const [doiCopiedHoverText, setDoiCopiedHoverText] = useState(false)
@@ -78,13 +82,15 @@ const NetworkDetails = (props) => {
       {summary.doi ? (
         <div className={classes.buttonContainer}>
           {summary.doi === 'Pending' ? (
-            <Chip label={'DOI: Pending'} size="small" variant="outlined" className={classes.item} />
+            <span><Chip label={'DOI: Pending'} size="small" variant="outlined" className={classes.item} /> <DeleteDOIButton uuid={uuid} /> </span>
           ) : (
+           
             <Tooltip title={doiCopiedHoverText ? 'Copied!' : 'Copy network DOI to clipboard'} className={classes.item}>
               <CopyToClipboard text={'https://doi.org/' + summary.doi} onCopy={copyDoi}>
                 <Chip clickable label={`DOI: ${summary.doi}`} variant="outlined" onMouseEnter={mouseEnter} />
               </CopyToClipboard>
             </Tooltip>
+          
           )}
         </div>
       ) : null}
