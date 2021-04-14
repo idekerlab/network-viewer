@@ -1,11 +1,13 @@
 import React from 'react'
+import { useParams } from 'react-router-dom'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 
 import Menu from '@material-ui/core/Menu'
 
 import IconButton from '@material-ui/core/Button'
-import ShareIcon from '@material-ui/icons/Share';
-import SaveQueryTSVMenuItem from './SaveQueryTSVMenuItem'
+import ShareIcon from '@material-ui/icons/Share'
+import ShareLinkMenuItem from '../ShareLinkMenuItem'
+import CreateDOIMenuItem from '../CreateDOIMenuItem'
 import { Tooltip } from '@material-ui/core'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -17,6 +19,9 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const ShareMenu = () => {
+
+  const { uuid } = useParams()
+
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
 
@@ -52,7 +57,8 @@ const ShareMenu = () => {
           horizontal: 'center',
         }}
       >
-        Share
+        <ShareLinkMenuItem uuid={uuid}/>
+        <CreateDOIMenuItem uuid={uuid}/>
       </Menu>
     </div>
   )
