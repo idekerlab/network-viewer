@@ -1,10 +1,11 @@
 import { useQuery } from 'react-query'
 import NdexCredential from '../model/NdexCredential'
 import { getNdexClient } from '../utils/credentialUtil'
+import NDExError from '../utils/error/NDExError'
 
 const summaryMap = {}
 
-async function getNetworkSummary (
+async function getNetworkSummary(
   uuid: string,
   serverUrl: string,
   apiVersion: string,
@@ -21,17 +22,14 @@ async function getNetworkSummary (
   }
 
   const ndexUrl = `${serverUrl}/${apiVersion}`
-  const ndexClient = getNdexClient(ndexUrl, credential)
   try {
-    let summary = await ndexClient.getNetworkSummary(uuid)
+    const ndexClient = getNdexClient(ndexUrl, credential)
+    const summary = await ndexClient.getNetworkSummary(uuid)
     summaryMap[uuid] = summary
-
     return summary
-  } catch(e) {
-    console.warn('Failed to fetch summary', e)
-    throw new Error(e)
+  } catch (e: unknown) {
+    throw new NDExError(e['message'], e)
   }
-
 }
 
 export default function useNetworkSummary(
@@ -42,12 +40,9 @@ export default function useNetworkSummary(
 ) {
   return useQuery(
     ['networkSummary', uuid, serverUrl, apiVersion, credential],
-    async () => getNetworkSummary(uuid, serverUrl, apiVersion, credential),
+    () => getNetworkSummary(uuid, serverUrl, apiVersion, credential),
     {
-      retry: false
-      // onError: (e) => {
-      //   console.error('* Fetch summary error:', e)
-      // },
+      retry: false,
     },
   )
 }
