@@ -108,9 +108,7 @@ const MainSplitPane = () => {
   )
 
   const { isLoading, isError, isLoadingError } = summaryResponse
-  // @ts-ignore
   const summary: object = summaryResponse.data
-  // @ts-ignore
   const fetchParams = getFetchParams(summary, th)
 
   // First, give null as UUID to hold immediate loading.
@@ -125,7 +123,6 @@ const MainSplitPane = () => {
     fetchParams.cxVersion,
   )
 
-  // @ts-ignore
   const originalCx: object[] = cxResponse.data
 
   // Local states
