@@ -59,18 +59,40 @@ export const SelectionActions = {
   CLOSE_PROP_PANEL: 'closePropPanel',
 }
 
-const selectionStateReducer = (state: SelectionState, action: SelectionAction): SelectionState => {
+const selectionStateReducer = (
+  state: SelectionState,
+  action: SelectionAction,
+): SelectionState => {
   switch (action.type) {
     case SelectionActions.SET_MAIN_NODES_AND_EDGES:
-      return { ...state, main: action.selectionState.main, lastSelected: action.selectionState.lastSelected }
+      return {
+        ...state,
+        main: action.selectionState.main,
+        lastSelected: action.selectionState.lastSelected,
+      }
     case SelectionActions.SET_SUB_NODES_AND_EDGES:
-      return { ...state, sub: action.selectionState.sub, lastSelected: action.selectionState.lastSelected }
+      return {
+        ...state,
+        sub: action.selectionState.sub,
+        lastSelected: action.selectionState.lastSelected,
+      }
     case SelectionActions.CLEAR_ALL_MAIN:
-      return { ...state, main: { nodes: [], edges: [] }, lastSelected: { ...state.lastSelected, showPropPanel: false } }
+      return {
+        ...state,
+        main: { nodes: [], edges: [] },
+        lastSelected: { ...state.lastSelected, showPropPanel: false },
+      }
     case SelectionActions.CLEAR_ALL_SUB:
-      return { ...state, sub: { nodes: [], edges: [] }, lastSelected: { ...state.lastSelected, showPropPanel: false } }
+      return {
+        ...state,
+        sub: { nodes: [], edges: [] },
+        lastSelected: { ...state.lastSelected, showPropPanel: false },
+      }
     case SelectionActions.CLOSE_PROP_PANEL:
-      return { ...state, lastSelected: { ...state.lastSelected, showPropPanel: false } }
+      return {
+        ...state,
+        lastSelected: { ...state.lastSelected, showPropPanel: false },
+      }
     default:
       throw new Error('Invalid action')
   }

@@ -19,6 +19,8 @@ import SaveQueryButton from './SaveQueryButton'
 import AdvancedQueryMenu from './AdvancedQueryMenu'
 import UIState from '../../model/UIState'
 import { UIStateActions } from '../../reducer/uiStateReducer'
+import SelectionState from '../../model/SelectionState'
+import { SelectionActions } from '../../reducer/selectionStateReducer'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -90,14 +92,23 @@ const SearchBox: FC = () => {
     setQueryMode,
     uiStateDispatch,
     uiState,
+    selectionState,
+    selectionStateDispatch,
     ndexCredential,
     config,
-    summary
+    summary,
   } = useContext(AppContext)
 
   const [searchType, setSearchType] = useState(queryMode)
 
-  const searchResult = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode, config.maxEdgeQuery)
+  const searchResult = useSearch(
+    uuid,
+    query,
+    config.ndexHttps,
+    ndexCredential,
+    queryMode,
+    config.maxEdgeQuery,
+  )
 
   const subnet = searchResult.data
   let subCx
@@ -105,8 +116,11 @@ const SearchBox: FC = () => {
     subCx = subnet['cx']
   }
 
-  const edgeLimitExceeded: boolean = subnet !== undefined ? subnet['edgeLimitExceeded'] : false
-  const summaryObjectCount = summary ? summary.subnetworkNodeCount + summary.subnetworkEdgeCount : 0;
+  const edgeLimitExceeded: boolean =
+    subnet !== undefined ? subnet['edgeLimitExceeded'] : false
+  const summaryObjectCount = summary
+    ? summary.subnetworkNodeCount + summary.subnetworkEdgeCount
+    : 0
 
   const downloadProps: DownloadProps = {
     data: summaryObjectCount > 0 ? subCx : undefined,
@@ -130,11 +144,25 @@ const SearchBox: FC = () => {
   }
 
   const setShowSearchResult = (state: UIState) =>
-    uiStateDispatch({ type: UIStateActions.SET_SHOW_SEARCH_RESULT, uiState: state })
+    uiStateDispatch({
+      type: UIStateActions.SET_SHOW_SEARCH_RESULT,
+      uiState: state,
+    })
+  const setClearSelection = (state: SelectionState) => {
+    selectionStateDispatch({
+      type: SelectionActions.CLEAR_ALL_SUB,
+      selectionState: state,
+    })
+    selectionStateDispatch({
+      type: SelectionActions.CLEAR_ALL_MAIN,
+      selectionState: state,
+    })
+  }
 
   const handleClick = () => {
     setQuery(rawQuery)
     setShowSearchResult({ ...uiState, showSearchResult: true })
+    setClearSelection({ ...selectionState })
     setTimeout(() => {
       fitContent(cyReference)
       lockMainWindow(cyReference, true)
@@ -146,6 +174,7 @@ const SearchBox: FC = () => {
     setQuery('')
     setDisableQuery(true)
     setShowSearchResult({ ...uiState, showSearchResult: false })
+    setClearSelection({ ...selectionState })
     setTimeout(() => {
       fitContent(cyReference)
       lockMainWindow(cyReference, false)
@@ -187,7 +216,13 @@ const SearchBox: FC = () => {
         />
       </div>
       <Tooltip title="Learn more">
-        <IconButton size={'small'} disableFocusRipple disableRipple className={classes.button} onClick={handleHelpOpen}>
+        <IconButton
+          size={'small'}
+          disableFocusRipple
+          disableRipple
+          className={classes.button}
+          onClick={handleHelpOpen}
+        >
           <InfoIcon />
         </IconButton>
       </Tooltip>
@@ -221,7 +256,7 @@ const SearchBox: FC = () => {
         <SearchIcon />
       </IconButton>
       {!edgeLimitExceeded && <DownloadButton {...downloadProps} />}
-      {!edgeLimitExceeded && <SaveQueryButton /> }
+      {!edgeLimitExceeded && <SaveQueryButton />}
       <AdvancedQueryMenu />
       <IconButton
         color="secondary"
