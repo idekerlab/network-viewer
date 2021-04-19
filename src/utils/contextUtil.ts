@@ -65,8 +65,8 @@ const processItem = (item, context, parseItem) => {
     return item
   }
 
-  let returnString = item
-  const [prefix, id] = item.split(':')
+  let returnString = String(item)
+  const [prefix, id] = String(item).split(':')
   if (prefix && id) {
     if (prefix.toUpperCase() in context) {
       returnString =
