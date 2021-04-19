@@ -140,9 +140,6 @@ const MainSplitPane = () => {
   const windowWidth = useWindowWidth()
   const [subCx, setSubCx] = useState(null)
 
-  // True if data is too large
-  const [isDataTooLarge, setIsDataTooLarge] = useState(true)
-
   const assignNewHeight = () => {
     const curRef = containerRef?.current ?? { offsetHeight: 0 }
     if (curRef) {
@@ -172,7 +169,6 @@ const MainSplitPane = () => {
       setCxDataSize(cxSize)
 
       if (count < config.maxNumObjects && cxDataSize < config.maxDataSize) {
-        setIsDataTooLarge(false)
         if (isWebGL2 && !noView) {
           setCurUuid(uuid)
         } else if (!isWebGL2 && count < config.viewerThreshold) {
@@ -272,6 +268,7 @@ const MainSplitPane = () => {
             {getNetworkPanel()}
             {uiState.dataPanelOpen ? (
               <DataPanel
+                width={rightWidth}
                 cx={uiState.mainNetworkNotDisplayed ? subCx : originalCx}
               />
             ) : (

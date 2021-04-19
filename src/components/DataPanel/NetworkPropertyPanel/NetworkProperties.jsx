@@ -62,7 +62,9 @@ const NetworkProperties = (props) => {
       <tr key="created">
         <td className={classes.tdTitle}>Created</td>
         <td className={classes.tdContent}>
-          {creationDate.toLocaleDateString() + ' ' + creationDate.toLocaleTimeString()}
+          {creationDate.toLocaleDateString() +
+            ' ' +
+            creationDate.toLocaleTimeString()}
         </td>
       </tr>,
     )
@@ -73,7 +75,9 @@ const NetworkProperties = (props) => {
       <tr key="lastModified">
         <td className={classes.tdTitle}>Last modified</td>
         <td className={classes.tdContent}>
-          {modificationDate.toLocaleDateString() + ' ' + modificationDate.toLocaleTimeString()}
+          {modificationDate.toLocaleDateString() +
+            ' ' +
+            modificationDate.toLocaleTimeString()}
         </td>
       </tr>,
     )
@@ -86,8 +90,19 @@ const NetworkProperties = (props) => {
       </tr>,
     )
   }
+  if (summary.version) {
+    informationTableContents.push(
+      <tr key="version">
+        <td className={classes.tdTitle}>Version</td>
+        <td className={classes.tdContent}>{summary.version}</td>
+      </tr>,
+    )
+  }
   if (summary.visibility) {
-    if (summary.indexLevel && (summary.indexLevel === 'ALL' || summary.indexLevel === 'META')) {
+    if (
+      summary.indexLevel &&
+      (summary.indexLevel === 'ALL' || summary.indexLevel === 'META')
+    ) {
       informationTableContents.push(
         <tr key="visibility">
           <td className={classes.tdTitle}>Visibility</td>
@@ -100,7 +115,9 @@ const NetworkProperties = (props) => {
       informationTableContents.push(
         <tr key="visibility">
           <td className={classes.tdTitle}>Visibility</td>
-          <td className={classes.tdContent}>P{summary.visibility.toLowerCase().slice(1)} (not searchable)</td>
+          <td className={classes.tdContent}>
+            P{summary.visibility.toLowerCase().slice(1)} (not searchable)
+          </td>
         </tr>,
       )
     }
@@ -178,7 +195,9 @@ const NetworkProperties = (props) => {
           {rightsHolder ? (
             <tr>
               <td className={classes.tdTitle}>Rights holder</td>
-              <td className={classes.tdContent}>{formatContent(rightsHolder)}</td>
+              <td className={classes.tdContent}>
+                {formatContent(rightsHolder)}
+              </td>
             </tr>
           ) : null}
         </tbody>
@@ -235,7 +254,9 @@ const formatContent = (string) => {
   if (string == undefined) {
     return
   }
-  string = string.toString().replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script\ *>/gi, '')
+  string = string
+    .toString()
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script\ *>/gi, '')
   string = parse(string)
   return <Linkify target="_blank">{string}</Linkify>
 }
@@ -244,7 +265,9 @@ const formatDescription = (string) => {
   if (string == undefined) {
     return
   }
-  string = string.toString().replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script\ *>/gi, '')
+  string = string
+    .toString()
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script\ *>/gi, '')
   string = parse(string)
   return string
 }
@@ -253,7 +276,13 @@ const formatDisplay = (propertiesList) => {
   const display = []
   let index = 0
   for (let property of propertiesList) {
-    display.push(<NetworkPropertySegment summary={property[0]} details={property[1]} key={index++} />)
+    display.push(
+      <NetworkPropertySegment
+        summary={property[0]}
+        details={property[1]}
+        key={index++}
+      />,
+    )
   }
   return display
 }
