@@ -117,7 +117,6 @@ const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
   const nonEmptyMap = new Map()
   let source, target, interaction
   let noNameEdge = true
-  let represents
   const include = []
   for (let item of attrMap) {
     if (!selectionState.lastSelected.isNode) {
@@ -174,7 +173,6 @@ const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
     }
     nonEmptyMap.set(item[0], value)
   }
-  console.log(nonEmptyMap)
 
   if (noNameEdge) {
     if (source && target) {
@@ -232,6 +230,7 @@ const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
       style['bottom'] = subHeight - y
     }
   }
+
   return (
     <div className={classes.root} style={style}>
       <PropertyPanel attrMap={nonEmptyMap} onClose={onClose} />

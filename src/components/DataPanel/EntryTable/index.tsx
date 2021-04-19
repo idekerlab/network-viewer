@@ -200,7 +200,7 @@ const EntryTable = (props) => {
     for (let i = 0; i < sortedDataList.length; i++) {
       const row = sortedDataList[i]
       for (const [key, value] of Object.entries(row)) {
-        row[key] = <Linkify>{value}</Linkify>
+        row[key] = <Linkify target="_blank">{value}</Linkify>
       }
     }
 
