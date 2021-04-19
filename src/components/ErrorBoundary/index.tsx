@@ -1,25 +1,36 @@
 import React, { Component } from 'react'
 import { Typography } from '@material-ui/core'
+import NDExError from '../../utils/error/NDExError'
 
 export default class ErrorBoundary extends Component {
   state = {
     hasError: false,
+    error: null
   }
 
   componentDidCatch(error, errorInfo) {
     // eslint-disable-next-line no-console
     console.log({ error, errorInfo })
-    this.setState({ hasError: true })
+    this.setState({ hasError: true, error })
   }
 
   render() {
-    const { hasError } = this.state
+    const { hasError, error } = this.state
+
+    let message = ''
+    if(error !== null && error.message !== undefined) {
+      message = error.message
+    }
+
     if (hasError) {
       return (
         <div style={{ height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <div style={{ textAlign: 'center' }}>
             <Typography variant="h4" style={{ margin: '1rem' }}>
               Sorry, there was an error loading this page.{' '}
+            </Typography>
+            <Typography variant="h6">
+              ({message})
             </Typography>
             <Typography
               onClick={() => {

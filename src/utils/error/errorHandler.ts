@@ -2,7 +2,6 @@ import ErrorMessage from './ErrorMessage'
 import NDExError from './NDExError'
 import ResponseCode from './ResponseCode'
 
-
 // Response code is associated with main and sub message
 const MESSAGE_MAP = new Map<ResponseCode, [string, string]>()
 
