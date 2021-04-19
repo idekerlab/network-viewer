@@ -11,6 +11,9 @@ import { Tab, Tabs, Typography } from '@material-ui/core'
 import MinimizeButton from './NetworkPropertyPanel/MinimizeButton'
 import EntryTable from './EntryTable'
 
+import UIState from '../../model/UIState'
+import { UIStateActions } from '../../reducer/uiStateReducer'
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -44,19 +47,29 @@ const TabPanel = (props) => {
   return null
 }
 
-const DataPanel = ({ width, cx }) => {
+const DataPanel = ({ width, cx, renderer }) => {
   const classes = useStyles()
-  const { ndexCredential, config, selectionState, uiState } = useContext(
-    AppContext,
-  )
-  const [tab, setTab] = useState(0)
+  const {
+    ndexCredential,
+    config,
+    selectionState,
+    uiState,
+    uiStateDispatch,
+  } = useContext(AppContext)
   const { uuid } = useParams()
 
   const attributes = useAttributes(uuid, cx, uiState.mainNetworkNotDisplayed)
   const context = useMemo(() => getContextFromCx(cx), [cx])
 
+  const setActiveTab = (state: UIState) => {
+    uiStateDispatch({
+      type: UIStateActions.SET_ACTIVE_TAB,
+      uiState: state,
+    })
+  }
+
   const handleChange = (event, newValue) => {
-    setTab(newValue)
+    setActiveTab({ ...uiState, activeTab: newValue })
   }
 
   const getLetterWidth = (sandbox, letter) => {
@@ -93,14 +106,16 @@ const DataPanel = ({ width, cx }) => {
     edges = selectionState.sub['edges']
   }
 
-  if (attributes['nodeAttr'] !== undefined) {
-    if (nodes.length === 0) {
-      nodes = Object.keys(attributes['nodeAttr'])
+  if (renderer !== 'lgr') {
+    if (attributes['nodeAttr'] !== undefined) {
+      if (nodes.length === 0) {
+        nodes = Object.keys(attributes['nodeAttr'])
+      }
     }
-  }
-  if (attributes['edgeAttr'] !== undefined) {
-    if (edges.length === 0) {
-      edges = Object.keys(attributes['edgeAttr'])
+    if (attributes['edgeAttr'] !== undefined) {
+      if (edges.length === 0) {
+        edges = Object.keys(attributes['edgeAttr'])
+      }
     }
   }
 
@@ -121,7 +136,7 @@ const DataPanel = ({ width, cx }) => {
         </Typography>
       </div>
       <Tabs
-        value={tab}
+        value={uiState.activeTab}
         onChange={handleChange}
         scrollButtons="auto"
         variant="scrollable"
@@ -130,12 +145,12 @@ const DataPanel = ({ width, cx }) => {
         <Tab key={'nodes-tab'} label={'Nodes'} />
         <Tab key={'edges-tab'} label={'Edges'} />
       </Tabs>
-      <TabPanel value={tab} index={0}>
+      <TabPanel value={uiState.activeTab} index={0}>
         <div style={{ width: '100%', overflow: 'auto' }}>
           <NetworkPropertyPanel cx={cx} />
         </div>
       </TabPanel>
-      <TabPanel value={tab} index={1}>
+      <TabPanel value={uiState.activeTab} index={1}>
         <EntryTable
           key={'selected-nodes'}
           selectedObjects={nodes}
@@ -145,7 +160,7 @@ const DataPanel = ({ width, cx }) => {
           label={'Name'}
         />
       </TabPanel>
-      <TabPanel value={tab} index={2}>
+      <TabPanel value={uiState.activeTab} index={2}>
         <EntryTable
           key={'selected-edges'}
           selectedObjects={edges}

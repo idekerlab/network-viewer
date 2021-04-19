@@ -56,8 +56,12 @@ const PropList = ({ attrMap }) => {
             >
               {key}
             </Typography>
-            <Typography variant="body2" component="div" className={classes.bigText}>
-              <Linkify target="_blank">{attrMap.get(key)}</Linkify>
+            <Typography
+              variant="body2"
+              component="div"
+              className={classes.bigText}
+            >
+              <Linkify>{attrMap.get(key)}</Linkify>
             </Typography>
           </ListItem>
         )

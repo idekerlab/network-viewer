@@ -186,7 +186,7 @@ const NetworkPanel: FC<ViewProps> = ({
       lastSelectedCoordinates,
     ) => {
       if (lastSelectedType) {
-        return selectionStateDispatch({
+        selectionStateDispatch({
           type: SelectionActions.SET_MAIN_NODES_AND_EDGES,
           selectionState: {
             ...selectionState,
@@ -200,8 +200,15 @@ const NetworkPanel: FC<ViewProps> = ({
             },
           },
         })
+        uiStateDispatch({
+          type: UIStateActions.SET_ACTIVE_TAB,
+          uiState: {
+            ...uiState,
+            activeTab: lastSelectedType === 'node' ? 1 : 2,
+          },
+        })
       } else {
-        return selectionStateDispatch({
+        selectionStateDispatch({
           type: SelectionActions.SET_MAIN_NODES_AND_EDGES,
           selectionState: {
             ...selectionState,
@@ -213,6 +220,13 @@ const NetworkPanel: FC<ViewProps> = ({
               showPropPanel: false,
               coordinates: null,
             },
+          },
+        })
+        uiStateDispatch({
+          type: UIStateActions.SET_ACTIVE_TAB,
+          uiState: {
+            ...uiState,
+            activeTab: 1,
           },
         })
       }
@@ -233,7 +247,7 @@ const NetworkPanel: FC<ViewProps> = ({
       lastSelectedCoordinates,
     ) => {
       if (lastSelectedType) {
-        return selectionStateDispatch({
+        selectionStateDispatch({
           type: SelectionActions.SET_SUB_NODES_AND_EDGES,
           selectionState: {
             ...selectionState,
@@ -247,13 +261,27 @@ const NetworkPanel: FC<ViewProps> = ({
             },
           },
         })
+        uiStateDispatch({
+          type: UIStateActions.SET_ACTIVE_TAB,
+          uiState: {
+            ...uiState,
+            activeTab: lastSelectedType === 'node' ? 1 : 2,
+          },
+        })
       } else {
-        return selectionStateDispatch({
+        selectionStateDispatch({
           type: SelectionActions.SET_SUB_NODES_AND_EDGES,
           selectionState: {
             ...selectionState,
             sub: { nodes: nodes, edges: edges },
             lastSelected: { showPropPanel: false },
+          },
+        })
+        uiStateDispatch({
+          type: UIStateActions.SET_ACTIVE_TAB,
+          uiState: {
+            ...uiState,
+            activeTab: 1,
           },
         })
       }
@@ -268,7 +296,7 @@ const NetworkPanel: FC<ViewProps> = ({
   const lgrEventHandlers = {
     setSelectedNodeOrEdge: (id, lastSelectedType, lastSelectedCoordinates) => {
       if (lastSelectedType === 'node') {
-        return selectionStateDispatch({
+        selectionStateDispatch({
           type: SelectionActions.SET_MAIN_NODES_AND_EDGES,
           selectionState: {
             ...selectionState,
@@ -285,8 +313,15 @@ const NetworkPanel: FC<ViewProps> = ({
             },
           },
         })
+        uiStateDispatch({
+          type: UIStateActions.SET_ACTIVE_TAB,
+          uiState: {
+            ...uiState,
+            activeTab: 1,
+          },
+        })
       } else {
-        return selectionStateDispatch({
+        selectionStateDispatch({
           type: SelectionActions.SET_MAIN_NODES_AND_EDGES,
           selectionState: {
             ...selectionState,
@@ -301,6 +336,13 @@ const NetworkPanel: FC<ViewProps> = ({
               showPropPanel: true,
               coordinates: lastSelectedCoordinates,
             },
+          },
+        })
+        uiStateDispatch({
+          type: UIStateActions.SET_ACTIVE_TAB,
+          uiState: {
+            ...uiState,
+            activeTab: 2,
           },
         })
       }
@@ -458,10 +500,12 @@ const NetworkPanel: FC<ViewProps> = ({
   const bottomStyle = { background: '#FFFFFF', zIndex: 10 }
   return (
     <div className={classes.rootA}>
-      <Popup
-        cx={uiState.mainNetworkNotDisplayed ? subCx : cx}
-        subHeight={subHeight}
-      />
+      {renderer !== 'lgr' ? (
+        <Popup
+          cx={uiState.mainNetworkNotDisplayed ? subCx : cx}
+          subHeight={subHeight}
+        />
+      ) : null}
       {showSearchResult ? (
         <SplitPane
           split="horizontal"

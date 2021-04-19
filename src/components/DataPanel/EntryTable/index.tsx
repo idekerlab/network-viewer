@@ -33,8 +33,27 @@ const EntryTable = (props) => {
     letterWidths,
     label,
   } = props
+
+  if (selectedObjects.length === 0) {
+    return (
+      <div
+        style={{
+          height: '100%',
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          border: '3px solid pink',
+          textAlign: 'center',
+          padding: '0.5em',
+        }}
+      >
+        Select {type === 'edge' ? 'an edge' : 'a node'} to view it in the table.
+      </div>
+    )
+  }
+
   const { config } = useContext(AppContext)
-  const [state, setState] = useState(true)
 
   const replacePeriods = (string) => {
     const regex = /\./gi
@@ -200,7 +219,7 @@ const EntryTable = (props) => {
     for (let i = 0; i < sortedDataList.length; i++) {
       const row = sortedDataList[i]
       for (const [key, value] of Object.entries(row)) {
-        row[key] = <Linkify target="_blank">{value}</Linkify>
+        row[key] = <Linkify>{value}</Linkify>
       }
     }
 
@@ -242,10 +261,6 @@ const EntryTable = (props) => {
       }
     })
     return columnsObject
-  }, [selectedObjects])
-
-  useEffect(() => {
-    setState(!state)
   }, [selectedObjects])
 
   return <Table columns={finalColumns} data={data[0]} />

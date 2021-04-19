@@ -12,6 +12,7 @@ export const UIStateActions = {
   SET_SHOW_PROP_PANEL_TRUE: 'setShowPropPanelTrue',
   SET_SHOW_PROP_PANEL_FALSE: 'setShowPropPanelFalse',
   SET_MAIN_NETWORK_NOT_DISPLAYED: 'setMainNetworkNotDisplayed',
+  SET_ACTIVE_TAB: 'setActiveTab',
 }
 
 export const INITIAL_UI_STATE: UIState = {
@@ -19,6 +20,7 @@ export const INITIAL_UI_STATE: UIState = {
   showSearchResult: false,
   rightPanelWidth: 0,
   mainNetworkNotDisplayed: false,
+  activeTab: 0,
 }
 
 const uiStateReducer = (state: UIState, action: UIStateAction): UIState => {
@@ -30,7 +32,12 @@ const uiStateReducer = (state: UIState, action: UIStateAction): UIState => {
     case UIStateActions.SET_RIGHT_PANEL_WIDTH:
       return { ...state, rightPanelWidth: action.uiState.rightPanelWidth }
     case UIStateActions.SET_MAIN_NETWORK_NOT_DISPLAYED:
-      return { ...state, mainNetworkNotDisplayed: action.uiState.mainNetworkNotDisplayed }
+      return {
+        ...state,
+        mainNetworkNotDisplayed: action.uiState.mainNetworkNotDisplayed,
+      }
+    case UIStateActions.SET_ACTIVE_TAB:
+      return { ...state, activeTab: action.uiState.activeTab }
     default:
       throw new Error('Invalid action')
   }

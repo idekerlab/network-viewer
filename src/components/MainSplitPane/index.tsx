@@ -267,6 +267,7 @@ const MainSplitPane = () => {
               <DataPanel
                 width={rightWidth}
                 cx={uiState.mainNetworkNotDisplayed ? subCx : originalCx}
+                renderer={fetchParams.renderer}
               />
             ) : (
               <ClosedPanel />

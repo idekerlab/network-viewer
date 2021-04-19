@@ -258,7 +258,7 @@ const formatContent = (string) => {
     .toString()
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script\ *>/gi, '')
   string = parse(string)
-  return <Linkify target="_blank">{string}</Linkify>
+  return <Linkify>{string}</Linkify>
 }
 
 const formatDescription = (string) => {
