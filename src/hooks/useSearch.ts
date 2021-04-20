@@ -269,6 +269,7 @@ const useSearch = (
     {
       enabled: enabled,
       cacheTime: 1000,
+      retry: false,
     },
   )
 }

@@ -12,14 +12,16 @@ import { useParams } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
-    margin: theme.spacing(1),
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
     '& .MuiInputBase-root': {
       fontSize: 'inherit',
     },
   },
   button: {
     '&.MuiButton-contained': {
-      margin: theme.spacing(1),
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
     },
   },
   tooltipText: {
@@ -27,6 +29,11 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     padding: theme.spacing(0.5),
     lineHeight: 1.15,
+  },
+  flexContainer: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
   },
 }))
 
@@ -222,46 +229,48 @@ const QueryButton = (props) => {
   }
 
   return (
-    <>
-      Query
-      <FormControl variant="standard" className={classes.formControl}>
-        <Select native value={chosenQuery} onChange={handleQueryMenuChange}>
-          {availableQueries.map((name, index) => (
-            <option key={name} value={index}>
-              {name}
-            </option>
-          ))}
-        </Select>
-      </FormControl>
-      using the
-      <FormControl variant="standard" className={classes.formControl}>
-        <Select
-          native
-          value={chosenAttribute}
-          onChange={handleAttributeMenuChange}
-        >
-          {availableAttributes.map((name, index) => (
-            <option key={name} value={index}>
-              {name}
-            </option>
-          ))}
-        </Select>
-      </FormControl>
-      attribute of{' '}
-      <FormControl variant="standard" className={classes.formControl}>
-        <Select
-          native
-          value={chosenSelectionType}
-          onChange={handleSelectionTypeMenuChange}
-        >
-          {availableSelectionTypes.map((name, index) => (
-            <option key={name} value={index}>
-              {name}
-            </option>
-          ))}
-        </Select>
-      </FormControl>{' '}
-      nodes.
+    <div className={classes.flexContainer}>
+      <div className={classes.flexContainer} style={{ marginRight: '1em' }}>
+        Query
+        <FormControl variant="standard" className={classes.formControl}>
+          <Select native value={chosenQuery} onChange={handleQueryMenuChange}>
+            {availableQueries.map((name, index) => (
+              <option key={name} value={index}>
+                {name}
+              </option>
+            ))}
+          </Select>
+        </FormControl>
+        using the
+        <FormControl variant="standard" className={classes.formControl}>
+          <Select
+            native
+            value={chosenAttribute}
+            onChange={handleAttributeMenuChange}
+          >
+            {availableAttributes.map((name, index) => (
+              <option key={name} value={index}>
+                {name}
+              </option>
+            ))}
+          </Select>
+        </FormControl>
+        attribute of{' '}
+        <FormControl variant="standard" className={classes.formControl}>
+          <Select
+            native
+            value={chosenSelectionType}
+            onChange={handleSelectionTypeMenuChange}
+          >
+            {availableSelectionTypes.map((name, index) => (
+              <option key={name} value={index}>
+                {name}
+              </option>
+            ))}
+          </Select>
+        </FormControl>{' '}
+        nodes.
+      </div>
       {/* If button state is enabled */}
       {buttonState === 0 ? (
         <Button
@@ -287,7 +296,7 @@ const QueryButton = (props) => {
           </span>
         </Tooltip>
       )}
-    </>
+    </div>
   )
 }
 

@@ -1,8 +1,12 @@
 import React, { useMemo, useEffect, useState, useContext } from 'react'
+import Linkify from 'linkifyjs/react'
 import Table from './Table'
-import Twinble from './Table2'
-import { processList, processItem, processInternalLink, processListAsText } from '../../../utils/contextUtil'
-import pixelWidth from 'string-pixel-width'
+import {
+  processList,
+  processItem,
+  processInternalLink,
+  processListAsText,
+} from '../../../utils/contextUtil'
 import AppContext from '../../../context/AppState'
 
 const EdgeAttributes = {
@@ -21,7 +25,14 @@ const Attributes = {
 }
 
 const EntryTable = (props) => {
-  const { selectedObjects, attributes, label, type, context, width, height, letterWidths } = props
+  const {
+    selectedObjects,
+    attributes,
+    type,
+    context,
+    letterWidths,
+    label,
+  } = props
   const { config } = useContext(AppContext)
   const [state, setState] = useState(true)
 
@@ -63,7 +74,11 @@ const EntryTable = (props) => {
   const getColumnWidth = (rows, accessor, header) => {
     const PADDING = 18
     const MAX_WIDTH = 300 + PADDING
-    const width = Math.max(...rows.map((row) => getWidth(`${row[accessor]}` || '')), getWidth(header)) + PADDING
+    const width =
+      Math.max(
+        ...rows.map((row) => getWidth(`${row[accessor]}` || '')),
+        getWidth(header),
+      ) + PADDING
     return Math.min(MAX_WIDTH, width)
   }
 
@@ -112,7 +127,10 @@ const EntryTable = (props) => {
       for (let id of selectedObjects) {
         const attrs = attributes[id]
         if (!attrs.has(Attributes.NAME)) {
-          if (attrs.has(EdgeAttributes.SOURCE) && attrs.has(EdgeAttributes.TARGET)) {
+          if (
+            attrs.has(EdgeAttributes.SOURCE) &&
+            attrs.has(EdgeAttributes.TARGET)
+          ) {
             if (attrs.has(EdgeAttributes.INTERACTION)) {
               attrs.set(
                 Attributes.NAME,
@@ -123,7 +141,12 @@ const EntryTable = (props) => {
                   attrs.get(EdgeAttributes.TARGET),
               )
             } else {
-              attrs.set(Attributes.NAME, attrs.get(EdgeAttributes.SOURCE) + ' (-) ' + attrs.get(EdgeAttributes.TARGET))
+              attrs.set(
+                Attributes.NAME,
+                attrs.get(EdgeAttributes.SOURCE) +
+                  ' (-) ' +
+                  attrs.get(EdgeAttributes.TARGET),
+              )
             }
           }
         }
@@ -151,7 +174,11 @@ const EntryTable = (props) => {
           if (column == Attributes.NDEX_INTERNAL_LINK) {
             row[column] = processInternalLink(attrs.get(column), config.ndexUrl)
           } else {
-            row[replacePeriods(column)] = processItem(attrs.get(column), context, true)
+            row[replacePeriods(column)] = processItem(
+              attrs.get(column),
+              context,
+              true,
+            )
           }
           textRow[replacePeriods(column)] = attrs.get(column)
         }
@@ -169,7 +196,15 @@ const EntryTable = (props) => {
     nonNumbers.sort((a, b) => (a.name > b.name ? 1 : -1))
     numbers.sort((a, b) => (a.name > b.name ? 1 : -1))
 
-    return [nonNumbers.concat(numbers).concat(empty), textDataList]
+    const sortedDataList = nonNumbers.concat(numbers).concat(empty)
+    for (let i = 0; i < sortedDataList.length; i++) {
+      const row = sortedDataList[i]
+      for (const [key, value] of Object.entries(row)) {
+        row[key] = <Linkify target="_blank">{value}</Linkify>
+      }
+    }
+
+    return [sortedDataList, textDataList]
   }, [selectedObjects])
 
   const finalColumns = useMemo(() => {
@@ -213,14 +248,7 @@ const EntryTable = (props) => {
     setState(!state)
   }, [selectedObjects])
 
-  //The DynamicSizeList used in the Table component has trouble updating
-  //So I'm doing this to force it to make a whole new table every time
-  //Please fix if there's a better way
-  return (
-    <div style={{ width: width, height: height }}>
-      {state ? <Table columns={finalColumns} data={data[0]} /> : <Twinble columns={finalColumns} data={data[0]} />}
-    </div>
-  )
+  return <Table columns={finalColumns} data={data[0]} />
 }
 
 export default EntryTable

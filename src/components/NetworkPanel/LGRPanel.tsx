@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { NodeView, EdgeView, GraphView, GraphViewFactory, LargeGraphRenderer } from 'large-graph-renderer'
+import {
+  NodeView,
+  EdgeView,
+  GraphView,
+  GraphViewFactory,
+  LargeGraphRenderer,
+} from 'large-graph-renderer'
 
 import * as cxVizConverter from 'cx-viz-converter'
 import Loading from './Loading'
@@ -30,13 +36,15 @@ const LGRPanel = ({
   layoutName = 'preset',
   pickable,
 }: LGRPanelProps) => {
-
   const [render3d, setRender3d] = useState(false)
-  const [painted, setPainted] = useState(false)
   const [data, setData] = useState<GraphView | null>(null)
 
   // TODO: support multiple selection
-  const _handleNodeClick = (selectedNodeEvent: NodeView, x: number, y: number): void => {
+  const _handleNodeClick = (
+    selectedNodeEvent: NodeView,
+    x: number,
+    y: number,
+  ): void => {
     console.log('* Node click event:', selectedNodeEvent)
     if (selectedNodes.length !== 0) {
       selectedNodes.forEach((nodeId) => {
@@ -50,7 +58,11 @@ const LGRPanel = ({
     eventHandlers.setSelectedNodeOrEdge(nodeId, 'node', { x: x, y: y })
   }
 
-  const _handleEdgeClick = (selectedEdgeEvent: EdgeView, x: number, y: number): void => {
+  const _handleEdgeClick = (
+    selectedEdgeEvent: EdgeView,
+    x: number,
+    y: number,
+  ): void => {
     console.log('* Edge click event:', selectedEdgeEvent)
     if (selectedEdges.length !== 0) {
       selectedEdges.forEach((edgeId) => {
@@ -85,7 +97,6 @@ const LGRPanel = ({
 
   useEffect(() => {
     if (cx !== undefined && data === null) {
-
       const t0 = performance.now()
       const result = cxVizConverter.convert(cx, 'lnv')
 
@@ -102,7 +113,6 @@ const LGRPanel = ({
       }
       const gv = GraphViewFactory.createGraphView(nodeViews, result.edgeViews)
       setData(gv)
-
     }
   }, [cx])
 
@@ -242,15 +252,14 @@ const createLayers = (edgeViews: EdgeView[], edges: object[]): EdgeView[] => {
   }
   let size = id2weight.length
   const topEdges = 100000
-  for(let i = 0; i < size; i++) {
+  for (let i = 0; i < size; i++) {
     const id = id2weight[i][0].toString()
     const ev = id2ev.get(id)
 
-    if(i < topEdges) {
+    if (i < topEdges) {
       ev['layer'] = 1
     } else {
       ev['layer'] = 2
-
     }
   }
 

@@ -2,6 +2,7 @@ import { useQuery } from 'react-query'
 import NdexCredential from '../model/NdexCredential'
 
 import { getNdexClient } from '../utils/credentialUtil'
+import NDExError from '../utils/error/NDExError'
 
 const metaDataMap = {}
 
@@ -21,13 +22,14 @@ const getNetworkMetaData = async (
     return undefined
   }
 
-  const ndexClient = getNdexClient(`${serverUrl}/${apiVersion}`, credential)
-
-  let metaData
-  metaData = await ndexClient.getMetaData(uuid)
-
-  metaDataMap[uuid] = metaData
-  return metaData
+  try {
+    const ndexClient = getNdexClient(`${serverUrl}/${apiVersion}`, credential)
+    const metaData = await ndexClient.getMetaData(uuid)
+    metaDataMap[uuid] = metaData
+    return metaData
+  } catch (e: unknown) {
+    throw new NDExError(e['message'], e)
+  }
 }
 
 export default function useNetworkMetaData(
@@ -40,9 +42,7 @@ export default function useNetworkMetaData(
     ['networkMetaData', uuid, serverUrl, apiVersion, credential],
     () => getNetworkMetaData(uuid, serverUrl, apiVersion, credential),
     {
-      onError: (e) => {
-        console.error('* Fetch metaData error:', e)
-      },
+      retry: false,
     },
   )
 
