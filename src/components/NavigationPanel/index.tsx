@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
 // TODO: support for LGR
 const NavigationPanel = ({ target = 'main' }) => {
   const classes = useStyles()
-  const { cyReference, uiState } = useContext(AppContext)
+  const { cyReference, lgrReference } = useContext(AppContext)
 
   let cy = cyReference.main
   if (target === 'sub') {
@@ -42,6 +42,9 @@ const NavigationPanel = ({ target = 'main' }) => {
   const handleFit = (evt) => {
     if (cy !== null && cy !== undefined) {
       cy.fit()
+    } else if(lgrReference !== undefined && lgrReference !== null){
+      // @ts-ignore
+      console.log('LGR: fit command --> ref', lgrReference.fit())
     }
   }
   const handleZoomIn = (evt) => {
@@ -49,6 +52,9 @@ const NavigationPanel = ({ target = 'main' }) => {
       const currentZoom = cy.zoom()
       const newLevel = currentZoom * 1.2
       cy.zoom(newLevel)
+    } else if(lgrReference !== undefined && lgrReference !== null){
+      // @ts-ignore
+      lgrReference.zoomIn()
     }
   }
   const handleZoomOut = (evt) => {
@@ -56,6 +62,9 @@ const NavigationPanel = ({ target = 'main' }) => {
       const currentZoom = cy.zoom()
       const newLevel = currentZoom * 0.8
       cy.zoom(newLevel)
+    } else if(lgrReference !== undefined && lgrReference !== null){
+      // @ts-ignore
+      lgrReference.zoomOut()
     }
   }
 

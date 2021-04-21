@@ -517,7 +517,8 @@ const NetworkPanel: FC<ViewProps> = ({
           onDragFinished={handleDrag}
         >
           <div className={classes.lowerPanel}>
-            {renderer !== 'lgr' ? <NavigationPanel target={'main'} /> : <div />}
+            <NavigationPanel target={'main'} />
+            {/* {renderer !== 'lgr' ? <NavigationPanel target={'main'} /> : <div />} */}
             {!showSearchResult ? (
               <div />
             ) : (
@@ -545,7 +546,8 @@ const NetworkPanel: FC<ViewProps> = ({
         </SplitPane>
       ) : (
         <div className={classes.lowerPanel}>
-          {renderer !== 'lgr' ? <NavigationPanel target={'main'} /> : <div />}
+          <NavigationPanel target={'main'} />
+          {/* {renderer !== 'lgr' ? <NavigationPanel target={'main'} /> : <div />} */}
           {!showSearchResult ? (
             <div />
           ) : (

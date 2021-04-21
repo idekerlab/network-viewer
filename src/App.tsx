@@ -39,6 +39,8 @@ const App = ({ config }) => {
   const [query, setQuery] = useState('')
   const [queryMode, setQueryMode] = useState('firstStepNeighborhood')
   const [summary, setSummary] = useState(defSummary)
+  
+  const [lgrReference, setLgrReference] = useState(null)
 
   const [ndexCredential, setNdexCredential] = useState(defNdexCredential)
 
@@ -58,6 +60,9 @@ const App = ({ config }) => {
 
     cyReference,
     cyDispatch,
+
+    lgrReference,
+    setLgrReference,
 
     uiState,
     uiStateDispatch,

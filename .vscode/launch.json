@@ -12,8 +12,11 @@
     // Private network
     // "url": "http://localhost:3000/viewer/networks/536bafd5-ecc5-11ea-8a8c-525400c25d22",
     
-    // Public large network
-    "url":  "http://localhost:3000/viewer/networks/25704eb4-c038-11ea-86e2-525400c25d22",
+    // Public large networks
+    // "url":  "http://localhost:3000/viewer/networks/25704eb4-c038-11ea-86e2-525400c25d22",
+    // "url": "http://localhost:3000/viewer/networks/c8d4ba4a-08d6-11eb-a2d4-525400c25d22",
+    "url": "http://localhost:3000/viewer/networks/402c6977-a239-11eb-aaa0-525400c25d22",
+    
     "webRoot": "${workspaceFolder}"
   },
   ]

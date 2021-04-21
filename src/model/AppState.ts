@@ -11,6 +11,10 @@ type AppState = {
   cyReference: CyReference
   cyDispatch: any
 
+  // TODO: create better type
+  lgrReference: unknown
+  setLgrReference: Function
+
   uiState: UIState
   uiStateDispatch: any
 
