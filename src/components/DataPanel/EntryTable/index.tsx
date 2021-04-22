@@ -34,25 +34,6 @@ const EntryTable = (props) => {
     label,
   } = props
 
-  if (selectedObjects.length === 0) {
-    return (
-      <div
-        style={{
-          height: '100%',
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          border: '3px solid pink',
-          textAlign: 'center',
-          padding: '0.5em',
-        }}
-      >
-        Select {type === 'edge' ? 'an edge' : 'a node'} to view it in the table.
-      </div>
-    )
-  }
-
   const { config } = useContext(AppContext)
 
   const replacePeriods = (string) => {
@@ -262,6 +243,25 @@ const EntryTable = (props) => {
     })
     return columnsObject
   }, [selectedObjects])
+
+  if (selectedObjects.length === 0) {
+    return (
+      <div
+        style={{
+          height: '100%',
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          border: '3px solid pink',
+          textAlign: 'center',
+          padding: '0.5em',
+        }}
+      >
+        Select {type === 'edge' ? 'an edge' : 'a node'} to view it in the table.
+      </div>
+    )
+  }
 
   return <Table columns={finalColumns} data={data[0]} />
 }
