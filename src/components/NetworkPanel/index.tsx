@@ -392,13 +392,13 @@ const NetworkPanel: FC<ViewProps> = ({
           mainNetworkNotDisplayed: true,
         })
       }
-      let title = 'Network data is too large'
-      let message = `There are ${objectCount} objects in this network and it is too large to display. 
+      let title = 'Large Network Entry Selected'
+      let message = `There are ${objectCount} objects in this network and it is too large to display at once. 
           You can use the query functions below to extract sub-networks.`
       if (noView) {
-        title = 'No network view mode'
+        title = 'No Network View Mode'
         message =
-          'You can use the query functions below to extract sub-networks.'
+          'To explore this network, you can use the query functions below to extract sub-networks.'
       }
       return (
         <EmptyView
@@ -517,7 +517,8 @@ const NetworkPanel: FC<ViewProps> = ({
           onDragFinished={handleDrag}
         >
           <div className={classes.lowerPanel}>
-            {renderer !== 'lgr' ? <NavigationPanel target={'main'} /> : <div />}
+            <NavigationPanel target={'main'} />
+            {/* {renderer !== 'lgr' ? <NavigationPanel target={'main'} /> : <div />} */}
             {!showSearchResult ? (
               <div />
             ) : (
@@ -545,7 +546,8 @@ const NetworkPanel: FC<ViewProps> = ({
         </SplitPane>
       ) : (
         <div className={classes.lowerPanel}>
-          {renderer !== 'lgr' ? <NavigationPanel target={'main'} /> : <div />}
+          <NavigationPanel target={'main'} />
+          {/* {renderer !== 'lgr' ? <NavigationPanel target={'main'} /> : <div />} */}
           {!showSearchResult ? (
             <div />
           ) : (

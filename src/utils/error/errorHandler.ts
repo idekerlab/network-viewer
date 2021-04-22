@@ -12,7 +12,7 @@ MESSAGE_MAP.set(
 )
 MESSAGE_MAP.set(
   ResponseCode.Unauthorized,
-  ["You don't have permission to access this data",'Please sign in to your account and try again']
+  ["You don't have permission to access this data",'Please sing in to your account and check the permission of this entry']
 )
 MESSAGE_MAP.set(
   ResponseCode.InternalServerError,

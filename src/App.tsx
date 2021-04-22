@@ -6,6 +6,9 @@ import { useHistory } from 'react-router-dom'
 import { Switch, Route, BrowserRouter } from 'react-router-dom'
 
 import AppShell from './components/AppShell'
+import AccountShell from './components/AccountShell'
+import AccountSignUpPane from './components/AccountSignUpPane' 
+import AccountForgotPasswordPane from './components/AccountForgotPasswordPane'
 
 import AppContext from './context/AppState'
 import AppState from './model/AppState'
@@ -36,6 +39,8 @@ const App = ({ config }) => {
   const [query, setQuery] = useState('')
   const [queryMode, setQueryMode] = useState('firstStepNeighborhood')
   const [summary, setSummary] = useState(defSummary)
+  
+  const [lgrReference, setLgrReference] = useState(null)
 
   const [ndexCredential, setNdexCredential] = useState(defNdexCredential)
 
@@ -49,12 +54,17 @@ const App = ({ config }) => {
     INITIAL_UI_STATE,
   )
 
+  const [ndexLoginWrapper, setNdexLoginWrapper] = useState(null) 
+
   // TODO: use reducer?
   const defState: AppState = {
     config,
 
     cyReference,
     cyDispatch,
+
+    lgrReference,
+    setLgrReference,
 
     uiState,
     uiStateDispatch,
@@ -72,6 +82,9 @@ const App = ({ config }) => {
 
     selectionState,
     selectionStateDispatch,
+
+    ndexLoginWrapper,
+    setNdexLoginWrapper
   }
 
   return (
@@ -82,9 +95,24 @@ const App = ({ config }) => {
             <AppShell />
           </AppContext.Provider>
         </Route>
+        <Route path="/signup">
+          <AppContext.Provider value={defState}>
+            <AccountShell>
+              <AccountSignUpPane/>
+            </AccountShell>
+          </AppContext.Provider>
+        </Route>
+        <Route path="/recoverPassword">
+          <AppContext.Provider value={defState}>
+            <AccountShell>
+              <AccountForgotPasswordPane/>
+            </AccountShell>
+          </AppContext.Provider>
+        </Route>
         <Route path="/">
           <TopPanel config={config} />
         </Route>
+       
       </Switch>
     </BrowserRouter>
   )

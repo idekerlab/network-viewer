@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
-import WarningIcon from '@material-ui/icons/Warning'
+import InfoIcon from '@material-ui/icons/Info'
 
 import DownArrowIcon from '@material-ui/icons/ArrowDownward'
 
@@ -41,9 +41,9 @@ const useStyles = makeStyles((theme: Theme) =>
       left: '1vw',
       fontSize: '7em',
     },
-    warningIcon: {
-      color: 'red',
-      fontSize: '6em',
+    infoIcon: {
+      color: theme.palette.info.main,
+      fontSize: '7em',
     },
   }),
 )
@@ -59,7 +59,7 @@ const EmptyView: FC<EmptyViewProps> = ({ title = '-', message = '-', showIcons =
   return (
     <div className={classes.root}>
       <div className={classes.item}>
-        <WarningIcon fontSize="inherit" className={classes.warningIcon} />
+        <InfoIcon fontSize="inherit" className={classes.infoIcon} />
         <div className={classes.title}>
           <Typography className={classes.message} variant="h5">
             {title}

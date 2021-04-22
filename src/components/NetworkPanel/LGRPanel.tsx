@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import {
   NodeView,
   EdgeView,
@@ -10,6 +10,7 @@ import {
 import * as cxVizConverter from 'cx-viz-converter'
 import Loading from './Loading'
 import { getEntry } from '../../utils/cxUtil'
+import AppContext from '../../context/AppState'
 
 type LGRPanelProps = {
   eventHandlers: EventHandlers
@@ -36,6 +37,8 @@ const LGRPanel = ({
   layoutName = 'preset',
   pickable,
 }: LGRPanelProps) => {
+
+  const { setLgrReference } = useContext(AppContext)
   const [render3d, setRender3d] = useState(false)
   const [data, setData] = useState<GraphView | null>(null)
 
@@ -130,6 +133,7 @@ const LGRPanel = ({
       render3d={render3d}
       backgroundColor={backgroundColor}
       pickable={pickable}
+      commandProxy={setLgrReference}
     />
   )
 }
