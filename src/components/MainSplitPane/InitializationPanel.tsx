@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
     message: {
       display: 'grid',
       placeItems: 'center',
+      maxWidth: '40em'
     },
     errorMessage: {
       paddingTop: '1em',

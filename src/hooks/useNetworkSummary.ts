@@ -26,10 +26,31 @@ async function getNetworkSummary(
     const ndexClient = getNdexClient(ndexUrl, credential)
     const summary = await ndexClient.getNetworkSummary(uuid)
     summaryMap[uuid] = summary
+
+    if (!isValidSummary(summary)) {
+      throw new NDExError(summary.errorMessage, {
+        subMessage: 'The entry contains invalid data in summary',
+      })
+    }
+
     return summary
   } catch (e: unknown) {
     throw new NDExError(e['message'], e)
   }
+}
+
+const isValidSummary = (summary: object): boolean => {
+  console.log('Summary:', summary)
+  if (summary === undefined || summary === null) {
+    return false
+  } else if (
+    summary['errorMessage'] !== '' &&
+    summary['errorMessage'] !== undefined
+  ) {
+    return false
+  }
+
+  return true
 }
 
 export default function useNetworkSummary(
