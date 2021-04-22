@@ -253,7 +253,6 @@ const EntryTable = (props) => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          border: '3px solid pink',
           textAlign: 'center',
           padding: '0.5em',
         }}
