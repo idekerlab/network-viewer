@@ -57,8 +57,9 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.text.primary,
     },
     link: {
-      color: theme.palette.text.primary,
+      color: theme.palette.info.main,
       marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(2),
       '&:hover': {
         fontWeight: 600,
         cursor: 'pointer',
@@ -94,7 +95,7 @@ const InitPanel: FC<InitPanelProps> = ({
 }) => {
   const classes = useStyles()
   const { uuid } = useParams()
-  const { config } = useContext(AppContext)
+  const { config, ndexLoginWrapper } = useContext(AppContext)
 
   const [open, setOpen] = useState(false)
 
@@ -139,6 +140,11 @@ const InitPanel: FC<InitPanelProps> = ({
     setOpen(false)
   }
 
+  const _handleLoginOpen = () => {
+    // @ts-ignore
+    ndexLoginWrapper.click()
+  }
+
   if (error) {
     return (
       <div className={classes.initPanel}>
@@ -150,17 +156,22 @@ const InitPanel: FC<InitPanelProps> = ({
           <Typography variant="h5" className={classes.subMessage}>
             {optionalMessage}
           </Typography>
+
+          {code === ResponseCode.Unauthorized ||
+          code === ResponseCode.Forbidden ? (
+            <Typography
+              variant="h5"
+              onClick={_handleLoginOpen}
+              className={classes.link}
+            >
+              Sign In
+            </Typography>
+          ) : (
+            <div />
+          )}
+
           <Typography variant="body1">({subMessage})</Typography>
           <div className={classes.bottomMessage}>
-            <Typography
-              variant="body2"
-              className={classes.link}
-              onClick={() =>
-                handleClick(`${getCurrentServer()}/#/network/${uuid}`)
-              }
-            >
-              Try in Classic Mode
-            </Typography>
             <Typography
               variant="caption"
               onClick={() => handleClick(`${getCurrentServer()}`)}

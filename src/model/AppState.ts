@@ -31,6 +31,11 @@ type AppState = {
 
   selectionState: SelectionState
   selectionStateDispatch: any
+
+  // This is a hack, but looks only way to open external component
+  // (Sharing external component as state)
+  ndexLoginWrapper: unknown
+  setNdexLoginWrapper: (button: any) => void
 }
 
 export default AppState

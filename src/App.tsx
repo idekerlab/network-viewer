@@ -54,6 +54,8 @@ const App = ({ config }) => {
     INITIAL_UI_STATE,
   )
 
+  const [ndexLoginWrapper, setNdexLoginWrapper] = useState(null) 
+
   // TODO: use reducer?
   const defState: AppState = {
     config,
@@ -80,6 +82,9 @@ const App = ({ config }) => {
 
     selectionState,
     selectionStateDispatch,
+
+    ndexLoginWrapper,
+    setNdexLoginWrapper
   }
 
   return (
