@@ -1,15 +1,11 @@
 import React from 'react'
-
 import { makeStyles } from '@material-ui/styles'
-import Typography from '@material-ui/core/Typography'
-import SearchIcon from '@material-ui/icons/Search'
 
 import Linkify from 'linkifyjs/react'
 import parse from 'html-react-parser'
-
 import CollapsiblePanel from './CollapsiblePanel'
 import NetworkPropertySegment from './NetworkPropertySegment'
-import { Tooltip } from '@material-ui/core'
+
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -37,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const NetworkProperties = (props) => {
-  const { summary, cx } = props
+  const { summary } = props
   const properties = summary.properties
   const description = summary.description
   const classes = useStyles()

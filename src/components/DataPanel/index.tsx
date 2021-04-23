@@ -37,6 +37,15 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingTop: theme.spacing(1),
       paddingLeft: theme.spacing(3),
     },
+    tabs: {
+      marginTop: theme.spacing(1),
+      minHeight: '2.6em',
+      backgroundColor: theme.palette.background.default
+    },
+    tab: {
+      minHeight: '2.6em',
+      minWidth: '7em'
+    }
   }),
 )
 
@@ -49,6 +58,7 @@ const TabPanel = (props) => {
 
 const DataPanel = ({ width, cx, renderer }) => {
   const classes = useStyles()
+
   const {
     ndexCredential,
     config,
@@ -140,10 +150,11 @@ const DataPanel = ({ width, cx, renderer }) => {
         onChange={handleChange}
         scrollButtons="auto"
         variant="scrollable"
+        className={classes.tabs}
       >
-        <Tab key={'network-tab'} label={'Network'} />
-        <Tab key={'nodes-tab'} label={'Nodes'} />
-        <Tab key={'edges-tab'} label={'Edges'} />
+        <Tab className={classes.tab} key={'network-tab'} label={'Network'} />
+        <Tab className={classes.tab} key={'nodes-tab'} label={'Nodes'} />
+        <Tab className={classes.tab} key={'edges-tab'} label={'Edges'} />
       </Tabs>
       <TabPanel value={uiState.activeTab} index={0}>
         <div style={{ width: '100%', overflow: 'auto' }}>

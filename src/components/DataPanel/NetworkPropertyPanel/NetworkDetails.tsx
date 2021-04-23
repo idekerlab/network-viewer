@@ -1,18 +1,26 @@
-import { Chip, createStyles, makeStyles, Theme, Tooltip } from '@material-ui/core'
+import React, { useContext, useState } from 'react'
+import {
+  Chip,
+  createStyles,
+  Divider,
+  makeStyles,
+  Theme,
+  Tooltip,
+} from '@material-ui/core'
 import { Typography } from '@material-ui/core'
 import WarningIcon from '@material-ui/icons/AnnouncementOutlined'
 import ErrorIcon from '@material-ui/icons/ErrorOutline'
-import React, { useContext, useRef, useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import AppContext from '../../../context/AppState'
-import QueryButton from './QueryButton'
+import QueryButton from './QueryPanel'
 import DeleteDOIButton from '../../DeleteDOIButton'
+import CollapsiblePanel from './CollapsiblePanel'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     networkDetails: {
-      margin: theme.spacing(1),
+      // margin: theme.spacing(1),
     },
     item: {
       marginRight: theme.spacing(1),
@@ -24,19 +32,21 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
       boxSizing: 'border-box',
-      padding: theme.spacing(1),
+      padding: theme.spacing(2),
     },
     warning: {
-      color: 'deeppink',
+      color: theme.palette.warning.main,
     },
     error: {
-      color: 'red',
+      color: theme.palette.error.main,
     },
     buttonContainer: {
       margin: theme.spacing(1),
     },
     copySpan: {
       display: 'none',
+    },
+    queryPanel: {
     },
   }),
 )
@@ -56,7 +66,10 @@ const NetworkDetails = (props) => {
   const getInformationIcon = (objectCount: number) => {
     if (objectCount >= viewerThreshold && objectCount < warningThreshold) {
       return (
-        <Tooltip arrow title="Large network loaded: showing network in simplified mode">
+        <Tooltip
+          arrow
+          title="Large network loaded: showing network in simplified mode"
+        >
           <WarningIcon fontSize="large" className={classes.warning} />
         </Tooltip>
       )
@@ -82,15 +95,34 @@ const NetworkDetails = (props) => {
       {summary.doi ? (
         <div className={classes.buttonContainer}>
           {summary.doi === 'Pending' ? (
-            <span><Chip label={'DOI: Pending'} size="small" variant="outlined" className={classes.item} /> <DeleteDOIButton uuid={uuid} /> </span>
+            <span>
+              <Chip
+                label={'DOI: Pending'}
+                size="small"
+                variant="outlined"
+                className={classes.item}
+              />{' '}
+              <DeleteDOIButton uuid={uuid} />{' '}
+            </span>
           ) : (
-           
-            <Tooltip title={doiCopiedHoverText ? 'Copied!' : 'Copy network DOI to clipboard'} className={classes.item}>
-              <CopyToClipboard text={'https://doi.org/' + summary.doi} onCopy={copyDoi}>
-                <Chip clickable label={`DOI: ${summary.doi}`} variant="outlined" onMouseEnter={mouseEnter} />
+            <Tooltip
+              title={
+                doiCopiedHoverText ? 'Copied!' : 'Copy network DOI to clipboard'
+              }
+              className={classes.item}
+            >
+              <CopyToClipboard
+                text={'https://doi.org/' + summary.doi}
+                onCopy={copyDoi}
+              >
+                <Chip
+                  clickable
+                  label={`DOI: ${summary.doi}`}
+                  variant="outlined"
+                  onMouseEnter={mouseEnter}
+                />
               </CopyToClipboard>
             </Tooltip>
-          
           )}
         </div>
       ) : null}
@@ -115,9 +147,16 @@ const NetworkDetails = (props) => {
         />
         {getInformationIcon(summary.edgeCount + summary.nodeCount)}
       </div>
-      <div className={classes.row}>
-        <QueryButton cx={cx} />
-      </div>
+
+      <Divider />
+
+      <CollapsiblePanel
+        className={classes.queryPanel}
+        openByDefault
+        summary="Query External Database"
+        children={<QueryButton cx={cx} />}
+      />
+
       {uiState.showSearchResult && summary.subnetworkNodeCount !== undefined ? (
         <div className={classes.row}>
           <Typography className={classes.label} variant="subtitle2">

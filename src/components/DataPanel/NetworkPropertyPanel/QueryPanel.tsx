@@ -2,6 +2,9 @@ import React, { useContext, useState, useEffect } from 'react'
 import {
   Button,
   FormControl,
+  FormHelperText,
+  Grid,
+  InputLabel,
   makeStyles,
   Select,
   Tooltip,
@@ -9,19 +12,30 @@ import {
 import AppContext from '../../../context/AppState'
 import useAttributes from '../../../hooks/useAttributes'
 import { useParams } from 'react-router-dom'
+import SearchIcon from '@material-ui/icons/Search'
 
 const useStyles = makeStyles((theme) => ({
+  container: {
+    width: '100%',
+    padding: theme.spacing(2),
+    margin: 0,
+  },
+  item: {
+    paddingLeft: theme.spacing(1),
+  },
   formControl: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
+    // marginLeft: theme.spacing(1),
+    // marginRight: theme.spacing(1),
+    width: '100%',
     '& .MuiInputBase-root': {
       fontSize: 'inherit',
     },
   },
   button: {
+    width: '100%',
     '&.MuiButton-contained': {
-      marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(1),
+      // marginTop: theme.spacing(1),
+      // marginBottom: theme.spacing(1),
     },
   },
   tooltipText: {
@@ -34,6 +48,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexWrap: 'wrap',
     alignItems: 'center',
+    padding: 0,
+    margin: 0,
   },
 }))
 
@@ -229,11 +245,27 @@ const QueryButton = (props) => {
   }
 
   return (
-    <div className={classes.flexContainer}>
-      <div className={classes.flexContainer} style={{ marginRight: '1em' }}>
-        Query
+    <Grid
+      className={classes.container}
+      container
+      spacing={1}
+      justify="flex-start"
+      alignItems="center"
+    >
+      <Grid item xs={3}>
         <FormControl variant="standard" className={classes.formControl}>
-          <Select native value={chosenQuery} onChange={handleQueryMenuChange}>
+          <InputLabel shrink htmlFor="service-name">
+            Database:
+          </InputLabel>
+          <Select
+            native
+            value={chosenQuery}
+            onChange={handleQueryMenuChange}
+            inputProps={{
+              name: 'service-name',
+              id: 'service-name',
+            }}
+          >
             {availableQueries.map((name, index) => (
               <option key={name} value={index}>
                 {name}
@@ -241,13 +273,25 @@ const QueryButton = (props) => {
             ))}
           </Select>
         </FormControl>
-        using the
+      </Grid>
+
+      <Grid item xs={9} className={classes.item}>
         <FormControl variant="standard" className={classes.formControl}>
+          <InputLabel shrink htmlFor="attr-selector">
+            using the data column
+          </InputLabel>
           <Select
             native
             value={chosenAttribute}
             onChange={handleAttributeMenuChange}
+            inputProps={{
+              name: 'attr-selector',
+              id: 'attr-selector',
+            }}
           >
+            <option value="" disabled>
+              Please select
+            </option>
             {availableAttributes.map((name, index) => (
               <option key={name} value={index}>
                 {name}
@@ -255,8 +299,10 @@ const QueryButton = (props) => {
             ))}
           </Select>
         </FormControl>
-        attribute of{' '}
+      </Grid>
+      <Grid item xs={8}>
         <FormControl variant="standard" className={classes.formControl}>
+          <InputLabel htmlFor="attr-selector">attribute of</InputLabel>
           <Select
             native
             value={chosenSelectionType}
@@ -268,35 +314,41 @@ const QueryButton = (props) => {
               </option>
             ))}
           </Select>
-        </FormControl>{' '}
-        nodes.
-      </div>
+          <FormHelperText>nodes.</FormHelperText>
+        </FormControl>
+      </Grid>
       {/* If button state is enabled */}
-      {buttonState === 0 ? (
-        <Button
-          variant="contained"
-          color="primary"
-          className={classes.button}
-          onClick={handleButtonClick}
-        >
-          Go
-        </Button>
-      ) : (
-        <Tooltip arrow title={tooltipMessages[buttonState - 1]}>
-          <span>
-            <Button
-              variant="contained"
-              color="primary"
-              className={classes.button}
-              onClick={handleButtonClick}
-              disabled
-            >
-              Go
-            </Button>
-          </span>
-        </Tooltip>
-      )}
-    </div>
+
+      <Grid item xs={4}>
+        {buttonState === 0 ? (
+          <Button
+            variant="outlined"
+            color="secondary"
+            size="small"
+            className={classes.button}
+            onClick={handleButtonClick}
+            startIcon={<SearchIcon />}
+          >
+            Query
+          </Button>
+        ) : (
+          <Tooltip arrow title={tooltipMessages[buttonState - 1]}>
+            <span>
+              <Button
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                onClick={handleButtonClick}
+                startIcon={<SearchIcon />}
+                disabled
+              >
+                Query
+              </Button>
+            </span>
+          </Tooltip>
+        )}
+      </Grid>
+    </Grid>
   )
 }
 

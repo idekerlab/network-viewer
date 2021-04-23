@@ -2,6 +2,9 @@ import React from 'react'
 import { Typography, makeStyles, Theme } from '@material-ui/core'
 
 const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    padding: theme.spacing(1),
+  },
   segmentTitle: {
     marginTop: theme.spacing(1),
   },
@@ -12,9 +15,14 @@ const NetworkPropertySegment = (props) => {
   const classes = useStyles()
 
   return (
-    <div>
+    <div className={classes.root}>
       {summary ? (
-        <Typography variant="caption" color="textSecondary" display="block" className={classes.segmentTitle}>
+        <Typography
+          variant="caption"
+          color="textSecondary"
+          display="block"
+          className={classes.segmentTitle}
+        >
           {summary}
         </Typography>
       ) : null}

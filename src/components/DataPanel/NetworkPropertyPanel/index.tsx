@@ -54,7 +54,7 @@ const NetworkPropertyPanel = (props) => {
     )
   } else {
     if (
-      summary == undefined ||
+      summary === undefined ||
       summary.owner !== summaryResponseData['owner']
     ) {
       setSummary({

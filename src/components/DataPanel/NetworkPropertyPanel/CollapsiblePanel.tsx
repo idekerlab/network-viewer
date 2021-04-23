@@ -5,13 +5,17 @@ import { ExpandLess, ExpandMore } from '@material-ui/icons'
 const useStyles = makeStyles((theme: Theme) => ({
   collapsiblePanelTitle: {
     padding: theme.spacing(1),
+    borderBottomWidth: '1px',
+    borderBottomColor: theme.palette.divider,
+    borderBottomStyle: 'solid',
     '&:hover': {
       backgroundColor: 'rgba(0, 0, 0, 0.04) !important',
       cursor: 'pointer',
     },
+    height: '2.8em'
   },
   collapsiblePanel: {
-    padding: theme.spacing(1),
+    padding: 0,
     paddingTop: 0,
   },
   expandIcon: {
