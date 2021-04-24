@@ -46,8 +46,7 @@ const useStyles = makeStyles((theme: Theme) =>
     copySpan: {
       display: 'none',
     },
-    queryPanel: {
-    },
+    queryPanel: {},
   }),
 )
 
@@ -149,13 +148,6 @@ const NetworkDetails = (props) => {
       </div>
 
       <Divider />
-
-      <CollapsiblePanel
-        className={classes.queryPanel}
-        openByDefault
-        summary="Query External Database"
-        children={<QueryButton cx={cx} />}
-      />
 
       {uiState.showSearchResult && summary.subnetworkNodeCount !== undefined ? (
         <div className={classes.row}>

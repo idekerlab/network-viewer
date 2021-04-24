@@ -13,6 +13,8 @@ import EntryTable from './EntryTable'
 
 import UIState from '../../model/UIState'
 import { UIStateActions } from '../../reducer/uiStateReducer'
+import CollapsiblePanel from './NetworkPropertyPanel/CollapsiblePanel'
+import QueryButton from './NetworkPropertyPanel/QueryPanel'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -40,12 +42,15 @@ const useStyles = makeStyles((theme: Theme) =>
     tabs: {
       marginTop: theme.spacing(1),
       minHeight: '2.6em',
-      backgroundColor: theme.palette.background.default
+      backgroundColor: theme.palette.background.default,
     },
     tab: {
       minHeight: '2.6em',
-      minWidth: '7em'
-    }
+      minWidth: '7em',
+    },
+    collapsiblePanel: {
+      minHeight: 'auto',
+    },
   }),
 )
 
@@ -70,6 +75,11 @@ const DataPanel = ({ width, cx, renderer }) => {
 
   const attributes = useAttributes(uuid, cx, uiState.mainNetworkNotDisplayed)
   const context = useMemo(() => getContextFromCx(cx), [cx])
+
+  const [queryPanelOpen, setQueryPanelOpen] = useState()
+  const updateQueryPanel = (queryPanelState) => {
+    setQueryPanelOpen(queryPanelState)
+  }
 
   const setActiveTab = (state: UIState) => {
     uiStateDispatch({
@@ -162,6 +172,13 @@ const DataPanel = ({ width, cx, renderer }) => {
         </div>
       </TabPanel>
       <TabPanel value={uiState.activeTab} index={1}>
+        <CollapsiblePanel
+          openByDefault={queryPanelOpen}
+          summary="Query External Database"
+          children={<QueryButton cx={cx} />}
+          className={classes.collapsiblePanel}
+          onClick={updateQueryPanel}
+        />
         <EntryTable
           key={'selected-nodes'}
           selectedObjects={nodes}

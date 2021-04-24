@@ -12,12 +12,9 @@ const useStyles = makeStyles((theme: Theme) => ({
       backgroundColor: 'rgba(0, 0, 0, 0.04) !important',
       cursor: 'pointer',
     },
-    height: '2.8em'
+    height: '2.8em',
   },
-  collapsiblePanel: {
-    padding: 0,
-    paddingTop: 0,
-  },
+  collapsiblePanel: {},
   expandIcon: {
     float: 'right',
   },
@@ -25,30 +22,41 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const CollapsiblePanel = (props) => {
   const classes = useStyles()
-  const { openByDefault, summary, children, backgroundColor } = props
+  const { openByDefault, summary, children, backgroundColor, onClick } = props
   const [open, setOpen] = useState(openByDefault)
 
   const handleClick = () => {
+    onClick(!open)
     setOpen(!open)
   }
 
   return (
     <>
-      <div onClick={handleClick} className={classes.collapsiblePanelTitle} style={{ backgroundColor: backgroundColor }}>
-        <Typography variant="caption" color="textSecondary">
-          {summary}
-          {open ? <ExpandLess className={classes.expandIcon} /> : <ExpandMore className={classes.expandIcon} />}
-        </Typography>
-      </div>
-      <Collapse
-        in={open}
-        timeout="auto"
-        unmountOnExit
-        className={classes.collapsiblePanel}
+      <div
+        onClick={handleClick}
+        className={classes.collapsiblePanelTitle}
         style={{ backgroundColor: backgroundColor }}
       >
-        {children}
-      </Collapse>
+        <Typography variant="caption" color="textSecondary">
+          {summary}
+          {open ? (
+            <ExpandLess className={classes.expandIcon} />
+          ) : (
+            <ExpandMore className={classes.expandIcon} />
+          )}
+        </Typography>
+      </div>
+      <div style={{ minHeight: 'auto' }}>
+        <Collapse
+          in={open}
+          timeout="auto"
+          unmountOnExit
+          className={classes.collapsiblePanel}
+          style={{ backgroundColor: backgroundColor, marginBottom: '-16px' }}
+        >
+          {children}
+        </Collapse>
+      </div>
     </>
   )
 }
