@@ -214,7 +214,7 @@ const NetworkProperties = (props) => {
       {informationDisplay ? (
         <CollapsiblePanel
           openByDefault={true}
-          summary="Network information"
+          title="Network information"
           children={informationDisplay}
           backgroundColor={darkBackground++ % 2 === 0 ? 'inherit' : 'white'}
         />
@@ -222,7 +222,7 @@ const NetworkProperties = (props) => {
       {descriptionDisplay ? (
         <CollapsiblePanel
           openByDefault={true}
-          summary="Description"
+          title="Description"
           children={descriptionDisplay}
           backgroundColor={darkBackground++ % 2 === 0 ? 'inherit' : 'white'}
         />
@@ -230,7 +230,7 @@ const NetworkProperties = (props) => {
       {propertiesDisplay ? (
         <CollapsiblePanel
           openByDefault={true}
-          summary="Properties"
+          title="Properties"
           children={propertiesDisplay}
           backgroundColor={darkBackground++ % 2 === 0 ? 'inherit' : 'white'}
         />

@@ -76,11 +76,6 @@ const DataPanel = ({ width, cx, renderer }) => {
   const attributes = useAttributes(uuid, cx, uiState.mainNetworkNotDisplayed)
   const context = useMemo(() => getContextFromCx(cx), [cx])
 
-  const [queryPanelOpen, setQueryPanelOpen] = useState()
-  const updateQueryPanel = (queryPanelState) => {
-    setQueryPanelOpen(queryPanelState)
-  }
-
   const setActiveTab = (state: UIState) => {
     uiStateDispatch({
       type: UIStateActions.SET_ACTIVE_TAB,
@@ -167,17 +162,14 @@ const DataPanel = ({ width, cx, renderer }) => {
         <Tab className={classes.tab} key={'edges-tab'} label={'Edges'} />
       </Tabs>
       <TabPanel value={uiState.activeTab} index={0}>
-        <div style={{ width: '100%', overflow: 'auto' }}>
-          <NetworkPropertyPanel cx={cx} />
-        </div>
+        <NetworkPropertyPanel cx={cx} />
       </TabPanel>
       <TabPanel value={uiState.activeTab} index={1}>
         <CollapsiblePanel
-          openByDefault={queryPanelOpen}
-          summary="Query External Database"
+          openByDefault={false}
+          title="Query External Database"
           children={<QueryButton cx={cx} />}
           className={classes.collapsiblePanel}
-          onClick={updateQueryPanel}
         />
         <EntryTable
           key={'selected-nodes'}

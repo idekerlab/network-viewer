@@ -147,8 +147,6 @@ const NetworkDetails = (props) => {
         {getInformationIcon(summary.edgeCount + summary.nodeCount)}
       </div>
 
-      <Divider />
-
       {uiState.showSearchResult && summary.subnetworkNodeCount !== undefined ? (
         <div className={classes.row}>
           <Typography className={classes.label} variant="subtitle2">
@@ -168,6 +166,14 @@ const NetworkDetails = (props) => {
           />
         </div>
       ) : null}
+      
+      <Divider />
+      
+      <CollapsiblePanel
+        openByDefault={true}
+        title="Query External Database"
+        children={<QueryButton cx={cx} />}
+      />
     </div>
   )
 }

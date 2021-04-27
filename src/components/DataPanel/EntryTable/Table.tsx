@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { useTable, useBlockLayout } from 'react-table'
 import { useSticky } from 'react-table-sticky'
 
+import theme from '../../../theme'
+
 const Styles = styled.div`
-  padding: 1rem;
   overflow: auto;
 
   .table {
@@ -19,7 +20,7 @@ const Styles = styled.div`
     }
 
     .th {
-      background-color: rgb(64, 80, 181);
+      background-color: ${theme.palette.secondary.main};
     }
 
     .td {
@@ -57,19 +58,23 @@ const Styles = styled.div`
       overflow: auto;
       .header,
       .header {
+        position: sticky;
+        z-index: 1;
         top: 0;
+        width: fit-content;
         box-shadow: 0px 3px 3px #ccc;
         color: white;
-        background-color: rgb(64, 80, 181);
+        background-color: ${theme.palette.secondary.main};
       }
 
       .body {
         position: relative;
         z-index: 0;
+        // height: fit-content;
       }
 
       [data-sticky-td] {
-        position: sticky;
+        // position: sticky;
       }
 
       [data-sticky-last-left-td] {
@@ -83,12 +88,28 @@ const Styles = styled.div`
   }
 `
 
-function Table({ columns, data }) {
+const Table = ({ columns, data }) => {
+
+  // TODO: Try to use virtualized, fixed-size table for performance
+  const tableBody = useRef(null)
+  const [width, setWidth] = useState(100)
+  const [height, setHeight] = useState(200)
+
+  useEffect(() => {
+    if (tableBody.current) {
+      const parent = tableBody.current
+      let height = parent['offsetHeight']
+      let width = parent['offsetWidth']
+      setWidth(width)
+      setHeight(height)
+    }
+  }, [tableBody])
+
   const defaultColumn = React.useMemo(
     () => ({
       minWidth: 150,
       width: 150,
-      maxWidth: 400,
+      maxWidth: 300,
     }),
     [],
   )
@@ -128,7 +149,7 @@ function Table({ columns, data }) {
           ))}
         </div>
 
-        <div {...getTableBodyProps()} className="body">
+        <div {...getTableBodyProps()} className="body" ref={tableBody}>
           {rows.map((row, i) => {
             prepareRow(row)
             return (

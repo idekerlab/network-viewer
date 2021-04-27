@@ -22,7 +22,9 @@ const useStyles = makeStyles((theme: Theme) =>
     description: {
       padding: 0,
       margin: 0,
-      backgroundColor: '#EEEEEE',
+      backgroundColor: theme.palette.background.default,
+      height: '100%',
+      overflowY: 'auto'
     },
   }),
 )

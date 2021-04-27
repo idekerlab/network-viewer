@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { FC, ReactNode, useState } from 'react'
 import { Collapse, makeStyles, Theme, Typography } from '@material-ui/core'
 import { ExpandLess, ExpandMore } from '@material-ui/icons'
 
@@ -14,31 +14,46 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     height: '2.8em',
   },
-  collapsiblePanel: {},
+  collapsiblePanel: {
+    paddingBottom: theme.spacing(2)
+  },
   expandIcon: {
     float: 'right',
   },
 }))
 
-const CollapsiblePanel = (props) => {
+type CollapsiblePanelProps = {
+  openByDefault?: boolean
+  title: string
+  children: ReactNode
+  backgroundColor?: string,
+  className?: string
+}
+
+const CollapsiblePanel: FC<CollapsiblePanelProps> = ({
+  openByDefault = true,
+  title = '?',
+  children,
+  backgroundColor,
+
+}) => {
+
   const classes = useStyles()
-  const { openByDefault, summary, children, backgroundColor, onClick } = props
   const [open, setOpen] = useState(openByDefault)
 
-  const handleClick = () => {
-    onClick(!open)
+  const _handleClick = () => {
     setOpen(!open)
   }
 
   return (
     <>
       <div
-        onClick={handleClick}
+        onClick={_handleClick}
         className={classes.collapsiblePanelTitle}
-        style={{ backgroundColor: backgroundColor }}
+        style={{ backgroundColor }}
       >
         <Typography variant="caption" color="textSecondary">
-          {summary}
+          {title}
           {open ? (
             <ExpandLess className={classes.expandIcon} />
           ) : (
@@ -52,7 +67,7 @@ const CollapsiblePanel = (props) => {
           timeout="auto"
           unmountOnExit
           className={classes.collapsiblePanel}
-          style={{ backgroundColor: backgroundColor, marginBottom: '-16px' }}
+          style={{ backgroundColor, marginBottom: '-16px' }}
         >
           {children}
         </Collapse>

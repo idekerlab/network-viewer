@@ -78,8 +78,6 @@ const ToolBar: FC = (props) => {
     }
   }
 
-  console.log('2.>>>>>>>>>>>>>>>>login:', ndexButton)
-
   return (
     <div className={classes.root}>
       <Grid
