@@ -170,7 +170,7 @@ const NetworkDetails = (props) => {
       <Divider />
       
       <CollapsiblePanel
-        openByDefault={true}
+        openByDefault={false}
         title="Query External Database"
         children={<QueryButton cx={cx} />}
       />
