@@ -1,7 +1,6 @@
-import React, { useState, useContext } from 'react'
+import React, { useContext } from 'react'
 import { useParams } from 'react-router-dom'
 
-import useCx from '../../hooks/useCx'
 import AppContext from '../../context/AppState'
 
 import IconButton from '@material-ui/core/IconButton'
@@ -17,17 +16,23 @@ const SaveNetworkCXButton = () => {
 
   const exportCx = () => {
     const a = document.createElement('a')
-    // const file = new Blob([content], { type: contentType })
     let credentialProp = ''
     if (ndexCredential.isLogin) {
       if (ndexCredential.isGoogle) {
-        credentialProp = "&id_token=" + ndexCredential.oauth['loginDetails'].tokenId;
+        credentialProp =
+          '&id_token=' + ndexCredential.oauth['loginDetails'].tokenId
       } else {
-        credentialProp = "&auth_token=" + btoa(ndexCredential.basic.userId + ':' + ndexCredential.basic.password);
+        credentialProp =
+          '&auth_token=' +
+          btoa(
+            ndexCredential.basic.userId + ':' + ndexCredential.basic.password,
+          )
       }
     }
 
-    a.href = `${appendWindowProtocol(config.ndexUrl)}/v2/network/${uuid}?download=true${credentialProp}`
+    a.href = `${appendWindowProtocol(
+      config.ndexUrl,
+    )}/v2/network/${uuid}?download=true${credentialProp}`
     a.click()
   }
 
@@ -35,11 +40,13 @@ const SaveNetworkCXButton = () => {
     exportCx()
   }
 
-  return <Tooltip title="Download this network in CX format">
-    <IconButton disabled={!summary} onClick={handleClick}>
-      <DownloadIcon />
-    </IconButton>
-  </Tooltip>
+  return (
+    <Tooltip title="Download this network in CX format">
+      <IconButton disabled={!summary} onClick={handleClick} color="inherit">
+        <DownloadIcon />
+      </IconButton>
+    </Tooltip>
+  )
 }
 
 export default SaveNetworkCXButton
