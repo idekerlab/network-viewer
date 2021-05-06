@@ -34,11 +34,14 @@ const ToolBar: FC = (props) => {
   const classes = useStyles()
   const ndexButton = useRef(null)
 
+  const {
+    config,
+    summary,
+    ndexCredential,
+    setNdexCredential,
+    setNdexLoginWrapper,
+  } = useContext(AppContext)
 
-  const { config, summary, ndexCredential, setNdexCredential, setNdexLoginWrapper } = useContext(
-    AppContext,
-  )
-  
   useEffect(() => {
     setNdexLoginWrapper(ndexButton.current.lastChild)
   }, [])
@@ -96,7 +99,6 @@ const ToolBar: FC = (props) => {
           <NdexHomeButton />
           <div ref={ndexButton}>
             <NDExSignInButton
-              
               size="small"
               myAccountURL={ndexServerUrl + '/#/myAccount'}
               onLoginStateUpdated={loginStateUpdated}

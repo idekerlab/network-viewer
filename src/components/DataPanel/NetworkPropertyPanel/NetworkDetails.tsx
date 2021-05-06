@@ -88,7 +88,7 @@ const NetworkDetails = (props) => {
   const mouseEnter = () => {
     setDoiCopiedHoverText(false)
   }
-  console.log(summary)
+
   return (
     <div className={classes.networkDetails}>
       {summary.doi ? (

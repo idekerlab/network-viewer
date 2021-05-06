@@ -217,22 +217,32 @@ const NetworkPanel: FC<ViewProps> = ({
         })
       }
       //Set active tab if multiple select
-      if (nodes.length > 1) {
-        uiStateDispatch({
-          type: UIStateActions.SET_ACTIVE_TAB,
-          uiState: {
-            ...uiState,
-            activeTab: 1,
-          },
-        })
-      } else if (edges.length > 1) {
-        uiStateDispatch({
-          type: UIStateActions.SET_ACTIVE_TAB,
-          uiState: {
-            ...uiState,
-            activeTab: 2,
-          },
-        })
+      if (nodes.length > 1 || edges.length > 1) {
+        if (lastSelectedType !== null) {
+          uiStateDispatch({
+            type: UIStateActions.SET_ACTIVE_TAB,
+            uiState: {
+              ...uiState,
+              activeTab: lastSelectedType === 'node' ? 1 : 2,
+            },
+          })
+        } else if (nodes.length > 1) {
+          uiStateDispatch({
+            type: UIStateActions.SET_ACTIVE_TAB,
+            uiState: {
+              ...uiState,
+              activeTab: 1,
+            },
+          })
+        } else {
+          uiStateDispatch({
+            type: UIStateActions.SET_ACTIVE_TAB,
+            uiState: {
+              ...uiState,
+              activeTab: 2,
+            },
+          })
+        }
       }
     },
     clearAll: () => {
@@ -283,22 +293,32 @@ const NetworkPanel: FC<ViewProps> = ({
         })
       }
       //Set active tab if multiple select
-      if (nodes.length > 1) {
-        uiStateDispatch({
-          type: UIStateActions.SET_ACTIVE_TAB,
-          uiState: {
-            ...uiState,
-            activeTab: 1,
-          },
-        })
-      } else if (edges.length > 1) {
-        uiStateDispatch({
-          type: UIStateActions.SET_ACTIVE_TAB,
-          uiState: {
-            ...uiState,
-            activeTab: 2,
-          },
-        })
+      if (nodes.length > 1 || edges.length > 1) {
+        if (lastSelectedType !== null) {
+          uiStateDispatch({
+            type: UIStateActions.SET_ACTIVE_TAB,
+            uiState: {
+              ...uiState,
+              activeTab: lastSelectedType === 'node' ? 1 : 2,
+            },
+          })
+        } else if (nodes.length > 1) {
+          uiStateDispatch({
+            type: UIStateActions.SET_ACTIVE_TAB,
+            uiState: {
+              ...uiState,
+              activeTab: 1,
+            },
+          })
+        } else {
+          uiStateDispatch({
+            type: UIStateActions.SET_ACTIVE_TAB,
+            uiState: {
+              ...uiState,
+              activeTab: 2,
+            },
+          })
+        }
       }
     },
     clearAll: () => {

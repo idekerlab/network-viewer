@@ -1,7 +1,6 @@
 import parse from 'html-react-parser'
 
 const getContextFromCx = (cx) => {
-  console.log('getContext')
   if (cx == undefined) {
     return {}
   }

@@ -67,7 +67,6 @@ const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
 
   const attr = useAttributes(uuid, cx, uiState.mainNetworkNotDisplayed)
   const context = useMemo(() => getContextFromCx(cx), [cx])
-  console.log(context)
 
   const { lastSelected } = selectionState
 
