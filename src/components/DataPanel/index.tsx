@@ -122,16 +122,6 @@ const DataPanel = ({ width, cx, renderer }) => {
   }
 
   if (renderer !== 'lgr') {
-    if (attributes['nodeAttr'] !== undefined) {
-      if (nodes.length === 0) {
-        nodes = Object.keys(attributes['nodeAttr'])
-      }
-    }
-    if (attributes['edgeAttr'] !== undefined) {
-      if (edges.length === 0) {
-        edges = Object.keys(attributes['edgeAttr'])
-      }
-    }
   }
 
   const summaryResponse = useNetworkSummary(
@@ -165,12 +155,6 @@ const DataPanel = ({ width, cx, renderer }) => {
         <NetworkPropertyPanel cx={cx} />
       </TabPanel>
       <TabPanel value={uiState.activeTab} index={1}>
-        <CollapsiblePanel
-          openByDefault={false}
-          title="Query External Database"
-          children={<QueryButton cx={cx} />}
-          className={classes.collapsiblePanel}
-        />
         <EntryTable
           key={'selected-nodes'}
           selectedObjects={nodes}

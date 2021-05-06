@@ -37,25 +37,10 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const PopupTarget = {
-  MAIN: 'main',
-  SUB: 'sub',
-  LAST: 'last',
-}
-
-const ObjectType = {
-  NODE: 'node',
-  EDGE: 'edge',
-}
-
 const EdgeAttributes = {
   SOURCE: 'source',
   TARGET: 'target',
   INTERACTION: 'interaction',
-}
-
-const NodeAttributes = {
-  REPRESENTS: 'represents',
 }
 
 const Attributes = {
@@ -82,6 +67,7 @@ const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
 
   const attr = useAttributes(uuid, cx, uiState.mainNetworkNotDisplayed)
   const context = useMemo(() => getContextFromCx(cx), [cx])
+  console.log(context)
 
   const { lastSelected } = selectionState
 

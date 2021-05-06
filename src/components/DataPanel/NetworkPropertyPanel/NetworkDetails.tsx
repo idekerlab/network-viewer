@@ -88,7 +88,7 @@ const NetworkDetails = (props) => {
   const mouseEnter = () => {
     setDoiCopiedHoverText(false)
   }
-
+  console.log(summary)
   return (
     <div className={classes.networkDetails}>
       {summary.doi ? (
@@ -100,7 +100,7 @@ const NetworkDetails = (props) => {
                 size="small"
                 variant="outlined"
                 className={classes.item}
-              />{' '}
+              />
               <DeleteDOIButton uuid={uuid} />{' '}
             </span>
           ) : (
@@ -166,9 +166,9 @@ const NetworkDetails = (props) => {
           />
         </div>
       ) : null}
-      
+
       <Divider />
-      
+
       <CollapsiblePanel
         openByDefault={true}
         title="Query External Database"

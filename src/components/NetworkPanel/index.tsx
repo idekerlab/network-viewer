@@ -200,13 +200,6 @@ const NetworkPanel: FC<ViewProps> = ({
             },
           },
         })
-        uiStateDispatch({
-          type: UIStateActions.SET_ACTIVE_TAB,
-          uiState: {
-            ...uiState,
-            activeTab: lastSelectedType === 'node' ? 1 : 2,
-          },
-        })
       } else {
         selectionStateDispatch({
           type: SelectionActions.SET_MAIN_NODES_AND_EDGES,
@@ -222,6 +215,9 @@ const NetworkPanel: FC<ViewProps> = ({
             },
           },
         })
+      }
+      //Set active tab if multiple select
+      if (nodes.length > 1) {
         uiStateDispatch({
           type: UIStateActions.SET_ACTIVE_TAB,
           uiState: {
@@ -229,11 +225,26 @@ const NetworkPanel: FC<ViewProps> = ({
             activeTab: 1,
           },
         })
+      } else if (edges.length > 1) {
+        uiStateDispatch({
+          type: UIStateActions.SET_ACTIVE_TAB,
+          uiState: {
+            ...uiState,
+            activeTab: 2,
+          },
+        })
       }
     },
     clearAll: () => {
-      return selectionStateDispatch({
+      selectionStateDispatch({
         type: SelectionActions.CLEAR_ALL_MAIN,
+      })
+      uiStateDispatch({
+        type: UIStateActions.SET_ACTIVE_TAB,
+        uiState: {
+          ...uiState,
+          activeTab: 0,
+        },
       })
     },
   }
@@ -261,13 +272,6 @@ const NetworkPanel: FC<ViewProps> = ({
             },
           },
         })
-        uiStateDispatch({
-          type: UIStateActions.SET_ACTIVE_TAB,
-          uiState: {
-            ...uiState,
-            activeTab: lastSelectedType === 'node' ? 1 : 2,
-          },
-        })
       } else {
         selectionStateDispatch({
           type: SelectionActions.SET_SUB_NODES_AND_EDGES,
@@ -277,6 +281,9 @@ const NetworkPanel: FC<ViewProps> = ({
             lastSelected: { showPropPanel: false },
           },
         })
+      }
+      //Set active tab if multiple select
+      if (nodes.length > 1) {
         uiStateDispatch({
           type: UIStateActions.SET_ACTIVE_TAB,
           uiState: {
@@ -284,11 +291,26 @@ const NetworkPanel: FC<ViewProps> = ({
             activeTab: 1,
           },
         })
+      } else if (edges.length > 1) {
+        uiStateDispatch({
+          type: UIStateActions.SET_ACTIVE_TAB,
+          uiState: {
+            ...uiState,
+            activeTab: 2,
+          },
+        })
       }
     },
     clearAll: () => {
-      return selectionStateDispatch({
+      selectionStateDispatch({
         type: SelectionActions.CLEAR_ALL_SUB,
+      })
+      uiStateDispatch({
+        type: UIStateActions.SET_ACTIVE_TAB,
+        uiState: {
+          ...uiState,
+          activeTab: 0,
+        },
       })
     },
   }
@@ -313,13 +335,6 @@ const NetworkPanel: FC<ViewProps> = ({
             },
           },
         })
-        uiStateDispatch({
-          type: UIStateActions.SET_ACTIVE_TAB,
-          uiState: {
-            ...uiState,
-            activeTab: 1,
-          },
-        })
       } else {
         selectionStateDispatch({
           type: SelectionActions.SET_MAIN_NODES_AND_EDGES,
@@ -338,17 +353,17 @@ const NetworkPanel: FC<ViewProps> = ({
             },
           },
         })
-        uiStateDispatch({
-          type: UIStateActions.SET_ACTIVE_TAB,
-          uiState: {
-            ...uiState,
-            activeTab: 2,
-          },
-        })
       }
     },
     clearAll: () => {
-      return selectionStateDispatch({ type: SelectionActions.CLEAR_ALL_MAIN })
+      selectionStateDispatch({ type: SelectionActions.CLEAR_ALL_MAIN })
+      uiStateDispatch({
+        type: UIStateActions.SET_ACTIVE_TAB,
+        uiState: {
+          ...uiState,
+          activeTab: 0,
+        },
+      })
     },
   }
 
@@ -500,12 +515,10 @@ const NetworkPanel: FC<ViewProps> = ({
   const bottomStyle = { background: '#FFFFFF', zIndex: 10 }
   return (
     <div className={classes.rootA}>
-      {renderer !== 'lgr' ? (
-        <Popup
-          cx={uiState.mainNetworkNotDisplayed ? subCx : cx}
-          subHeight={subHeight}
-        />
-      ) : null}
+      <Popup
+        cx={uiState.mainNetworkNotDisplayed ? subCx : cx}
+        subHeight={subHeight}
+      />
       {showSearchResult ? (
         <SplitPane
           split="horizontal"
@@ -518,7 +531,6 @@ const NetworkPanel: FC<ViewProps> = ({
         >
           <div className={classes.lowerPanel}>
             <NavigationPanel target={'main'} />
-            {/* {renderer !== 'lgr' ? <NavigationPanel target={'main'} /> : <div />} */}
             {!showSearchResult ? (
               <div />
             ) : (
@@ -547,7 +559,6 @@ const NetworkPanel: FC<ViewProps> = ({
       ) : (
         <div className={classes.lowerPanel}>
           <NavigationPanel target={'main'} />
-          {/* {renderer !== 'lgr' ? <NavigationPanel target={'main'} /> : <div />} */}
           {!showSearchResult ? (
             <div />
           ) : (

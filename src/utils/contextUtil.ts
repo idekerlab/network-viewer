@@ -1,6 +1,7 @@
 import parse from 'html-react-parser'
 
 const getContextFromCx = (cx) => {
+  console.log('getContext')
   if (cx == undefined) {
     return {}
   }
@@ -12,7 +13,6 @@ const getContextFromCx = (cx) => {
       break
     }
   }
-
   for (let obj of cx) {
     if (obj['networkAttributes']) {
       for (let item of obj['networkAttributes']) {
