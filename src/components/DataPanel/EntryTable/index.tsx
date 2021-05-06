@@ -231,7 +231,7 @@ const EntryTable = (props) => {
         return {
           Header: label,
           accessor: Attributes.NAME,
-          sticky: "left",
+          sticky: 'left',
           width: getColumnWidth(data[1], Attributes.NAME, label),
         }
       } else {
@@ -256,7 +256,6 @@ const EntryTable = (props) => {
           alignItems: 'center',
           textAlign: 'center',
           padding: 0,
-      
         }}
       >
         Select {type === 'edge' ? 'an edge' : 'a node'} to view it in the table.

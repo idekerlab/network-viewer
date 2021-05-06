@@ -100,7 +100,7 @@ const NetworkDetails = (props) => {
                 size="small"
                 variant="outlined"
                 className={classes.item}
-              />{' '}
+              />
               <DeleteDOIButton uuid={uuid} />{' '}
             </span>
           ) : (
@@ -166,9 +166,9 @@ const NetworkDetails = (props) => {
           />
         </div>
       ) : null}
-      
+
       <Divider />
-      
+
       <CollapsiblePanel
         openByDefault={false}
         title="Query External Database"

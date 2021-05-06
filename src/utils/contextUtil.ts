@@ -12,7 +12,6 @@ const getContextFromCx = (cx) => {
       break
     }
   }
-
   for (let obj of cx) {
     if (obj['networkAttributes']) {
       for (let item of obj['networkAttributes']) {
