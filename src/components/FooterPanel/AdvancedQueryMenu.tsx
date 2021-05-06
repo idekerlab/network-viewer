@@ -3,7 +3,7 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 
 import Menu from '@material-ui/core/Menu'
 
-import IconButton from '@material-ui/core/Button'
+import IconButton from '@material-ui/core/IconButton'
 import MoreIcon from '@material-ui/icons/MoreVert'
 import SaveQueryTSVMenuItem from './SaveQueryTSVMenuItem'
 import { Tooltip } from '@material-ui/core'

@@ -32,7 +32,8 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.grey[100],
       marginRight: theme.spacing(1),
       marginLeft: theme.spacing(1),
-      padding: theme.spacing(0),
+      padding: 0,
+      paddingRight: theme.spacing(1) 
     },
     search: {
       maxWidth: '60vh',
@@ -61,7 +62,6 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: 0,
     },
     button: {
-      width: '2em',
       padding: 0,
     },
   }),
@@ -217,7 +217,6 @@ const SearchBox: FC = () => {
       </div>
       <Tooltip title="Learn more">
         <IconButton
-          size={'small'}
           disableFocusRipple
           disableRipple
           className={classes.button}
@@ -246,7 +245,6 @@ const SearchBox: FC = () => {
       </FormControl>
       <IconButton
         color="secondary"
-        size="small"
         disableFocusRipple
         disableRipple
         className={classes.button}
@@ -260,7 +258,6 @@ const SearchBox: FC = () => {
       <AdvancedQueryMenu />
       <IconButton
         color="secondary"
-        size="small"
         disableFocusRipple
         disableRipple
         className={classes.button}
