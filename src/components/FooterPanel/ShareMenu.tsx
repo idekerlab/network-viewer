@@ -1,28 +1,21 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useParams } from 'react-router-dom'
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 
 import Menu from '@material-ui/core/Menu'
-
-import IconButton from '@material-ui/core/Button'
+import IconButton from '@material-ui/core/IconButton'
 import ShareIcon from '@material-ui/icons/Share'
 import ShareLinkMenuItem from '../ShareLinkMenuItem'
 import CreateDOIMenuItem from '../CreateDOIMenuItem'
 import { Tooltip } from '@material-ui/core'
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    typography: {
-      //padding: theme.spacing(2),
-    },
-  }),
-)
+import AppContext from '../../context/AppState'
 
 const ShareMenu = () => {
-
+  const { ndexCredential } = useContext(AppContext)
+  
+  // Disable menu item if not logged in
+  const disabled = !ndexCredential.isLogin
+  
   const { uuid } = useParams()
-
-  const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -37,9 +30,15 @@ const ShareMenu = () => {
   const id = open ? 'advanced-menu' : undefined
 
   return (
-    <div>
-      <Tooltip title="Share menu">
-        <IconButton aria-describedby={id} onClick={handleClick} color="inherit">
+    <>
+      <Tooltip title="Share...">
+        <IconButton
+          size="small"
+          aria-label="share"
+          aria-describedby={id}
+          onClick={handleClick}
+          color="inherit"
+        >
           <ShareIcon />
         </IconButton>
       </Tooltip>
@@ -57,10 +56,10 @@ const ShareMenu = () => {
           horizontal: 'center',
         }}
       >
-        <ShareLinkMenuItem uuid={uuid}/>
-        <CreateDOIMenuItem uuid={uuid}/>
+        <ShareLinkMenuItem uuid={uuid} disabled={disabled} />
+        <CreateDOIMenuItem uuid={uuid} disabled={disabled} />
       </Menu>
-    </div>
+    </>
   )
 }
 
