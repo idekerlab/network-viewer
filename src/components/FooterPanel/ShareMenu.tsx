@@ -14,7 +14,7 @@ const ShareMenu = () => {
   
   // Disable menu item if not logged in
   const disabled = !ndexCredential.isLogin
-  
+
   const { uuid } = useParams()
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
 
@@ -33,7 +33,6 @@ const ShareMenu = () => {
     <>
       <Tooltip title="Share...">
         <IconButton
-          size="small"
           aria-label="share"
           aria-describedby={id}
           onClick={handleClick}

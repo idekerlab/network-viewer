@@ -39,7 +39,6 @@ const SaveQueryButton = () => {
 
   const fetchCX = () => {
     return new Promise<Object>(function (resolve, reject) {
-      console.log(JSON.stringify(subCx))
       resolve(subCx)
     })
   }

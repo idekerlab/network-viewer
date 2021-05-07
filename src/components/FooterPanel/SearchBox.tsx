@@ -1,4 +1,4 @@
-import React, { FC, useState, useContext } from 'react'
+import React, { FC, useState, useContext, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import InputBase from '@material-ui/core/InputBase'
@@ -122,8 +122,9 @@ const SearchBox: FC = () => {
     ? summary.subnetworkNodeCount + summary.subnetworkEdgeCount
     : 0
 
+  const data = summaryObjectCount > 0 ? subCx : undefined 
   const downloadProps: DownloadProps = {
-    data: summaryObjectCount > 0 ? subCx : undefined,
+    data,
     tooltip: 'Download query result as CX',
     fileName: `${uuid} subnet.cx`,
   }

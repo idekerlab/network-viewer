@@ -2,7 +2,6 @@ import { useQuery } from 'react-query'
 import HttpResponse from '../api/HttpResponse'
 import NdexCredential from '../model/NdexCredential'
 import { getAuthorization } from '../utils/credentialUtil'
-
 import { useState, useEffect } from 'react'
 
 const DEF_MAX_EDGE = 10000
@@ -136,7 +135,9 @@ const queryNetwork = async <T>(
   }
 
   edgeLimitParams['edgeLimit'] = maxEdge
-  const queryParam = Object.assign(Object.assign({}, queryModeParams[mode], edgeLimitParams))
+  const queryParam = Object.assign(
+    Object.assign({}, queryModeParams[mode], edgeLimitParams),
+  )
   queryParam['searchString'] = query
 
   const authorization = getAuthorization(credential)
@@ -155,15 +156,14 @@ const queryNetwork = async <T>(
     body: JSON.stringify(queryParam),
   }
 
-  const response: HttpResponse<object> = await fetch(url, settings)
-
+  let response: HttpResponse<object>
   try {
+    response = await fetch(url, settings)
     const cx = await response.json()
     const edgeLimitExceeded = isEdgeLimitExceeded(cx)
     response.parsedBody = {
       nodeIds: selectNodes(cx),
       kvMap: transformCx(cx),
-      // subNetwork: cx2cyjs(uuid, cx),
       cx,
       edgeLimitExceeded,
     }
