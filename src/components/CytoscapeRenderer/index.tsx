@@ -1,7 +1,8 @@
-import React, { useRef, useEffect, useState, Children } from 'react'
+import React, { useRef, useEffect, useState, useContext } from 'react'
 import { createCytoscape } from './create-cytoscape'
 import useCyjs from '../../hooks/useCyjs'
 import { getAnnotationRenderer } from '../../utils/cx2cyjs'
+import AppContext from '../../context/AppState'
 
 // Style for the network canvas area
 
@@ -15,6 +16,12 @@ type CytoscapeRendererProps = {
   backgroundColor?: string
 }
 
+const baseStyle = {
+  width: '100%',
+  height: '100%',
+  backgroundColor: 'rgba(0,0,0,0)',
+}
+
 const CytoscapeRenderer = ({
   uuid,
   cx,
@@ -26,12 +33,7 @@ const CytoscapeRenderer = ({
 }: CytoscapeRendererProps) => {
   const cyEl = useRef(null)
   const [cyInstance, setCyInstance] = useState(null)
-
-  let baseStyle = {
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(0,0,0,0)',
-  }
+  const { uiState, cyReference } = useContext(AppContext)
 
   const cyjsNetwork = useCyjs(uuid, cx)
   const annotationRenderer = getAnnotationRenderer()
@@ -89,14 +91,30 @@ const CytoscapeRenderer = ({
       // Expose Cyjs instance to other component
       if (setCyReference !== undefined) {
         setCyReference(newCyInstance)
+        setCyInstance(newCyInstance)
       }
       initializeCy(newCyInstance, eventHandlers)
-      setCyInstance(newCyInstance)
     }
-  }, [cyEl])
+  }, [])
 
+  if (cyInstance !== null && cyReference.main === cyInstance) {
+    lockMain(cyInstance, uiState.showSearchResult)
+  }
   return <div style={baseStyle} ref={cyEl} />
 }
+
+const lockMain = (cy, lock: boolean): void => {
+  if (lock) {
+    cy.boxSelectionEnabled(false)
+    cy.autounselectify(true)
+    cy.nodes().lock()
+  } else {
+    cy.boxSelectionEnabled(true)
+    cy.autounselectify(false)
+    cy.nodes().unlock()
+  }
+}
+
 
 const initializeCy = (cy, eventHandlers) => {
   cy.on('tap, click', (event) => tapHandler(cy, eventHandlers, event))
@@ -133,7 +151,13 @@ const tapHandler = (cy, eventHandlers, event) => {
         const selectedEdges = cy.$('edge:selected')
         const nodeIds = selectedNodes.map((node) => node.data().id)
         const edgeIds = selectedEdges.map((edge) => edge.data().id.slice(1))
-        eventHandlers.setSelectedNodesAndEdges(nodeIds, edgeIds, 'node', [data.id], event.renderedPosition)
+        eventHandlers.setSelectedNodesAndEdges(
+          nodeIds,
+          edgeIds,
+          'node',
+          [data.id],
+          event.renderedPosition,
+        )
       }, 5)
     } else {
       console.log('* tap on Edge', evtTarget.data())
@@ -142,7 +166,13 @@ const tapHandler = (cy, eventHandlers, event) => {
         const selectedEdges = cy.$('edge:selected')
         const nodeIds = selectedNodes.map((node) => node.data().id)
         const edgeIds = selectedEdges.map((edge) => edge.data().id.slice(1))
-        eventHandlers.setSelectedNodesAndEdges(nodeIds, edgeIds, 'edge', [data.id.slice(1)], event.renderedPosition)
+        eventHandlers.setSelectedNodesAndEdges(
+          nodeIds,
+          edgeIds,
+          'edge',
+          [data.id.slice(1)],
+          event.renderedPosition,
+        )
       }, 5)
     }
   }

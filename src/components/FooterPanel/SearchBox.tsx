@@ -166,7 +166,7 @@ const SearchBox: FC = () => {
     setClearSelection({ ...selectionState })
     setTimeout(() => {
       fitContent(cyReference)
-      lockMainWindow(cyReference, true)
+      // lockMainWindow(cyReference, true)
     }, 300)
   }
 
@@ -178,7 +178,7 @@ const SearchBox: FC = () => {
     setClearSelection({ ...selectionState })
     setTimeout(() => {
       fitContent(cyReference)
-      lockMainWindow(cyReference, false)
+      // lockMainWindow(cyReference, false)
     }, 300)
   }
 
