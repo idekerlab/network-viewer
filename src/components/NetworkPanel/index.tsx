@@ -218,12 +218,20 @@ const NetworkPanel: FC<ViewProps> = ({
       }
       //Set active tab if multiple select
       if (nodes.length > 1 || edges.length > 1) {
-        if (lastSelectedType !== null) {
+        if (lastSelectedType === 'node' && nodes.length > 1) {
           uiStateDispatch({
             type: UIStateActions.SET_ACTIVE_TAB,
             uiState: {
               ...uiState,
-              activeTab: lastSelectedType === 'node' ? 1 : 2,
+              activeTab: 1,
+            },
+          })
+        } else if (lastSelectedType === 'edge' && edges.length > 1) {
+          uiStateDispatch({
+            type: UIStateActions.SET_ACTIVE_TAB,
+            uiState: {
+              ...uiState,
+              activeTab: 2,
             },
           })
         } else if (nodes.length > 1) {
@@ -243,6 +251,24 @@ const NetworkPanel: FC<ViewProps> = ({
             },
           })
         }
+      }
+      //Handle deselects
+      if (uiState.activeTab === 1 && nodes.length <= 1) {
+        uiStateDispatch({
+          type: UIStateActions.SET_ACTIVE_TAB,
+          uiState: {
+            ...uiState,
+            activeTab: 0,
+          },
+        })
+      } else if (uiState.activeTab === 2 && edges.length <= 1) {
+        uiStateDispatch({
+          type: UIStateActions.SET_ACTIVE_TAB,
+          uiState: {
+            ...uiState,
+            activeTab: 0,
+          },
+        })
       }
     },
     clearAll: () => {

@@ -7,7 +7,7 @@ import AppContext from '../../context/AppState'
 import useAttributes from '../../hooks/useAttributes'
 import { getContextFromCx } from '../../utils/contextUtil'
 import useNetworkSummary from '../../hooks/useNetworkSummary'
-import { Tab, Tabs, Typography } from '@material-ui/core'
+import { Tab, Tabs, Tooltip, Typography } from '@material-ui/core'
 import MinimizeButton from './NetworkPropertyPanel/MinimizeButton'
 import EntryTable from './EntryTable'
 
@@ -121,9 +121,6 @@ const DataPanel = ({ width, cx, renderer }) => {
     edges = selectionState.sub['edges']
   }
 
-  if (renderer !== 'lgr') {
-  }
-
   const summaryResponse = useNetworkSummary(
     uuid,
     config.ndexHttps,
@@ -148,33 +145,64 @@ const DataPanel = ({ width, cx, renderer }) => {
         className={classes.tabs}
       >
         <Tab className={classes.tab} key={'network-tab'} label={'Network'} />
-        <Tab className={classes.tab} key={'nodes-tab'} label={'Nodes'} />
-        <Tab className={classes.tab} key={'edges-tab'} label={'Edges'} />
+        {renderer !== 'lgr' && nodes.length > 1 ? (
+          <Tab className={classes.tab} key={'nodes-tab'} label={'Nodes'} />
+        ) : (
+          <Tooltip title={'Select multiple nodes to view in node table'} arrow>
+            <span>
+              <Tab
+                className={classes.tab}
+                key={'nodes-tab'}
+                label={'Nodes'}
+                disabled
+              />
+            </span>
+          </Tooltip>
+        )}
+        {renderer !== 'lgr' && edges.length > 1 ? (
+          <Tab className={classes.tab} key={'edges-tab'} label={'Edges'} />
+        ) : (
+          <Tooltip title={'Select multiple edges to view in edge table'} arrow>
+            <span>
+              <Tab
+                className={classes.tab}
+                key={'edges-tab'}
+                label={'Edges'}
+                disabled
+              />
+            </span>
+          </Tooltip>
+        )}
+        )
       </Tabs>
       <TabPanel value={uiState.activeTab} index={0}>
         <NetworkPropertyPanel cx={cx} />
       </TabPanel>
-      <TabPanel value={uiState.activeTab} index={1}>
-        <EntryTable
-          key={'selected-nodes'}
-          selectedObjects={nodes}
-          attributes={attributes.nodeAttr}
-          context={context}
-          letterWidths={letterWidths}
-          label={'Name'}
-        />
-      </TabPanel>
-      <TabPanel value={uiState.activeTab} index={2}>
-        <EntryTable
-          key={'selected-edges'}
-          selectedObjects={edges}
-          attributes={attributes.edgeAttr}
-          type={'edge'}
-          context={context}
-          letterWidths={letterWidths}
-          label={'Name'}
-        />
-      </TabPanel>
+      {renderer !== 'lgr' && nodes.length > 1 ? (
+        <TabPanel value={uiState.activeTab} index={1}>
+          <EntryTable
+            key={'selected-nodes'}
+            selectedObjects={nodes}
+            attributes={attributes.nodeAttr}
+            context={context}
+            letterWidths={letterWidths}
+            label={'Name'}
+          />
+        </TabPanel>
+      ) : null}
+      {renderer !== 'lgr' && edges.length > 1 ? (
+        <TabPanel value={uiState.activeTab} index={2}>
+          <EntryTable
+            key={'selected-edges'}
+            selectedObjects={edges}
+            attributes={attributes.edgeAttr}
+            type={'edge'}
+            context={context}
+            letterWidths={letterWidths}
+            label={'Name'}
+          />
+        </TabPanel>
+      ) : null}
     </div>
   )
 }
