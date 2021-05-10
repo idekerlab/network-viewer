@@ -1,4 +1,4 @@
-import React, { FC, useContext } from 'react'
+import React, { FC, ReactElement, useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import IconButton from '@material-ui/core/IconButton'
 import EditIcon from '@material-ui/icons/Edit'
@@ -8,18 +8,35 @@ import { Tooltip } from '@material-ui/core'
 
 import { getCurrentServer } from '../../utils/locationUtil'
 
-const EditMetadataButton: FC = () => {
+const EditMetadataButton: FC = (): ReactElement => {
   const { summary, ndexCredential, config } = useContext(AppContext)
-
   const { uuid } = useParams()
+  const { isLogin } = ndexCredential
 
-  const permissions = useNetworkPermissions(uuid, config.ndexHttps, 'v2', ndexCredential)
+  const permissions = useNetworkPermissions(
+    uuid,
+    config.ndexHttps,
+    'v2',
+    ndexCredential,
+  )
 
-  if (ndexCredential.isLogin && summary !== undefined && permissions && permissions.data === 'ADMIN') {
+  if (
+    isLogin &&
+    summary !== undefined &&
+    permissions !== undefined &&
+    permissions !== null &&
+    permissions.data === 'ADMIN'
+  ) {
     return (
       <Tooltip title="Edit network properties">
         <IconButton
-          href={getCurrentServer() + '/#/properties/network/' + summary.externalId + '/null?returnto=nnv'}
+          color="inherit"
+          href={
+            getCurrentServer() +
+            '/#/properties/network/' +
+            summary.externalId +
+            '/null?returnto=nnv'
+          }
         >
           <EditIcon />
         </IconButton>

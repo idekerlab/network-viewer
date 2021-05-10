@@ -24,11 +24,11 @@ const getNetworkPermissions = async (
 
   const url = `${serverUrl}/${apiVersion}`
   let networkPermission = null
-  
+
   try {
     const ndexClient = getNdexClient(url, credential)
     const permissions = await ndexClient.getNetworkPermissionsByUUIDs([uuid])
-    const networkPermission = permissions[uuid]
+    networkPermission = permissions[uuid]
     permissionsMap[uuid] = networkPermission
   } catch (e: unknown) {
     throw new NDExError(e['message'], e)

@@ -218,9 +218,9 @@ const SearchBox: FC = () => {
       </div>
       <Tooltip title="Learn more">
         <IconButton
+          color="inherit"
           disableFocusRipple
           disableRipple
-          className={classes.button}
           onClick={handleHelpOpen}
         >
           <InfoIcon />
@@ -245,10 +245,9 @@ const SearchBox: FC = () => {
         </Select>
       </FormControl>
       <IconButton
-        color="secondary"
+        color="inherit"
         disableFocusRipple
         disableRipple
-        className={classes.button}
         disabled={disableQuery}
         onClick={handleClick}
       >
@@ -258,7 +257,7 @@ const SearchBox: FC = () => {
       {!edgeLimitExceeded && <SaveQueryButton />}
       <AdvancedQueryMenu />
       <IconButton
-        color="secondary"
+        color="inherit"
         disableFocusRipple
         disableRipple
         className={classes.button}
