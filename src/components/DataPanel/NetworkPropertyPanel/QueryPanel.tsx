@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, {FC, useContext, useState, useEffect } from 'react'
 import {
   Button,
   FormControl,
@@ -7,6 +7,7 @@ import {
   InputLabel,
   makeStyles,
   Select,
+  Theme,
   Tooltip,
 } from '@material-ui/core'
 import AppContext from '../../../context/AppState'
@@ -14,7 +15,7 @@ import useAttributes from '../../../hooks/useAttributes'
 import { useParams } from 'react-router-dom'
 import SearchIcon from '@material-ui/icons/Search'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   container: {
     width: '100%',
     padding: theme.spacing(2),
@@ -25,8 +26,6 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(1),
   },
   formControl: {
-    // marginLeft: theme.spacing(1),
-    // marginRight: theme.spacing(1),
     width: '100%',
     '& .MuiInputBase-root': {
       fontSize: 'inherit',
@@ -35,8 +34,6 @@ const useStyles = makeStyles((theme) => ({
   button: {
     width: '100%',
     '&.MuiButton-contained': {
-      // marginTop: theme.spacing(1),
-      // marginBottom: theme.spacing(1),
     },
   },
   tooltipText: {
@@ -54,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const QueryButton = (props) => {
+const QueryPanel = (props) => {
   //Parameters
   const classes = useStyles()
   const { selectionState, uiState } = useContext(AppContext)
@@ -353,4 +350,4 @@ const QueryButton = (props) => {
   )
 }
 
-export default QueryButton
+export default QueryPanel

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, FC } from 'react'
 import {
   Chip,
   createStyles,
@@ -13,9 +13,10 @@ import ErrorIcon from '@material-ui/icons/ErrorOutline'
 import { useParams } from 'react-router-dom'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import AppContext from '../../../context/AppState'
-import QueryButton from './QueryPanel'
+import QueryPanel from './QueryPanel'
 import DeleteDOIButton from '../../DeleteDOIButton'
 import CollapsiblePanel from './CollapsiblePanel'
+import { NetworkPanelState } from '..'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -50,14 +51,21 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const NetworkDetails = (props) => {
+const NetworkDetails: FC<{
+  cx: any
+  panelState: NetworkPanelState
+  setPanelState: (state: NetworkPanelState) => void
+}> = ({ cx, panelState, setPanelState }) => {
   const classes = useStyles()
 
   const { uuid } = useParams()
   const { summary, uiState, config } = useContext(AppContext)
   const { viewerThreshold, warningThreshold } = config
   const [doiCopiedHoverText, setDoiCopiedHoverText] = useState(false)
-  const { cx } = props
+
+  const _handleQueryOpen = (val: boolean) => {
+    setPanelState({ ...panelState, queryOpen: val })
+  }
 
   if (summary === undefined) {
     return null
@@ -172,7 +180,9 @@ const NetworkDetails = (props) => {
       <CollapsiblePanel
         openByDefault={false}
         title="Query External Database"
-        children={<QueryButton cx={cx} />}
+        children={<QueryPanel cx={cx} />}
+        open={panelState.queryOpen}
+        setOpen={_handleQueryOpen}
       />
     </div>
   )

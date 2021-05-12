@@ -1,11 +1,12 @@
-import React, { useContext } from 'react'
+import React, { useContext, FC } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
-import NetworkProperties from './NetworkProperties.jsx'
+import NetworkProperties from './NetworkProperties'
 import useNetworkSummary from '../../../hooks/useNetworkSummary'
 import { useParams } from 'react-router-dom'
 import AppContext from '../../../context/AppState'
 import NetworkDetails from './NetworkDetails'
+import { NetworkPanelState } from '../index'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -24,14 +25,17 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: 0,
       backgroundColor: theme.palette.background.default,
       height: '100%',
-      overflowY: 'auto'
+      overflowY: 'auto',
     },
   }),
 )
 
-const NetworkPropertyPanel = (props) => {
+const NetworkPropertyPanel: FC<{
+  cx: object
+  panelState: NetworkPanelState
+  setPanelState: (NetworkPanelState) => void
+}> = ({ cx, panelState, setPanelState }) => {
   const classes = useStyles()
-  const { cx } = props
   const { ndexCredential, config, setSummary, summary } = useContext(AppContext)
   const { uuid } = useParams()
 
@@ -74,9 +78,17 @@ const NetworkPropertyPanel = (props) => {
 
   return (
     <>
-      <NetworkDetails cx={cx} />
+      <NetworkDetails
+        cx={cx}
+        panelState={panelState}
+        setPanelState={setPanelState}
+      />
       <div className={classes.description}>
-        <NetworkProperties summary={summaryResponseData} />
+        <NetworkProperties
+          summary={summaryResponseData}
+          panelState={panelState}
+          setPanelState={setPanelState}
+        />
       </div>
     </>
   )

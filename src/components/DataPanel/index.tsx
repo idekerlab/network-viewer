@@ -1,4 +1,11 @@
-import React, { useState, useMemo, useContext } from 'react'
+import React, {
+  useState,
+  useMemo,
+  useContext,
+  useEffect,
+  FC,
+  ReactElement,
+} from 'react'
 
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import NetworkPropertyPanel from './NetworkPropertyPanel'
@@ -13,8 +20,6 @@ import EntryTable from './EntryTable'
 
 import UIState from '../../model/UIState'
 import { UIStateActions } from '../../reducer/uiStateReducer'
-import CollapsiblePanel from './NetworkPropertyPanel/CollapsiblePanel'
-import QueryButton from './NetworkPropertyPanel/QueryPanel'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,15 +59,29 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
+interface TabPanelProps {
+  children?: React.ReactNode
+  index: number
+  value: number
+}
+
 const TabPanel = (props) => {
-  if (props.value === props.index) {
-    return props.children
-  }
-  return null
+  const { children, value, index } = props
+  return value === index ? children : null
+}
+
+export type NetworkPanelState = {
+  netInfoOpen: boolean
+  descriptionOpen: boolean
+  propsOpen: boolean
+  queryOpen: boolean
 }
 
 const DataPanel = ({ width, cx, renderer }) => {
   const classes = useStyles()
+  useEffect(() => {
+    console.log('INIT')
+  }, [])
 
   const {
     ndexCredential,
@@ -83,8 +102,20 @@ const DataPanel = ({ width, cx, renderer }) => {
     })
   }
 
+  // Selected tab
+  const [selected, setSelected] = useState(0)
+
+  // Unified child panel states
+  const [panelState, setPanelState] = useState<NetworkPanelState>({
+    netInfoOpen: true,
+    descriptionOpen: true,
+    propsOpen: true,
+    queryOpen: false
+  })
+  
   const handleChange = (event, newValue) => {
-    setActiveTab({ ...uiState, activeTab: newValue })
+    // setActiveTab({ ...uiState, activeTab: newValue })
+    setSelected(newValue)
   }
 
   const getLetterWidth = (sandbox, letter) => {
@@ -138,7 +169,8 @@ const DataPanel = ({ width, cx, renderer }) => {
         </Typography>
       </div>
       <Tabs
-        value={uiState.activeTab}
+        value={selected}
+        // value={uiState.activeTab}
         onChange={handleChange}
         scrollButtons="auto"
         variant="scrollable"
@@ -175,11 +207,13 @@ const DataPanel = ({ width, cx, renderer }) => {
         )}
         )
       </Tabs>
-      <TabPanel value={uiState.activeTab} index={0}>
-        <NetworkPropertyPanel cx={cx} />
+
+      <TabPanel value={selected} index={0}>
+        <NetworkPropertyPanel cx={cx} panelState={panelState} setPanelState={setPanelState} />
       </TabPanel>
+
       {renderer !== 'lgr' && nodes.length > 1 ? (
-        <TabPanel value={uiState.activeTab} index={1}>
+        <TabPanel value={selected} index={1}>
           <EntryTable
             key={'selected-nodes'}
             selectedObjects={nodes}
@@ -191,7 +225,7 @@ const DataPanel = ({ width, cx, renderer }) => {
         </TabPanel>
       ) : null}
       {renderer !== 'lgr' && edges.length > 1 ? (
-        <TabPanel value={uiState.activeTab} index={2}>
+        <TabPanel value={selected} index={2}>
           <EntryTable
             key={'selected-edges'}
             selectedObjects={edges}
