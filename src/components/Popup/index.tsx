@@ -103,6 +103,7 @@ const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
   let source, target, interaction
   let noNameEdge = true
   const include = []
+
   for (let item of attrMap) {
     if (!selectionState.lastSelected.isNode) {
       if (

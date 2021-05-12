@@ -60,7 +60,15 @@ const processListAsText = (list) => {
 }
 
 const processItem = (item, context, parseItem) => {
-  if (context == undefined || item == undefined) {
+  console.log(item)
+  console.log(parseItem)
+  if (item == undefined) {
+    return item
+  }
+  if (context == undefined) {
+    if (parseItem) {
+      return parse(item)
+    }
     return item
   }
 
