@@ -7,6 +7,7 @@ import {
   Select,
   Theme,
 } from '@material-ui/core'
+import { DB } from './QueryState'
 
 const useStyles = makeStyles((theme: Theme) => ({
   formControl: {
@@ -17,11 +18,10 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }))
 
-const ColumnSelector: FC<{
-  selected: string
-  columns: string[]
-  setSelected: (string) => void
-}> = ({ selected = '', columns = [], setSelected }): ReactElement => {
+const DBSelector: FC<{
+  selected: DB
+  setSelected: (DB) => void
+}> = ({ selected = DB.IQUERY, setSelected }): ReactElement => {
   const classes = useStyles()
 
   const _handleChange = (event) => {
@@ -32,21 +32,21 @@ const ColumnSelector: FC<{
 
   return (
     <FormControl variant="standard" className={classes.formControl}>
-      <InputLabel shrink htmlFor="attr-selector">
-        using the data column
+      <InputLabel shrink htmlFor="service-name">
+        Database:
       </InputLabel>
       <Select
         native
         value={selected}
         onChange={_handleChange}
         inputProps={{
-          name: 'attr-selector',
-          id: 'attr-selector',
+          name: 'service-name',
+          id: 'service-name',
         }}
       >
-        {columns.map((name, index) => (
-          <option key={name} value={index}>
-            {name}
+        {Object.entries(DB).map((val: [string, string]) => (
+          <option key={val[0]} value={val[0]}>
+            {val[1]}
           </option>
         ))}
       </Select>
@@ -54,4 +54,4 @@ const ColumnSelector: FC<{
   )
 }
 
-export default ColumnSelector
+export default DBSelector

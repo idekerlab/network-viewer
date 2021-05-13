@@ -7,7 +7,6 @@ import { useParams } from 'react-router-dom'
 import AppContext from '../../../context/AppState'
 import NetworkDetails from './NetworkDetails'
 import { NetworkPanelState } from '../index'
-import TargetNodes from './QueryPanel/TargetNodes'
 import QueryState, { DB } from './QueryPanel/QueryState'
 
 const useStyles = makeStyles((theme: Theme) =>

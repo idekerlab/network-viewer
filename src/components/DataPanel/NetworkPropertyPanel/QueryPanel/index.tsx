@@ -15,7 +15,9 @@ import { useParams } from 'react-router-dom'
 import SearchIcon from '@material-ui/icons/Search'
 import TargetSelector from './TargetSelector'
 import TargetNodes from './TargetNodes'
-import QueryState from './QueryState'
+import QueryState, { DB } from './QueryState'
+import ColumnSelector from './ColumnSelector'
+import DBSelector from './DBSelector'
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -235,12 +237,11 @@ const QueryPanel: FC<{
     }
   }, [selectedNodes, chosenQuery, chosenAttribute])
 
-  //Handle menu changes
-  const handleQueryMenuChange = (event) => {
-    setChosenQuery(event.target.value)
+  const _handleDBChange = (db: DB): void => {
+    setQueryState({ ...queryState, db })
   }
-  const handleAttributeMenuChange = (event) => {
-    setChosenAttribute(event.target.value)
+  const _handleColumnChange = (selectedColumnName: string): void => {
+    setQueryState({ ...queryState, column: selectedColumnName })
   }
   const _handleTargetChange = (val: TargetNodes): void => {
     setQueryState({ ...queryState, target: val })
@@ -260,52 +261,15 @@ const QueryPanel: FC<{
       alignItems="center"
     >
       <Grid item xs={3}>
-        <FormControl variant="standard" className={classes.formControl}>
-          <InputLabel shrink htmlFor="service-name">
-            Database:
-          </InputLabel>
-          <Select
-            native
-            value={chosenQuery}
-            onChange={handleQueryMenuChange}
-            inputProps={{
-              name: 'service-name',
-              id: 'service-name',
-            }}
-          >
-            {availableQueries.map((name, index) => (
-              <option key={name} value={index}>
-                {name}
-              </option>
-            ))}
-          </Select>
-        </FormControl>
+        <DBSelector selected={queryState.db} setSelected={_handleDBChange} />
       </Grid>
 
       <Grid item xs={9} className={classes.item}>
-        <FormControl variant="standard" className={classes.formControl}>
-          <InputLabel shrink htmlFor="attr-selector">
-            using the data column
-          </InputLabel>
-          <Select
-            native
-            value={chosenAttribute}
-            onChange={handleAttributeMenuChange}
-            inputProps={{
-              name: 'attr-selector',
-              id: 'attr-selector',
-            }}
-          >
-            <option value="" disabled>
-              Please select
-            </option>
-            {availableAttributes.map((name, index) => (
-              <option key={name} value={index}>
-                {name}
-              </option>
-            ))}
-          </Select>
-        </FormControl>
+        <ColumnSelector
+          columns={availableAttributes}
+          selected={queryState.column}
+          setSelected={_handleColumnChange}
+        />
       </Grid>
 
       <Grid item xs={8}>

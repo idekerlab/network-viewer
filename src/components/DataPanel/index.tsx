@@ -81,7 +81,7 @@ export type NetworkPanelState = {
 
 const DEF_QUERY_STATE: QueryState = {
   db: DB.IQUERY,
-  column: '',
+  column: 'name',
   target: TargetNodes.All,
 }
 
