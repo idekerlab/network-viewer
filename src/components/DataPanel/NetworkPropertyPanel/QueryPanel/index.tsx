@@ -1,8 +1,7 @@
-import React, {FC, useContext, useState, useEffect } from 'react'
+import React, { FC, useContext, useState, useEffect } from 'react'
 import {
   Button,
   FormControl,
-  FormHelperText,
   Grid,
   InputLabel,
   makeStyles,
@@ -10,10 +9,13 @@ import {
   Theme,
   Tooltip,
 } from '@material-ui/core'
-import AppContext from '../../../context/AppState'
-import useAttributes from '../../../hooks/useAttributes'
+import AppContext from '../../../../context/AppState'
+import useAttributes from '../../../../hooks/useAttributes'
 import { useParams } from 'react-router-dom'
 import SearchIcon from '@material-ui/icons/Search'
+import TargetSelector from './TargetSelector'
+import TargetNodes from './TargetNodes'
+import QueryState from './QueryState'
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -33,8 +35,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   button: {
     width: '100%',
-    '&.MuiButton-contained': {
-    },
+    '&.MuiButton-contained': {},
   },
   tooltipText: {
     fontSize: '0.875rem',
@@ -51,17 +52,27 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }))
 
-const QueryPanel = (props) => {
+const QueryPanel: FC<{
+  cx: any
+  queryState: QueryState
+  setQueryState: (QueryState) => void
+}> = ({ cx, queryState, setQueryState }) => {
   //Parameters
   const classes = useStyles()
   const { selectionState, uiState } = useContext(AppContext)
+
+  const { showSearchResult } = uiState
+
   const { uuid } = useParams()
-  const { cx } = props
   const allNodeAttributes = useAttributes(
     uuid,
     cx,
     uiState.mainNetworkNotDisplayed,
   )['nodeAttr']
+
+  useEffect(() => {
+    console.log('Q panel init:')
+  }, [])
 
   //State information
   const [initialLoad, setInitialLoad] = useState(true)
@@ -76,7 +87,6 @@ const QueryPanel = (props) => {
   const [availableAttributes, setAvailableAttributes] = useState([])
   const [chosenAttribute, setChosenAttribute] = useState(0)
 
-  const availableSelectionTypes = ['all', 'selected']
   const [chosenSelectionType, setChosenSelectionType] = useState(0)
 
   const [selectedNodes, setSelectedNodes] = useState([])
@@ -232,9 +242,8 @@ const QueryPanel = (props) => {
   const handleAttributeMenuChange = (event) => {
     setChosenAttribute(event.target.value)
   }
-  const handleSelectionTypeMenuChange = (event) => {
-    //Return value as number
-    setChosenSelectionType(+event.target.value)
+  const _handleTargetChange = (val: TargetNodes): void => {
+    setQueryState({ ...queryState, target: val })
   }
 
   //Handle button click and query
@@ -298,23 +307,16 @@ const QueryPanel = (props) => {
           </Select>
         </FormControl>
       </Grid>
+
       <Grid item xs={8}>
-        <FormControl variant="standard" className={classes.formControl}>
-          <InputLabel htmlFor="attr-selector">attribute of</InputLabel>
-          <Select
-            native
-            value={chosenSelectionType}
-            onChange={handleSelectionTypeMenuChange}
-          >
-            {availableSelectionTypes.map((name, index) => (
-              <option key={name} value={index}>
-                {name}
-              </option>
-            ))}
-          </Select>
-          <FormHelperText>nodes.</FormHelperText>
-        </FormControl>
+        <TargetSelector
+          selectionState={selectionState}
+          showSearchResult={showSearchResult}
+          selected={queryState.target}
+          setSelected={_handleTargetChange}
+        />
       </Grid>
+
       {/* If button state is enabled */}
 
       <Grid item xs={4}>

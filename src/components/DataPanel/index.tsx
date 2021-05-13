@@ -20,6 +20,8 @@ import EntryTable from './EntryTable'
 
 import UIState from '../../model/UIState'
 import { UIStateActions } from '../../reducer/uiStateReducer'
+import QueryState, { DB } from './NetworkPropertyPanel/QueryPanel/QueryState'
+import TargetNodes from './NetworkPropertyPanel/QueryPanel/TargetNodes'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -77,6 +79,12 @@ export type NetworkPanelState = {
   queryOpen: boolean
 }
 
+const DEF_QUERY_STATE: QueryState = {
+  db: DB.IQUERY,
+  column: '',
+  target: TargetNodes.All,
+}
+
 const DataPanel = ({ width, cx, renderer }) => {
   const classes = useStyles()
   useEffect(() => {
@@ -95,12 +103,12 @@ const DataPanel = ({ width, cx, renderer }) => {
   const attributes = useAttributes(uuid, cx, uiState.mainNetworkNotDisplayed)
   const context = useMemo(() => getContextFromCx(cx), [cx])
 
-  const setActiveTab = (state: UIState) => {
-    uiStateDispatch({
-      type: UIStateActions.SET_ACTIVE_TAB,
-      uiState: state,
-    })
-  }
+  // const setActiveTab = (state: UIState) => {
+  //   uiStateDispatch({
+  //     type: UIStateActions.SET_ACTIVE_TAB,
+  //     uiState: state,
+  //   })
+  // }
 
   // Selected tab
   const [selected, setSelected] = useState(0)
@@ -110,9 +118,12 @@ const DataPanel = ({ width, cx, renderer }) => {
     netInfoOpen: true,
     descriptionOpen: true,
     propsOpen: true,
-    queryOpen: false
+    queryOpen: false,
   })
-  
+
+  // Store state of the query settings
+  const [queryState, setQueryState] = useState<QueryState>(DEF_QUERY_STATE)
+
   const handleChange = (event, newValue) => {
     // setActiveTab({ ...uiState, activeTab: newValue })
     setSelected(newValue)
@@ -209,7 +220,13 @@ const DataPanel = ({ width, cx, renderer }) => {
       </Tabs>
 
       <TabPanel value={selected} index={0}>
-        <NetworkPropertyPanel cx={cx} panelState={panelState} setPanelState={setPanelState} />
+        <NetworkPropertyPanel
+          cx={cx}
+          panelState={panelState}
+          setPanelState={setPanelState}
+          queryState={queryState}
+          setQueryState={setQueryState}
+        />
       </TabPanel>
 
       {renderer !== 'lgr' && nodes.length > 1 ? (

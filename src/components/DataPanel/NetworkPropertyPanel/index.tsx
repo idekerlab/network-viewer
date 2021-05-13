@@ -1,4 +1,4 @@
-import React, { useContext, FC } from 'react'
+import React, { useContext, FC, useState } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import NetworkProperties from './NetworkProperties'
@@ -7,6 +7,8 @@ import { useParams } from 'react-router-dom'
 import AppContext from '../../../context/AppState'
 import NetworkDetails from './NetworkDetails'
 import { NetworkPanelState } from '../index'
+import TargetNodes from './QueryPanel/TargetNodes'
+import QueryState, { DB } from './QueryPanel/QueryState'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,11 +32,14 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
+
 const NetworkPropertyPanel: FC<{
   cx: object
   panelState: NetworkPanelState
   setPanelState: (NetworkPanelState) => void
-}> = ({ cx, panelState, setPanelState }) => {
+  queryState: QueryState
+  setQueryState: (QueryState) => void
+}> = ({ cx, panelState, setPanelState, queryState, setQueryState }) => {
   const classes = useStyles()
   const { ndexCredential, config, setSummary, summary } = useContext(AppContext)
   const { uuid } = useParams()
@@ -82,6 +87,8 @@ const NetworkPropertyPanel: FC<{
         cx={cx}
         panelState={panelState}
         setPanelState={setPanelState}
+        queryState={queryState}
+        setQueryState={setQueryState}
       />
       <div className={classes.description}>
         <NetworkProperties

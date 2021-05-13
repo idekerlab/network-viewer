@@ -17,6 +17,7 @@ import QueryPanel from './QueryPanel'
 import DeleteDOIButton from '../../DeleteDOIButton'
 import CollapsiblePanel from './CollapsiblePanel'
 import { NetworkPanelState } from '..'
+import QueryState from './QueryPanel/QueryState'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,10 +55,11 @@ const useStyles = makeStyles((theme: Theme) =>
 const NetworkDetails: FC<{
   cx: any
   panelState: NetworkPanelState
-  setPanelState: (state: NetworkPanelState) => void
-}> = ({ cx, panelState, setPanelState }) => {
+  setPanelState: (NetworkPanelState) => void
+  queryState: QueryState
+  setQueryState: (QueryState) => void
+}> = ({ cx, panelState, setPanelState, queryState, setQueryState }) => {
   const classes = useStyles()
-
   const { uuid } = useParams()
   const { summary, uiState, config } = useContext(AppContext)
   const { viewerThreshold, warningThreshold } = config
@@ -180,7 +182,13 @@ const NetworkDetails: FC<{
       <CollapsiblePanel
         openByDefault={false}
         title="Query External Database"
-        children={<QueryPanel cx={cx} />}
+        children={
+          <QueryPanel
+            cx={cx}
+            queryState={queryState}
+            setQueryState={setQueryState}
+          />
+        }
         open={panelState.queryOpen}
         setOpen={_handleQueryOpen}
       />
