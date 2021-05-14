@@ -44,8 +44,8 @@ const ColumnSelector: FC<{
           id: 'attr-selector',
         }}
       >
-        {columns.map((name, index) => (
-          <option key={name} value={index}>
+        {columns.map((name: string) => (
+          <option key={name} value={name}>
             {name}
           </option>
         ))}

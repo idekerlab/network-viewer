@@ -45,7 +45,7 @@ const DBSelector: FC<{
         }}
       >
         {Object.entries(DB).map((val: [string, string]) => (
-          <option key={val[0]} value={val[0]}>
+          <option key={val[1]} value={val[1]}>
             {val[1]}
           </option>
         ))}

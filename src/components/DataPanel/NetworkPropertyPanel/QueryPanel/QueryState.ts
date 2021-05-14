@@ -5,7 +5,7 @@ export enum DB {
   MSIGDB = 'MSigDB',
 }
 
-const DB_URL = {
+export const DB_URL = {
   [DB.IQUERY]: 'http://iquery.ndexbio.org/?genes=',
   [DB.MSIGDB]:
     'https://www.gsea-msigdb.org/gsea/analysisApi?speciesName=Human&username=ndex_user&op=annotate&geneIdList=',

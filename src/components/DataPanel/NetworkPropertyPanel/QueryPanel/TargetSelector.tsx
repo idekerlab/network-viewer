@@ -37,6 +37,14 @@ const TargetSelector: FC<{
   const classes = useStyles()
 
   useEffect(() => {
+
+    if(showSearchResult) {
+      setSelected(TargetNodes.AllResult)
+
+    }
+  }, [showSearchResult])
+
+  useEffect(() => {
     if (showSearchResult) {
       return
     }
@@ -72,28 +80,28 @@ const TargetSelector: FC<{
     setSelected(selectedValue)
   }
 
-  const getTarget = (selectionState: SelectionState): TargetNodes => {
-    if (!showSearchResult) {
-      // Main view only.
-      const mainSelection = selectionState.main
-      const mainSelectedNodes = mainSelection['nodes']
+  // const getTarget = (selectionState: SelectionState): TargetNodes => {
+  //   if (!showSearchResult) {
+  //     // Main view only.
+  //     const mainSelection = selectionState.main
+  //     const mainSelectedNodes = mainSelection['nodes']
 
-      if (mainSelectedNodes.length === 0) {
-        return selected
-      } else {
-        return TargetNodes.Selected
-      }
-    } else {
-      const subSelection = selectionState.sub
-      const subSelectedNodes = subSelection['nodes']
+  //     if (mainSelectedNodes.length === 0) {
+  //       return selected
+  //     } else {
+  //       return TargetNodes.Selected
+  //     }
+  //   } else {
+  //     const subSelection = selectionState.sub
+  //     const subSelectedNodes = subSelection['nodes']
 
-      if (subSelectedNodes.length === 0) {
-        return selected
-      } else {
-        return TargetNodes.SelectedResult
-      }
-    }
-  }
+  //     if (subSelectedNodes.length === 0) {
+  //       return selected
+  //     } else {
+  //       return TargetNodes.SelectedResult
+  //     }
+  //   }
+  // }
 
   const entries: TargetNodes[] = showSearchResult ? SUB : MAIN
 

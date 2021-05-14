@@ -10,7 +10,10 @@
     "type": "pwa-chrome",
 
     // Private network
-    "url": "http://localhost:3000/viewer/networks/536bafd5-ecc5-11ea-8a8c-525400c25d22",
+    // "url": "http://localhost:3000/viewer/networks/536bafd5-ecc5-11ea-8a8c-525400c25d22",
+
+    // Public small human
+    "url": "http://localhost:3000/viewer/networks/4d431a48-ade8-11e6-913c-06832d634f41",
     
     // Public large networks
     // "url":  "http://localhost:3000/viewer/networks/25704eb4-c038-11ea-86e2-525400c25d22",

@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
       boxSizing: 'border-box',
-      padding: theme.spacing(2),
+      padding: theme.spacing(1),
     },
     warning: {
       color: theme.palette.warning.main,
@@ -181,7 +181,7 @@ const NetworkDetails: FC<{
 
       <CollapsiblePanel
         openByDefault={false}
-        title="Query External Database"
+        title={!uiState.showSearchResult ? 'Query External Database' : 'Query External Database (for sub network)'}
         children={
           <QueryPanel
             cx={cx}
