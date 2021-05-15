@@ -187,7 +187,7 @@ const NetworkDetails: FC<{
 
       <Divider />
 
-      {renderer === 'lgr' ? (
+      {renderer === 'lgr' && !uiState.showSearchResult ? (
         <div />
       ) : (
         <CollapsiblePanel

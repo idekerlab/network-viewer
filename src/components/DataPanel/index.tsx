@@ -17,9 +17,6 @@ import useNetworkSummary from '../../hooks/useNetworkSummary'
 import { Tab, Tabs, Tooltip, Typography } from '@material-ui/core'
 import MinimizeButton from './NetworkPropertyPanel/MinimizeButton'
 import EntryTable from './EntryTable'
-
-import UIState from '../../model/UIState'
-import { UIStateActions } from '../../reducer/uiStateReducer'
 import QueryState, { DB } from './NetworkPropertyPanel/QueryPanel/QueryState'
 import TargetNodes from './NetworkPropertyPanel/QueryPanel/TargetNodes'
 
@@ -49,11 +46,16 @@ const useStyles = makeStyles((theme: Theme) =>
     tabs: {
       marginTop: theme.spacing(1),
       minHeight: '2.6em',
-      backgroundColor: theme.palette.background.default,
+      backgroundColor: theme.palette.background.paper,
+      borderTop: `2px solid ${theme.palette.background.default}`,
+      borderBottom: `1px solid ${theme.palette.background.default}`
     },
     tab: {
       minHeight: '2.6em',
       minWidth: '7em',
+      '&:disabled': {
+        color: '#AAAAAA',
+      },
     },
     collapsiblePanel: {
       minHeight: 'auto',
@@ -61,10 +63,11 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-interface TabPanelProps {
-  children?: React.ReactNode
-  index: number
-  value: number
+const TOOLTIP_MESSAGE = {
+  CYJS_NODE: 'Select multiple nodes to view in node table',
+  CYJS_EDGE: 'Select multiple edges to view in edge table',
+  LGR_NODE: 'Multiple node selection for large networks is coming soon',
+  LGR_EDGE: 'Multiple edge selection for large networks is coming soon',
 }
 
 const TabPanel = (props) => {
@@ -85,19 +88,17 @@ const DEF_QUERY_STATE: QueryState = {
   target: TargetNodes.All,
 }
 
-const DataPanel = ({ width, cx, renderer }) => {
+const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
+  width,
+  cx,
+  renderer,
+}): ReactElement => {
   const classes = useStyles()
-  useEffect(() => {
-    console.log('INIT')
-  }, [])
 
-  const {
-    ndexCredential,
-    config,
-    selectionState,
-    uiState,
-    uiStateDispatch,
-  } = useContext(AppContext)
+  const { ndexCredential, config, selectionState, uiState } = useContext(
+    AppContext,
+  )
+
   const { uuid } = useParams()
 
   const attributes = useAttributes(uuid, cx, uiState.mainNetworkNotDisplayed)
@@ -191,7 +192,14 @@ const DataPanel = ({ width, cx, renderer }) => {
         {renderer !== 'lgr' && nodes.length > 1 ? (
           <Tab className={classes.tab} key={'nodes-tab'} label={'Nodes'} />
         ) : (
-          <Tooltip title={'Select multiple nodes to view in node table'} arrow>
+          <Tooltip
+            title={
+              renderer === 'lgr'
+                ? TOOLTIP_MESSAGE.LGR_NODE
+                : TOOLTIP_MESSAGE.CYJS_NODE
+            }
+            arrow
+          >
             <span>
               <Tab
                 className={classes.tab}
@@ -205,7 +213,14 @@ const DataPanel = ({ width, cx, renderer }) => {
         {renderer !== 'lgr' && edges.length > 1 ? (
           <Tab className={classes.tab} key={'edges-tab'} label={'Edges'} />
         ) : (
-          <Tooltip title={'Select multiple edges to view in edge table'} arrow>
+          <Tooltip
+            title={
+              renderer === 'lgr'
+                ? TOOLTIP_MESSAGE.LGR_EDGE
+                : TOOLTIP_MESSAGE.CYJS_EDGE
+            }
+            arrow
+          >
             <span>
               <Tab
                 className={classes.tab}
