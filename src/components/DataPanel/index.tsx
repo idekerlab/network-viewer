@@ -226,6 +226,7 @@ const DataPanel = ({ width, cx, renderer }) => {
           setPanelState={setPanelState}
           queryState={queryState}
           setQueryState={setQueryState}
+          renderer={renderer}
         />
       </TabPanel>
 

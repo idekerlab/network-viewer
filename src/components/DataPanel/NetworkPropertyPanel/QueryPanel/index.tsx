@@ -11,6 +11,7 @@ import DBSelector from './DBSelector'
 import StartQueryButton from './StartQueryButton'
 import { buildUrl, getColumnNames } from './query-util'
 import useSearch from '../../../../hooks/useSearch'
+import { getEntry } from '../../../../utils/cxUtil'
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -38,6 +39,12 @@ enum ButtonState {
   TOO_MANY_NODES_SELECTED, // disabled, too many nodes selected
 }
 
+// Maximum length of the URL
+const MAX_URL_LENGTH = 8200
+
+// TODO: tweak this number
+const MAX_NODE_COUNT = 500
+
 const QueryPanel: FC<{
   cx: any
   queryState: QueryState
@@ -56,8 +63,6 @@ const QueryPanel: FC<{
   const { showSearchResult } = uiState
   const { uuid } = useParams()
 
-  const { db, column, target } = queryState
-
   // This custom hook always return all node attributes
   const allNodeAttributes = useAttributes(
     uuid,
@@ -65,6 +70,7 @@ const QueryPanel: FC<{
     uiState.mainNetworkNotDisplayed,
   )['nodeAttr']
 
+  // For querying all nodes in query network
   const searchResult = useSearch(
     uuid,
     query,
@@ -74,25 +80,23 @@ const QueryPanel: FC<{
     config.maxEdgeQuery,
   )
 
-  const { data } = searchResult
-
   const [columnNames, setColumnNames] = useState<string[]>([])
+
+  // Enable/disable button based on network and selection state
   const [buttonState, setButtonState] = useState<ButtonState>(
     ButtonState.ENABLED,
   )
 
-  const queryDelimiters = [', ', ',']
-  const maxQueryLengths = [8200, 8200]
-
   const [percentToReduceQuery, setPercentToReduceQuery] = useState('')
+  
   const tooltipMessages = {
     [ButtonState.NO_NODES_SELECTED]: 'Select nodes to run a query.',
     [ButtonState.TOO_MANY_NODES]:
-      `This network contains too many nodes to query the ${column}` +
+      `This network contains too many nodes to query the ${queryState.column}` +
       ` attribute of all nodes. Try selecting a subset or changing the attribute queried.`,
     [ButtonState.TOO_MANY_NODES_SELECTED]:
       `Too many nodes are selected to run this query.` +
-      `Try narrowing your selection by about ${percentToReduceQuery}%, or changing the type of query/attribute queried.`,
+      ` Try selecting less than ${MAX_NODE_COUNT} nodes.`,
   }
 
   // Extract column names
@@ -102,117 +106,59 @@ const QueryPanel: FC<{
     // Select "name" if available
     _handleColumnChange('name')
   }, [cx])
-
-  // Get available node attributes
+  
+  // Watch change in targets
   useEffect(() => {
-    // const columnNames = getAttributeValues(allNodeAttributes)
-    // let nodes = []
-    // if (target === TargetNodes.All) {
-    //   //Use all nodes
-    //   if (allNodeAttributes !== undefined) {
-    //     nodes = Object.keys(allNodeAttributes)
-    //   }
-    // } else {
-    //   //Use selected nodes
-    //   if (selectionState.lastSelected.fromMain) {
-    //     nodes = selectionState.main['nodes']
-    //   } else {
-    //     nodes = selectionState.sub['nodes']
-    //   }
-    // }
-    // setSelectedNodes(nodes)
-    // const availableAttributesTemp = new Set()
-    // if (allNodeAttributes !== undefined) {
-    //   for (let node of nodes) {
-    //     const nodeAttributes = allNodeAttributes[node]
-    //     if (nodeAttributes !== undefined) {
-    //       const nodeAttributeNames = Array.from(nodeAttributes.keys())
-    //       for (let attributeName of nodeAttributeNames) {
-    //         availableAttributesTemp.add(attributeName)
-    //       }
-    //     }
-    //   }
-    // }
-    // //Check if old current attribute is in new list
-    // const availableAttributesTempList = Array.from(availableAttributesTemp)
-    // setAvailableAttributes(availableAttributesTempList)
-    // const newIndex = availableAttributesTempList.indexOf(
-    //   availableAttributes[column],
-    // )
-    // // if (newIndex === -1) {
-    // //   setChosenAttribute(0)
-    // // } else {
-    // //   setChosenAttribute(newIndex)
-    // // }
-  }, [selectionState, column])
+    const {target} = queryState
+    if(target === TargetNodes.All && showSearchResult) {
+      _handleTargetChange(TargetNodes.AllResult)
+    }
+    updateButtonState()
+    console.log('TGT:', target)
+  }, [queryState])
+  
 
-  //Check what button state should be
+  const updateButtonState = (): void => {
+
+    const {target} = queryState
+
+    if(showSearchResult) {
+      // Sub network query mode
+      if(target === TargetNodes.SelectedResult && selectionState.sub['nodes'].length === 0) {
+        // No nodes are selected
+        setButtonState(ButtonState.NO_NODES_SELECTED)
+      } else {
+        setButtonState(ButtonState.ENABLED)
+      }
+
+    } else {
+      // Query on main network
+
+      // too big
+      const nodeCount = getEntry('nodes', cx).length
+      if(nodeCount > MAX_NODE_COUNT && target === TargetNodes.All) {
+        setButtonState(ButtonState.TOO_MANY_NODES)
+        return
+      } else if(target === TargetNodes.Selected && selectionState.main['nodes'].length > MAX_NODE_COUNT) {
+        setButtonState(ButtonState.TOO_MANY_NODES_SELECTED)
+        return
+      } 
+
+      if(queryState.target === TargetNodes.Selected && selectionState.main['nodes'].length === 0) {
+        // No nodes are selected
+        setButtonState(ButtonState.NO_NODES_SELECTED)
+      } else {
+        setButtonState(ButtonState.ENABLED)
+      }
+    }
+  }
+
   useEffect(() => {
-    // //Check if any nodes selected
-    // if (selectedNodes === undefined || selectedNodes.length === 0) {
-    //   setButtonState(ButtonState.NO_NODES_SELECTED)
-    // } else {
-    //   //Find node names to build query string
-    //   const nodeNames = []
-    //   const chosenAttributeName = availableAttributes[chosenAttribute]
-    //   if (allNodeAttributes !== undefined) {
-    //     for (let node of selectedNodes) {
-    //       const nodeAttributes = allNodeAttributes[node]
-    //       if (nodeAttributes !== undefined) {
-    //         const attribute = nodeAttributes.get(chosenAttributeName)
-    //         if (attribute !== undefined) {
-    //           nodeNames.push(attribute)
-    //         }
-    //       }
-    //     }
-    //   }
-    //   //Build query string
-    //   let urlString = availableQueryUrls[chosenQuery]
-    //   const delimiter = queryDelimiters[chosenQuery]
-    //   for (let name of nodeNames) {
-    //     urlString += name + delimiter
-    //   }
-    //   urlString = urlString.slice(0, -delimiter.length)
-    //   //Check if currently selected query type has length limit
-    //   if (maxQueryLengths[chosenQuery] === null) {
-    //     //Button enabled
-    //     setButtonState(ButtonState.ENABLED)
-    //     setQueryURL(urlString)
-    //   } else {
-    //     //Compare query string to max length
-    //     if (urlString.length > maxQueryLengths[chosenQuery]) {
-    //       //If selection type is 'all'
-    //       if (chosenSelectionType === 0) {
-    //         //Button disabled because selection type is all and query is too long
-    //         setButtonState(ButtonState.TOO_MANY_NODES)
-    //         if (initialLoad) {
-    //           setChosenSelectionType(1)
-    //           setInitialLoad(false)
-    //         }
-    //       } else {
-    //         //Button disabled because query is too long
-    //         setButtonState(ButtonState.TOO_MANY_NODES_SELECTED)
-    //         //Find out how much query should be decreased by
-    //         const queryOverflow =
-    //           urlString.length - maxQueryLengths[chosenQuery]
-    //         const queryLength =
-    //           urlString.length - availableQueryUrls[chosenQuery].length
-    //         setPercentToReduceQuery(
-    //           Math.round((queryOverflow / queryLength) * 100).toString(),
-    //         )
-    //       }
-    //     } else {
-    //       //Button enabled
-    //       setButtonState(ButtonState.ENABLED)
-    //       setQueryURL(urlString)
-    //     }
-    //   }
-    // }
-  }, [])
-  // }, [selectedNodes, chosenQuery, chosenAttribute])
+    updateButtonState()
+  }, [selectionState])
 
   const _handleDBChange = (db: DB): void => {
-    setQueryState({ ...queryState, db })
+    setQueryState({ ...queryState, db: db })
   }
   const _handleColumnChange = (selectedColumnName: string): void => {
     setQueryState({ ...queryState, column: selectedColumnName })
@@ -263,8 +209,8 @@ const QueryPanel: FC<{
         <TargetSelector
           selectionState={selectionState}
           showSearchResult={showSearchResult}
-          selected={queryState.target}
-          setSelected={_handleTargetChange}
+          target={queryState.target}
+          setTarget={_handleTargetChange}
         />
       </Grid>
 

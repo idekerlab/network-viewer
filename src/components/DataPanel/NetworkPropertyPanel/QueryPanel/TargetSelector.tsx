@@ -26,20 +26,20 @@ const SUB: TargetNodes[] = [TargetNodes.AllResult, TargetNodes.SelectedResult]
 const TargetSelector: FC<{
   selectionState: SelectionState
   showSearchResult: boolean
-  selected: TargetNodes
-  setSelected: (selected: TargetNodes) => void
+  target: TargetNodes
+  setTarget: (TargetNodes) => void
 }> = ({
   selectionState,
   showSearchResult,
-  selected = TargetNodes.All,
-  setSelected,
+  target = TargetNodes.All,
+  setTarget,
 }): ReactElement => {
   const classes = useStyles()
 
   useEffect(() => {
 
     if(showSearchResult) {
-      setSelected(TargetNodes.AllResult)
+      setTarget(TargetNodes.AllResult)
 
     }
   }, [showSearchResult])
@@ -52,9 +52,9 @@ const TargetSelector: FC<{
     const mainSelectedNodes = mainSelection['nodes']
 
     if (mainSelectedNodes.length !== 0) {
-      setSelected(TargetNodes.Selected)
+      setTarget(TargetNodes.Selected)
     } else {
-      setSelected(TargetNodes.All)
+      setTarget(TargetNodes.All)
     }
   }, [selectionState.main])
 
@@ -67,9 +67,9 @@ const TargetSelector: FC<{
     const subSelectedNodes = subSelection['nodes']
 
     if (subSelectedNodes.length !== 0) {
-      setSelected(TargetNodes.SelectedResult)
+      setTarget(TargetNodes.SelectedResult)
     } else {
-      setSelected(TargetNodes.AllResult)
+      setTarget(TargetNodes.AllResult)
     }
   }, [selectionState.sub])
 
@@ -77,38 +77,15 @@ const TargetSelector: FC<{
     const { target } = event
     const selectedValue: TargetNodes = target.value as TargetNodes
     console.log('Event', selectedValue)
-    setSelected(selectedValue)
+    setTarget(selectedValue)
   }
-
-  // const getTarget = (selectionState: SelectionState): TargetNodes => {
-  //   if (!showSearchResult) {
-  //     // Main view only.
-  //     const mainSelection = selectionState.main
-  //     const mainSelectedNodes = mainSelection['nodes']
-
-  //     if (mainSelectedNodes.length === 0) {
-  //       return selected
-  //     } else {
-  //       return TargetNodes.Selected
-  //     }
-  //   } else {
-  //     const subSelection = selectionState.sub
-  //     const subSelectedNodes = subSelection['nodes']
-
-  //     if (subSelectedNodes.length === 0) {
-  //       return selected
-  //     } else {
-  //       return TargetNodes.SelectedResult
-  //     }
-  //   }
-  // }
 
   const entries: TargetNodes[] = showSearchResult ? SUB : MAIN
 
   return (
     <FormControl variant="standard" className={classes.formControl}>
       <InputLabel htmlFor="attr-selector">attribute of</InputLabel>
-      <Select native value={selected} onChange={_handleChange}>
+      <Select native value={target} onChange={_handleChange}>
         {entries.map((val: TargetNodes) => (
           <option key={val} value={val}>
             {val}

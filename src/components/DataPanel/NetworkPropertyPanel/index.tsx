@@ -38,7 +38,8 @@ const NetworkPropertyPanel: FC<{
   setPanelState: (NetworkPanelState) => void
   queryState: QueryState
   setQueryState: (QueryState) => void
-}> = ({ cx, panelState, setPanelState, queryState, setQueryState }) => {
+  renderer: string
+}> = ({ cx, panelState, setPanelState, queryState, setQueryState, renderer }) => {
   const classes = useStyles()
   const { ndexCredential, config, setSummary, summary } = useContext(AppContext)
   const { uuid } = useParams()
@@ -88,6 +89,7 @@ const NetworkPropertyPanel: FC<{
         setPanelState={setPanelState}
         queryState={queryState}
         setQueryState={setQueryState}
+        renderer={renderer}
       />
       <div className={classes.description}>
         <NetworkProperties

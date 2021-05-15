@@ -50,9 +50,16 @@ const buildUrl = (
 
     console.log(nodes, nodeIds)
 
+  } else {
+    // Selected nodes in the query result
+    const selectedNodes = selectionState.sub['nodes']
+    selectedNodes.forEach(node => {
+      attrValues.add(attributes[node].get(selectedColumn))
+    });
+
+    console.log(selectedNodes)
   }
   const queryString = Array.from(attrValues).sort().join(',')
-  const urls = DB_URL
   const baseUrl = DB_URL[db.toString()]
   return `${baseUrl}${queryString}`
 }

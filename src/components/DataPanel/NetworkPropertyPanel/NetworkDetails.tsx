@@ -58,7 +58,15 @@ const NetworkDetails: FC<{
   setPanelState: (NetworkPanelState) => void
   queryState: QueryState
   setQueryState: (QueryState) => void
-}> = ({ cx, panelState, setPanelState, queryState, setQueryState }) => {
+  renderer: string
+}> = ({
+  cx,
+  panelState,
+  setPanelState,
+  queryState,
+  setQueryState,
+  renderer,
+}) => {
   const classes = useStyles()
   const { uuid } = useParams()
   const { summary, uiState, config } = useContext(AppContext)
@@ -179,19 +187,27 @@ const NetworkDetails: FC<{
 
       <Divider />
 
-      <CollapsiblePanel
-        openByDefault={false}
-        title={!uiState.showSearchResult ? 'Query External Database' : 'Query External Database (for sub network)'}
-        children={
-          <QueryPanel
-            cx={cx}
-            queryState={queryState}
-            setQueryState={setQueryState}
-          />
-        }
-        open={panelState.queryOpen}
-        setOpen={_handleQueryOpen}
-      />
+      {renderer === 'lgr' ? (
+        <div />
+      ) : (
+        <CollapsiblePanel
+          openByDefault={false}
+          title={
+            !uiState.showSearchResult
+              ? 'Query External Database'
+              : 'Query External Database (for sub network)'
+          }
+          children={
+            <QueryPanel
+              cx={cx}
+              queryState={queryState}
+              setQueryState={setQueryState}
+            />
+          }
+          open={panelState.queryOpen}
+          setOpen={_handleQueryOpen}
+        />
+      )}
     </div>
   )
 }
