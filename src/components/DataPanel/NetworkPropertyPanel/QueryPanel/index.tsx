@@ -107,6 +107,15 @@ const QueryPanel: FC<{
     _handleColumnChange('name')
   }, [cx])
   
+  // Initialized: Check selection state 
+  useEffect(() => {
+    // const {target} = queryState
+    if(!showSearchResult && selectionState.main['nodes'].length !== 0) {
+      _handleTargetChange(TargetNodes.Selected)
+    }
+    // updateButtonState()
+  }, [])
+
   // Watch change in targets
   useEffect(() => {
     const {target} = queryState
