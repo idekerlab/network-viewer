@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { FC, ReactElement, useContext } from 'react'
 import { useParams } from 'react-router-dom'
 
 import Menu from '@material-ui/core/Menu'
@@ -9,10 +9,13 @@ import CreateDOIMenuItem from '../CreateDOIMenuItem'
 import { Tooltip } from '@material-ui/core'
 import AppContext from '../../context/AppState'
 
-const ShareMenu = () => {
+const DISABLED_MENU_TOOLTIP =
+  'This feature is only available to signed-in users'
+
+const ShareMenu: FC = (): ReactElement => {
   const { ndexCredential } = useContext(AppContext)
-  
-  // Disable menu item if not logged in
+
+  // Disable menu items if not logged-in
   const disabled = !ndexCredential.isLogin
 
   const { uuid } = useParams()
@@ -55,8 +58,33 @@ const ShareMenu = () => {
           horizontal: 'center',
         }}
       >
-        <ShareLinkMenuItem uuid={uuid} disabled={disabled} />
-        <CreateDOIMenuItem uuid={uuid} disabled={disabled} />
+        <Tooltip
+          title={
+            disabled
+              ? DISABLED_MENU_TOOLTIP
+              : 'Share this network internally or externally'
+          }
+          arrow
+          placement={'left-end'}
+        >
+          <div>
+            <ShareLinkMenuItem uuid={uuid} disabled={disabled} />
+          </div>
+        </Tooltip>
+
+        <Tooltip
+          title={
+            disabled
+              ? DISABLED_MENU_TOOLTIP
+              : 'Request a Digital Object Identifier for this network'
+          }
+          arrow
+          placement={'left-end'}
+        >
+          <div>
+            <CreateDOIMenuItem uuid={uuid} disabled={disabled} />
+          </div>
+        </Tooltip>
       </Menu>
     </>
   )
