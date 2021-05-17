@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, FC } from 'react'
 import {
   Chip,
   createStyles,
@@ -13,9 +13,11 @@ import ErrorIcon from '@material-ui/icons/ErrorOutline'
 import { useParams } from 'react-router-dom'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import AppContext from '../../../context/AppState'
-import QueryButton from './QueryPanel'
+import QueryPanel from './QueryPanel'
 import DeleteDOIButton from '../../DeleteDOIButton'
 import CollapsiblePanel from './CollapsiblePanel'
+import { NetworkPanelState } from '..'
+import QueryState from './QueryPanel/QueryState'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
       boxSizing: 'border-box',
-      padding: theme.spacing(2),
+      padding: theme.spacing(1),
     },
     warning: {
       color: theme.palette.warning.main,
@@ -50,14 +52,30 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const NetworkDetails = (props) => {
+const NetworkDetails: FC<{
+  cx: any
+  panelState: NetworkPanelState
+  setPanelState: (NetworkPanelState) => void
+  queryState: QueryState
+  setQueryState: (QueryState) => void
+  renderer: string
+}> = ({
+  cx,
+  panelState,
+  setPanelState,
+  queryState,
+  setQueryState,
+  renderer,
+}) => {
   const classes = useStyles()
-
   const { uuid } = useParams()
   const { summary, uiState, config } = useContext(AppContext)
   const { viewerThreshold, warningThreshold } = config
   const [doiCopiedHoverText, setDoiCopiedHoverText] = useState(false)
-  const { cx } = props
+
+  const _handleQueryOpen = (val: boolean) => {
+    setPanelState({ ...panelState, queryOpen: val })
+  }
 
   if (summary === undefined) {
     return null
@@ -169,11 +187,27 @@ const NetworkDetails = (props) => {
 
       <Divider />
 
-      <CollapsiblePanel
-        openByDefault={false}
-        title="Query External Database"
-        children={<QueryButton cx={cx} />}
-      />
+      {renderer === 'lgr' && !uiState.showSearchResult ? (
+        <div />
+      ) : (
+        <CollapsiblePanel
+          openByDefault={false}
+          title={
+            !uiState.showSearchResult
+              ? 'Query External Database'
+              : 'Query External Database (for sub network)'
+          }
+          children={
+            <QueryPanel
+              cx={cx}
+              queryState={queryState}
+              setQueryState={setQueryState}
+            />
+          }
+          open={panelState.queryOpen}
+          setOpen={_handleQueryOpen}
+        />
+      )}
     </div>
   )
 }

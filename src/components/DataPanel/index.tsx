@@ -1,4 +1,11 @@
-import React, { useState, useMemo, useContext } from 'react'
+import React, {
+  useState,
+  useMemo,
+  useContext,
+  useEffect,
+  FC,
+  ReactElement,
+} from 'react'
 
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import NetworkPropertyPanel from './NetworkPropertyPanel'
@@ -10,11 +17,8 @@ import useNetworkSummary from '../../hooks/useNetworkSummary'
 import { Tab, Tabs, Tooltip, Typography } from '@material-ui/core'
 import MinimizeButton from './NetworkPropertyPanel/MinimizeButton'
 import EntryTable from './EntryTable'
-
-import UIState from '../../model/UIState'
-import { UIStateActions } from '../../reducer/uiStateReducer'
-import CollapsiblePanel from './NetworkPropertyPanel/CollapsiblePanel'
-import QueryButton from './NetworkPropertyPanel/QueryPanel'
+import QueryState, { DB } from './NetworkPropertyPanel/QueryPanel/QueryState'
+import TargetNodes from './NetworkPropertyPanel/QueryPanel/TargetNodes'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,11 +46,16 @@ const useStyles = makeStyles((theme: Theme) =>
     tabs: {
       marginTop: theme.spacing(1),
       minHeight: '2.6em',
-      backgroundColor: theme.palette.background.default,
+      backgroundColor: theme.palette.background.paper,
+      borderTop: `2px solid ${theme.palette.background.default}`,
+      borderBottom: `1px solid ${theme.palette.background.default}`
     },
     tab: {
       minHeight: '2.6em',
       minWidth: '7em',
+      '&:disabled': {
+        color: '#AAAAAA',
+      },
     },
     collapsiblePanel: {
       minHeight: 'auto',
@@ -54,37 +63,71 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const TabPanel = (props) => {
-  if (props.value === props.index) {
-    return props.children
-  }
-  return null
+const TOOLTIP_MESSAGE = {
+  CYJS_NODE: 'Select multiple nodes to view in node table',
+  CYJS_EDGE: 'Select multiple edges to view in edge table',
+  LGR_NODE: 'Multiple node selection for large networks is coming soon',
+  LGR_EDGE: 'Multiple edge selection for large networks is coming soon',
 }
 
-const DataPanel = ({ width, cx, renderer }) => {
+const TabPanel = (props) => {
+  const { children, value, index } = props
+  return value === index ? children : null
+}
+
+export type NetworkPanelState = {
+  netInfoOpen: boolean
+  descriptionOpen: boolean
+  propsOpen: boolean
+  queryOpen: boolean
+}
+
+const DEF_QUERY_STATE: QueryState = {
+  db: DB.IQUERY,
+  column: 'name',
+  target: TargetNodes.All,
+}
+
+const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
+  width,
+  cx,
+  renderer,
+}): ReactElement => {
   const classes = useStyles()
 
-  const {
-    ndexCredential,
-    config,
-    selectionState,
-    uiState,
-    uiStateDispatch,
-  } = useContext(AppContext)
+  const { ndexCredential, config, selectionState, uiState } = useContext(
+    AppContext,
+  )
+
   const { uuid } = useParams()
 
   const attributes = useAttributes(uuid, cx, uiState.mainNetworkNotDisplayed)
   const context = useMemo(() => getContextFromCx(cx), [cx])
 
-  const setActiveTab = (state: UIState) => {
-    uiStateDispatch({
-      type: UIStateActions.SET_ACTIVE_TAB,
-      uiState: state,
-    })
-  }
+  // const setActiveTab = (state: UIState) => {
+  //   uiStateDispatch({
+  //     type: UIStateActions.SET_ACTIVE_TAB,
+  //     uiState: state,
+  //   })
+  // }
+
+  // Selected tab
+  const [selected, setSelected] = useState(0)
+
+  // Unified child panel states
+  const [panelState, setPanelState] = useState<NetworkPanelState>({
+    netInfoOpen: true,
+    descriptionOpen: true,
+    propsOpen: true,
+    queryOpen: false,
+  })
+
+  // Store state of the query settings
+  const [queryState, setQueryState] = useState<QueryState>(DEF_QUERY_STATE)
 
   const handleChange = (event, newValue) => {
-    setActiveTab({ ...uiState, activeTab: newValue })
+    // setActiveTab({ ...uiState, activeTab: newValue })
+    setSelected(newValue)
   }
 
   const getLetterWidth = (sandbox, letter) => {
@@ -138,7 +181,8 @@ const DataPanel = ({ width, cx, renderer }) => {
         </Typography>
       </div>
       <Tabs
-        value={uiState.activeTab}
+        value={selected}
+        // value={uiState.activeTab}
         onChange={handleChange}
         scrollButtons="auto"
         variant="scrollable"
@@ -148,7 +192,14 @@ const DataPanel = ({ width, cx, renderer }) => {
         {renderer !== 'lgr' && nodes.length > 1 ? (
           <Tab className={classes.tab} key={'nodes-tab'} label={'Nodes'} />
         ) : (
-          <Tooltip title={'Select multiple nodes to view in node table'} arrow>
+          <Tooltip
+            title={
+              renderer === 'lgr'
+                ? TOOLTIP_MESSAGE.LGR_NODE
+                : TOOLTIP_MESSAGE.CYJS_NODE
+            }
+            arrow
+          >
             <span>
               <Tab
                 className={classes.tab}
@@ -162,7 +213,14 @@ const DataPanel = ({ width, cx, renderer }) => {
         {renderer !== 'lgr' && edges.length > 1 ? (
           <Tab className={classes.tab} key={'edges-tab'} label={'Edges'} />
         ) : (
-          <Tooltip title={'Select multiple edges to view in edge table'} arrow>
+          <Tooltip
+            title={
+              renderer === 'lgr'
+                ? TOOLTIP_MESSAGE.LGR_EDGE
+                : TOOLTIP_MESSAGE.CYJS_EDGE
+            }
+            arrow
+          >
             <span>
               <Tab
                 className={classes.tab}
@@ -175,11 +233,20 @@ const DataPanel = ({ width, cx, renderer }) => {
         )}
         )
       </Tabs>
-      <TabPanel value={uiState.activeTab} index={0}>
-        <NetworkPropertyPanel cx={cx} />
+
+      <TabPanel value={selected} index={0}>
+        <NetworkPropertyPanel
+          cx={cx}
+          panelState={panelState}
+          setPanelState={setPanelState}
+          queryState={queryState}
+          setQueryState={setQueryState}
+          renderer={renderer}
+        />
       </TabPanel>
+
       {renderer !== 'lgr' && nodes.length > 1 ? (
-        <TabPanel value={uiState.activeTab} index={1}>
+        <TabPanel value={selected} index={1}>
           <EntryTable
             key={'selected-nodes'}
             selectedObjects={nodes}
@@ -191,7 +258,7 @@ const DataPanel = ({ width, cx, renderer }) => {
         </TabPanel>
       ) : null}
       {renderer !== 'lgr' && edges.length > 1 ? (
-        <TabPanel value={uiState.activeTab} index={2}>
+        <TabPanel value={selected} index={2}>
           <EntryTable
             key={'selected-edges'}
             selectedObjects={edges}

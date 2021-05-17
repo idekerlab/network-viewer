@@ -2,7 +2,6 @@ import React, {
   FC,
   useContext,
   useEffect,
-  Suspense,
   useState,
   useRef,
 } from 'react'

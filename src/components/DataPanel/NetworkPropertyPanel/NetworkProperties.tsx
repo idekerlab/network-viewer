@@ -1,13 +1,13 @@
-import React from 'react'
+import React, { FC } from 'react'
 import { makeStyles } from '@material-ui/styles'
-
 import Linkify from 'linkifyjs/react'
 import parse from 'html-react-parser'
 import CollapsiblePanel from './CollapsiblePanel'
 import NetworkPropertySegment from './NetworkPropertySegment'
+import { NetworkPanelState } from '..'
+import { Theme } from '@material-ui/core'
 
-
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   table: {
     cellSpacing: 0,
     borderSpacing: 0,
@@ -32,12 +32,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const NetworkProperties = (props) => {
-  const { summary } = props
+const NetworkProperties: FC<{
+  summary: any
+  panelState: NetworkPanelState
+  setPanelState: (state: NetworkPanelState) => void
+}> = ({ summary, panelState, setPanelState }) => {
   const properties = summary.properties
   const description = summary.description
   const classes = useStyles()
 
+  const _handleInfoOpen = (val: boolean) => {
+    setPanelState({ ...panelState, netInfoOpen: val })
+  }
+
+  const _handleDescriptionOpen = (val: boolean) => {
+    setPanelState({ ...panelState, descriptionOpen: val })
+  }
+
+  const _handlePropsOpen = (val: boolean) => {
+    setPanelState({ ...panelState, propsOpen: val })
+  }
   let informationDisplay
   let descriptionDisplay
   let propertiesDisplay
@@ -102,7 +116,7 @@ const NetworkProperties = (props) => {
       informationTableContents.push(
         <tr key="visibility">
           <td className={classes.tdTitle}>Visibility</td>
-          <td className={classes.tdContent} valign="center">
+          <td className={classes.tdContent} valign="middle">
             P{summary.visibility.toLowerCase().slice(1)} (searchable)
           </td>
         </tr>,
@@ -213,26 +227,29 @@ const NetworkProperties = (props) => {
     <>
       {informationDisplay ? (
         <CollapsiblePanel
-          openByDefault={true}
           title="Network information"
           children={informationDisplay}
           backgroundColor={darkBackground++ % 2 === 0 ? 'inherit' : 'white'}
+          open={panelState.netInfoOpen}
+          setOpen={_handleInfoOpen}
         />
       ) : null}
       {descriptionDisplay ? (
         <CollapsiblePanel
-          openByDefault={true}
           title="Description"
           children={descriptionDisplay}
           backgroundColor={darkBackground++ % 2 === 0 ? 'inherit' : 'white'}
+          open={panelState.descriptionOpen}
+          setOpen={_handleDescriptionOpen}
         />
       ) : null}
       {propertiesDisplay ? (
         <CollapsiblePanel
-          openByDefault={true}
           title="Properties"
           children={propertiesDisplay}
           backgroundColor={darkBackground++ % 2 === 0 ? 'inherit' : 'white'}
+          open={panelState.propsOpen}
+          setOpen={_handlePropsOpen}
         />
       ) : null}
     </>
@@ -240,14 +257,14 @@ const NetworkProperties = (props) => {
 }
 
 const formatTitle = (string) => {
-  if (string == undefined) {
+  if (string === undefined) {
     return
   }
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
 const formatContent = (string) => {
-  if (string == undefined) {
+  if (string === undefined) {
     return
   }
   string = string
@@ -258,7 +275,7 @@ const formatContent = (string) => {
 }
 
 const formatDescription = (string) => {
-  if (string == undefined) {
+  if (string === undefined) {
     return
   }
   string = string
