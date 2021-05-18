@@ -20,16 +20,35 @@ const EditMetadataButton: FC = (): ReactElement => {
     ndexCredential,
   )
 
+  let hasPermission = false
   if (
-    isLogin &&
-    summary !== undefined &&
     permissions !== undefined &&
     permissions !== null &&
     permissions.data === 'ADMIN'
   ) {
-    return (
-      <Tooltip title="Edit network properties">
+    hasPermission = true
+  }
+
+  let login: boolean = false
+  if (isLogin && summary !== undefined) {
+    login = true
+  }
+
+  let message = 'This feature is only available to signed-in users'
+
+  let disabled = true
+  if (hasPermission && login) {
+    message = 'Edit network properties'
+    disabled = false
+  } else if (!hasPermission && login) {
+    message = "You don't have permission to edit this network"
+  }
+
+  return (
+    <Tooltip title={message} arrow placement={'top-start'}>
+      <div>
         <IconButton
+          disabled={disabled}
           color="inherit"
           href={
             getCurrentServer() +
@@ -40,10 +59,9 @@ const EditMetadataButton: FC = (): ReactElement => {
         >
           <EditIcon />
         </IconButton>
-      </Tooltip>
-    )
-  }
-  return null
+      </div>
+    </Tooltip>
+  )
 }
 
 export default EditMetadataButton
