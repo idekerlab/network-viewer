@@ -8,17 +8,43 @@ import ShareLinkMenuItem from '../ShareLinkMenuItem'
 import CreateDOIMenuItem from '../CreateDOIMenuItem'
 import { Tooltip } from '@material-ui/core'
 import AppContext from '../../context/AppState'
+import useNetworkSummary from '../../hooks/useNetworkSummary'
+import useNetworkPermissions from '../../hooks/useNetworkPermissions'
 
 const DISABLED_MENU_TOOLTIP =
   'This feature is only available to signed-in users'
 
 const ShareMenu: FC = (): ReactElement => {
-  const { ndexCredential } = useContext(AppContext)
+  const { uuid } = useParams()
+  const { config, ndexCredential } = useContext(AppContext)
+
+  const summaryResponse = useNetworkSummary(
+    uuid,
+    config.ndexHttps,
+    'v2',
+    ndexCredential,
+  )
+  const summary = summaryResponse.data
+
+  const permissions = useNetworkPermissions(
+    uuid,
+    config.ndexHttps,
+    'v2',
+    ndexCredential,
+  )
+
+  let hasPermission = false
+  if (
+    permissions !== undefined &&
+    permissions !== null &&
+    permissions.data === 'ADMIN'
+  ) {
+    hasPermission = true
+  }
 
   // Disable menu items if not logged-in
   const disabled = !ndexCredential.isLogin
 
-  const { uuid } = useParams()
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -31,6 +57,14 @@ const ShareMenu: FC = (): ReactElement => {
 
   const open = Boolean(anchorEl)
   const id = open ? 'advanced-menu' : undefined
+  let isDoiAvailable = false
+  if (summary !== undefined && summary !== null) {
+    const { doi } = summary
+    if (doi !== undefined) {
+      // DOI status available.  Check its current state
+      isDoiAvailable = true
+    }
+  }
 
   return (
     <>
@@ -74,7 +108,7 @@ const ShareMenu: FC = (): ReactElement => {
 
         <Tooltip
           title={
-            disabled
+            disabled || isDoiAvailable || !hasPermission
               ? DISABLED_MENU_TOOLTIP
               : 'Request a Digital Object Identifier for this network'
           }
@@ -82,7 +116,10 @@ const ShareMenu: FC = (): ReactElement => {
           placement={'left-end'}
         >
           <div>
-            <CreateDOIMenuItem uuid={uuid} disabled={disabled} />
+            <CreateDOIMenuItem
+              uuid={uuid}
+              disabled={disabled || isDoiAvailable || !hasPermission}
+            />
           </div>
         </Tooltip>
       </Menu>
