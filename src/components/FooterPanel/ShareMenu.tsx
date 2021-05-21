@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useContext } from 'react'
+import React, { FC, ReactElement, useContext, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 
 import Menu from '@material-ui/core/Menu'
@@ -13,6 +13,7 @@ import useNetworkPermissions from '../../hooks/useNetworkPermissions'
 
 const DISABLED_MENU_TOOLTIP =
   'This feature is only available to signed-in users'
+const DISABLED_NOT_ADMIN = 'You need to be the owner of this network'
 
 const ShareMenu: FC = (): ReactElement => {
   const { uuid } = useParams()
@@ -53,6 +54,20 @@ const ShareMenu: FC = (): ReactElement => {
 
   const handleClose = () => {
     setAnchorEl(null)
+  }
+
+  const getDisabledMessage = (
+    isLogin: boolean,
+    isDoiAvailable: boolean,
+    hasPermission: boolean,
+  ): string => {
+    if(isLogin && !hasPermission) {
+      return "You don't have permission to request DOI."
+    } else if(isLogin && hasPermission && isDoiAvailable) {
+      return "This entry already has a DOI or already requested."
+    } else {
+      return DISABLED_MENU_TOOLTIP
+    }
   }
 
   const open = Boolean(anchorEl)
@@ -109,7 +124,7 @@ const ShareMenu: FC = (): ReactElement => {
         <Tooltip
           title={
             disabled || isDoiAvailable || !hasPermission
-              ? DISABLED_MENU_TOOLTIP
+              ? getDisabledMessage(ndexCredential.isLogin, isDoiAvailable, hasPermission)
               : 'Request a Digital Object Identifier for this network'
           }
           arrow

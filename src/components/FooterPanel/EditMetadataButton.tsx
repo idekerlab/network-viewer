@@ -7,11 +7,28 @@ import useNetworkPermissions from '../../hooks/useNetworkPermissions'
 import { Tooltip } from '@material-ui/core'
 
 import { getCurrentServer } from '../../utils/locationUtil'
+import useNetworkSummary from '../../hooks/useNetworkSummary'
 
 const EditMetadataButton: FC = (): ReactElement => {
   const { summary, ndexCredential, config } = useContext(AppContext)
   const { uuid } = useParams()
   const { isLogin } = ndexCredential
+
+  const summaryResponse = useNetworkSummary(
+    uuid,
+    config.ndexHttps,
+    'v2',
+    ndexCredential,
+  )
+  const networkSummary = summaryResponse.data
+  let isDoiAvailable = false
+  if (networkSummary !== undefined && networkSummary !== null) {
+    const { doi } = summary
+    if (doi !== undefined) {
+      // DOI status available.
+      isDoiAvailable = true
+    }
+  }
 
   const permissions = useNetworkPermissions(
     uuid,
@@ -38,8 +55,13 @@ const EditMetadataButton: FC = (): ReactElement => {
 
   let disabled = true
   if (hasPermission && login) {
-    message = 'Edit network properties'
-    disabled = false
+    if (isDoiAvailable) {
+      message =
+        'You cannot edit property if DOI is already assigned or request is already submitted.'
+    } else {
+      message = 'Edit network properties'
+      disabled = false
+    }
   } else if (!hasPermission && login) {
     message = "You don't have permission to edit this network"
   }
