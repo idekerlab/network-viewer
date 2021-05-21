@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
       minHeight: '2.6em',
       backgroundColor: theme.palette.background.paper,
       borderTop: `2px solid ${theme.palette.background.default}`,
-      borderBottom: `1px solid ${theme.palette.background.default}`
+      borderBottom: `1px solid ${theme.palette.background.default}`,
     },
     tab: {
       minHeight: '2.6em',
@@ -99,17 +99,12 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
     AppContext,
   )
 
+  const { showSearchResult } = uiState
+
   const { uuid } = useParams()
 
   const attributes = useAttributes(uuid, cx, uiState.mainNetworkNotDisplayed)
   const context = useMemo(() => getContextFromCx(cx), [cx])
-
-  // const setActiveTab = (state: UIState) => {
-  //   uiStateDispatch({
-  //     type: UIStateActions.SET_ACTIVE_TAB,
-  //     uiState: state,
-  //   })
-  // }
 
   // Selected tab
   const [selected, setSelected] = useState(0)
@@ -156,7 +151,9 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
 
   let nodes = []
   let edges = []
-  if (selectionState.lastSelected.fromMain) {
+  if (!showSearchResult) {
+    // Main view only
+    // if (selectionState.lastSelected.fromMain) {
     nodes = selectionState.main['nodes']
     edges = selectionState.main['edges']
   } else {
@@ -182,14 +179,13 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
       </div>
       <Tabs
         value={selected}
-        // value={uiState.activeTab}
         onChange={handleChange}
         scrollButtons="auto"
         variant="scrollable"
         className={classes.tabs}
       >
         <Tab className={classes.tab} key={'network-tab'} label={'Network'} />
-        {renderer !== 'lgr' && nodes.length > 1 ? (
+        {(renderer !== 'lgr' || showSearchResult) && nodes.length > 1 ? (
           <Tab className={classes.tab} key={'nodes-tab'} label={'Nodes'} />
         ) : (
           <Tooltip
@@ -210,7 +206,7 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
             </span>
           </Tooltip>
         )}
-        {renderer !== 'lgr' && edges.length > 1 ? (
+        {(renderer !== 'lgr' || showSearchResult) && edges.length > 1 ? (
           <Tab className={classes.tab} key={'edges-tab'} label={'Edges'} />
         ) : (
           <Tooltip
@@ -245,7 +241,7 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
         />
       </TabPanel>
 
-      {renderer !== 'lgr' && nodes.length > 1 ? (
+      {(renderer !== 'lgr' || showSearchResult) && nodes.length > 1 ? (
         <TabPanel value={selected} index={1}>
           <EntryTable
             key={'selected-nodes'}
@@ -257,7 +253,7 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
           />
         </TabPanel>
       ) : null}
-      {renderer !== 'lgr' && edges.length > 1 ? (
+      {(renderer !== 'lgr' || showSearchResult) && edges.length > 1 ? (
         <TabPanel value={selected} index={2}>
           <EntryTable
             key={'selected-edges'}

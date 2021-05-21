@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState, useContext } from 'react'
+import React, { useMemo, useContext } from 'react'
 import Linkify from 'linkifyjs/react'
 import Table from './Table'
 import {
@@ -45,11 +45,11 @@ const EntryTable = (props) => {
     return string === undefined || string === ''
   }
 
-  const startsWithNumber = (string) => {
-    if (string === undefined || string === '') {
+  const startsWithNumber = (entry) => {
+    if (entry === undefined || entry === null || entry === '' || entry.length === 0) {
       return false
     }
-    return '0123456789'.includes(string.charAt(0))
+    return '0123456789'.includes(entry.charAt(0))
   }
 
   const getWidth = (phrase) => {
