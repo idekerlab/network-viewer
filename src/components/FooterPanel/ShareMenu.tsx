@@ -64,7 +64,7 @@ const ShareMenu: FC = (): ReactElement => {
     if(isLogin && !hasPermission) {
       return "You don't have permission to request DOI."
     } else if(isLogin && hasPermission && isDoiAvailable) {
-      return "This entry already has a DOI or already requested."
+      return "A DOI has already been requested for this network"
     } else {
       return DISABLED_MENU_TOOLTIP
     }

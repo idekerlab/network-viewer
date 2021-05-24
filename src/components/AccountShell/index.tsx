@@ -9,13 +9,14 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     accountShell: {
       width: '100%',
-      height: '100%',
+      height: '100vh',
       padding: 0,
-      'margin-top': '2em',
       display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
       flexDirection: 'column',
       boxSizing: 'border-box',
-    }
+    },
   }),
 )
 
@@ -23,18 +24,20 @@ const AccountShell: FC = (props) => {
   const classes = useStyles()
   const { config } = useContext(AppContext)
 
-
   return (
     <div className={classes.accountShell}>
-      <NDExAccountProvider ndexServerURL={config.ndexHttps} googleClientId={config.googleClientId}>
-        { props.children }
+      <NDExAccountProvider
+        ndexServerURL={config.ndexHttps}
+        googleClientId={config.googleClientId}
+      >
+        {props.children}
       </NDExAccountProvider>
     </div>
   )
 }
 
 AccountShell.propTypes = {
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
 }
 
 export default AccountShell

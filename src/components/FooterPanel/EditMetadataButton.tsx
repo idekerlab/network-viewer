@@ -57,7 +57,7 @@ const EditMetadataButton: FC = (): ReactElement => {
   if (hasPermission && login) {
     if (isDoiAvailable) {
       message =
-        'You cannot edit property if DOI is already assigned or request is already submitted.'
+        'Network properties cannot be modified once a DOI has been requested or assigned'
     } else {
       message = 'Edit network properties'
       disabled = false
