@@ -13,8 +13,11 @@
     // "url": "http://localhost:3000/viewer/networks/536bafd5-ecc5-11ea-8a8c-525400c25d22",
 
     // Public small human
-    "url": "http://localhost:3000/viewer/networks/4d431a48-ade8-11e6-913c-06832d634f41",
+    // "url": "http://localhost:3000/viewer/networks/4d431a48-ade8-11e6-913c-06832d634f41",
     // "url": "http://localhost:3000/viewer/networks/135fe4e5-9896-11eb-81d5-525400c25d22",
+    
+    // Crash Bug large net
+    "url": "http://localhost:3000/viewer/networks/0258f1e1-bdf6-11eb-82cb-525400c25d22",
     
     // Public large networks
     // "url":  "http://localhost:3000/viewer/networks/25704eb4-c038-11ea-86e2-525400c25d22",

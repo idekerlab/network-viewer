@@ -1,7 +1,7 @@
 import parse from 'html-react-parser'
 
-const getContextFromCx = (cx) => {
-  if (cx == undefined) {
+const getContextFromCx = (cx: any[]) => {
+  if (cx === undefined) {
     return {}
   }
   //Check version
@@ -30,7 +30,7 @@ const getContextFromCx = (cx) => {
   return null
 }
 
-const parseContext = (context) => {
+const parseContext = (context: string) => {
   try {
     const oldContext = JSON.parse(context)
     return Object.keys(oldContext).reduce(
@@ -38,12 +38,12 @@ const parseContext = (context) => {
       {},
     )
   } catch (error) {
-    console.error('Could not parse @context network attribute as JSON: ', error)
+    console.warn('Could not parse @context network attribute as JSON: ', error)
     return {}
   }
 }
 
-const processList = (list, context) => {
+const processList = (list: string[], context) => {
   let listString = ''
   for (let item of list) {
     listString += processItem(item, context, false) + ', '
@@ -51,7 +51,7 @@ const processList = (list, context) => {
   return parse(listString.slice(0, -2))
 }
 
-const processListAsText = (list) => {
+const processListAsText = (list: string[]) => {
   let listString = ''
   for (let item of list) {
     listString += item + ', '
@@ -59,22 +59,24 @@ const processListAsText = (list) => {
   return listString.slice(0, -2)
 }
 
-const processItem = (item, context, parseItem) => {
-  if (item == undefined) {
-    return item
-  }
-  if (context == undefined) {
-    if (parseItem) {
-      return parse(item)
-    }
+const processItem = (item: string, context: object, parseItem: boolean) => {
+  if (item === undefined || item === null) {
     return item
   }
 
-  let returnString = String(item)
+  let itemString = item.toString()
+
+  if (context === undefined || context === null) {
+    if (parseItem) {
+      return parse(itemString)
+    }
+    return itemString
+  }
+
   const [prefix, id] = String(item).split(':')
   if (prefix && id) {
     if (prefix.toUpperCase() in context) {
-      returnString =
+      itemString =
         '<a href=' +
         context[prefix.toUpperCase()] +
         id +
@@ -85,13 +87,13 @@ const processItem = (item, context, parseItem) => {
   }
 
   if (parseItem) {
-    return parse(returnString)
+    return parse(itemString)
   }
 
-  return returnString
+  return itemString
 }
 
-const processInternalLink = (item, url) => {
+const processInternalLink = (item: string, url: string) => {
   return parse(
     '<a href=https://' +
       url +
