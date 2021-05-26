@@ -1,7 +1,7 @@
 import parse from 'html-react-parser'
 
 const getContextFromCx = (cx: any[]) => {
-  if (cx === undefined) {
+  if (cx === null || cx === undefined) {
     return {}
   }
   //Check version
