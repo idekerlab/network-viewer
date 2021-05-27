@@ -1,7 +1,6 @@
 import React, { FC } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import SearchBox from './SearchBox'
-import ExpandButton from './ExpandButton'
 import OpenInCytoscape from './OpenInCytoscape'
 import EditMetadataButton from './EditMetadataButton'
 import ShareMenu from './ShareMenu'
@@ -37,7 +36,6 @@ const FooterPanel: FC = () => {
       <SaveNetworkCXButton />
       <EditMetadataButton />
       <ShareMenu />
-      <ExpandButton />
     </div>
   )
 }

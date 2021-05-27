@@ -9,17 +9,18 @@ import ZoomOutIcon from '@material-ui/icons/ZoomOut'
 import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
 import AppContext from '../../context/AppState'
 
+import ExpandButton from './ExpandButton'
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       zIndex: 300,
-      width: '3em',
-      borderRadius: 6,
+      borderRadius: 5,
       border: '1px solid #DDDDDD',
       backgroundColor: '#FFFFFF',
       position: 'absolute',
-      right: '2em',
-      bottom: '2em',
+      right: '1em',
+      bottom: '1em',
     },
     subnet: {
       width: '100%',
@@ -29,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const NavigationPanel = ({ target = 'main' }) => {
+const NavigationPanel = ({ target = 'main'}) => {
   const classes = useStyles()
   const { cyReference, lgrReference } = useContext(AppContext)
 
@@ -73,18 +74,39 @@ const NavigationPanel = ({ target = 'main' }) => {
       orientation="vertical"
       color="secondary"
       variant="outlined"
+      disableFocusRipple={true}
+      disableRipple={true}
     >
-      <IconButton onClick={handleFit}>
+      {target === 'main' ? <ExpandButton /> : <div/>}
+      <IconButton
+        color={'secondary'}
+        style={{ backgroundColor: 'transparent' }}
+        disableFocusRipple={true}
+        disableRipple={true}
+        onClick={handleFit}
+      >
         <FitIcon />
       </IconButton>
       {cy === null || cy === undefined ? (
         <div />
       ) : (
         <React.Fragment>
-          <IconButton onClick={handleZoomIn}>
+          <IconButton
+            color={'secondary'}
+            style={{ backgroundColor: 'transparent' }}
+            disableFocusRipple={true}
+            disableRipple={true}
+            onClick={handleZoomIn}
+          >
             <ZoomInIcon />
           </IconButton>
-          <IconButton onClick={handleZoomOut}>
+          <IconButton
+            color={'secondary'}
+            style={{ backgroundColor: 'transparent' }}
+            disableFocusRipple={true}
+            disableRipple={true}
+            onClick={handleZoomOut}
+          >
             <ZoomOutIcon />
           </IconButton>
         </React.Fragment>
