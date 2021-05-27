@@ -3,6 +3,7 @@ import {
   Chip,
   createStyles,
   Divider,
+  Grid,
   makeStyles,
   Theme,
   Tooltip,
@@ -21,9 +22,6 @@ import QueryState from './QueryPanel/QueryState'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    networkDetails: {
-      // margin: theme.spacing(1),
-    },
     item: {
       marginRight: theme.spacing(1),
     },
@@ -34,7 +32,10 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
       boxSizing: 'border-box',
+    },
+    grid: {
       padding: theme.spacing(1),
+      paddingLeft: theme.spacing(2),
     },
     warning: {
       color: theme.palette.warning.main,
@@ -43,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.error.main,
     },
     buttonContainer: {
-      margin: theme.spacing(1),
+      // margin: theme.spacing(1),
     },
     copySpan: {
       display: 'none',
@@ -77,9 +78,10 @@ const NetworkDetails: FC<{
     setPanelState({ ...panelState, queryOpen: val })
   }
 
-  if (summary === undefined) {
+  if (summary === undefined || summary === null) {
     return null
   }
+
   const getInformationIcon = (objectCount: number) => {
     if (objectCount >= viewerThreshold && objectCount < warningThreshold) {
       return (
@@ -108,19 +110,28 @@ const NetworkDetails: FC<{
   }
 
   return (
-    <div className={classes.networkDetails}>
+    <div>
       {summary.doi ? (
         <div className={classes.buttonContainer}>
           {summary.doi === 'Pending' ? (
-            <span>
-              <Chip
-                label={'DOI: Pending'}
-                size="small"
-                variant="outlined"
-                className={classes.item}
-              />
-              <DeleteDOIButton uuid={uuid} />{' '}
-            </span>
+            <Grid
+              className={classes.grid}
+              container
+              alignItems={'center'}
+              spacing={0}
+            >
+              <Grid item>
+                <DeleteDOIButton uuid={uuid} />{' '}
+              </Grid>
+              <Grid item>
+                <Chip
+                  variant={'outlined'}
+                  label={'DOI Status: Pending'}
+                  size={'small'}
+                  color={'default'}
+                />
+              </Grid>
+            </Grid>
           ) : (
             <Tooltip
               title={
@@ -135,6 +146,8 @@ const NetworkDetails: FC<{
                 <Chip
                   clickable
                   label={`DOI: ${summary.doi}`}
+                  size={'small'}
+                  color={'default'}
                   variant="outlined"
                   onMouseEnter={mouseEnter}
                 />
@@ -144,7 +157,7 @@ const NetworkDetails: FC<{
         </div>
       ) : null}
 
-      <div className={classes.row}>
+      <Grid container className={classes.grid}>
         <Typography className={classes.label} variant="subtitle2">
           Network Size:
         </Typography>
@@ -163,10 +176,10 @@ const NetworkDetails: FC<{
           className={classes.item}
         />
         {getInformationIcon(summary.edgeCount + summary.nodeCount)}
-      </div>
+      </Grid>
 
       {uiState.showSearchResult && summary.subnetworkNodeCount !== undefined ? (
-        <div className={classes.row}>
+        <Grid container className={classes.grid}>
           <Typography className={classes.label} variant="subtitle2">
             Query Result:
           </Typography>
@@ -182,7 +195,7 @@ const NetworkDetails: FC<{
             variant="outlined"
             className={classes.item}
           />
-        </div>
+        </Grid>
       ) : null}
 
       <Divider />

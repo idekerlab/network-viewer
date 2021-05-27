@@ -1,6 +1,6 @@
-import React, { useContext, useState } from 'react'
-import Button from '@material-ui/core/Button'
-import ClearIcon from '@material-ui/icons/Clear'
+import React, { useContext, useState, VFC } from 'react'
+import { IconButton, Button } from '@material-ui/core'
+import ClearIcon from '@material-ui/icons/Delete'
 import { Tooltip } from '@material-ui/core'
 import Typography from '@material-ui/core/Typography'
 import DialogTitle from '@material-ui/core/DialogTitle'
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const DeleteDOIButton = ({ uuid }) => {
+const DeleteDOIButton: VFC<{ uuid: string }> = ({ uuid }) => {
   const classes = useStyles()
 
   const { ndexCredential, config, summary, setSummary } = useContext(AppContext)
@@ -36,7 +36,7 @@ const DeleteDOIButton = ({ uuid }) => {
 
   const [dialogOpen, setDialogOpen] = useState(false)
 
-  const handleDialog = () => {
+  const handleDialog = (): void => {
     setDialogOpen(true)
   }
 
@@ -62,6 +62,7 @@ const DeleteDOIButton = ({ uuid }) => {
       .then(onSuccess)
       .catch((err) => {
         console.log(err)
+        throw new Error(err)
       })
   }
 
@@ -73,19 +74,19 @@ const DeleteDOIButton = ({ uuid }) => {
   ) {
     return (
       <React.Fragment>
-        <Tooltip title="">
-          <Button
+        <Tooltip title="Cancel DOI request" arrow placement={'left'}>
+          <IconButton
+            size={'small'}
             onClick={handleDialog}
-            startIcon={<ClearIcon />}
             className={classes.button}
           >
-            Delete DOI Request
-          </Button>
+            <ClearIcon />
+          </IconButton>
         </Tooltip>
         <Dialog
           disableBackdropClick
           disableEscapeKeyDown
-          maxWidth="md"
+          maxWidth="sm"
           aria-labelledby="confirmation-dialog-title"
           open={dialogOpen}
         >

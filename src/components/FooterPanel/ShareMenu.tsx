@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useContext, useEffect } from 'react'
+import React, { VFC, ReactElement, useContext } from 'react'
 import { useParams } from 'react-router-dom'
 
 import Menu from '@material-ui/core/Menu'
@@ -8,24 +8,14 @@ import ShareLinkMenuItem from '../ShareLinkMenuItem'
 import CreateDOIMenuItem from '../CreateDOIMenuItem'
 import { Tooltip } from '@material-ui/core'
 import AppContext from '../../context/AppState'
-import useNetworkSummary from '../../hooks/useNetworkSummary'
 import useNetworkPermissions from '../../hooks/useNetworkPermissions'
 
 const DISABLED_MENU_TOOLTIP =
   'This feature is only available to signed-in users'
-const DISABLED_NOT_ADMIN = 'You need to be the owner of this network'
 
-const ShareMenu: FC = (): ReactElement => {
+const ShareMenu: VFC = (): ReactElement => {
   const { uuid } = useParams()
-  const { config, ndexCredential } = useContext(AppContext)
-
-  const summaryResponse = useNetworkSummary(
-    uuid,
-    config.ndexHttps,
-    'v2',
-    ndexCredential,
-  )
-  const summary = summaryResponse.data
+  const { summary, config, ndexCredential } = useContext(AppContext)
 
   const permissions = useNetworkPermissions(
     uuid,
