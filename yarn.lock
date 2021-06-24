@@ -1203,10 +1203,24 @@
     cartocolor "^4.0.2"
     d3-scale "^3.2.3"
 
-"@deck.gl/core@8.4.13", "@deck.gl/core@^8.4.10":
+"@deck.gl/core@8.4.13":
   version "8.4.13"
   resolved "https://registry.yarnpkg.com/@deck.gl/core/-/core-8.4.13.tgz#161c4f2fbc3b37dcfd00b1e2ac7a05602aed9bd6"
   integrity sha512-KG4329inlDMhWOE78/Vj11mmi/rpFyqlf89ac1i+qzIzszmfjFGp1ISDxQevUl3XJao7C79iH117PSHp+mp6yw==
+  dependencies:
+    "@loaders.gl/core" "^2.3.13"
+    "@loaders.gl/images" "^2.3.13"
+    "@luma.gl/core" "^8.4.1"
+    "@math.gl/web-mercator" "^3.4.2"
+    gl-matrix "^3.0.0"
+    math.gl "^3.4.2"
+    mjolnir.js "^2.5.0"
+    probe.gl "^3.2.1"
+
+"@deck.gl/core@^8.4.17":
+  version "8.4.17"
+  resolved "https://registry.yarnpkg.com/@deck.gl/core/-/core-8.4.17.tgz#28ad4cc0198787c2f7604100966fa62c4ca00f85"
+  integrity sha512-YJ2s0LxiE6ySKACyqeh5XluAFZ2XKYx6QBwvrNx/HtWsFlOqB/k0ibvCn8SQQzly5r8Y0jbylROA5aDuns/rSw==
   dependencies:
     "@loaders.gl/core" "^2.3.13"
     "@loaders.gl/images" "^2.3.13"
@@ -1254,10 +1268,20 @@
     d3-dsv "^1.0.8"
     expression-eval "^2.0.0"
 
-"@deck.gl/layers@8.4.13", "@deck.gl/layers@^8.4.10":
+"@deck.gl/layers@8.4.13":
   version "8.4.13"
   resolved "https://registry.yarnpkg.com/@deck.gl/layers/-/layers-8.4.13.tgz#11ca59b91a0ccd7320bba45080b2c9aa206b7ef7"
   integrity sha512-05pMoSowe/0s5S/hXM15DW1DZAh60mx7VR/3FddncBAswxsTl3i5W9VQTciN9h2KEczZKSBIichsTuEiSHoXKQ==
+  dependencies:
+    "@loaders.gl/images" "^2.3.13"
+    "@mapbox/tiny-sdf" "^1.1.0"
+    "@math.gl/polygon" "^3.4.2"
+    earcut "^2.0.6"
+
+"@deck.gl/layers@^8.4.17":
+  version "8.4.17"
+  resolved "https://registry.yarnpkg.com/@deck.gl/layers/-/layers-8.4.17.tgz#ad1d0990e82d38d447042d0156e9c5e8fa416ab1"
+  integrity sha512-a9Y/FxPpkcgaHjaWqiWzH7sRwsJGnxrItbzpbioKMHuzEWZk8vc6SOgGiarygmQPhkt78wxJwBflASC5OIjmkA==
   dependencies:
     "@loaders.gl/images" "^2.3.13"
     "@mapbox/tiny-sdf" "^1.1.0"
@@ -1278,10 +1302,17 @@
     "@luma.gl/experimental" "^8.4.1"
     "@luma.gl/shadertools" "^8.4.1"
 
-"@deck.gl/react@8.4.13", "@deck.gl/react@^8.4.10":
+"@deck.gl/react@8.4.13":
   version "8.4.13"
   resolved "https://registry.yarnpkg.com/@deck.gl/react/-/react-8.4.13.tgz#d9e3c12eced60ad5e115e0d5483e4c7f58289437"
   integrity sha512-dBUBZfNVREEwTqb/OzyhxpMOxRBIUB5JvN10NB/vbdnl6F5we02ehrwO/AMhq+8oRnApOEvwsIFtyRxBFfgq6A==
+  dependencies:
+    prop-types "^15.6.0"
+
+"@deck.gl/react@^8.4.17":
+  version "8.4.17"
+  resolved "https://registry.yarnpkg.com/@deck.gl/react/-/react-8.4.17.tgz#180f6a85c3e040888462629de4ccb6526682dcf4"
+  integrity sha512-0hU0h3m4Xf6cbhFeIEszVFAIJ9HgLxaIs5VOYwKrdwIFBA9A6tg5B+JKN8dC8vw7xVu5pyB3+HaGYnGb45VJYQ==
   dependencies:
     prop-types "^15.6.0"
 
@@ -5914,6 +5945,18 @@ flat-cache@^3.0.4:
   dependencies:
     flatted "^3.1.0"
     rimraf "^3.0.2"
+
+flatbush@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/flatbush/-/flatbush-3.3.0.tgz#b68c9149107ae86d2bce6373491f404ba4f4534e"
+  integrity sha512-F3EzQvKpdmXUbFwWxLKBpytOFEGYQMCTBLuqZ4GEajFOEAvnOIBiyxW3OFSZXIOtpCS8teN6bFEpNZtnVXuDQA==
+  dependencies:
+    flatqueue "^1.2.0"
+
+flatqueue@^1.2.0:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/flatqueue/-/flatqueue-1.2.1.tgz#82f501758fc5925742fbeb478637230456157ef2"
+  integrity sha512-X86TpWS1rGuY7m382HuA9vngLeDuWA9lJvhEG+GfgKMV5onSvx5a71cl7GMbXzhWtlN9dGfqOBrpfqeOtUfGYQ==
 
 flatted@^3.1.0:
   version "3.1.1"
@@ -10725,10 +10768,10 @@ react-table-sticky@^1.1.3:
   resolved "https://registry.yarnpkg.com/react-table-sticky/-/react-table-sticky-1.1.3.tgz#af27c0afb2c4a32c292d486b21d9a896d354ba70"
   integrity sha512-9hyjbveY1aDyo9wkyMOsmKIpQdFUaw2yG6/f8c5SPE4pOTuKm7L2zLnDa+AxpG+3315USulViaO4XSOkX1KdVA==
 
-react-table@^7.6.3:
-  version "7.6.3"
-  resolved "https://registry.yarnpkg.com/react-table/-/react-table-7.6.3.tgz#76434392b3f62344bdb704f5b227c2f29c1ffb14"
-  integrity sha512-hfPF13zDLxPMpLKzIKCE8RZud9T/XrRTsaCIf8zXpWZIZ2juCl7qrGpo3AQw9eAetXV5DP7s2GDm+hht7qq5Dw==
+react-table@^7.7.0:
+  version "7.7.0"
+  resolved "https://registry.yarnpkg.com/react-table/-/react-table-7.7.0.tgz#e2ce14d7fe3a559f7444e9ecfe8231ea8373f912"
+  integrity sha512-jBlj70iBwOTvvImsU9t01LjFjy4sXEtclBovl3mTiqjz23Reu0DKnRza4zlLtOPACx6j2/7MrQIthIK1Wi+LIA==
 
 react-transition-group@^4.4.0:
   version "4.4.1"

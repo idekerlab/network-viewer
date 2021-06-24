@@ -92,16 +92,16 @@ const Table = ({ columns, data }) => {
 
   // TODO: Try to use virtualized, fixed-size table for performance
   const tableBody = useRef(null)
-  const [width, setWidth] = useState(100)
-  const [height, setHeight] = useState(200)
+  // const [width, setWidth] = useState(100)
+  // const [height, setHeight] = useState(200)
 
   useEffect(() => {
     if (tableBody.current) {
-      const parent = tableBody.current
-      let height = parent['offsetHeight']
-      let width = parent['offsetWidth']
-      setWidth(width)
-      setHeight(height)
+      // const parent = tableBody.current
+      // let height = parent['offsetHeight']
+      // let width = parent['offsetWidth']
+      // setWidth(width)
+      // setHeight(height)
     }
   }, [tableBody])
 

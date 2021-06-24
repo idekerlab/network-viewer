@@ -24,7 +24,8 @@ type LGRPanelProps = {
 }
 
 export type EventHandlers = {
-  setSelectedNodeOrEdge: Function
+  setSelectedNodeOrEdge: Function,
+  setSelectedObjects: (nodes: NodeView[], edges: EdgeView[]) => (void),
   clearAll: Function
 }
 
@@ -37,7 +38,6 @@ const LGRPanel = ({
   layoutName = 'preset',
   pickable,
 }: LGRPanelProps) => {
-
   const { setLgrReference } = useContext(AppContext)
   const [render3d, setRender3d] = useState(false)
   const [data, setData] = useState<GraphView | null>(null)
@@ -70,8 +70,10 @@ const LGRPanel = ({
     if (selectedEdges.length !== 0) {
       selectedEdges.forEach((edgeId) => {
         const lastSelectedEdge = data.edgeViews.get(edgeId)
-        lastSelectedEdge.selected = false
-        console.log('Clear edge selection:', lastSelectedEdge)
+        if (lastSelectedEdge !== undefined) {
+          lastSelectedEdge.selected = false
+          console.log('Clear edge selection:', lastSelectedEdge)
+        }
       })
     }
     const edgeId: string = selectedEdgeEvent.id
@@ -79,23 +81,14 @@ const LGRPanel = ({
   }
 
   const _handleBackgroundClick = (event: object): void => {
-    clearSelection()
     eventHandlers.clearAll()
-    console.log('Reset election:', selectedNodes, selectedEdges)
+    console.log('Reset selection:', selectedNodes, selectedEdges)
   }
 
-  const clearSelection = () => {
-    selectedNodes.forEach((nodeId) => {
-      const lastSelectedNode = data.nodeViews.get(nodeId)
-      lastSelectedNode.selected = false
-      console.log('Clear Node selection:', lastSelectedNode)
-    })
-    selectedEdges.forEach((edgeId) => {
-      const lastSelectedEdge = data.edgeViews.get(edgeId)
-      lastSelectedEdge.selected = false
-      console.log('Clear edge selection:', lastSelectedEdge)
-    })
-    eventHandlers.clearAll()
+  const _handleSelected = (selectedNodes: NodeView[], selectedEdges: EdgeView[]): void => {
+
+    eventHandlers.setSelectedObjects(selectedNodes, selectedEdges)
+    console.log('Selection Set--------------',selectedNodes, selectedEdges)
   }
 
   useEffect(() => {
@@ -129,6 +122,7 @@ const LGRPanel = ({
       graphView={data}
       onNodeClick={_handleNodeClick}
       onEdgeClick={_handleEdgeClick}
+      onSelect={_handleSelected}
       onBackgroundClick={_handleBackgroundClick}
       render3d={render3d}
       backgroundColor={backgroundColor}

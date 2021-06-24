@@ -1,11 +1,4 @@
-import React, {
-  useState,
-  useMemo,
-  useContext,
-  useEffect,
-  FC,
-  ReactElement,
-} from 'react'
+import React, { useState, useMemo, useContext, FC, ReactElement } from 'react'
 
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import NetworkPropertyPanel from './NetworkPropertyPanel'
@@ -185,27 +178,12 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
         className={classes.tabs}
       >
         <Tab className={classes.tab} key={'network-tab'} label={'Network'} />
-        {(renderer !== 'lgr' || showSearchResult) && nodes.length > 1 ? (
-          <Tab className={classes.tab} key={'nodes-tab'} label={'Nodes'} />
-        ) : (
-          <Tooltip
-            title={
-              renderer === 'lgr'
-                ? TOOLTIP_MESSAGE.LGR_NODE
-                : TOOLTIP_MESSAGE.CYJS_NODE
-            }
-            arrow
-          >
-            <span>
-              <Tab
-                className={classes.tab}
-                key={'nodes-tab'}
-                label={'Nodes'}
-                disabled
-              />
-            </span>
-          </Tooltip>
-        )}
+        <Tab
+          className={classes.tab}
+          key={'nodes-tab'}
+          label={'Nodes'}
+          // disabled
+        />
         {(renderer !== 'lgr' || showSearchResult) && edges.length > 1 ? (
           <Tab className={classes.tab} key={'edges-tab'} label={'Edges'} />
         ) : (
@@ -241,18 +219,16 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
         />
       </TabPanel>
 
-      {(renderer !== 'lgr' || showSearchResult) && nodes.length > 1 ? (
-        <TabPanel value={selected} index={1}>
-          <EntryTable
-            key={'selected-nodes'}
-            selectedObjects={nodes}
-            attributes={attributes.nodeAttr}
-            context={context}
-            letterWidths={letterWidths}
-            label={'Name'}
-          />
-        </TabPanel>
-      ) : null}
+      <TabPanel value={selected} index={1}>
+        <EntryTable
+          key={'selected-nodes'}
+          selectedObjects={nodes}
+          attributes={attributes.nodeAttr}
+          context={context}
+          letterWidths={letterWidths}
+          label={'Name'}
+        />
+      </TabPanel>
       {(renderer !== 'lgr' || showSearchResult) && edges.length > 1 ? (
         <TabPanel value={selected} index={2}>
           <EntryTable
