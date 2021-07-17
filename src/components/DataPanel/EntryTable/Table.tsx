@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { VFC, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { useTable, useBlockLayout } from 'react-table'
 import { useSticky } from 'react-table-sticky'
@@ -88,22 +88,11 @@ const Styles = styled.div`
   }
 `
 
-const Table = ({ columns, data }) => {
+const Table: VFC<{ columns: any[]; data: any[] }> = ({ columns, data }) => {
+  const t0 = performance.now()
 
   // TODO: Try to use virtualized, fixed-size table for performance
   const tableBody = useRef(null)
-  // const [width, setWidth] = useState(100)
-  // const [height, setHeight] = useState(200)
-
-  useEffect(() => {
-    if (tableBody.current) {
-      // const parent = tableBody.current
-      // let height = parent['offsetHeight']
-      // let width = parent['offsetWidth']
-      // setWidth(width)
-      // setHeight(height)
-    }
-  }, [tableBody])
 
   const defaultColumn = React.useMemo(
     () => ({
@@ -130,6 +119,7 @@ const Table = ({ columns, data }) => {
     useSticky,
   )
 
+  console.log('-----TBL2', performance.now() - t0)
   return (
     <Styles>
       <div
@@ -151,18 +141,21 @@ const Table = ({ columns, data }) => {
 
         <div {...getTableBodyProps()} className="body" ref={tableBody}>
           {rows.map((row, i) => {
-            prepareRow(row)
-            return (
-              <div {...row.getRowProps()} className="tr">
-                {row.cells.map((cell) => {
-                  return (
-                    <div {...cell.getCellProps()} className="td">
-                      {cell.render('Cell')}
-                    </div>
-                  )
-                })}
-              </div>
-            )
+            return (<div className="tr">
+              <div className="td">{i}</div>
+            </div>)
+            // prepareRow(row)
+            // return (
+            //   <div {...row.getRowProps()} className="tr">
+            //     {row.cells.map((cell) => {
+            //       return (
+            //         <div {...cell.getCellProps()} className="td">
+            //           {cell.render('Cell')}
+            //         </div>
+            //       )
+            //     })}
+            //   </div>
+            // )
           })}
         </div>
       </div>

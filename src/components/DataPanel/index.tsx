@@ -1,4 +1,12 @@
-import React, { useState, useMemo, useContext, FC, ReactElement } from 'react'
+import React, {
+  useRef,
+  useEffect,
+  useState,
+  useMemo,
+  useContext,
+  FC,
+  ReactElement,
+} from 'react'
 
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import NetworkPropertyPanel from './NetworkPropertyPanel'
@@ -7,14 +15,21 @@ import AppContext from '../../context/AppState'
 import useAttributes from '../../hooks/useAttributes'
 import { getContextFromCx } from '../../utils/contextUtil'
 import useNetworkSummary from '../../hooks/useNetworkSummary'
-import { Tab, Tabs, Tooltip, Typography } from '@material-ui/core'
+import { Tooltip, Typography } from '@material-ui/core'
 import MinimizeButton from './NetworkPropertyPanel/MinimizeButton'
 import EntryTable from './EntryTable'
 import QueryState, { DB } from './NetworkPropertyPanel/QueryPanel/QueryState'
 import TargetNodes from './NetworkPropertyPanel/QueryPanel/TargetNodes'
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+
+let baseFontSize = null
+
+const useStyles = makeStyles((theme: Theme) => {
+
+  baseFontSize = theme.typography.fontSize
+
+  return createStyles({
     root: {
       width: '100%',
       height: '100%',
@@ -23,8 +38,6 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       boxSizing: 'border-box',
-      borderBottom: '1px solid rgba(220,220,220,0.7)',
-      backgroundColor: '#FEFEFE',
     },
     topBar: {
       display: 'flex',
@@ -37,24 +50,29 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingLeft: theme.spacing(3),
     },
     tabs: {
-      marginTop: theme.spacing(1),
-      minHeight: '2.6em',
+      boxSizing: 'border-box',
       backgroundColor: theme.palette.background.paper,
-      borderTop: `2px solid ${theme.palette.background.default}`,
-      borderBottom: `1px solid ${theme.palette.background.default}`,
+      margin: 0,
+      padding: 0,
+      height: '100%',
+      width: '100%',
     },
     tab: {
-      minHeight: '2.6em',
-      minWidth: '7em',
+      // minHeight: '2.6em',
+      // minWidth: '7em',
       '&:disabled': {
         color: '#AAAAAA',
       },
     },
+    tabPanel: {
+      width: '100%',
+      height: '100%',
+    },
     collapsiblePanel: {
       minHeight: 'auto',
     },
-  }),
-)
+  })
+})
 
 const TOOLTIP_MESSAGE = {
   CYJS_NODE: 'Select multiple nodes to view in node table',
@@ -63,10 +81,10 @@ const TOOLTIP_MESSAGE = {
   LGR_EDGE: 'Multiple edge selection for large networks is coming soon',
 }
 
-const TabPanel = (props) => {
-  const { children, value, index } = props
-  return value === index ? children : null
-}
+// const TabPanel = (props) => {
+//   const { children, value, index } = props
+//   return value === index ? children : null
+// }
 
 export type NetworkPanelState = {
   netInfoOpen: boolean
@@ -86,11 +104,25 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
   cx,
   renderer,
 }): ReactElement => {
+  const baseRef = useRef(null)
+  const titleRef = useRef(null)
+  const tabsRef = useRef(null)
   const classes = useStyles()
+
+  const [size, setSize] = useState<[number, number]>([0, 0])
 
   const { ndexCredential, config, selectionState, uiState } = useContext(
     AppContext,
   )
+  useEffect(() => {
+    if (baseRef.current && titleRef.current) {
+      let baseHeight =
+        baseRef.current.offsetHeight - titleRef.current.offsetHeight
+      let baseWidth = baseRef.current.offsetWidth
+
+      setSize([baseWidth, baseHeight])
+    }
+  }, [baseRef, titleRef, tabsRef, selectionState])
 
   const { showSearchResult } = uiState
 
@@ -124,6 +156,7 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
     return el.offsetWidth
   }
 
+
   const letterWidths = useMemo(() => {
     const widths = {}
     let widthSum = 0
@@ -134,7 +167,8 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
       if (letter === ' ') {
         letter = '&nbsp'
       }
-      widths[letter] = getLetterWidth(sandbox, letter)
+      widths[letter] = baseFontSize
+      // widths[letter] = getLetterWidth(sandbox, letter)
       widthSum += widths[letter]
     }
     sandbox.style.display = 'none'
@@ -163,73 +197,43 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
   const summaryResponseData = summaryResponse.data
 
   return (
-    <div className={classes.root} style={{ width: width }}>
-      <div className={classes.topBar}>
+    <div className={classes.root} style={{ width: width }} ref={baseRef}>
+      <div className={classes.topBar} ref={titleRef}>
         <MinimizeButton />
         <Typography variant="h5" className={classes.title}>
           {summaryResponseData['name']}
         </Typography>
       </div>
-      <Tabs
-        value={selected}
-        onChange={handleChange}
-        scrollButtons="auto"
-        variant="scrollable"
-        className={classes.tabs}
-      >
-        <Tab className={classes.tab} key={'network-tab'} label={'Network'} />
-        <Tab
-          className={classes.tab}
-          key={'nodes-tab'}
-          label={'Nodes'}
-          // disabled
-        />
-        {(renderer !== 'lgr' || showSearchResult) && edges.length > 1 ? (
-          <Tab className={classes.tab} key={'edges-tab'} label={'Edges'} />
-        ) : (
-          <Tooltip
-            title={
-              renderer === 'lgr'
-                ? TOOLTIP_MESSAGE.LGR_EDGE
-                : TOOLTIP_MESSAGE.CYJS_EDGE
-            }
-            arrow
-          >
-            <span>
-              <Tab
-                className={classes.tab}
-                key={'edges-tab'}
-                label={'Edges'}
-                disabled
-              />
-            </span>
-          </Tooltip>
-        )}
-        )
-      </Tabs>
 
-      <TabPanel value={selected} index={0}>
-        <NetworkPropertyPanel
-          cx={cx}
-          panelState={panelState}
-          setPanelState={setPanelState}
-          queryState={queryState}
-          setQueryState={setQueryState}
-          renderer={renderer}
-        />
-      </TabPanel>
+      <Tabs forceRenderTabPanel={true}>
+        <TabList ref={tabsRef}>
+          <Tab key={'network-tab'}>Network</Tab>
+          <Tab key={'nodes-tab'}>Nodes ({nodes.length} selected)</Tab>
+          <Tab key={'edges-tab'}>Edges ({edges.length} selected)</Tab>
+        </TabList>
 
-      <TabPanel value={selected} index={1}>
-        <EntryTable
-          key={'selected-nodes'}
-          selectedObjects={nodes}
-          attributes={attributes.nodeAttr}
-          context={context}
-          letterWidths={letterWidths}
-          label={'Name'}
-        />
-      </TabPanel>
-      {(renderer !== 'lgr' || showSearchResult) && edges.length > 1 ? (
+        <TabPanel value={selected} index={0}>
+          <NetworkPropertyPanel
+            cx={cx}
+            panelState={panelState}
+            setPanelState={setPanelState}
+            queryState={queryState}
+            setQueryState={setQueryState}
+            renderer={renderer}
+          />
+        </TabPanel>
+
+        <TabPanel value={selected} index={1}>
+          <EntryTable
+            key={'selected-nodes'}
+            selectedObjects={nodes}
+            attributes={attributes.nodeAttr}
+            context={context}
+            letterWidths={letterWidths}
+            label={'Name'}
+            parentSize={size}
+          />
+        </TabPanel>
         <TabPanel value={selected} index={2}>
           <EntryTable
             key={'selected-edges'}
@@ -239,9 +243,10 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
             context={context}
             letterWidths={letterWidths}
             label={'Name'}
+            parentSize={size}
           />
         </TabPanel>
-      ) : null}
+      </Tabs>
     </div>
   )
 }

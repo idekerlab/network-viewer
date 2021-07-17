@@ -13,6 +13,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: '100%',
+      height: '100%',
       overflowY: 'auto',
       margin: 0,
       padding: 0,
@@ -31,7 +32,6 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-
 const NetworkPropertyPanel: FC<{
   cx: object
   panelState: NetworkPanelState
@@ -39,7 +39,14 @@ const NetworkPropertyPanel: FC<{
   queryState: QueryState
   setQueryState: (QueryState) => void
   renderer: string
-}> = ({ cx, panelState, setPanelState, queryState, setQueryState, renderer }) => {
+}> = ({
+  cx,
+  panelState,
+  setPanelState,
+  queryState,
+  setQueryState,
+  renderer,
+}) => {
   const classes = useStyles()
   const { ndexCredential, config, setSummary, summary } = useContext(AppContext)
   const { uuid } = useParams()
@@ -82,7 +89,7 @@ const NetworkPropertyPanel: FC<{
   }
 
   return (
-    <>
+    <div className={classes.root}>
       <NetworkDetails
         cx={cx}
         panelState={panelState}
@@ -98,7 +105,7 @@ const NetworkPropertyPanel: FC<{
           setPanelState={setPanelState}
         />
       </div>
-    </>
+    </div>
   )
 }
 
