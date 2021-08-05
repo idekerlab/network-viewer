@@ -1,6 +1,13 @@
 import React, { VFC, useRef, useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { useTable, useBlockLayout } from 'react-table'
+import {
+  useTable,
+  useBlockLayout,
+  usePagination,
+  useSortBy,
+  useFilters,
+  useGlobalFilter,
+} from 'react-table'
 import { FixedSizeList } from 'react-window'
 import theme from '../../../theme'
 
@@ -29,9 +36,29 @@ const useStyles = makeStyles((theme: Theme) => {
       padding: 0,
       display: 'flex',
       flexDirection: 'column',
+      justifyContent: 'flex-start',
+      background: theme.palette.background.paper,
       boxSizing: 'border-box',
       color: '#333333',
-      border: '4px solid green',
+      border: '4px solid red',
+    },
+    tablePanel: {
+      flexGrow: 1,
+    },
+    pagination: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      background: theme.palette.background.paper,
+      height: '3em',
+      padding: theme.spacing(1),
+      borderTop: `1px solid ${theme.palette.divider}`,
+    },
+    buttons: {
+      // marginRight: theme.spacing(1)
+    },
+    button: {
+      marginRight: theme.spacing(1)
     },
     topBar: {
       display: 'flex',
@@ -79,7 +106,8 @@ const useStyles = makeStyles((theme: Theme) => {
     leftSideGridContainer: {
       flex: '0 0 75px',
       zIndex: 10,
-      background: '#FFFFFF'
+      background: '#FFFFFF',
+      borderRight: `1px solid ${theme.palette.divider}`,
     },
     leftSideGrid: {
       overflow: 'hidden !important',
@@ -87,7 +115,9 @@ const useStyles = makeStyles((theme: Theme) => {
     headerGrid: {
       width: '100%',
       overflow: 'hidden !important',
-      background: '#FFFFFF'
+      background: 'red',
+      // background: theme.palette.background.paper,
+      borderBottom: `1px solid ${theme.palette.divider}`,
     },
     bodyGrid: {
       width: '100%',
@@ -114,6 +144,7 @@ const useStyles = makeStyles((theme: Theme) => {
   })
 })
 
+// @ts-ignore
 const VirtualizedTable2: VFC<{
   columns: any[]
   data: any
@@ -142,21 +173,35 @@ const VirtualizedTable2: VFC<{
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
-    totalColumnsWidth,
     prepareRow,
+    page,
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    pageCount,
+    gotoPage,
+    nextPage,
+    previousPage,
+    setPageSize,
+    state: { pageIndex, pageSize },
   } = useTable(
     {
       columns,
       data,
       defaultColumn,
+      initialState: {
+        pageIndex: 1,
+      },
     },
+    useSortBy,
+    usePagination,
     useBlockLayout,
+    
   )
 
   const RenderRow = React.useCallback(
     ({ index, style }) => {
-      const row = rows[index]
+      const row = page[index]
       prepareRow(row)
       return (
         <div
@@ -175,7 +220,7 @@ const VirtualizedTable2: VFC<{
         </div>
       )
     },
-    [prepareRow, rows],
+    [prepareRow, page],
   )
 
   const _renderBodyCell = ({ columnIndex, key, rowIndex, style }) => {
@@ -194,18 +239,31 @@ const VirtualizedTable2: VFC<{
     return _renderLeftHeaderCell({ columnIndex, key, style })
   }
 
+  const _handleSort = (index: number) => {
+    console.log('EVT', index)
+  }
+  // Render a cell in the column header.
   const _renderLeftHeaderCell = ({ columnIndex, key, style }) => {
+
+    const column = headerGroups[0].headers[columnIndex]
+    const cprops =  {...column.getHeaderProps(column.getSortByToggleProps())}
+
     return (
-      <div key={key} style={style}>
-        {`C${columnIndex}`}
+      <div key={key} style={style} onClick={cprops['onClick']}>
+        {column.Header}
       </div>
     )
   }
 
   const _renderLeftSideCell = ({ columnIndex, key, rowIndex, style }) => {
+    const row = page[rowIndex]
+    prepareRow(row)
+
+    const cells = row.cells.map((cell) => cell)
+    const cell = [cells[columnIndex]]
     return (
       <div key={key} style={style}>
-        {`R${rowIndex}, C${columnIndex}`}
+        {cell[0].render('Cell')}
       </div>
     )
   }
@@ -215,134 +273,178 @@ const VirtualizedTable2: VFC<{
   const overscanColumnCount = 0
   const overscanRowCount = 5
   const rowHeight = 40
-  const rowCount = rows.length
+  const rowCount = page.length
 
   let height = parentSize[1]
   if (height === undefined) {
     height = 100
   }
 
-  height = height * 0.94
+  height = height * 0.54
 
   return (
-    <ScrollSync>
-      {({
-        clientHeight,
-        clientWidth,
-        onScroll,
-        scrollHeight,
-        scrollLeft,
-        scrollTop,
-        scrollWidth,
-      }) => {
-        const x = scrollLeft / (scrollWidth - clientWidth)
-        const y = scrollTop / (scrollHeight - clientHeight)
+    <div className={classes.root}>
+      <div className={classes.tablePanel}>
+        <ScrollSync>
+          {({
+            clientHeight,
+            clientWidth,
+            onScroll,
+            scrollHeight,
+            scrollLeft,
+            scrollTop,
+            scrollWidth,
+          }) => {
+            const x = scrollLeft / (scrollWidth - clientWidth)
+            const y = scrollTop / (scrollHeight - clientHeight)
 
-        const leftBackgroundColor = '#FF0000'
-        const leftColor = '#555555'
-        const topBackgroundColor = '#00FF00'
-        const topColor = '#333333'
-        const middleBackgroundColor = '#0000FF'
-        const middleColor = '#333333'
+            const leftBackgroundColor = '#FF0000'
+            const leftColor = '#555555'
+            const topBackgroundColor = '#00FF00'
+            const topColor = '#333333'
+            const middleBackgroundColor = '#0000FF'
+            const middleColor = '#333333'
 
-        return (
-          <div className={classes.gridRow}>
-            <div
-              className={classes.leftSideGridContainer}
-              style={{
-                position: 'absolute',
-                left: 0,
-                top: 0,
-                color: leftColor,
-              }}
-            >
-              <Grid
-                cellRenderer={_renderLeftHeaderCell}
-                className={classes.headerGrid}
-                width={columnWidth}
-                height={rowHeight}
-                rowHeight={rowHeight}
-                columnWidth={columnWidth}
-                rowCount={1}
-                columnCount={1}
-              />
-            </div>
-            <div
-              className={classes.leftSideGridContainer}
-              style={{
-                position: 'absolute',
-                left: 0,
-                top: rowHeight,
-                color: leftColor,
-              }}
-            >
-              <Grid
-                overscanColumnCount={overscanColumnCount}
-                overscanRowCount={overscanRowCount}
-                cellRenderer={_renderLeftSideCell}
-                columnWidth={columnWidth}
-                columnCount={1}
-                className={classes.leftSideGrid}
-                height={height - scrollbarWidth()}
-                rowHeight={rowHeight}
-                rowCount={rowCount}
-                scrollTop={scrollTop}
-                width={columnWidth}
-              />
-            </div>
-            <div className={classes.gridColumn}>
-              <AutoSizer disableHeight>
-                {({ width }) => (
-                  <div>
-                    <div
-                      style={{
-                        color: topColor,
-                        height: rowHeight,
-                        width: width - scrollbarWidth(),
-                      }}
-                    >
-                      <Grid
-                        className={classes.headerGrid}
-                        columnWidth={columnWidth}
-                        columnCount={columnCount}
-                        height={rowHeight}
-                        overscanColumnCount={overscanColumnCount}
-                        cellRenderer={_renderHeaderCell}
-                        rowHeight={rowHeight}
-                        rowCount={1}
-                        scrollLeft={scrollLeft}
-                        width={width - scrollbarWidth()}
-                      />
-                    </div>
-                    <div
-                      style={{
-                        color: middleColor,
-                        height,
-                        width,
-                      }}
-                    >
-                      <Grid
-                        className={classes.bodyGrid}
-                        columnWidth={columnWidth}
-                        columnCount={columnCount}
-                        height={height}
-                        onScroll={onScroll}
-                        overscanColumnCount={overscanColumnCount}
-                        overscanRowCount={overscanRowCount}
-                        cellRenderer={_renderBodyCell}
-                        rowHeight={rowHeight}
-                        rowCount={rowCount}
-                        width={width}
-                      />
-                    </div>
-                  </div>
-                )}
-              </AutoSizer>
-            </div>
-          </div>
-        )
-      }}
-    </ScrollSync>
+            return (
+              <div className={classes.gridRow}>
+                <div
+                  className={classes.leftSideGridContainer}
+                  style={{
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                    color: leftColor,
+                  }}
+                >
+                  <Grid
+                    cellRenderer={_renderLeftHeaderCell}
+                    className={classes.headerGrid}
+                    width={columnWidth}
+                    height={rowHeight}
+                    rowHeight={rowHeight}
+                    columnWidth={columnWidth}
+                    rowCount={1}
+                    columnCount={1}
+                  />
+                </div>
+                <div
+                  className={classes.leftSideGridContainer}
+                  style={{
+                    position: 'absolute',
+                    left: 0,
+                    top: rowHeight,
+                    color: leftColor,
+                  }}
+                >
+                  <Grid
+                    overscanColumnCount={overscanColumnCount}
+                    overscanRowCount={overscanRowCount}
+                    cellRenderer={_renderLeftSideCell}
+                    columnWidth={columnWidth}
+                    columnCount={1}
+                    className={classes.leftSideGrid}
+                    height={height - scrollbarWidth()}
+                    rowHeight={rowHeight}
+                    rowCount={rowCount}
+                    scrollTop={scrollTop}
+                    width={columnWidth}
+                  />
+                </div>
+                <div className={classes.gridColumn}>
+                  <AutoSizer disableHeight>
+                    {({ width }) => (
+                      <div>
+                        <div
+                          style={{
+                            color: topColor,
+                            height: rowHeight,
+                            width: width - scrollbarWidth(),
+                          }}
+                        >
+                          <Grid
+                            className={classes.headerGrid}
+                            columnWidth={columnWidth}
+                            columnCount={columnCount}
+                            height={rowHeight}
+                            overscanColumnCount={overscanColumnCount}
+                            cellRenderer={_renderHeaderCell}
+                            rowHeight={rowHeight}
+                            rowCount={1}
+                            scrollLeft={scrollLeft}
+                            width={width - scrollbarWidth()}
+                          />
+                        </div>
+                        <div
+                          style={{
+                            color: middleColor,
+                            height,
+                            width,
+                          }}
+                        >
+                          <Grid
+                            className={classes.bodyGrid}
+                            columnWidth={columnWidth}
+                            columnCount={columnCount}
+                            height={height}
+                            onScroll={onScroll}
+                            overscanColumnCount={overscanColumnCount}
+                            overscanRowCount={overscanRowCount}
+                            cellRenderer={_renderBodyCell}
+                            rowHeight={rowHeight}
+                            rowCount={rowCount}
+                            width={width}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </AutoSizer>
+                </div>
+              </div>
+            )
+          }}
+        </ScrollSync>
+      </div>
+
+      <div className={classes.pagination}>
+        <div className={classes.buttons}>
+          <button className={classes.button} onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+            {'<<'}
+          </button>
+          <button className={classes.button} onClick={() => previousPage()} disabled={!canPreviousPage}>
+            {'<'}
+          </button>
+          <button className={classes.button} onClick={() => nextPage()} disabled={!canNextPage}>
+            {'>'}
+          </button>
+          <button
+            className={classes.button}
+            onClick={() => gotoPage(pageCount - 1)}
+            disabled={!canNextPage}
+          >
+            {'>>'}
+          </button>
+        </div>
+        <span>
+          Page{' '}
+          <strong>
+            {pageIndex + 1} of {pageOptions.length}
+          </strong>{' '}
+        </span>
+        <select
+          value={pageSize}
+          onChange={(e) => {
+            setPageSize(Number(e.target.value))
+          }}
+        >
+          {[10, 50, 100, 1000, 'All'].map((pageSize) => (
+            <option key={pageSize} value={pageSize}>
+              {pageSize}
+            </option>
+          ))}
+        </select>
+        per page
+      </div>
+    </div>
   )
 }
 

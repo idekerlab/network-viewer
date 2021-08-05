@@ -21,12 +21,13 @@ import EntryTable from './EntryTable'
 import QueryState, { DB } from './NetworkPropertyPanel/QueryPanel/QueryState'
 import TargetNodes from './NetworkPropertyPanel/QueryPanel/TargetNodes'
 
+import TablePagination from '@material-ui/core/TablePagination'
+
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 
 let baseFontSize = null
 
 const useStyles = makeStyles((theme: Theme) => {
-
   baseFontSize = theme.typography.fontSize
 
   return createStyles({
@@ -111,6 +112,9 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
 
   const [size, setSize] = useState<[number, number]>([0, 0])
 
+  const [page, setPage] = useState<number>(0)
+  const [rowsPerPage, setRowsPerPage] = useState<number>(5)
+
   const { ndexCredential, config, selectionState, uiState } = useContext(
     AppContext,
   )
@@ -156,7 +160,6 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
     return el.offsetWidth
   }
 
-
   const letterWidths = useMemo(() => {
     const widths = {}
     let widthSum = 0
@@ -195,6 +198,17 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
     ndexCredential,
   )
   const summaryResponseData = summaryResponse.data
+
+  const handleChangePage = (event: unknown, newPage: number): void => {
+    setPage(newPage)
+  }
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10))
+    setPage(0)
+  }
 
   return (
     <div className={classes.root} style={{ width: width }} ref={baseRef}>

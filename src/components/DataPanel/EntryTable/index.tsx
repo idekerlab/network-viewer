@@ -1,4 +1,4 @@
-import React, { VFC, useMemo, useContext, useEffect } from 'react'
+import React, { VFC, useMemo, useContext, useEffect, useState } from 'react'
 import Linkify from 'linkifyjs/react'
 import Table from './Table'
 import VirtualizedTable from './VirtualizedTable'
@@ -11,6 +11,7 @@ import {
 import AppContext from '../../../context/AppState'
 import EmptyPanel from './EmptyPanel'
 import VirtualizedTable2 from './VirtualizedTable2'
+import { TablePagination } from '@material-ui/core'
 
 const EdgeAttributes = {
   SOURCE: 'source',
@@ -58,7 +59,8 @@ const EntryTable: VFC<{
 }> = ({ selectedObjects, attributes, type, context, letterWidths, label, parentSize }) => {
   const { config } = useContext(AppContext)
   
-  const t0 = performance.now()
+
+
 
   const getWidth = (phrase: string | undefined): number => {
     if (phrase === undefined) {
@@ -256,10 +258,18 @@ const EntryTable: VFC<{
     })
   }, [selectedObjects])
 
+
+
   if (selectedObjects.length === 0) {
     return <EmptyPanel type={type} />
   }
-  return <VirtualizedTable2 columns={finalColumns} data={data[0]} parentSize={parentSize} />
+  
+  // @ts-ignore
+  return (
+    <VirtualizedTable2 columns={finalColumns} data={data[0]} parentSize={parentSize} />
+
+    
+  )
   // return <VirtualizedTable columns={finalColumns} data={data[0]} parentSize={parentSize} />
 }
 

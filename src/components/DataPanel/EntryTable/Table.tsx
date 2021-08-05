@@ -119,7 +119,6 @@ const Table: VFC<{ columns: any[]; data: any[] }> = ({ columns, data }) => {
     useSticky,
   )
 
-  console.log('-----TBL2', performance.now() - t0)
   return (
     <Styles>
       <div

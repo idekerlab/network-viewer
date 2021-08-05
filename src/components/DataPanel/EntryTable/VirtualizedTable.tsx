@@ -107,7 +107,6 @@ const Styles = styled.div`
   padding: 0em;
   margin: 0;
   overflow: auto;
-  border: 5px solid red;
 
   .table {
     border-spacing: 0;
