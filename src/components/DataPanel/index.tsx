@@ -24,6 +24,7 @@ import TargetNodes from './NetworkPropertyPanel/QueryPanel/TargetNodes'
 import TablePagination from '@material-ui/core/TablePagination'
 
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import EmptyPanel from './EntryTable/EmptyPanel'
 
 let baseFontSize = null
 
@@ -210,6 +211,23 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
     setPage(0)
   }
 
+  const getTable = (selectedObjects: any[], type: string) => {
+    if (selectedObjects.length === 0 || selectedObjects.length > 200) {
+      return <EmptyPanel type={type} />
+    }
+    return (
+      <EntryTable
+        key={'selected-nodes'}
+        selectedObjects={selectedObjects}
+        attributes={attributes.nodeAttr}
+        context={context}
+        letterWidths={letterWidths}
+        label={'Name'}
+        parentSize={size}
+      />
+    )
+  }
+
   return (
     <div className={classes.root} style={{ width: width }} ref={baseRef}>
       <div className={classes.topBar} ref={titleRef}>
@@ -238,15 +256,7 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
         </TabPanel>
 
         <TabPanel value={selected} index={1}>
-          <EntryTable
-            key={'selected-nodes'}
-            selectedObjects={nodes}
-            attributes={attributes.nodeAttr}
-            context={context}
-            letterWidths={letterWidths}
-            label={'Name'}
-            parentSize={size}
-          />
+          {getTable(nodes, 'node')}
         </TabPanel>
         <TabPanel value={selected} index={2}>
           <EntryTable

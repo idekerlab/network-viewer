@@ -12,6 +12,7 @@ import AppContext from '../../../context/AppState'
 import EmptyPanel from './EmptyPanel'
 import VirtualizedTable2 from './VirtualizedTable2'
 import { TablePagination } from '@material-ui/core'
+import VirtualizedTable3 from './VirtualizedTable3'
 
 const EdgeAttributes = {
   SOURCE: 'source',
@@ -59,8 +60,7 @@ const EntryTable: VFC<{
 }> = ({ selectedObjects, attributes, type, context, letterWidths, label, parentSize }) => {
   const { config } = useContext(AppContext)
   
-
-
+  
 
   const getWidth = (phrase: string | undefined): number => {
     if (phrase === undefined) {
@@ -260,12 +260,10 @@ const EntryTable: VFC<{
 
 
 
-  if (selectedObjects.length === 0) {
-    return <EmptyPanel type={type} />
-  }
   
   // @ts-ignore
   return (
+    // <VirtualizedTable3 columns={finalColumns} data={data[0]} parentSize={parentSize} />
     <VirtualizedTable2 columns={finalColumns} data={data[0]} parentSize={parentSize} />
 
     
