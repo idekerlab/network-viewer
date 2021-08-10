@@ -47,26 +47,26 @@ const useStyles = makeStyles((theme: Theme) => {
     tablePanel: {
       flexGrow: 1,
       boxSizing: 'border-box',
-      border: '5px solid teal',
+      // border: '5px solid teal',
     },
 
     tableBody: {
       flexGrow: 1,
       boxSizing: 'border-box',
-      border: '3px solid red',
+      // border: '3px solid red',
     },
 
     gridRow: {
       position: 'relative',
       display: 'flex',
       flexDirection: 'row',
-      height: '90%',
+      height: '98%',
     },
     gridColumn: {
       display: 'flex',
       flexDirection: 'column',
       flex: '1 1 auto',
-      height: '90%',
+      height: '98%',
       width: '100%',
     },
     pagination: {
@@ -76,6 +76,7 @@ const useStyles = makeStyles((theme: Theme) => {
       background: theme.palette.background.paper,
       height: '3em',
       padding: theme.spacing(1),
+      border: theme.palette.divider,
     },
     buttons: {
       // marginRight: theme.spacing(1)

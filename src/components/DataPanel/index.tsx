@@ -25,6 +25,7 @@ import TablePagination from '@material-ui/core/TablePagination'
 
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import EmptyPanel from './EntryTable/EmptyPanel'
+import WarningPanel from './EntryTable/WarningPanel'
 
 let baseFontSize = null
 
@@ -211,21 +212,40 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
     setPage(0)
   }
 
+  const SELECTION_TH = 10000
   const getTable = (selectedObjects: any[], type: string) => {
-    if (selectedObjects.length === 0 || selectedObjects.length > 200) {
+    if (selectedObjects.length === 0) {
       return <EmptyPanel type={type} />
+    } else if (selectedObjects.length > SELECTION_TH) {
+      return <WarningPanel type={type} selectedCount={selectedObjects.length} />
     }
-    return (
-      <EntryTable
-        key={'selected-nodes'}
-        selectedObjects={selectedObjects}
-        attributes={attributes.nodeAttr}
-        context={context}
-        letterWidths={letterWidths}
-        label={'Name'}
-        parentSize={size}
-      />
-    )
+
+    if (type === 'node') {
+      return (
+        <EntryTable
+          key={'selected-nodes'}
+          selectedObjects={selectedObjects}
+          attributes={attributes.nodeAttr}
+          context={context}
+          letterWidths={letterWidths}
+          label={'Name'}
+          parentSize={size}
+        />
+      )
+    } else {
+      return (
+        <EntryTable
+          key={'selected-edges'}
+          selectedObjects={edges}
+          attributes={attributes.edgeAttr}
+          type={'edge'}
+          context={context}
+          letterWidths={letterWidths}
+          label={'Name'}
+          parentSize={size}
+        />
+      )
+    }
   }
 
   return (
@@ -259,16 +279,7 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
           {getTable(nodes, 'node')}
         </TabPanel>
         <TabPanel value={selected} index={2}>
-          <EntryTable
-            key={'selected-edges'}
-            selectedObjects={edges}
-            attributes={attributes.edgeAttr}
-            type={'edge'}
-            context={context}
-            letterWidths={letterWidths}
-            label={'Name'}
-            parentSize={size}
-          />
+          {getTable(edges, 'edge')}
         </TabPanel>
       </Tabs>
     </div>
