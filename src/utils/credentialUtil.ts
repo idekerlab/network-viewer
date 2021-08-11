@@ -46,6 +46,18 @@ const getNdexClient = (baseUrl: string, ndexCredential: NdexCredential) => {
   return ndexClient
 }
 
+const getAccessKey = (searchString: string):string=> {
+  const trimed = searchString.replaceAll('?', '')
+  const params = trimed.split('&')
+  let key = null
+  params.forEach(pair => {
+    const keyValue = pair.split('=')
+    if(keyValue[0] === 'accesskey') {
+      key = keyValue[1]
+    }
+  })
+  return key
+}
 
 
-export { getGoogleHeader, getAuthorization,  getNdexClient }
+export { getGoogleHeader, getAuthorization,  getNdexClient, getAccessKey }

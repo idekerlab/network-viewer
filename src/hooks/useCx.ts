@@ -1,7 +1,8 @@
 import { useQuery } from 'react-query'
 import NdexCredential from '../model/NdexCredential'
-import { getNdexClient } from '../utils/credentialUtil'
+import { getAccessKey, getNdexClient } from '../utils/credentialUtil'
 import NDExError from '../utils/error/NDExError'
+import { useLocation } from "react-router-dom"
 
 const EMPTY_CX = []
 
@@ -33,9 +34,19 @@ const getCx = async (
 
   try {
     const ndexClient = getNdexClient(`${serverUrl}/${apiVersion}`, credential)
-    return cxVersion === '2'
-      ? await ndexClient.getCX2Network(uuid)
-      : await ndexClient.getRawNetwork(uuid)
+    const accesskey = credential.accesskey
+
+    if(cxVersion === '2') {
+      if(accesskey !== undefined) {
+        return await ndexClient.getCX2Network(uuid, accesskey)
+      }
+      return await ndexClient.getCX2Network(uuid)
+    } else {
+      if(accesskey !== undefined) {
+        return await ndexClient.getRawNetwork(uuid, accesskey)
+      }
+      return await ndexClient.getRawNetwork(uuid)
+    }
   } catch (e: unknown) {
     throw new NDExError(e['message'], e)
   }
@@ -50,6 +61,11 @@ export default function useCx(
   objectCount: number = 0,
   cxVersion: string = '1',
 ) {
+  const location = useLocation()
+  const accessKey: string = getAccessKey(location.search)
+  if(accessKey !== null) {
+    credential.accesskey = accessKey
+  }
   return useQuery(
     [
       'cx',

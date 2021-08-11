@@ -7,6 +7,7 @@ type NdexCredential = {
     userId: string
     password: string
   }
+  accesskey?: string
 }
 
 export default NdexCredential

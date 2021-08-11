@@ -1,7 +1,9 @@
 import { useQuery } from 'react-query'
 import NdexCredential from '../model/NdexCredential'
-import { getNdexClient } from '../utils/credentialUtil'
+import { getAccessKey, getNdexClient } from '../utils/credentialUtil'
 import NDExError from '../utils/error/NDExError'
+
+import { useLocation } from "react-router-dom"
 
 const summaryMap = {}
 
@@ -24,7 +26,12 @@ async function getNetworkSummary(
   const ndexUrl = `${serverUrl}/${apiVersion}`
   try {
     const ndexClient = getNdexClient(ndexUrl, credential)
-    const summary = await ndexClient.getNetworkSummary(uuid)
+    let summary = null
+    if(credential.accesskey !== undefined && credential.accesskey !== '') {
+      summary = await ndexClient.getNetworkSummary(uuid, credential.accesskey)
+    } else {
+      summary = await ndexClient.getNetworkSummary(uuid)
+    }
     summaryMap[uuid] = summary
 
     if (!isValidSummary(summary)) {
@@ -59,6 +66,13 @@ export default function useNetworkSummary(
   apiVersion: string = 'v2',
   credential: NdexCredential,
 ) {
+
+  const location = useLocation()
+  const accessKey: string = getAccessKey(location.search)
+  if(accessKey !== null) {
+    credential.accesskey = accessKey
+  }
+
   return useQuery(
     ['networkSummary', uuid, serverUrl, apiVersion, credential],
     () => getNetworkSummary(uuid, serverUrl, apiVersion, credential),
