@@ -13,6 +13,12 @@ import AppConfig from './model/AppConfig'
 
 const ROOT_TAG = 'root'
 
+// Avoid HTTP
+const location = window.location
+if (location.hostname !== 'localhost' && location.protocol !== 'https:') {
+  location.replace(`https:${location.href.substring(location.protocol.length)}`)
+}
+
 // This avoids too many fetch calls from remote API
 const queryConfig = { queries: { refetchOnWindowFocus: false } }
 const queryCache = new QueryCache()
