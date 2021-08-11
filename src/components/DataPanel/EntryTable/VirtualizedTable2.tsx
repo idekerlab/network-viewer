@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme: Theme) => {
       flexDirection: 'column',
       flex: '1 1 auto',
       height: '98%',
-      width: '100%',
+      // width: '100%',
     },
     pagination: {
       display: 'flex',
@@ -128,10 +128,13 @@ const useStyles = makeStyles((theme: Theme) => {
     },
 
     leftSideGridContainer: {
-      flex: '0 0 75px',
+      // boxSizing: 'border-box',
+      // border: '3px solid #FFaa88',
+      // flex: '0 0 75px',
       zIndex: 10,
       background: '#FFFFFF',
       borderRight: `1px solid ${theme.palette.divider}`,
+      height: '100%'
     },
     leftSideGrid: {
       overflow: 'hidden !important',
@@ -139,16 +142,34 @@ const useStyles = makeStyles((theme: Theme) => {
     headerGrid: {
       width: '100%',
       overflow: 'hidden !important',
-      background: theme.palette.background.paper,
       borderBottom: `1px solid ${theme.palette.divider}`,
     },
     bodyGrid: {
       width: '100%',
+      // boxSizing: 'border-box',
+      // border: '3px solid #FF0088',
     },
 
-    evenRow: {},
+    evenRow: {
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+      padding: '0.5em',
+      borderBottom: `1px solid ${theme.palette.divider}`,
+    },
     oddRow: {
-      // background-color: rgba(0, 0, 0, .1);
+      // backgroundColor: 'rgba(0, 0, 0, .1)'
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+      padding: '0.5em',
+      borderBottom: `1px solid ${theme.palette.divider}`,
     },
 
     cell: {
@@ -157,12 +178,21 @@ const useStyles = makeStyles((theme: Theme) => {
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
-      alignItems: 'center',
-      textAlign: 'center',
-      padding: '0 .5em',
+      alignItems: 'flex-start',
+      // padding: '0 .5em',
+      padding: '0.5em',
     },
     headerCell: {
       fontWeight: 'bold',
+      color: 'blue',
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      textAlign: 'center',
+      padding: '0.2em',
     },
   })
 })
@@ -292,8 +322,10 @@ const VirtualizedTable2: VFC<{
 
     const cells = row.cells.map((cell) => cell)
     const cell = [cells[columnIndex]]
+
+    const cellClass = rowIndex % 2 === 0 ? classes.evenRow : classes.oddRow
     return (
-      <div key={key} style={style}>
+      <div className={cellClass} key={key} style={style}>
         {cell[0].render('Cell')}
       </div>
     )
@@ -305,6 +337,7 @@ const VirtualizedTable2: VFC<{
   const overscanRowCount = 5
   const rowHeight = 40
   const rowCount = page.length
+  // const height: number = 800
 
   return (
     <div className={classes.root}>
@@ -319,14 +352,8 @@ const VirtualizedTable2: VFC<{
             scrollTop,
             scrollWidth,
           }) => {
-            const x = scrollLeft / (scrollWidth - clientWidth)
-            const y = scrollTop / (scrollHeight - clientHeight)
-
-            const leftBackgroundColor = '#FF0000'
-            const leftColor = '#555555'
-            const topBackgroundColor = '#00FF00'
+            const leftColor = '#5555FF'
             const topColor = '#333333'
-            const middleBackgroundColor = '#0000FF'
             const middleColor = '#333333'
 
             return (
@@ -358,8 +385,11 @@ const VirtualizedTable2: VFC<{
                     left: 0,
                     top: rowHeight,
                     color: leftColor,
+                    height: clientHeight - scrollbarWidth()
                   }}
                 >
+                  <AutoSizer disableWidth>
+                    {({ height }) => (
                   <Grid
                     overscanColumnCount={overscanColumnCount}
                     overscanRowCount={overscanRowCount}
@@ -367,12 +397,13 @@ const VirtualizedTable2: VFC<{
                     columnWidth={columnWidth}
                     columnCount={1}
                     className={classes.leftSideGrid}
-                    height={clientHeight - scrollbarWidth()}
+                    height={height - scrollbarWidth()}
                     rowHeight={rowHeight}
                     rowCount={rowCount}
                     scrollTop={scrollTop}
                     width={columnWidth}
-                  />
+                  />)}
+                  </AutoSizer>
                 </div>
                 <div className={classes.gridColumn}>
                   <AutoSizer>
@@ -400,7 +431,6 @@ const VirtualizedTable2: VFC<{
                         </div>
                         <div
                           style={{
-                            // color: '#333',
                             color: middleColor,
                             height: clientHeight,
                             width,
