@@ -11,7 +11,13 @@ import {
 import { FixedSizeList } from 'react-window'
 import theme from '../../../theme'
 
-import { Grid, ScrollSync, AutoSizer } from 'react-virtualized'
+import {
+  Grid,
+  ScrollSync,
+  AutoSizer,
+  CellMeasurer,
+  CellMeasurerCache,
+} from 'react-virtualized'
 
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 
@@ -128,21 +134,27 @@ const useStyles = makeStyles((theme: Theme) => {
     },
 
     leftSideGridContainer: {
-      // boxSizing: 'border-box',
+      boxSizing: 'border-box',
       // border: '3px solid #FFaa88',
       // flex: '0 0 75px',
       zIndex: 10,
       background: '#FFFFFF',
-      borderRight: `1px solid ${theme.palette.divider}`,
-      height: '100%'
+      borderRight: `2px solid ${theme.palette.divider}`,
+      height: '100%',
+      fontWeight: 'bold',
     },
     leftSideGrid: {
       overflow: 'hidden !important',
     },
     headerGrid: {
       width: '100%',
+      height: '100%',
       overflow: 'hidden !important',
       borderBottom: `1px solid ${theme.palette.divider}`,
+      display: 'grid',
+      fontSize: '1.2em',
+      background: theme.palette.background.default,
+      paddingLeft: '0.5em',
     },
     bodyGrid: {
       width: '100%',
@@ -158,10 +170,10 @@ const useStyles = makeStyles((theme: Theme) => {
       justifyContent: 'center',
       alignItems: 'flex-start',
       padding: '0.5em',
-      borderBottom: `1px solid ${theme.palette.divider}`,
+      // borderBottom: `1px solid ${theme.palette.divider}`,
     },
     oddRow: {
-      // backgroundColor: 'rgba(0, 0, 0, .1)'
+      backgroundColor: 'rgba(150, 150, 150, .1)',
       width: '100%',
       height: '100%',
       display: 'flex',
@@ -169,7 +181,7 @@ const useStyles = makeStyles((theme: Theme) => {
       justifyContent: 'center',
       alignItems: 'flex-start',
       padding: '0.5em',
-      borderBottom: `1px solid ${theme.palette.divider}`,
+      // borderBottom: `1px solid ${theme.palette.divider}`,
     },
 
     cell: {
@@ -180,7 +192,7 @@ const useStyles = makeStyles((theme: Theme) => {
       justifyContent: 'center',
       alignItems: 'flex-start',
       // padding: '0 .5em',
-      padding: '0.5em',
+      paddingLeft: '0.5em',
     },
     headerCell: {
       fontWeight: 'bold',
@@ -196,6 +208,46 @@ const useStyles = makeStyles((theme: Theme) => {
     },
   })
 })
+
+const cache = new CellMeasurerCache({
+  defaultWidth: 220,
+  fixedWidth: true,
+})
+
+// const dynamicCellRenderer = ({ columnIndex, key, parent, rowIndex, style }) => {
+//   const row = page[rowIndex]
+//     prepareRow(row)
+
+//     const cells = row.cells.map((cell) => cell)
+//     const cell = [cells[columnIndex]]
+
+//     const cellClass = rowIndex % 2 === 0 ? classes.evenRow : classes.oddRow
+//     return (
+//       <div className={cellClass} key={key} style={style}>
+//         {cell[0].render('Cell')}
+//       </div>
+//     )
+
+//   return (
+//     <CellMeasurer
+//       cache={cache}
+//       columnIndex={columnIndex}
+//       key={key}
+//       parent={parent}
+//       rowIndex={rowIndex}
+//     >
+//       <div
+//         style={{
+//           ...style,
+//           height: 35,
+//           whiteSpace: 'nowrap'
+//         }}
+//       >
+//         {content}
+//       </div>
+//     </CellMeasurer>
+//   );
+// }
 
 // @ts-ignore
 const VirtualizedTable2: VFC<{
@@ -285,12 +337,12 @@ const VirtualizedTable2: VFC<{
     [prepareRow, page],
   )
 
-  const _renderBodyCell = ({ columnIndex, key, rowIndex, style }) => {
+  const _renderBodyCell = ({ columnIndex, key, parent, rowIndex, style }) => {
     if (columnIndex < 1) {
       return
     }
 
-    return _renderLeftSideCell({ columnIndex, key, rowIndex, style })
+    return _renderLeftSideCell({ columnIndex, key, parent, rowIndex, style })
   }
 
   const _renderHeaderCell = ({ columnIndex, key, rowIndex, style }) => {
@@ -310,34 +362,89 @@ const VirtualizedTable2: VFC<{
     const cprops = { ...column.getHeaderProps(column.getSortByToggleProps()) }
 
     return (
-      <div key={key} style={style} onClick={cprops['onClick']}>
+      <div
+        key={key}
+        style={{
+          ...style,
+          display: 'grid',
+          // justifyContent: '',
+          alignContent: 'center',
+        }}
+        onClick={cprops['onClick']}
+      >
         {column.Header}
       </div>
     )
   }
 
-  const _renderLeftSideCell = ({ columnIndex, key, rowIndex, style }) => {
+  const _renderLeftSideCell = ({
+    columnIndex,
+    key,
+    parent,
+    rowIndex,
+    style,
+  }) => {
     const row = page[rowIndex]
     prepareRow(row)
 
     const cells = row.cells.map((cell) => cell)
     const cell = [cells[columnIndex]]
+    const cellProps = cell[0].getCellProps()
 
     const cellClass = rowIndex % 2 === 0 ? classes.evenRow : classes.oddRow
+
+    const column = columns[columnIndex]
+    const columnName = column.Header
+    let originalValue = cell[0].value.props.children
+    let value = originalValue
+    if (originalValue !== undefined && originalValue.length > 40) {
+      value = originalValue.substring(0, 40) + '...'
+    }
+
+    // console.log(columnName, value)
     return (
-      <div className={cellClass} key={key} style={style}>
-        {cell[0].render('Cell')}
+      // <CellMeasurer
+      //   cache={cache}
+      //   columnIndex={columnIndex}
+      //   key={key}
+      //   parent={parent}
+      //   rowIndex={rowIndex}
+      // >
+      //   <div
+      //     style={{
+      //       ...style,
+      //     }}
+      //   >
+      //     {value}
+      //   </div>
+      // </CellMeasurer>
+      <div
+        {...cell[0].getCellProps()}
+        className={cellClass}
+        key={key}
+        style={style}
+        onClick={(event) => _onCellClick(event, originalValue )}
+      >
+        {value}
       </div>
     )
   }
+  const _onCellClick = (evt, key) => {
+    console.log('EVT: cell', key)
+  }
 
-  const columnWidth = 125
+  const columnWidth = 220
+  const bodyColumnWidth = 220
   const columnCount = columns.length
   const overscanColumnCount = 0
   const overscanRowCount = 5
-  const rowHeight = 40
+  const rowHeight = 55
   const rowCount = page.length
   // const height: number = 800
+  const getColumnWidth = (props: { index: number }) => {
+    const column = columns[props.index]
+    return column === undefined ? columnWidth : column.width
+  }
 
   return (
     <div className={classes.root}>
@@ -352,9 +459,9 @@ const VirtualizedTable2: VFC<{
             scrollTop,
             scrollWidth,
           }) => {
-            const leftColor = '#5555FF'
-            const topColor = '#333333'
-            const middleColor = '#333333'
+            const leftColor = '#222222'
+            const topColor = '#222222'
+            const middleColor = '#555555'
 
             return (
               <div className={classes.gridRow}>
@@ -385,24 +492,25 @@ const VirtualizedTable2: VFC<{
                     left: 0,
                     top: rowHeight,
                     color: leftColor,
-                    height: clientHeight - scrollbarWidth()
+                    height: clientHeight - scrollbarWidth(),
                   }}
                 >
                   <AutoSizer disableWidth>
                     {({ height }) => (
-                  <Grid
-                    overscanColumnCount={overscanColumnCount}
-                    overscanRowCount={overscanRowCount}
-                    cellRenderer={_renderLeftSideCell}
-                    columnWidth={columnWidth}
-                    columnCount={1}
-                    className={classes.leftSideGrid}
-                    height={height - scrollbarWidth()}
-                    rowHeight={rowHeight}
-                    rowCount={rowCount}
-                    scrollTop={scrollTop}
-                    width={columnWidth}
-                  />)}
+                      <Grid
+                        overscanColumnCount={overscanColumnCount}
+                        overscanRowCount={overscanRowCount}
+                        cellRenderer={_renderLeftSideCell}
+                        columnWidth={columnWidth}
+                        columnCount={1}
+                        className={classes.leftSideGrid}
+                        height={height - scrollbarWidth()}
+                        rowHeight={rowHeight}
+                        rowCount={rowCount}
+                        scrollTop={scrollTop}
+                        width={columnWidth}
+                      />
+                    )}
                   </AutoSizer>
                 </div>
                 <div className={classes.gridColumn}>
@@ -446,8 +554,11 @@ const VirtualizedTable2: VFC<{
                             cellRenderer={_renderBodyCell}
                             rowHeight={rowHeight}
                             rowCount={rowCount}
-                            height={height}
+                            height={height - scrollbarWidth()}
                             width={width}
+                            // columnWidth={cache.columnWidth}
+                            // rowHeight={cache.rowHeight}
+                            // deferredMeasurementCache={cache}
                           />
                         </div>
                       </div>
