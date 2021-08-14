@@ -1,5 +1,4 @@
-import React, { VFC, useRef, useState, useEffect } from 'react'
-import styled from 'styled-components'
+import React, { VFC, useRef, useState, useEffect, useCallback } from 'react'
 import {
   useTable,
   useBlockLayout,
@@ -8,7 +7,6 @@ import {
   useFilters,
   useGlobalFilter,
 } from 'react-table'
-import { FixedSizeList } from 'react-window'
 import theme from '../../../theme'
 
 import {
@@ -20,6 +18,7 @@ import {
 } from 'react-virtualized'
 
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
+import Popup from './Popup'
 
 const scrollbarWidth = () => {
   const scrollDiv = document.createElement('div')
@@ -33,6 +32,7 @@ const scrollbarWidth = () => {
   return scrollbarWidth
 }
 
+// Base styles for the entire panel
 const useStyles = makeStyles((theme: Theme) => {
   return createStyles({
     // Base area covers the entire panel
@@ -52,28 +52,23 @@ const useStyles = makeStyles((theme: Theme) => {
     // Area for virtualized table
     tablePanel: {
       flexGrow: 1,
-      boxSizing: 'border-box',
-      // border: '5px solid teal',
+      width: '100%',
+      height: '100%',
     },
 
     tableBody: {
       flexGrow: 1,
-      boxSizing: 'border-box',
-      // border: '3px solid red',
     },
 
     gridRow: {
       position: 'relative',
       display: 'flex',
       flexDirection: 'row',
-      height: '98%',
     },
     gridColumn: {
       display: 'flex',
       flexDirection: 'column',
       flex: '1 1 auto',
-      height: '98%',
-      // width: '100%',
     },
     pagination: {
       display: 'flex',
@@ -83,6 +78,8 @@ const useStyles = makeStyles((theme: Theme) => {
       height: '3em',
       padding: theme.spacing(1),
       border: theme.palette.divider,
+      boxSizing: 'border-box',
+      zIndex: 100,
     },
     buttons: {
       // marginRight: theme.spacing(1)
@@ -134,54 +131,24 @@ const useStyles = makeStyles((theme: Theme) => {
     },
 
     leftSideGridContainer: {
-      boxSizing: 'border-box',
-      // border: '3px solid #FFaa88',
-      // flex: '0 0 75px',
+      flex: '0 0 75px',
       zIndex: 10,
-      background: '#FFFFFF',
-      borderRight: `2px solid ${theme.palette.divider}`,
-      height: '100%',
-      fontWeight: 'bold',
+      backgroundColor: theme.palette.background.default,
     },
     leftSideGrid: {
       overflow: 'hidden !important',
     },
     headerGrid: {
       width: '100%',
-      height: '100%',
       overflow: 'hidden !important',
-      borderBottom: `1px solid ${theme.palette.divider}`,
-      display: 'grid',
-      fontSize: '1.2em',
-      background: theme.palette.background.default,
-      paddingLeft: '0.5em',
     },
     bodyGrid: {
       width: '100%',
-      // boxSizing: 'border-box',
-      // border: '3px solid #FF0088',
     },
 
-    evenRow: {
-      width: '100%',
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'flex-start',
-      padding: '0.5em',
-      // borderBottom: `1px solid ${theme.palette.divider}`,
-    },
+    evenRow: {},
     oddRow: {
       backgroundColor: 'rgba(150, 150, 150, .1)',
-      width: '100%',
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'flex-start',
-      padding: '0.5em',
-      // borderBottom: `1px solid ${theme.palette.divider}`,
     },
 
     cell: {
@@ -191,7 +158,6 @@ const useStyles = makeStyles((theme: Theme) => {
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'flex-start',
-      // padding: '0 .5em',
       paddingLeft: '0.5em',
     },
     headerCell: {
@@ -209,57 +175,32 @@ const useStyles = makeStyles((theme: Theme) => {
   })
 })
 
-const cache = new CellMeasurerCache({
-  defaultWidth: 220,
-  fixedWidth: true,
-})
-
-// const dynamicCellRenderer = ({ columnIndex, key, parent, rowIndex, style }) => {
-//   const row = page[rowIndex]
-//     prepareRow(row)
-
-//     const cells = row.cells.map((cell) => cell)
-//     const cell = [cells[columnIndex]]
-
-//     const cellClass = rowIndex % 2 === 0 ? classes.evenRow : classes.oddRow
-//     return (
-//       <div className={cellClass} key={key} style={style}>
-//         {cell[0].render('Cell')}
-//       </div>
-//     )
-
-//   return (
-//     <CellMeasurer
-//       cache={cache}
-//       columnIndex={columnIndex}
-//       key={key}
-//       parent={parent}
-//       rowIndex={rowIndex}
-//     >
-//       <div
-//         style={{
-//           ...style,
-//           height: 35,
-//           whiteSpace: 'nowrap'
-//         }}
-//       >
-//         {content}
-//       </div>
-//     </CellMeasurer>
-//   );
-// }
-
-// @ts-ignore
 const VirtualizedTable2: VFC<{
   columns: any[]
   data: any
   parentSize: [number, number]
 }> = ({ columns, data, parentSize }) => {
+  // Popup control
+  const [openPopup, setOpenPopup] = useState(false)
+  const [position, setPosition] = useState({ x: 0, y: 0 })
+  const [selectedValue, setSelectedValue] = useState(null)
+
   const pagenationRef = useRef(null)
 
-  const headerRef = useRef(null)
-  const [headerHeight, setHeaderHeight] = useState(1)
+  const tablePanelRef = useRef(null)
+  const [tablePanelHeight, setTablePanelHeight] = useState(1)
   const [pageHeight, setPageHeight] = useState(1)
+
+  const rootRef = useCallback((node) => {
+    if (node !== null) {
+      const newHeight = node.getBoundingClientRect().height
+      setRootHeight(newHeight)
+      console.log('Root H2 = ', newHeight)
+    }
+  }, [])
+
+  // const rootRef = useRef(null)
+  const [rootHeight, setRootHeight] = useState(1)
 
   const classes = useStyles()
 
@@ -270,11 +211,24 @@ const VirtualizedTable2: VFC<{
     [],
   )
 
+  // useEffect(() => {
+  //   if (rootRef.current) {
+  //     const newHeight = rootRef.current.offsetHeight
+  //     if (newHeight !== null && newHeight !== 0) {
+  //       setRootHeight(newHeight)
+  //     }
+  //   }
+  // }, [])
+
   useEffect(() => {
-    if (headerRef.current) {
-      setHeaderHeight(headerRef.current.offsetHeight)
+    if (tablePanelRef.current) {
+      const newHeight = tablePanelRef.current.offsetHeight
+      if (newHeight !== null && newHeight !== 0) {
+        setTablePanelHeight(newHeight)
+        console.log('T H = ', newHeight)
+      }
     }
-  }, [headerRef])
+  }, [data, parentSize])
 
   useEffect(() => {
     if (pagenationRef.current) {
@@ -311,30 +265,6 @@ const VirtualizedTable2: VFC<{
     useSortBy,
     usePagination,
     useBlockLayout,
-  )
-
-  const RenderRow = React.useCallback(
-    ({ index, style }) => {
-      const row = page[index]
-      prepareRow(row)
-      return (
-        <div
-          {...row.getRowProps({
-            style,
-          })}
-          className="tr"
-        >
-          {row.cells.map((cell) => {
-            return (
-              <div {...cell.getCellProps()} className="td">
-                {cell.render('Cell')}
-              </div>
-            )
-          })}
-        </div>
-      )
-    },
-    [prepareRow, page],
   )
 
   const _renderBodyCell = ({ columnIndex, key, parent, rowIndex, style }) => {
@@ -403,228 +333,230 @@ const VirtualizedTable2: VFC<{
 
     // console.log(columnName, value)
     return (
-      // <CellMeasurer
-      //   cache={cache}
-      //   columnIndex={columnIndex}
-      //   key={key}
-      //   parent={parent}
-      //   rowIndex={rowIndex}
-      // >
-      //   <div
-      //     style={{
-      //       ...style,
-      //     }}
-      //   >
-      //     {value}
-      //   </div>
-      // </CellMeasurer>
       <div
         {...cell[0].getCellProps()}
         className={cellClass}
         key={key}
         style={style}
-        onClick={(event) => _onCellClick(event, originalValue )}
+        onClick={(event) => _onCellClick(event, originalValue)}
       >
         {value}
       </div>
     )
   }
-  const _onCellClick = (evt, key) => {
-    console.log('EVT: cell', key)
+  const _onCellClick = (evt, value) => {
+    setOpenPopup(true)
+    setPosition({ x: evt.pageX, y: evt.pageY })
+    setSelectedValue(value)
   }
 
-  const columnWidth = 220
-  const bodyColumnWidth = 220
+  const columnWidth = 200
   const columnCount = columns.length
   const overscanColumnCount = 0
   const overscanRowCount = 5
   const rowHeight = 55
   const rowCount = page.length
-  // const height: number = 800
+  const height: number = tablePanelHeight - rowHeight
   const getColumnWidth = (props: { index: number }) => {
     const column = columns[props.index]
     return column === undefined ? columnWidth : column.width
   }
 
+
+  const _handleEnter = (evt) => {
+    console.log('ettt')
+
+    if (tablePanelRef.current) {
+      const newHeight = tablePanelRef.current.offsetHeight
+      if (newHeight !== null && newHeight !== 0 && newHeight !== tablePanelHeight) {
+        setTablePanelHeight(newHeight)
+        console.log('T H = ', newHeight)
+      }
+    }
+
+  }
+
   return (
-    <div className={classes.root}>
-      <div className={classes.tablePanel}>
-        <ScrollSync>
-          {({
-            clientHeight,
-            clientWidth,
-            onScroll,
-            scrollHeight,
-            scrollLeft,
-            scrollTop,
-            scrollWidth,
-          }) => {
-            const leftColor = '#222222'
-            const topColor = '#222222'
-            const middleColor = '#555555'
+    <>
+      <div ref={rootRef} className={classes.root} onMouseEnter={_handleEnter}>
+        <div ref={tablePanelRef} className={classes.tablePanel}>
+          <ScrollSync>
+            {({
+              clientHeight,
+              clientWidth,
+              onScroll,
+              scrollHeight,
+              scrollLeft,
+              scrollTop,
+              scrollWidth,
+            }) => {
+              const leftColor = '#222222'
+              const topColor = '#222222'
+              const middleColor = '#555555'
 
-            return (
-              <div className={classes.gridRow}>
-                <div
-                  className={classes.leftSideGridContainer}
-                  style={{
-                    position: 'absolute',
-                    left: 0,
-                    top: 0,
-                    color: leftColor,
-                  }}
-                >
-                  <Grid
-                    cellRenderer={_renderLeftHeaderCell}
-                    className={classes.headerGrid}
-                    width={columnWidth}
-                    height={rowHeight}
-                    rowHeight={rowHeight}
-                    columnWidth={columnWidth}
-                    rowCount={1}
-                    columnCount={1}
-                  />
-                </div>
-                <div
-                  className={classes.leftSideGridContainer}
-                  style={{
-                    position: 'absolute',
-                    left: 0,
-                    top: rowHeight,
-                    color: leftColor,
-                    height: clientHeight - scrollbarWidth(),
-                  }}
-                >
-                  <AutoSizer disableWidth>
-                    {({ height }) => (
-                      <Grid
-                        overscanColumnCount={overscanColumnCount}
-                        overscanRowCount={overscanRowCount}
-                        cellRenderer={_renderLeftSideCell}
-                        columnWidth={columnWidth}
-                        columnCount={1}
-                        className={classes.leftSideGrid}
-                        height={height - scrollbarWidth()}
-                        rowHeight={rowHeight}
-                        rowCount={rowCount}
-                        scrollTop={scrollTop}
-                        width={columnWidth}
-                      />
-                    )}
-                  </AutoSizer>
-                </div>
-                <div className={classes.gridColumn}>
-                  <AutoSizer>
-                    {({ height, width }) => (
-                      <div className={classes.tableBody}>
-                        <div
-                          style={{
-                            color: topColor,
-                            height: rowHeight,
-                            width: width - scrollbarWidth(),
-                          }}
-                        >
-                          <Grid
-                            className={classes.headerGrid}
-                            columnWidth={columnWidth}
-                            columnCount={columnCount}
-                            height={rowHeight}
-                            overscanColumnCount={overscanColumnCount}
-                            cellRenderer={_renderHeaderCell}
-                            rowHeight={rowHeight}
-                            rowCount={1}
-                            scrollLeft={scrollLeft}
-                            width={width - scrollbarWidth()}
-                          />
+              return (
+                <div className={classes.gridRow}>
+                  <div
+                    className={classes.leftSideGridContainer}
+                    style={{
+                      position: 'absolute',
+                      left: 0,
+                      top: 0,
+                      color: leftColor,
+                    }}
+                  >
+                    <Grid
+                      cellRenderer={_renderLeftHeaderCell}
+                      className={classes.headerGrid}
+                      width={columnWidth}
+                      height={rowHeight}
+                      rowHeight={rowHeight}
+                      columnWidth={columnWidth}
+                      rowCount={1}
+                      columnCount={1}
+                    />
+                  </div>
+                  <div
+                    className={classes.leftSideGridContainer}
+                    style={{
+                      position: 'absolute',
+                      left: 0,
+                      top: rowHeight,
+                      color: leftColor,
+                    }}
+                  >
+                    <Grid
+                      overscanColumnCount={overscanColumnCount}
+                      overscanRowCount={overscanRowCount}
+                      cellRenderer={_renderLeftSideCell}
+                      columnWidth={columnWidth}
+                      columnCount={1}
+                      className={classes.leftSideGrid}
+                      height={height - scrollbarWidth()}
+                      rowHeight={rowHeight}
+                      rowCount={rowCount}
+                      scrollTop={scrollTop}
+                      width={columnWidth}
+                    />
+                  </div>
+                  <div className={classes.gridColumn}>
+                    <AutoSizer disableHeight>
+                      {({ width }) => (
+                        <div>
+                          <div
+                            style={{
+                              color: topColor,
+                              height: rowHeight,
+                              width: width - scrollbarWidth(),
+                            }}
+                          >
+                            <Grid
+                              className={classes.headerGrid}
+                              columnWidth={columnWidth}
+                              columnCount={columnCount}
+                              height={rowHeight}
+                              overscanColumnCount={overscanColumnCount}
+                              cellRenderer={_renderHeaderCell}
+                              rowHeight={rowHeight}
+                              rowCount={1}
+                              scrollLeft={scrollLeft}
+                              width={width - scrollbarWidth()}
+                            />
+                          </div>
+                          <div
+                            style={{
+                              color: middleColor,
+                              height,
+                              width,
+                            }}
+                          >
+                            <Grid
+                              className={classes.bodyGrid}
+                              columnWidth={columnWidth}
+                              columnCount={columnCount}
+                              onScroll={onScroll}
+                              overscanColumnCount={overscanColumnCount}
+                              overscanRowCount={overscanRowCount}
+                              cellRenderer={_renderBodyCell}
+                              rowHeight={rowHeight}
+                              rowCount={rowCount}
+                              height={height}
+                              width={width}
+                            />
+                          </div>
                         </div>
-                        <div
-                          style={{
-                            color: middleColor,
-                            height: clientHeight,
-                            width,
-                          }}
-                        >
-                          <Grid
-                            className={classes.bodyGrid}
-                            columnWidth={columnWidth}
-                            columnCount={columnCount}
-                            onScroll={onScroll}
-                            overscanColumnCount={overscanColumnCount}
-                            overscanRowCount={overscanRowCount}
-                            cellRenderer={_renderBodyCell}
-                            rowHeight={rowHeight}
-                            rowCount={rowCount}
-                            height={height - scrollbarWidth()}
-                            width={width}
-                            // columnWidth={cache.columnWidth}
-                            // rowHeight={cache.rowHeight}
-                            // deferredMeasurementCache={cache}
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </AutoSizer>
+                      )}
+                    </AutoSizer>
+                  </div>
                 </div>
-              </div>
-            )
-          }}
-        </ScrollSync>
-      </div>
-
-      <div className={classes.pagination}>
-        <div className={classes.buttons}>
-          <button
-            className={classes.button}
-            onClick={() => gotoPage(0)}
-            disabled={!canPreviousPage}
-          >
-            {'<<'}
-          </button>
-          <button
-            className={classes.button}
-            onClick={() => previousPage()}
-            disabled={!canPreviousPage}
-          >
-            {'<'}
-          </button>
-          <button
-            className={classes.button}
-            onClick={() => nextPage()}
-            disabled={!canNextPage}
-          >
-            {'>'}
-          </button>
-          <button
-            className={classes.button}
-            onClick={() => gotoPage(pageCount - 1)}
-            disabled={!canNextPage}
-          >
-            {'>>'}
-          </button>
-        </div>
-
-        <div className={classes.pageLabel}>
-          {`Page ${pageIndex + 1} of ${pageOptions.length}`}
-        </div>
-
-        <div className={classes.pageSelectorPanel}>
-          <select
-            className={classes.pageSelector}
-            value={pageSize}
-            onChange={(e) => {
-              setPageSize(Number(e.target.value))
+              )
             }}
-          >
-            {[100, 500, 1000, 5000].map((pageSize) => (
-              <option key={pageSize} value={pageSize}>
-                {pageSize}
-              </option>
-            ))}
-          </select>
-          per page
+          </ScrollSync>
+        </div>
+
+        <div className={classes.pagination}>
+          <div className={classes.buttons}>
+            <button
+              className={classes.button}
+              onClick={() => gotoPage(0)}
+              disabled={!canPreviousPage}
+            >
+              {'<<'}
+            </button>
+            <button
+              className={classes.button}
+              onClick={() => previousPage()}
+              disabled={!canPreviousPage}
+            >
+              {'<'}
+            </button>
+            <button
+              className={classes.button}
+              onClick={() => nextPage()}
+              disabled={!canNextPage}
+            >
+              {'>'}
+            </button>
+            <button
+              className={classes.button}
+              onClick={() => gotoPage(pageCount - 1)}
+              disabled={!canNextPage}
+            >
+              {'>>'}
+            </button>
+          </div>
+
+          <div className={classes.pageLabel}>
+            {`Page ${pageIndex + 1} of ${pageOptions.length}`}
+          </div>
+
+          <div className={classes.pageSelectorPanel}>
+            <select
+              className={classes.pageSelector}
+              value={pageSize}
+              onChange={(e) => {
+                setPageSize(Number(e.target.value))
+              }}
+            >
+              {[100, 500, 1000, 5000].map((pageSize) => (
+                <option key={pageSize} value={pageSize}>
+                  {pageSize}
+                </option>
+              ))}
+            </select>
+            per page
+          </div>
         </div>
       </div>
-    </div>
+
+      <Popup
+        x={position.x}
+        y={position.y}
+        open={openPopup}
+        setOpen={setOpenPopup}
+        value={selectedValue}
+      />
+    </>
   )
 }
 
