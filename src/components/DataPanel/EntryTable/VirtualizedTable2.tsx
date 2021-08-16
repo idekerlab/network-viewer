@@ -134,21 +134,40 @@ const useStyles = makeStyles((theme: Theme) => {
       flex: '0 0 75px',
       zIndex: 10,
       backgroundColor: theme.palette.background.default,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+
     },
     leftSideGrid: {
       overflow: 'hidden !important',
+      paddingLeft: '0.5em',
     },
     headerGrid: {
       width: '100%',
       overflow: 'hidden !important',
+      borderBottom: '1px solid #999999',
+      paddingLeft: '0.5em',
     },
     bodyGrid: {
       width: '100%',
     },
 
-    evenRow: {},
+    evenRow: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+      paddingLeft: '0.5em',
+    },
     oddRow: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'flex-start',
       backgroundColor: 'rgba(150, 150, 150, .1)',
+      paddingLeft: '0.5em',
     },
 
     cell: {
@@ -158,7 +177,6 @@ const useStyles = makeStyles((theme: Theme) => {
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'flex-start',
-      paddingLeft: '0.5em',
     },
     headerCell: {
       fontWeight: 'bold',
@@ -170,7 +188,6 @@ const useStyles = makeStyles((theme: Theme) => {
       justifyContent: 'center',
       alignItems: 'center',
       textAlign: 'center',
-      padding: '0.2em',
     },
   })
 })
@@ -195,7 +212,6 @@ const VirtualizedTable2: VFC<{
     if (node !== null) {
       const newHeight = node.getBoundingClientRect().height
       setRootHeight(newHeight)
-      console.log('Root H2 = ', newHeight)
     }
   }, [])
 
@@ -307,6 +323,7 @@ const VirtualizedTable2: VFC<{
     )
   }
 
+  const valueLengthTH: number = 40
   const _renderLeftSideCell = ({
     columnIndex,
     key,
@@ -327,8 +344,8 @@ const VirtualizedTable2: VFC<{
     const columnName = column.Header
     let originalValue = cell[0].value.props.children
     let value = originalValue
-    if (originalValue !== undefined && originalValue.length > 40) {
-      value = originalValue.substring(0, 40) + '...'
+    if (originalValue !== undefined && originalValue.length > valueLengthTH) {
+      value = originalValue.substring(0, valueLengthTH) + '...'
     }
 
     // console.log(columnName, value)
@@ -344,17 +361,20 @@ const VirtualizedTable2: VFC<{
       </div>
     )
   }
+
   const _onCellClick = (evt, value) => {
-    setOpenPopup(true)
-    setPosition({ x: evt.pageX, y: evt.pageY })
-    setSelectedValue(value)
+    if (value !== null && value !== undefined && value.length > valueLengthTH) {
+      setOpenPopup(true)
+      setPosition({ x: evt.pageX, y: evt.pageY })
+      setSelectedValue(value)
+    }
   }
 
   const columnWidth = 200
   const columnCount = columns.length
   const overscanColumnCount = 0
   const overscanRowCount = 5
-  const rowHeight = 55
+  const rowHeight = 57
   const rowCount = page.length
   const height: number = tablePanelHeight - rowHeight
   const getColumnWidth = (props: { index: number }) => {
@@ -362,18 +382,19 @@ const VirtualizedTable2: VFC<{
     return column === undefined ? columnWidth : column.width
   }
 
-
   const _handleEnter = (evt) => {
     console.log('ettt')
 
     if (tablePanelRef.current) {
       const newHeight = tablePanelRef.current.offsetHeight
-      if (newHeight !== null && newHeight !== 0 && newHeight !== tablePanelHeight) {
+      if (
+        newHeight !== null &&
+        newHeight !== 0 &&
+        newHeight !== tablePanelHeight
+      ) {
         setTablePanelHeight(newHeight)
-        console.log('T H = ', newHeight)
       }
     }
-
   }
 
   return (
