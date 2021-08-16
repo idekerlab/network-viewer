@@ -1,6 +1,7 @@
-import React, { useMemo, useContext } from 'react'
+import React, { VFC, useMemo, useContext, useEffect, useState } from 'react'
 import Linkify from 'linkifyjs/react'
 import Table from './Table'
+import VirtualizedTable from './VirtualizedTable'
 import {
   processList,
   processItem,
@@ -8,6 +9,10 @@ import {
   processListAsText,
 } from '../../../utils/contextUtil'
 import AppContext from '../../../context/AppState'
+import EmptyPanel from './EmptyPanel'
+import VirtualizedTable2 from './VirtualizedTable2'
+import { TablePagination } from '@material-ui/core'
+import VirtualizedTable3 from './VirtualizedTable3'
 
 const EdgeAttributes = {
   SOURCE: 'source',
@@ -24,45 +29,50 @@ const Attributes = {
   NDEX_INTERNAL_LINK: 'ndex:internalLink',
 }
 
-const EntryTable = (props) => {
-  const {
-    selectedObjects,
-    attributes,
-    type,
-    context,
-    letterWidths,
-    label,
-  } = props
+const regex = /\./gi
+const replacePeriods = (text: string): string => {
+  return text.replace(regex, '(_)')
+}
 
+const isEmptyString = (text: string): boolean => {
+  return text === undefined || text === ''
+}
+const startsWithNumber = (entry) => {
+  if (
+    entry === undefined ||
+    entry === null ||
+    entry === '' ||
+    entry.length === 0
+  ) {
+    return false
+  }
+  return '0123456789'.includes(entry.charAt(0))
+}
+
+const EntryTable: VFC<{
+  selectedObjects: any[]
+  attributes: any
+  type?: string
+  context
+  letterWidths
+  label,
+  parentSize: [number, number]
+}> = ({ selectedObjects, attributes, type, context, letterWidths, label, parentSize }) => {
   const { config } = useContext(AppContext)
+  
+  
 
-  const replacePeriods = (string) => {
-    const regex = /\./gi
-    return string.replace(regex, '(_)')
-  }
-
-  const isEmptyString = (string) => {
-    return string === undefined || string === ''
-  }
-
-  const startsWithNumber = (entry) => {
-    if (entry === undefined || entry === null || entry === '' || entry.length === 0) {
-      return false
-    }
-    return '0123456789'.includes(entry.charAt(0))
-  }
-
-  const getWidth = (phrase) => {
+  const getWidth = (phrase: string | undefined): number => {
     if (phrase === undefined) {
       phrase = ''
     }
-    let width = 0
+    let width: number = 0
     for (let i = 0; i < phrase.length; i++) {
       let letter = phrase[i]
       if (letter === ' ') {
         letter = '&nbsp'
       }
-      if (letterWidths[letter] == undefined) {
+      if (letterWidths[letter] === undefined) {
         width += letterWidths['default']
       } else {
         width += letterWidths[letter]
@@ -155,12 +165,13 @@ const EntryTable = (props) => {
     return columnsList
   }, [selectedObjects])
 
-  const data = useMemo(() => {
+  const getData = () => {
     const dataList = []
     const textDataList = []
+    let idx = 0
     for (let id of selectedObjects) {
       const attrs = attributes[id]
-      if (attrs == undefined) {
+      if (attrs === undefined) {
         continue
       }
       const row = {}
@@ -185,6 +196,7 @@ const EntryTable = (props) => {
       }
       dataList.push(row)
       textDataList.push(textRow)
+      idx++
     }
 
     const empty = dataList.filter((entry) => isEmptyString(entry.name))
@@ -205,7 +217,8 @@ const EntryTable = (props) => {
     }
 
     return [sortedDataList, textDataList]
-  }, [selectedObjects])
+  }
+  const data = getData()
 
   const finalColumns = useMemo(() => {
     //Put columns in correct order
@@ -226,12 +239,13 @@ const EntryTable = (props) => {
     if (hasName) {
       columns.unshift(Attributes.NAME)
     }
-    const columnsObject = columns.map((column) => {
+    
+    return columns.map((column) => {
       if (column === Attributes.NAME) {
         return {
           Header: label,
           accessor: Attributes.NAME,
-          sticky: 'left',
+          // sticky: 'left',
           width: getColumnWidth(data[1], Attributes.NAME, label),
         }
       } else {
@@ -242,28 +256,19 @@ const EntryTable = (props) => {
         }
       }
     })
-    return columnsObject
   }, [selectedObjects])
 
-  if (selectedObjects.length === 0) {
-    return (
-      <div
-        style={{
-          height: '100%',
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          textAlign: 'center',
-          padding: 0,
-        }}
-      >
-        Select {type === 'edge' ? 'an edge' : 'a node'} to view it in the table.
-      </div>
-    )
-  }
 
-  return <Table columns={finalColumns} data={data[0]} />
+
+  
+  // @ts-ignore
+  return (
+    // <VirtualizedTable3 columns={finalColumns} data={data[0]} parentSize={parentSize} />
+    <VirtualizedTable2 columns={finalColumns} data={data[0]} parentSize={parentSize} />
+
+    
+  )
+  // return <VirtualizedTable columns={finalColumns} data={data[0]} parentSize={parentSize} />
 }
 
 export default EntryTable

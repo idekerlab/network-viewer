@@ -1,10 +1,4 @@
-import React, {
-  FC,
-  useContext,
-  useEffect,
-  useState,
-  useRef,
-} from 'react'
+import React, { FC, useContext, useEffect, useState, useRef } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import LGRPanel from './LGRPanel'
 import CytoscapeRenderer from '../CytoscapeRenderer'
@@ -31,6 +25,7 @@ import EdgeLimitExceededPanel from '../FooterPanel/EdgeLimitExceededPanel'
 import SplitPane from 'react-split-pane'
 import UIState from '../../model/UIState'
 import { UIStateActions } from '../../reducer/uiStateReducer'
+import { NodeView, EdgeView } from 'large-graph-renderer'
 
 const splitBorder = '1px solid #BBBBBB'
 
@@ -399,6 +394,20 @@ const NetworkPanel: FC<ViewProps> = ({
           },
         })
       }
+    },
+    setSelectedObjects: (nodes: NodeView[], edges: EdgeView[]): void => {
+      const nodeIds = nodes.map((nv) => nv.id)
+      const edgeIds = edges.map((ev) => ev.id)
+      selectionStateDispatch({
+        type: SelectionActions.SET_MAIN_NODES_AND_EDGES,
+        selectionState: {
+          ...selectionState,
+          main: {
+            nodes: nodeIds,
+            edges: edgeIds,
+          },
+        },
+      })
     },
     clearAll: () => {
       selectionStateDispatch({ type: SelectionActions.CLEAR_ALL_MAIN })

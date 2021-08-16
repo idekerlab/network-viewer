@@ -75,14 +75,14 @@ const NavigationPanel = ({ target = 'main'}) => {
       color="secondary"
       variant="outlined"
       disableFocusRipple={true}
-      disableRipple={true}
+      // disableRipple={true}
     >
       {target === 'main' ? <ExpandButton /> : <div/>}
       <IconButton
         color={'secondary'}
         style={{ backgroundColor: 'transparent' }}
         disableFocusRipple={true}
-        disableRipple={true}
+        // disableRipple={true}
         onClick={handleFit}
       >
         <FitIcon />
@@ -95,7 +95,7 @@ const NavigationPanel = ({ target = 'main'}) => {
             color={'secondary'}
             style={{ backgroundColor: 'transparent' }}
             disableFocusRipple={true}
-            disableRipple={true}
+            // disableRipple={true}
             onClick={handleZoomIn}
           >
             <ZoomInIcon />
@@ -104,7 +104,7 @@ const NavigationPanel = ({ target = 'main'}) => {
             color={'secondary'}
             style={{ backgroundColor: 'transparent' }}
             disableFocusRipple={true}
-            disableRipple={true}
+            // disableRipple={true}
             onClick={handleZoomOut}
           >
             <ZoomOutIcon />
