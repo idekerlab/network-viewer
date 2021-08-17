@@ -115,6 +115,7 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
   const [size, setSize] = useState<[number, number]>([0, 0])
 
   const [page, setPage] = useState<number>(0)
+  const [changed, setChanged] = useState<boolean>(false)
   const [rowsPerPage, setRowsPerPage] = useState<number>(5)
 
   const { ndexCredential, config, selectionState, uiState } = useContext(
@@ -212,6 +213,10 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
     setPage(0)
   }
 
+  const _handleSelect = (index, lastIndex, event) => {
+    setChanged(!changed)
+  }
+
   const SELECTION_TH = 10000
   const getTable = (selectedObjects: any[], type: string) => {
     if (selectedObjects.length === 0) {
@@ -230,6 +235,7 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
           letterWidths={letterWidths}
           label={'Name'}
           parentSize={size}
+          selected={changed}
         />
       )
     } else {
@@ -243,6 +249,7 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
           letterWidths={letterWidths}
           label={'Name'}
           parentSize={size}
+          selected={changed}
         />
       )
     }
@@ -257,7 +264,7 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
         </Typography>
       </div>
 
-      <Tabs forceRenderTabPanel={true}>
+      <Tabs forceRenderTabPanel={true} onSelect={_handleSelect}>
         <TabList ref={tabsRef}>
           <Tab key={'network-tab'}>Network</Tab>
           <Tab key={'nodes-tab'}>Nodes ({nodes.length} selected)</Tab>

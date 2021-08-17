@@ -1,7 +1,5 @@
 import React, { VFC, useMemo, useContext, useEffect, useState } from 'react'
 import Linkify from 'linkifyjs/react'
-import Table from './Table'
-import VirtualizedTable from './VirtualizedTable'
 import {
   processList,
   processItem,
@@ -9,10 +7,7 @@ import {
   processListAsText,
 } from '../../../utils/contextUtil'
 import AppContext from '../../../context/AppState'
-import EmptyPanel from './EmptyPanel'
 import VirtualizedTable2 from './VirtualizedTable2'
-import { TablePagination } from '@material-ui/core'
-import VirtualizedTable3 from './VirtualizedTable3'
 
 const EdgeAttributes = {
   SOURCE: 'source',
@@ -55,12 +50,20 @@ const EntryTable: VFC<{
   type?: string
   context
   letterWidths
-  label,
+  label
   parentSize: [number, number]
-}> = ({ selectedObjects, attributes, type, context, letterWidths, label, parentSize }) => {
+  selected: boolean
+}> = ({
+  selectedObjects,
+  attributes,
+  type,
+  context,
+  letterWidths,
+  label,
+  parentSize,
+  selected,
+}) => {
   const { config } = useContext(AppContext)
-  
-  
 
   const getWidth = (phrase: string | undefined): number => {
     if (phrase === undefined) {
@@ -165,7 +168,7 @@ const EntryTable: VFC<{
     return columnsList
   }, [selectedObjects])
 
-  const getData = () => {
+  const data = useMemo(() => {
     const dataList = []
     const textDataList = []
     let idx = 0
@@ -217,8 +220,7 @@ const EntryTable: VFC<{
     }
 
     return [sortedDataList, textDataList]
-  }
-  const data = getData()
+  }, [selectedObjects])
 
   const finalColumns = useMemo(() => {
     //Put columns in correct order
@@ -239,7 +241,7 @@ const EntryTable: VFC<{
     if (hasName) {
       columns.unshift(Attributes.NAME)
     }
-    
+
     return columns.map((column) => {
       if (column === Attributes.NAME) {
         return {
@@ -258,15 +260,14 @@ const EntryTable: VFC<{
     })
   }, [selectedObjects])
 
-
-
-  
-  // @ts-ignore
   return (
     // <VirtualizedTable3 columns={finalColumns} data={data[0]} parentSize={parentSize} />
-    <VirtualizedTable2 columns={finalColumns} data={data[0]} parentSize={parentSize} />
-
-    
+    <VirtualizedTable2
+      columns={finalColumns}
+      data={data[0]}
+      parentSize={parentSize}
+      selected={selected}
+    />
   )
   // return <VirtualizedTable columns={finalColumns} data={data[0]} parentSize={parentSize} />
 }

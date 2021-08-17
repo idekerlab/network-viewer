@@ -138,7 +138,6 @@ const useStyles = makeStyles((theme: Theme) => {
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'flex-start',
-
     },
     leftSideGrid: {
       overflow: 'hidden !important',
@@ -196,7 +195,8 @@ const VirtualizedTable2: VFC<{
   columns: any[]
   data: any
   parentSize: [number, number]
-}> = ({ columns, data, parentSize }) => {
+  selected: boolean
+}> = ({ columns, data, parentSize, selected }) => {
   // Popup control
   const [openPopup, setOpenPopup] = useState(false)
   const [position, setPosition] = useState({ x: 0, y: 0 })
@@ -227,31 +227,31 @@ const VirtualizedTable2: VFC<{
     [],
   )
 
-  // useEffect(() => {
-  //   if (rootRef.current) {
-  //     const newHeight = rootRef.current.offsetHeight
-  //     if (newHeight !== null && newHeight !== 0) {
-  //       setRootHeight(newHeight)
-  //     }
-  //   }
-  // }, [])
-
-  useEffect(() => {
+  const updateHeight = () => {
     if (tablePanelRef.current) {
       const newHeight = tablePanelRef.current.offsetHeight
-      if (newHeight !== null && newHeight !== 0) {
+      if (
+        newHeight !== null &&
+        newHeight !== 0 &&
+        newHeight !== tablePanelHeight
+      ) {
         setTablePanelHeight(newHeight)
-        console.log('T H = ', newHeight)
+        console.log('Height changed!! = ', newHeight)
       }
     }
-  }, [data, parentSize])
+  }
+  const _handleResize = (evt) => {
+    updateHeight()
+  }
 
   useEffect(() => {
-    if (pagenationRef.current) {
-      setPageHeight(pagenationRef.current.offsetHeight)
-    }
-  }, [pagenationRef])
-  const scrollBarSize = React.useMemo(() => scrollbarWidth(), [])
+    window.addEventListener('resize', _handleResize)
+    console.log('resize listener added')
+  }, [])
+
+  useEffect(() => {
+    updateHeight()
+  }, [selected])
 
   const {
     getTableProps,
@@ -348,7 +348,6 @@ const VirtualizedTable2: VFC<{
       value = originalValue.substring(0, valueLengthTH) + '...'
     }
 
-    // console.log(columnName, value)
     return (
       <div
         {...cell[0].getCellProps()}
@@ -382,24 +381,9 @@ const VirtualizedTable2: VFC<{
     return column === undefined ? columnWidth : column.width
   }
 
-  const _handleEnter = (evt) => {
-    console.log('ettt')
-
-    if (tablePanelRef.current) {
-      const newHeight = tablePanelRef.current.offsetHeight
-      if (
-        newHeight !== null &&
-        newHeight !== 0 &&
-        newHeight !== tablePanelHeight
-      ) {
-        setTablePanelHeight(newHeight)
-      }
-    }
-  }
-
   return (
     <>
-      <div ref={rootRef} className={classes.root} onMouseEnter={_handleEnter}>
+      <div ref={rootRef} className={classes.root}>
         <div ref={tablePanelRef} className={classes.tablePanel}>
           <ScrollSync>
             {({
@@ -559,7 +543,7 @@ const VirtualizedTable2: VFC<{
                 setPageSize(Number(e.target.value))
               }}
             >
-              {[100, 500, 1000, 5000].map((pageSize) => (
+              {[100, 500, 1000, 5000, 10000].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
                   {pageSize}
                 </option>
