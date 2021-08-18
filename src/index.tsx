@@ -19,6 +19,15 @@ if (location.hostname !== 'localhost' && location.protocol !== 'https:') {
   location.replace(`https:${location.href.substring(location.protocol.length)}`)
 }
 
+// Remove duplicate slashes if necessary
+const baseUrl = location.href
+const protocol = baseUrl.split('//')[0]
+const urlBody = baseUrl.replace(`${protocol}//`, '')
+const updatedUrl = urlBody.replace(/\/\/+/g, '/')
+if(updatedUrl !== urlBody) {
+  location.replace(`${protocol}//${updatedUrl}`)
+}
+
 // This avoids too many fetch calls from remote API
 const queryConfig = { queries: { refetchOnWindowFocus: false } }
 const queryCache = new QueryCache()
