@@ -14,7 +14,7 @@ import logo from '../../assets/images/ndex-logo.svg'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      maxWidth: '34em',
+      maxWidth: '32em',
       margin: 0,
       padding: 0,
     },
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
       textTransform: 'none',
     },
     footer: {
-      'text-align': 'center',
+      marginTop: '5em'
     },
     row: {
       marginBottom: '1em',
@@ -59,7 +59,7 @@ const AccountForgotPasswordPane: FC = () => {
   }
 
   return (
-    <Grid container className={classes.root} spacing={5} direction={'column'}>
+    <Grid container className={classes.root} spacing={5}>
       <Grid
         className={classes.row}
         container
@@ -82,8 +82,8 @@ const AccountForgotPasswordPane: FC = () => {
         </Grid>
       </Grid>
       <Grid
+        className={classes.row}
         container
-        alignContent={'stretch'}
         justify={'center'}
         alignItems={'center'}
         xs={12}
@@ -91,8 +91,8 @@ const AccountForgotPasswordPane: FC = () => {
         <ForgotPasswordPanel onSuccessReset={onSuccessReset} />
         {showHomeLink && (
           <div className={classes.footer}>
-            <Button onClick={handleHomeClick} className={classes.homeButton}>
-              Go to NDEx Home Page
+            <Button fullWidth onClick={handleHomeClick} className={classes.homeButton}>
+              Go to NDEx Home Page to Sing In
             </Button>
           </div>
         )}
