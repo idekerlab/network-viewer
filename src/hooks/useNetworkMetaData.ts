@@ -24,7 +24,12 @@ const getNetworkMetaData = async (
 
   try {
     const ndexClient = getNdexClient(`${serverUrl}/${apiVersion}`, credential)
-    const metaData = await ndexClient.getMetaData(uuid)
+    let metaData = null
+    if(credential.accesskey !== undefined && credential.accesskey !== '') {
+      metaData = await ndexClient.getMetaData(uuid, credential.accesskey)
+    } else {
+      metaData = await ndexClient.getMetaData(uuid)
+    }
     metaDataMap[uuid] = metaData
     return metaData
   } catch (e: unknown) {
