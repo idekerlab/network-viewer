@@ -14,6 +14,7 @@ const useStyles = makeStyles({
     zIndex: 1000,
     position: 'fixed',
     border: '1px solid #666666',
+    cursor: 'pointer',
   },
   content: {
     margin: 0,

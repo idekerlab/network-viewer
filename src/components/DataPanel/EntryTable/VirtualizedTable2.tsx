@@ -17,8 +17,13 @@ import {
   CellMeasurerCache,
 } from 'react-virtualized'
 
+import SortIcon from '@material-ui/icons/Sort'
+import DownIcon from '@material-ui/icons/ArrowDropDown'
+import UpIcon from '@material-ui/icons/ArrowDropUp'
+
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import Popup from './Popup'
+import { Typography } from '@material-ui/core'
 
 const scrollbarWidth = () => {
   const scrollDiv = document.createElement('div')
@@ -188,6 +193,21 @@ const useStyles = makeStyles((theme: Theme) => {
       alignItems: 'center',
       textAlign: 'center',
     },
+    sortableHeader: {
+      display: 'flex',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+    },
+    sortButton: {
+      marginLeft: '0.3em',
+      border: '1px solid #BBBBBB',
+      borderRadius: '10%',
+      cursor: 'pointer',
+      background: '#FFFFFF',
+    },
+    cellOverflow: {
+      cursor: 'pointer',
+    },
   })
 })
 
@@ -318,7 +338,18 @@ const VirtualizedTable2: VFC<{
         }}
         onClick={cprops['onClick']}
       >
-        {column.Header}
+        <div className={classes.sortableHeader}>
+          {column.Header}
+          {column.isSorted ? (
+            column.isSortedDesc ? (
+              <DownIcon className={classes.sortButton} />
+            ) : (
+              <UpIcon className={classes.sortButton} />
+            )
+          ) : (
+            <SortIcon className={classes.sortButton} />
+          )}
+        </div>
       </div>
     )
   }
@@ -344,8 +375,11 @@ const VirtualizedTable2: VFC<{
     const columnName = column.Header
     let originalValue = cell[0].value.props.children
     let value = originalValue
+
+    let isLongValue = false
     if (originalValue !== undefined && originalValue.length > valueLengthTH) {
-      value = originalValue.substring(0, valueLengthTH) + '...'
+      value = originalValue.substring(0, valueLengthTH)
+      isLongValue = true
     }
 
     return (
@@ -356,7 +390,13 @@ const VirtualizedTable2: VFC<{
         style={style}
         onClick={(event) => _onCellClick(event, originalValue)}
       >
-        {value}
+        {isLongValue ? (
+          <p className={classes.cellOverflow}>
+            {`${value}...`}
+          </p>
+        ) : (
+          value
+        )}
       </div>
     )
   }
