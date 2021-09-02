@@ -54,7 +54,7 @@ const AccountForgotPasswordPane: FC = () => {
     window.open(baseUrl, '_self')
   }
 
-  const onSuccessReset = (email: String) => {
+  const onSuccessReset = (email: String): void => {
     setShowHomeLink(true)
   }
 

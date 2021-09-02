@@ -6,6 +6,7 @@ import {
   useSortBy,
   useFilters,
   useGlobalFilter,
+  useFlexLayout,
 } from 'react-table'
 import theme from '../../../theme'
 
@@ -300,7 +301,8 @@ const VirtualizedTable2: VFC<{
     },
     useSortBy,
     usePagination,
-    useBlockLayout,
+    // useBlockLayout,
+    useFlexLayout,
   )
 
   const _renderBodyCell = ({ columnIndex, key, parent, rowIndex, style }) => {
@@ -319,13 +321,41 @@ const VirtualizedTable2: VFC<{
     return _renderLeftHeaderCell({ columnIndex, key, style })
   }
 
-  const _handleSort = (index: number) => {
-    console.log('EVT', index)
-  }
   // Render a cell in the column header.
   const _renderLeftHeaderCell = ({ columnIndex, key, style }) => {
-    const column = headerGroups[0].headers[columnIndex]
-    const cprops = { ...column.getHeaderProps(column.getSortByToggleProps()) }
+    const headerGroup = headerGroups[0]
+    const columns2 = headerGroup.headers.map((column) => column)
+
+    const column = headerGroup.headers[columnIndex]
+    const sortBy = column.getSortByToggleProps()
+    const cprops = { ...column.getHeaderProps(sortBy) }
+
+    const clickFunction = cprops['onClick']
+
+    const _handleSort = (targetColumn) => {
+      if (columnIndex !== 0) {
+        targetColumn.canSort = false
+        return
+      }
+      targetColumn.toggleSortBy(!targetColumn.isSortedDesc)
+    }
+
+    const getSortButton = () => {
+      if (columnIndex !== 0) {
+        column.canSort = false
+        return null
+      }
+
+      if (column.isSorted) {
+        if (column.isSortedDesc) {
+          return <DownIcon className={classes.sortButton} />
+        } else {
+          return <UpIcon className={classes.sortButton} />
+        }
+      } else {
+        return <SortIcon className={classes.sortButton} />
+      }
+    }
 
     return (
       <div
@@ -333,22 +363,13 @@ const VirtualizedTable2: VFC<{
         style={{
           ...style,
           display: 'grid',
-          // justifyContent: '',
           alignContent: 'center',
         }}
-        onClick={cprops['onClick']}
+        onClick={() => _handleSort(column)}
       >
         <div className={classes.sortableHeader}>
           {column.Header}
-          {column.isSorted ? (
-            column.isSortedDesc ? (
-              <DownIcon className={classes.sortButton} />
-            ) : (
-              <UpIcon className={classes.sortButton} />
-            )
-          ) : (
-            <SortIcon className={classes.sortButton} />
-          )}
+          {getSortButton()}
         </div>
       </div>
     )
@@ -391,9 +412,7 @@ const VirtualizedTable2: VFC<{
         onClick={(event) => _onCellClick(event, originalValue)}
       >
         {isLongValue ? (
-          <p className={classes.cellOverflow}>
-            {`${value}...`}
-          </p>
+          <p className={classes.cellOverflow}>{`${value}...`}</p>
         ) : (
           value
         )}
