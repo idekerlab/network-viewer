@@ -2,7 +2,6 @@ import React, { useContext, useState, FC } from 'react'
 import {
   Chip,
   createStyles,
-  Divider,
   Grid,
   makeStyles,
   Theme,
@@ -22,6 +21,12 @@ import QueryState from './QueryPanel/QueryState'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    root: {
+      backgroundColor: theme.palette.background.paper,
+      margin: 0,
+      paddingTop: theme.spacing(1),
+      paddingBottom: theme.spacing(1),
+    },
     item: {
       marginRight: theme.spacing(1),
     },
@@ -34,17 +39,15 @@ const useStyles = makeStyles((theme: Theme) =>
       boxSizing: 'border-box',
     },
     grid: {
-      padding: theme.spacing(1),
-      paddingLeft: theme.spacing(2),
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      paddingLeft: theme.spacing(1.5),
     },
     warning: {
       color: theme.palette.warning.main,
     },
     error: {
       color: theme.palette.error.main,
-    },
-    buttonContainer: {
-      // margin: theme.spacing(1),
     },
     copySpan: {
       display: 'none',
@@ -110,9 +113,9 @@ const NetworkDetails: FC<{
   }
 
   return (
-    <div>
+    <div className={classes.root}>
       {summary.doi ? (
-        <div className={classes.buttonContainer}>
+        <>
           {summary.doi === 'Pending' ? (
             <Grid
               className={classes.grid}
@@ -154,7 +157,7 @@ const NetworkDetails: FC<{
               </CopyToClipboard>
             </Tooltip>
           )}
-        </div>
+        </>
       ) : null}
 
       <Grid container className={classes.grid}>
@@ -198,7 +201,6 @@ const NetworkDetails: FC<{
         </Grid>
       ) : null}
 
-      <Divider />
 
       {renderer === 'lgr' && !uiState.showSearchResult ? (
         <div />

@@ -15,14 +15,11 @@ import AppContext from '../../context/AppState'
 import useAttributes from '../../hooks/useAttributes'
 import { getContextFromCx } from '../../utils/contextUtil'
 import useNetworkSummary from '../../hooks/useNetworkSummary'
-import { Tooltip, Typography } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 import MinimizeButton from './NetworkPropertyPanel/MinimizeButton'
 import EntryTable from './EntryTable'
 import QueryState, { DB } from './NetworkPropertyPanel/QueryPanel/QueryState'
 import TargetNodes from './NetworkPropertyPanel/QueryPanel/TargetNodes'
-
-import TablePagination from '@material-ui/core/TablePagination'
-
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import EmptyPanel from './EntryTable/EmptyPanel'
 import WarningPanel from './EntryTable/WarningPanel'
@@ -41,15 +38,18 @@ const useStyles = makeStyles((theme: Theme) => {
       display: 'flex',
       flexDirection: 'column',
       boxSizing: 'border-box',
+      backgroundColor: theme.palette.background.paper,
     },
     topBar: {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'flex-start',
       paddingRight: theme.spacing(1),
+      border: `1px solid ${theme.palette.divider}`
     },
     title: {
-      paddingTop: theme.spacing(1),
+      paddingTop: theme.spacing(1.5),
+      paddingBottom: theme.spacing(1.5),
       paddingLeft: theme.spacing(3),
     },
     tabs: {
@@ -61,8 +61,6 @@ const useStyles = makeStyles((theme: Theme) => {
       width: '100%',
     },
     tab: {
-      // minHeight: '2.6em',
-      // minWidth: '7em',
       '&:disabled': {
         color: '#AAAAAA',
       },
@@ -113,10 +111,7 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
   const classes = useStyles()
 
   const [size, setSize] = useState<[number, number]>([0, 0])
-
-  const [page, setPage] = useState<number>(0)
   const [changed, setChanged] = useState<boolean>(false)
-  const [rowsPerPage, setRowsPerPage] = useState<number>(5)
 
   const { ndexCredential, config, selectionState, uiState } = useContext(
     AppContext,
@@ -152,17 +147,6 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
   // Store state of the query settings
   const [queryState, setQueryState] = useState<QueryState>(DEF_QUERY_STATE)
 
-  const handleChange = (event, newValue) => {
-    // setActiveTab({ ...uiState, activeTab: newValue })
-    setSelected(newValue)
-  }
-
-  const getLetterWidth = (sandbox, letter) => {
-    sandbox.innerHTML = `<span>${letter}</span>`
-    const el = sandbox.children[0]
-    return el.offsetWidth
-  }
-
   const letterWidths = useMemo(() => {
     const widths = {}
     let widthSum = 0
@@ -174,7 +158,6 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
         letter = '&nbsp'
       }
       widths[letter] = baseFontSize
-      // widths[letter] = getLetterWidth(sandbox, letter)
       widthSum += widths[letter]
     }
     sandbox.style.display = 'none'
@@ -186,7 +169,6 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
   let edges = []
   if (!showSearchResult) {
     // Main view only
-    // if (selectionState.lastSelected.fromMain) {
     nodes = selectionState.main['nodes']
     edges = selectionState.main['edges']
   } else {
@@ -201,17 +183,6 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
     ndexCredential,
   )
   const summaryResponseData = summaryResponse.data
-
-  const handleChangePage = (event: unknown, newPage: number): void => {
-    setPage(newPage)
-  }
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10))
-    setPage(0)
-  }
 
   const _handleSelect = (index, lastIndex, event) => {
     setChanged(!changed)
