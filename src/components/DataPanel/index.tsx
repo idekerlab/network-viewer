@@ -8,6 +8,7 @@ import React, {
   ReactElement,
 } from 'react'
 
+import { Typography, Tooltip } from '@material-ui/core'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import NetworkPropertyPanel from './NetworkPropertyPanel'
 import { useParams } from 'react-router-dom'
@@ -15,7 +16,6 @@ import AppContext from '../../context/AppState'
 import useAttributes from '../../hooks/useAttributes'
 import { getContextFromCx } from '../../utils/contextUtil'
 import useNetworkSummary from '../../hooks/useNetworkSummary'
-import { Typography } from '@material-ui/core'
 import MinimizeButton from './NetworkPropertyPanel/MinimizeButton'
 import EntryTable from './EntryTable'
 import QueryState, { DB } from './NetworkPropertyPanel/QueryPanel/QueryState'
@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) => {
       alignItems: 'center',
       justifyContent: 'flex-start',
       paddingRight: theme.spacing(1),
-      border: `1px solid ${theme.palette.divider}`
+      border: `1px solid ${theme.palette.divider}`,
     },
     title: {
       paddingTop: theme.spacing(1.5),
@@ -78,14 +78,13 @@ const useStyles = makeStyles((theme: Theme) => {
 const TOOLTIP_MESSAGE = {
   CYJS_NODE: 'Select multiple nodes to view in node table',
   CYJS_EDGE: 'Select multiple edges to view in edge table',
-  LGR_NODE: 'Multiple node selection for large networks is coming soon',
-  LGR_EDGE: 'Multiple edge selection for large networks is coming soon',
 }
 
-// const TabPanel = (props) => {
-//   const { children, value, index } = props
-//   return value === index ? children : null
-// }
+enum TabType {
+  Network,
+  Node,
+  Edge,
+}
 
 export type NetworkPanelState = {
   netInfoOpen: boolean
@@ -116,12 +115,12 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
   const { ndexCredential, config, selectionState, uiState } = useContext(
     AppContext,
   )
+
   useEffect(() => {
     if (baseRef.current && titleRef.current) {
       let baseHeight =
         baseRef.current.offsetHeight - titleRef.current.offsetHeight
       let baseWidth = baseRef.current.offsetWidth
-
       setSize([baseWidth, baseHeight])
     }
   }, [baseRef, titleRef, tabsRef, selectionState])
@@ -134,7 +133,27 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
   const context = useMemo(() => getContextFromCx(cx), [cx])
 
   // Selected tab
-  const [selected, setSelected] = useState(0)
+  const [selected, setSelected] = useState<TabType>(TabType.Network)
+
+  //
+  const [tabsDisabled, setTabsDisabled] = useState<boolean>(true)
+
+  useEffect(() => {
+    const { main, sub } = selectionState
+    if (
+      main.nodes.length === 0 &&
+      main.edges.length === 0 &&
+      sub.nodes.length === 0 &&
+      sub.edges.length === 0
+    ) {
+      setSelected(TabType.Network)
+      setTabsDisabled(true)
+    } else {
+      setTabsDisabled(false)
+      setSelected(TabType.Node)
+      setChanged(!changed)
+    }
+  }, [selectionState])
 
   // Unified child panel states
   const [panelState, setPanelState] = useState<NetworkPanelState>({
@@ -186,6 +205,7 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
 
   const _handleSelect = (index, lastIndex, event) => {
     setChanged(!changed)
+    setSelected(index)
   }
 
   const SELECTION_TH = 10000
@@ -235,11 +255,27 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
         </Typography>
       </div>
 
-      <Tabs forceRenderTabPanel={true} onSelect={_handleSelect}>
+      <Tabs
+        selectedIndex={selected}
+        forceRenderTabPanel={true}
+        onSelect={_handleSelect}
+      >
         <TabList ref={tabsRef}>
           <Tab key={'network-tab'}>Network</Tab>
-          <Tab key={'nodes-tab'}>Nodes ({nodes.length} selected)</Tab>
-          <Tab key={'edges-tab'}>Edges ({edges.length} selected)</Tab>
+          <Tab disabled={tabsDisabled} key={'nodes-tab'}>
+            <Tooltip
+              title={selected !== TabType.Node ? TOOLTIP_MESSAGE.CYJS_NODE : ''}
+            >
+              <div>Nodes ({nodes.length} selected)</div>
+            </Tooltip>
+          </Tab>
+          <Tab disabled={tabsDisabled} key={'edges-tab'}>
+            <Tooltip
+              title={selected !== TabType.Edge ? TOOLTIP_MESSAGE.CYJS_EDGE : ''}
+            >
+              <div>Edges ({edges.length} selected)</div>
+            </Tooltip>
+          </Tab>
         </TabList>
 
         <TabPanel value={selected} index={0}>
