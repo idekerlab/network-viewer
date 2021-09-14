@@ -66,6 +66,18 @@ const useStyles = makeStyles((theme: Theme) =>
       color: 'rgba(100,100,100,1)',
       zIndex: 100,
     },
+    layoutButton: {
+      position: 'absolute',
+      left: '1em',
+      top: '15em',
+      zIndex: 100,
+    },
+    saveToNDExButton: {
+      position: 'absolute',
+      left: '1em',
+      top: '20em',
+      zIndex: 100,
+    },
   }),
 )
 
@@ -444,9 +456,9 @@ const NetworkPanel: FC<ViewProps> = ({
         <EmptyView
           showIcons={!uiState.showSearchResult}
           title="Browser not supported"
-          message={`Your browser cannot display large network data. 
-            Please use supported browsers, such as Chrome or Firefox, 
-            to view large networks. (Still, you can query the network 
+          message={`Your browser cannot display large network data.
+            Please use supported browsers, such as Chrome or Firefox,
+            to view large networks. (Still, you can query the network
               using the query function below.)`}
         />
       )
@@ -565,6 +577,37 @@ const NetworkPanel: FC<ViewProps> = ({
     }
   }
 
+  const runLayout = () => {
+    const layoutParams = {
+      algorithm: 'networkxspringlayout',
+      data: cx,
+    }
+
+    fetch('http://cytolayouts.ucsd.edu/cd/communitydetection/v1', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(layoutParams),
+    })
+      .then((res) => res.json())
+      .then(({ id }) => {
+        setTimeout(() => {
+          fetch(`http://cytolayouts.ucsd.edu/cd/communitydetection/v1/${id}`)
+            .then((res) => res.json())
+            .then((res) => {
+              if (res.result != null) {
+                res.result.forEach(({ node, x, y }) => {
+                  cyReference.main.getElementById(node).position({ x, y })
+                })
+              }
+            })
+        }, 2000)
+      })
+  }
+
+  const saveToNDEx = () => {}
+
   const topStyle = { background: '#FFFFFF', zIndex: 0 }
   const bottomStyle = { background: '#FFFFFF', zIndex: 10 }
   return (
@@ -619,6 +662,16 @@ const NetworkPanel: FC<ViewProps> = ({
             <Typography className={classes.title}>Overview</Typography>
           )}
           {getMainRenderer(renderer)}
+          {
+            <button className={classes.layoutButton} onClick={runLayout}>
+              Run Layout Service
+            </button>
+          }
+          {
+            <button className={classes.saveToNDExButton} onClick={saveToNDEx}>
+              Save To NDEx
+            </button>
+          }
         </div>
       )}
     </div>
