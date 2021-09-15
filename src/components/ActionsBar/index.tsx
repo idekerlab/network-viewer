@@ -84,19 +84,33 @@ const LayoutPanel = ({ cx, cyReference }) => {
     })
       .then((res) => res.json())
       .then(({ id }) => {
-        setTimeout(() => {
-          fetch(`http://cytolayouts.ucsd.edu/cd/communitydetection/v1/${id}`)
-            .then((res) => res.json())
-            .then((res) => {
-              if (res.result != null) {
-                res.result.forEach(({ node, x, y }) => {
-                  cyReference.main.getElementById(node).position({ x, y })
-                })
-              }
+        // poll `numCompletionTries`.
+        // If the task doesn't finish before then, give up
+
+        let numCompletionTries = 5
+        let waitForCompletion = async () => {
+          let result = await fetch(`http://cytolayouts.ucsd.edu/cd/communitydetection/v1/${id}`)
+          let resultJson = await result.json()
+
+          if (resultJson.status === 'complete') {
+            resultJson.result.forEach(({ node, x, y }) => {
+              cyReference.main.getElementById(node).position({ x, y })
+            })
+            setLayoutRunning(false)
+            setLayoutRunningName('')
+          } else {
+            if (numCompletionTries > 0) {
+              numCompletionTries--
+              // poll every second for completion
+              setTimeout(() => waitForCompletion(), 1000)
+            } else {
               setLayoutRunning(false)
               setLayoutRunningName('')
-            })
-        }, 2000)
+            }
+          }
+        }
+
+        waitForCompletion()
       })
   }
 
