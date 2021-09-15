@@ -1,11 +1,18 @@
 import React, { FC } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import AppContext from '../../context/AppState'
 import IconButton from '@material-ui/core/IconButton'
 import Tooltip from '@material-ui/core/Tooltip'
 import ListIcon from '@material-ui/icons/List'
 import ScatterPlotIcon from '@material-ui/icons/ScatterPlot'
+
+import Card from '@material-ui/core/Card'
+import CardActions from '@material-ui/core/CardActions'
+import CardContent from '@material-ui/core/CardContent'
+import Button from '@material-ui/core/Button'
+import Typography from '@material-ui/core/Typography'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,6 +46,12 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     layoutButton: {},
     saveToNDExButton: {},
+    title: {
+      marginBottom: '1em',
+    },
+    progress: {
+      zIndex: 700,
+    },
   }),
 )
 
@@ -48,14 +61,19 @@ type ViewProps = {
 
 const LayoutPanel = ({ cx, cyReference }) => {
   const classes = useStyles()
-
+  const [layoutAlgorithmsInfo, setLayoutAlgorithmsInfo] = useState({})
+  const [layoutRunning, setLayoutRunning] = useState(false)
+  const [layoutProgress, setLayoutProgress] = useState(null)
+  const [layoutRunningName, setLayoutRunningName] = useState('')
   const saveToNDEx = () => {}
 
-  const runLayout = () => {
+  const runLayout = (layoutName) => {
     const layoutParams = {
-      algorithm: 'networkxspringlayout',
+      algorithm: layoutName,
       data: cx,
     }
+    setLayoutRunningName(layoutName)
+    setLayoutRunning(true)
 
     fetch('http://cytolayouts.ucsd.edu/cd/communitydetection/v1', {
       method: 'POST',
@@ -75,20 +93,44 @@ const LayoutPanel = ({ cx, cyReference }) => {
                   cyReference.main.getElementById(node).position({ x, y })
                 })
               }
+              setLayoutRunning(false)
+              setLayoutRunningName('')
             })
         }, 2000)
       })
   }
 
+  useEffect(() => {
+    fetch('http://cytolayouts.ucsd.edu/cd/communitydetection/v1/algorithms')
+      .then((res) => res.json())
+      .then((res) => {
+        setLayoutAlgorithmsInfo(res.algorithms)
+      })
+  }, [])
+
+  const layoutInfoCards = Object.entries(layoutAlgorithmsInfo).map(([name, info]: any) => (
+    <Card variant="outlined">
+      <CardContent>
+        <Typography gutterBottom variant="h6" component="h3">
+          {info.displayName}
+        </Typography>
+        <Typography color="textSecondary">{info.description}</Typography>
+      </CardContent>
+      <CardActions>
+        <Button color="primary" size="small" onClick={() => runLayout(name)}>
+          Run Layout
+        </Button>
+        {layoutRunningName === name ? <CircularProgress color="secondary" /> : null}
+      </CardActions>
+    </Card>
+  ))
+
   return (
     <div className={classes.currentPanel}>
-      <h1>Layouts</h1>
-      <button className={classes.layoutButton} onClick={runLayout}>
-        Run Layout Service
-      </button>
-      <button className={classes.saveToNDExButton} onClick={saveToNDEx}>
-        Save To NDEx
-      </button>
+      <Typography className={classes.title} variant="h6">
+        Layouts
+      </Typography>
+      {layoutInfoCards}
     </div>
   )
 }
@@ -120,11 +162,6 @@ const ActionsBar: FC<ViewProps> = ({ cx }) => {
   const classes = useStyles()
   const { cyReference, uiState } = useContext(AppContext)
   const [currentPanel, setCurrentPanel] = useState(null)
-  console.log('action bar')
-  console.log(cyReference)
-  console.log(uiState)
-
-  console.log(currentPanel)
 
   return (
     <React.Fragment>
