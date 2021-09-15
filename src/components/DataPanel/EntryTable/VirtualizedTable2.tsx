@@ -224,6 +224,7 @@ const VirtualizedTable2: VFC<{
   const [selectedValue, setSelectedValue] = useState(null)
 
   const pagenationRef = useRef(null)
+  const gridRef = useRef(null)
 
   const tablePanelRef = useRef(null)
   const [tablePanelHeight, setTablePanelHeight] = useState(1)
@@ -305,6 +306,29 @@ const VirtualizedTable2: VFC<{
     useFlexLayout,
   )
 
+  const _handleGoToPage = (index: number): void => {
+    gotoPage(index)
+    gridRef.current.scrollToCell({
+      columnIndex: 0,
+      rowIndex: 0,
+    })
+  }
+  const _handleNextPage = (): void => {
+    nextPage()
+    gridRef.current.scrollToCell({
+      columnIndex: 0,
+      rowIndex: 0,
+    })
+  }
+
+  const _handlePreviousPage = (): void => {
+    previousPage()
+    gridRef.current.scrollToCell({
+      columnIndex: 0,
+      rowIndex: 0,
+    })
+  }
+
   const _renderBodyCell = ({ columnIndex, key, parent, rowIndex, style }) => {
     if (columnIndex < 1) {
       return
@@ -324,13 +348,7 @@ const VirtualizedTable2: VFC<{
   // Render a cell in the column header.
   const _renderLeftHeaderCell = ({ columnIndex, key, style }) => {
     const headerGroup = headerGroups[0]
-    const columns2 = headerGroup.headers.map((column) => column)
-
     const column = headerGroup.headers[columnIndex]
-    const sortBy = column.getSortByToggleProps()
-    const cprops = { ...column.getHeaderProps(sortBy) }
-
-    const clickFunction = cprops['onClick']
 
     const _handleSort = (targetColumn) => {
       if (columnIndex !== 0) {
@@ -535,6 +553,7 @@ const VirtualizedTable2: VFC<{
                             }}
                           >
                             <Grid
+                              ref={gridRef}
                               className={classes.bodyGrid}
                               columnWidth={columnWidth}
                               columnCount={columnCount}
@@ -562,28 +581,28 @@ const VirtualizedTable2: VFC<{
           <div className={classes.buttons}>
             <button
               className={classes.button}
-              onClick={() => gotoPage(0)}
+              onClick={() => _handleGoToPage(0)}
               disabled={!canPreviousPage}
             >
               {'<<'}
             </button>
             <button
               className={classes.button}
-              onClick={() => previousPage()}
+              onClick={() => _handlePreviousPage()}
               disabled={!canPreviousPage}
             >
               {'<'}
             </button>
             <button
               className={classes.button}
-              onClick={() => nextPage()}
+              onClick={() => _handleNextPage()}
               disabled={!canNextPage}
             >
               {'>'}
             </button>
             <button
               className={classes.button}
-              onClick={() => gotoPage(pageCount - 1)}
+              onClick={() => _handleGoToPage(pageCount - 1)}
               disabled={!canNextPage}
             >
               {'>>'}
