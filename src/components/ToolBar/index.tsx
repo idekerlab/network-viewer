@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       justifyContent: 'flex-start',
       top: theme.spacing(1),
-      left: theme.spacing(1),
+      left: theme.spacing(5),
       height: '3em',
       padding: theme.spacing(1),
       background: 'rgba(255, 255, 255, 0.95)',

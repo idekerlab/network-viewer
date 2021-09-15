@@ -18,6 +18,7 @@ import UIState from '../../model/UIState'
 import { UIStateActions } from '../../reducer/uiStateReducer'
 import { isWebGL2supported } from '../../utils/browserTest'
 import Title from '../Title'
+import ActionsBar from '../ActionsBar'
 
 import { convertError } from '../../utils/error/errorHandler'
 
@@ -253,6 +254,7 @@ const MainSplitPane = () => {
     return (
       <React.Fragment>
         <Title title={`${fetchParams.name} (${uuid})`} />
+        <ActionsBar cx={originalCx} />
         <div ref={containerRef} className={classes.mainSplitRoot}>
           <SplitPane
             split="vertical"
