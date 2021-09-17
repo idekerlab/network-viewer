@@ -1,11 +1,18 @@
 import React, { FC } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import { useContext, useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
+
+import useNetworkPermissions from '../../hooks/useNetworkPermissions'
+import useNetworkSummary from '../../hooks/useNetworkSummary'
+
 import AppContext from '../../context/AppState'
 import IconButton from '@material-ui/core/IconButton'
 import Tooltip from '@material-ui/core/Tooltip'
 import ListIcon from '@material-ui/icons/List'
 import ScatterPlotIcon from '@material-ui/icons/ScatterPlot'
+import CloseIcon from '@material-ui/icons/Close'
+
 
 import Card from '@material-ui/core/Card'
 import CardActions from '@material-ui/core/CardActions'
@@ -34,6 +41,12 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRight: '1px solid #DDDDDD',
       left: 40,
     },
+    currentPanelHeader: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: '1em',
+    },
     buttonList: {
       display: 'flex',
       flexDirection: 'column',
@@ -46,9 +59,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     layoutButton: {},
     saveToNDExButton: {},
-    title: {
-      marginBottom: '1em',
-    },
+    title: {},
     progress: {
       zIndex: 700,
     },
@@ -59,13 +70,87 @@ type ViewProps = {
   cx: object[]
 }
 
-const LayoutPanel = ({ cx, cyReference }) => {
+const LayoutPanel = ({ cx, onClose }) => {
   const classes = useStyles()
   const [layoutAlgorithmsInfo, setLayoutAlgorithmsInfo] = useState({})
   const [layoutRunning, setLayoutRunning] = useState(false)
-  const [layoutProgress, setLayoutProgress] = useState(null)
   const [layoutRunningName, setLayoutRunningName] = useState('')
-  const saveToNDEx = () => {}
+  const { summary, cyReference, uiState, ndexCredential, config } = useContext(AppContext)
+  const { uuid } = useParams()
+  const { isLogin } = ndexCredential
+
+
+  // logic copied from src/components/FooterPanel/EditMetadataButton.tsx
+  // TODO export this to a common function, I just don't know where it should 
+  // go right now and this is a prototype, so this code might not exist in the future
+  
+  // basic idea is to disable the button if the user doesnt have permissions to modify
+  // the cartesian network aspect
+  const getLayoutUpdatePermissions = () => {
+    const permissions = useNetworkPermissions(
+      uuid,
+      config.ndexHttps,
+      'v2',
+      ndexCredential,
+    )
+  
+    const summaryResponse = useNetworkSummary(
+      uuid,
+      config.ndexHttps,
+      'v2',
+      ndexCredential,
+    )
+    const networkSummary = summaryResponse.data
+    let isDoiAvailable = false
+    if (networkSummary !== undefined && networkSummary !== null) {
+      const { doi } = summary
+      if (doi !== undefined) {
+        // DOI status available.
+        isDoiAvailable = true
+      }
+    }
+
+    let hasPermission = false
+    if (
+      permissions !== undefined &&
+      permissions !== null &&
+      permissions.data === 'ADMIN'
+    ) {
+      hasPermission = true
+    }
+  
+    let login: boolean = false
+    if (isLogin && summary !== undefined) {
+      login = true
+    }
+  
+    let message = 'This feature is only available to signed-in users'
+  
+    let disabled = true
+    if (hasPermission && login) {
+      if (isDoiAvailable) {
+        message =
+          'Network properties cannot be modified once a DOI has been requested or assigned'
+      } else {
+        message = 'Edit network properties'
+        disabled = false
+      }
+    } else if (!hasPermission && login) {
+      message = "You don't have permission to edit this network"
+    }
+    
+    return { saveLayoutButtonMessage: message, disabled }
+  }
+
+  const { saveLayoutButtonMessage, disabled } = getLayoutUpdatePermissions();
+
+  const saveLayoutAspectToNDEx = () => {
+    if(disabled){
+      return;
+    }
+
+    
+  };
 
   const runLayout = (layoutName) => {
     const layoutParams = {
@@ -141,30 +226,47 @@ const LayoutPanel = ({ cx, cyReference }) => {
 
   return (
     <div className={classes.currentPanel}>
-      <Typography className={classes.title} variant="h6">
-        Layouts
-      </Typography>
+      <div className={classes.currentPanelHeader}>
+        <Typography className={classes.title} variant="h6">
+          Layouts
+        </Typography>
+        <IconButton onClick={() => onClose(null)}>
+            <CloseIcon></CloseIcon>
+        </IconButton>
+      </div>
       {layoutInfoCards}
+      <Tooltip title={saveLayoutButtonMessage}>
+        <Button disabled={disabled} color="primary" size="small" onClick={() => saveLayoutAspectToNDEx()}>
+          Save Network Layout
+        </Button>
+      </Tooltip>
     </div>
   )
 }
 
-const NetworkListPanel = ({ cx, cyReference }) => {
+const NetworkListPanel = ({ cx, cyReference, onClose }) => {
   const classes = useStyles()
 
   return (
     <div className={classes.currentPanel}>
-      <h1>Network List</h1>
+      <div className={classes.currentPanelHeader}>
+        <Typography className={classes.title} variant="h6">
+          Network List
+        </Typography>
+        <IconButton onClick={() => onClose(null)}>
+            <CloseIcon></CloseIcon>
+        </IconButton>
+      </div>    
     </div>
   )
 }
 
-const getCurrentPanel = (currentPanel, cx, cyReference) => {
+const getCurrentPanel = (currentPanel, cx, cyReference, onClose) => {
   switch (currentPanel) {
     case 'layouts':
-      return <LayoutPanel cx={cx} cyReference={cyReference}></LayoutPanel>
+      return <LayoutPanel cx={cx} onClose={onClose}></LayoutPanel>
     case 'networkList':
-      return <NetworkListPanel cx={cx} cyReference={cyReference}></NetworkListPanel>
+      return <NetworkListPanel cx={cx} cyReference={cyReference} onClose={onClose}></NetworkListPanel>
     case null:
       return null
     default:
@@ -174,7 +276,7 @@ const getCurrentPanel = (currentPanel, cx, cyReference) => {
 
 const ActionsBar: FC<ViewProps> = ({ cx }) => {
   const classes = useStyles()
-  const { cyReference, uiState } = useContext(AppContext)
+  const { cyReference, uiState, ndexCredential, config } = useContext(AppContext)
   const [currentPanel, setCurrentPanel] = useState(null)
 
   return (
@@ -193,7 +295,7 @@ const ActionsBar: FC<ViewProps> = ({ cx }) => {
           </Tooltip>
         </div>
       </div>
-      {currentPanel != null ? getCurrentPanel(currentPanel, cx, cyReference) : null}
+      {currentPanel != null ? getCurrentPanel(currentPanel, cx, cyReference, setCurrentPanel) : null}
     </React.Fragment>
   )
 }
