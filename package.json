@@ -31,6 +31,7 @@
     "cytoscape-canvas": "^3.0.1",
     "cytoscape-cx2js": "^0.6.6",
     "cytoscape-explore-components": "link:../ce-components",
+    "cx-viz-converter": "link:../cx-viz-converter",
     "deck.gl": "^8.4.11",
     "draft-js": "^0.11.7",
     "draftjs-to-html": "^0.9.1",
