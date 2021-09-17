@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom'
 
 import useNetworkPermissions from '../../hooks/useNetworkPermissions'
 import useNetworkSummary from '../../hooks/useNetworkSummary'
+import { getNdexClient } from '../../utils/credentialUtil'
 
 import AppContext from '../../context/AppState'
 import IconButton from '@material-ui/core/IconButton'
@@ -148,8 +149,54 @@ const LayoutPanel = ({ cx, onClose }) => {
     if(disabled){
       return;
     }
+    // 1. get node coordinates from cy.js model in the format of cartesian aspect
+    // 2. generate CX for the put request
+          // i get number verification from the cx
+          // i get metadata cartesian layout from the cx or hardcode it
+          // i generate cartesian layout objects from the cyreference
+    // 3. example
 
-    
+    // [{
+    //   "numberVerification": [
+    //     {
+    //       "longNumber": 283213721732712
+    //     }
+    //   ]
+    // }, {
+    //   "metaData": {
+    //     "name": "cartesianLayout", "elementCount": 100 // num nodes here
+    //   },
+    //   "cartesianLayout": [{
+    //       "node": 100, "x": 23213.12, "y": 3234.5
+    //     }]
+    //   }]
+
+    const cartesianLayoutUpdate = [
+      cx[0], // numberVerification
+      {
+        metaData: [cx[1]['metaData'][6]] // cartesian layout metadata
+      },
+      {
+        cartesianLayout: cyReference.main.nodes().map(node =>{
+          return {
+            node: node.id(),
+            x: node.position('x'),
+            y: node.position('y')
+          }
+        })
+      },
+      {
+        status: [{
+          error: "",
+          success: "true"
+        }]
+      }
+    ]
+
+    const ndexClient = getNdexClient(`${config.ndexHttps}/${'v2'}`, ndexCredential)
+
+    ndexClient.updateCartesianLayoutAspect(uuid, cartesianLayoutUpdate);
+
   };
 
   const runLayout = (layoutName) => {
