@@ -5,6 +5,7 @@ import OpenInCytoscape from './OpenInCytoscape'
 import EditMetadataButton from './EditMetadataButton'
 import ShareMenu from './ShareMenu'
 import SaveNetworkCXButton from './SaveNetworkCXButton'
+import DeleteButton from './DeleteButton'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,6 +37,7 @@ const FooterPanel: FC = () => {
       <SaveNetworkCXButton />
       <EditMetadataButton />
       <ShareMenu />
+      <DeleteButton />
     </div>
   )
 }
