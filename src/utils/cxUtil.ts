@@ -3,7 +3,7 @@ const OBJ_TYPE = {
   EDGES: 'edges',
 }
 
-const getEntry = (tag: string, cx: object[]) => {
+const getEntry = (tag: string, cx: any[]) => {
   if (tag === undefined || tag === null) {
     return {}
   }

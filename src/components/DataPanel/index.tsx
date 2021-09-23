@@ -21,8 +21,9 @@ import EntryTable from './EntryTable'
 import QueryState, { DB } from './NetworkPropertyPanel/QueryPanel/QueryState'
 import TargetNodes from './NetworkPropertyPanel/QueryPanel/TargetNodes'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
-import EmptyPanel from './EntryTable/EmptyPanel'
+import InformationPanel from './EntryTable/InformationPanel'
 import WarningPanel from './EntryTable/WarningPanel'
+import { getEntry, getNodeCount, getEdgeCount } from '../../utils/cxUtil'
 
 let baseFontSize = null
 
@@ -75,11 +76,6 @@ const useStyles = makeStyles((theme: Theme) => {
   })
 })
 
-const TOOLTIP_MESSAGE = {
-  CYJS_NODE: 'Select multiple nodes to view in node table',
-  CYJS_EDGE: 'Select multiple edges to view in edge table',
-}
-
 enum TabType {
   Network,
   Node,
@@ -99,6 +95,14 @@ const DEF_QUERY_STATE: QueryState = {
   target: TargetNodes.All,
 }
 
+type GraphObjectCount = {
+  nodeCount: number
+  edgeCount: number
+}
+
+// Default threshold of selected nodes to be displayed in the table
+const SELECTION_TH = 10000
+
 const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
   width,
   cx,
@@ -108,6 +112,11 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
   const titleRef = useRef(null)
   const tabsRef = useRef(null)
   const classes = useStyles()
+
+  const [objCount, setObjCount] = useState<GraphObjectCount>({
+    nodeCount: 0,
+    edgeCount: 0,
+  })
 
   const [size, setSize] = useState<[number, number]>([0, 0])
   const [changed, setChanged] = useState<boolean>(false)
@@ -137,6 +146,40 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
 
   //
   const [tabsDisabled, setTabsDisabled] = useState<boolean>(true)
+  const [allNodeIds, setAllNodeIds] = useState<any[]>([])
+  const [allEdgeIds, setAllEdgeIds] = useState<any[]>([])
+
+  useEffect(() => {
+    if (cx !== undefined && cx !== null && Array.isArray(cx) && cx.length > 0) {
+      const allNodeCount = getNodeCount(cx)
+      const allEdgeCount = getEdgeCount(cx)
+      setObjCount({ nodeCount: allNodeCount, edgeCount: allEdgeCount })
+
+      const allNodes = getEntry('nodes', cx)
+      const allEdges = getEntry('edges', cx)
+
+      if (
+        allNodes !== undefined &&
+        Array.isArray(allNodes) &&
+        allNodes.length !== 0
+      ) {
+        const testNodeId = allNodes[0]['@id']
+        const idTag = testNodeId === undefined ? 'id' : '@id'
+        const allNodeIDs = allNodes.map((node) => node[idTag])
+        setAllNodeIds(allNodeIDs)
+      }
+      if (
+        allEdges !== undefined &&
+        Array.isArray(allEdges) &&
+        allEdges.length !== 0
+      ) {
+        const testEdgeId = allEdges[0]['@id']
+        const idTag = testEdgeId === undefined ? 'id' : '@id'
+        const allEdgeIds = allEdges.map((edge) => edge[idTag])
+        setAllEdgeIds(allEdgeIds)
+      }
+    }
+  }, [cx])
 
   useEffect(() => {
     const { main, sub } = selectionState
@@ -152,6 +195,10 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
       setTabsDisabled(false)
       setSelected(TabType.Node)
       setChanged(!changed)
+    }
+
+    // For populating the table with all the nodes
+    if (main.nodes.length === 0 && objCount.nodeCount < SELECTION_TH) {
     }
   }, [selectionState])
 
@@ -186,10 +233,20 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
 
   let nodes = []
   let edges = []
+
   if (!showSearchResult) {
     // Main view only
+
     nodes = selectionState.main['nodes']
     edges = selectionState.main['edges']
+
+    //   // Show all nodes if number of nodes are smaller than threshold
+    if (nodes.length === 0 && objCount.nodeCount < SELECTION_TH) {
+      nodes = allNodeIds
+    }
+    if (edges.length === 0 && objCount.edgeCount  < SELECTION_TH) {
+      edges = allEdgeIds
+    }
   } else {
     nodes = selectionState.sub['nodes']
     edges = selectionState.sub['edges']
@@ -208,10 +265,15 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
     setSelected(index)
   }
 
-  const SELECTION_TH = 10000
   const getTable = (selectedObjects: any[], type: string) => {
     if (selectedObjects.length === 0) {
-      return <EmptyPanel type={type} />
+      return (
+        <InformationPanel
+          type={type}
+          count={type === 'node' ? objCount.nodeCount : objCount.edgeCount}
+          threshold={SELECTION_TH}
+        />
+      )
     } else if (selectedObjects.length > SELECTION_TH) {
       return <WarningPanel type={type} selectedCount={selectedObjects.length} />
     }
@@ -246,6 +308,15 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
     }
   }
 
+  let nodeTabTitle =
+    nodes.length === 0 || nodes.length === objCount.nodeCount
+      ? ''
+      : `(${nodes.length} selected)`
+  let edgeTabTitle =
+    edges.length === 0 || edges.length === objCount.edgeCount
+      ? ''
+      : `(${edges.length} selected)`
+
   return (
     <div className={classes.root} style={{ width: width }} ref={baseRef}>
       <div className={classes.topBar} ref={titleRef}>
@@ -262,19 +333,11 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
       >
         <TabList ref={tabsRef}>
           <Tab key={'network-tab'}>Network</Tab>
-          <Tab disabled={tabsDisabled} key={'nodes-tab'}>
-            <Tooltip
-              title={selected !== TabType.Node ? TOOLTIP_MESSAGE.CYJS_NODE : ''}
-            >
-              <div>Nodes ({nodes.length} selected)</div>
-            </Tooltip>
+          <Tab key={'nodes-tab'}>
+            <div>Nodes {nodeTabTitle}</div>
           </Tab>
-          <Tab disabled={tabsDisabled} key={'edges-tab'}>
-            <Tooltip
-              title={selected !== TabType.Edge ? TOOLTIP_MESSAGE.CYJS_EDGE : ''}
-            >
-              <div>Edges ({edges.length} selected)</div>
-            </Tooltip>
+          <Tab key={'edges-tab'}>
+            <div>Edges {edgeTabTitle}</div>
           </Tab>
         </TabList>
 
