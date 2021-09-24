@@ -194,10 +194,10 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
   useEffect(() => {
     const { main, sub } = selectionState
     if (
-      main.nodes.length === 0 &&
-      main.edges.length === 0 &&
-      sub.nodes.length === 0 &&
-      sub.edges.length === 0
+      main.nodes.length <= 1 &&
+      main.edges.length <= 1 &&
+      sub.nodes.length <= 1 &&
+      sub.edges.length <=1
     ) {
       setSelected(TabType.Network)
       setTabsDisabled(true)
