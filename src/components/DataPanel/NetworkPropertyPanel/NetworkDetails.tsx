@@ -25,13 +25,14 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.background.paper,
       margin: 0,
       paddingTop: theme.spacing(1),
-      paddingBottom: theme.spacing(1),
     },
     item: {
       marginRight: theme.spacing(1),
     },
     label: {
       marginRight: theme.spacing(1),
+      padding: 0,
+      paddingLeft: theme.spacing(1),
     },
     row: {
       display: 'flex',
@@ -41,7 +42,11 @@ const useStyles = makeStyles((theme: Theme) =>
     grid: {
       alignItems: 'center',
       justifyContent: 'flex-start',
-      paddingLeft: theme.spacing(1.5),
+      paddingTop: theme.spacing(1),
+      paddingBottom: theme.spacing(1),
+    },
+    chip: {
+      paddingLeft: theme.spacing(1),
     },
     warning: {
       color: theme.palette.warning.main,
@@ -117,12 +122,7 @@ const NetworkDetails: FC<{
       {summary.doi ? (
         <>
           {summary.doi === 'Pending' ? (
-            <Grid
-              className={classes.grid}
-              container
-              alignItems={'center'}
-              spacing={0}
-            >
+            <Grid className={classes.grid} container alignItems={'center'}>
               <Grid item>
                 <DeleteDOIButton uuid={uuid} />{' '}
               </Grid>
@@ -136,32 +136,36 @@ const NetworkDetails: FC<{
               </Grid>
             </Grid>
           ) : (
-            <Tooltip
-              title={
-                doiCopiedHoverText ? 'Copied!' : 'Copy network DOI to clipboard'
-              }
-              className={classes.item}
-            >
-              <CopyToClipboard
-                text={'https://doi.org/' + summary.doi}
-                onCopy={copyDoi}
+            <div className={classes.chip}>
+              <Tooltip
+                title={
+                  doiCopiedHoverText
+                    ? 'Copied!'
+                    : 'Copy network DOI to clipboard'
+                }
+                className={classes.item}
               >
-                <Chip
-                  clickable
-                  label={`DOI: ${summary.doi}`}
-                  size={'small'}
-                  color={'default'}
-                  variant="outlined"
-                  onMouseEnter={mouseEnter}
-                />
-              </CopyToClipboard>
-            </Tooltip>
+                <CopyToClipboard
+                  text={'https://doi.org/' + summary.doi}
+                  onCopy={copyDoi}
+                >
+                  <Chip
+                    clickable
+                    label={`DOI: ${summary.doi}`}
+                    size={'small'}
+                    color={'default'}
+                    variant="outlined"
+                    onMouseEnter={mouseEnter}
+                  />
+                </CopyToClipboard>
+              </Tooltip>
+            </div>
           )}
         </>
       ) : null}
 
       <Grid container className={classes.grid}>
-        <Typography className={classes.label} variant="subtitle2">
+        <Typography className={classes.label} variant="body1">
           Network Size:
         </Typography>
         <Chip
@@ -201,7 +205,6 @@ const NetworkDetails: FC<{
         </Grid>
       ) : null}
 
-
       {renderer === 'lgr' && !uiState.showSearchResult ? (
         <div />
       ) : (
@@ -221,6 +224,7 @@ const NetworkDetails: FC<{
           }
           open={panelState.queryOpen}
           setOpen={_handleQueryOpen}
+          backgroundColor={'#f5f5f5'}
         />
       )}
     </div>

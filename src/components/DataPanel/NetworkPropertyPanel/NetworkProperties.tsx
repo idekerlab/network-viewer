@@ -8,6 +8,21 @@ import { NetworkPanelState } from '..'
 import { Theme } from '@material-ui/core'
 
 const useStyles = makeStyles((theme: Theme) => ({
+  wrapper: {
+    height: '100%',
+    maxHeight: '100%',
+    minHeight: '100%',
+    overflowY: 'hidden',
+    paddingBottom: '3.1em',
+    background: 'inherit',
+  },
+
+  innerWrapper: {
+    height: '100%',
+    background: 'white',
+    overflowY: 'auto',
+    // maxHeight: '80%',
+  },
   table: {
     cellSpacing: 0,
     borderSpacing: 0,
@@ -224,35 +239,37 @@ const NetworkProperties: FC<{
 
   let darkBackground = 0
   return (
-    <>
-      {informationDisplay ? (
-        <CollapsiblePanel
-          title="Network information"
-          children={informationDisplay}
-          backgroundColor={darkBackground++ % 2 === 0 ? 'inherit' : 'white'}
-          open={panelState.netInfoOpen}
-          setOpen={_handleInfoOpen}
-        />
-      ) : null}
-      {descriptionDisplay ? (
-        <CollapsiblePanel
-          title="Description"
-          children={descriptionDisplay}
-          backgroundColor={darkBackground++ % 2 === 0 ? 'inherit' : 'white'}
-          open={panelState.descriptionOpen}
-          setOpen={_handleDescriptionOpen}
-        />
-      ) : null}
-      {propertiesDisplay ? (
-        <CollapsiblePanel
-          title="Properties"
-          children={propertiesDisplay}
-          backgroundColor={darkBackground++ % 2 === 0 ? 'inherit' : 'white'}
-          open={panelState.propsOpen}
-          setOpen={_handlePropsOpen}
-        />
-      ) : null}
-    </>
+    <div className={classes.wrapper}>
+      <div className={classes.innerWrapper}>
+        {informationDisplay ? (
+          <CollapsiblePanel
+            title="Network information"
+            children={informationDisplay}
+            backgroundColor={darkBackground++ % 2 === 0 ? 'inherit' : 'white'}
+            open={panelState.netInfoOpen}
+            setOpen={_handleInfoOpen}
+          />
+        ) : null}
+        {descriptionDisplay ? (
+          <CollapsiblePanel
+            title="Description"
+            children={descriptionDisplay}
+            backgroundColor={darkBackground++ % 2 === 0 ? 'inherit' : 'white'}
+            open={panelState.descriptionOpen}
+            setOpen={_handleDescriptionOpen}
+          />
+        ) : null}
+        {propertiesDisplay ? (
+          <CollapsiblePanel
+            title="Properties"
+            children={propertiesDisplay}
+            backgroundColor={darkBackground++ % 2 === 0 ? 'inherit' : 'white'}
+            open={panelState.propsOpen}
+            setOpen={_handlePropsOpen}
+          />
+        ) : null}
+      </div>
+    </div>
   )
 }
 

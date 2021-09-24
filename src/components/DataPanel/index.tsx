@@ -34,12 +34,16 @@ const useStyles = makeStyles((theme: Theme) => {
     root: {
       width: '100%',
       height: '100%',
+
+      maxHeight: '100%',
       margin: 0,
       padding: 0,
       display: 'flex',
       flexDirection: 'column',
       boxSizing: 'border-box',
       backgroundColor: theme.palette.background.paper,
+      overflowY: 'hidden',
+      borderLeft: `1px solid ${theme.palette.divider}`,
     },
     topBar: {
       display: 'flex',
@@ -53,22 +57,28 @@ const useStyles = makeStyles((theme: Theme) => {
       paddingBottom: theme.spacing(1.5),
       paddingLeft: theme.spacing(3),
     },
-    tabs: {
+    tabWrapper: {
       boxSizing: 'border-box',
       backgroundColor: theme.palette.background.paper,
       margin: 0,
       padding: 0,
-      height: '100%',
       width: '100%',
+      height: '100%',
+      overflowY: 'hidden',
+      // border: '8px solid orange',
+    },
+    tabList: {
+      boxSizing: 'border-box',
+      padding: 0,
+      margin: 0,
+      minHeight: '3.1em',
+      // borderBottom: `1px solid ${theme.palette.divider}`,
+
     },
     tab: {
       '&:disabled': {
         color: '#AAAAAA',
       },
-    },
-    tabPanel: {
-      width: '100%',
-      height: '100%',
     },
     collapsiblePanel: {
       minHeight: 'auto',
@@ -244,7 +254,7 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
     if (nodes.length === 0 && objCount.nodeCount < SELECTION_TH) {
       nodes = allNodeIds
     }
-    if (edges.length === 0 && objCount.edgeCount  < SELECTION_TH) {
+    if (edges.length === 0 && objCount.edgeCount < SELECTION_TH) {
       edges = allEdgeIds
     }
   } else {
@@ -326,39 +336,41 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
         </Typography>
       </div>
 
-      <Tabs
-        selectedIndex={selected}
-        forceRenderTabPanel={true}
-        onSelect={_handleSelect}
-      >
-        <TabList ref={tabsRef}>
-          <Tab key={'network-tab'}>Network</Tab>
-          <Tab key={'nodes-tab'}>
-            <div>Nodes {nodeTabTitle}</div>
-          </Tab>
-          <Tab key={'edges-tab'}>
-            <div>Edges {edgeTabTitle}</div>
-          </Tab>
-        </TabList>
+      <div className={classes.tabWrapper}>
+        <Tabs
+          selectedIndex={selected}
+          forceRenderTabPanel={true}
+          onSelect={_handleSelect}
+        >
+          <TabList className={classes.tabList} ref={tabsRef}>
+            <Tab key={'network-tab'}>Network</Tab>
+            <Tab key={'nodes-tab'}>
+              <div>Nodes {nodeTabTitle}</div>
+            </Tab>
+            <Tab key={'edges-tab'}>
+              <div>Edges {edgeTabTitle}</div>
+            </Tab>
+          </TabList>
 
-        <TabPanel value={selected} index={0}>
-          <NetworkPropertyPanel
-            cx={cx}
-            panelState={panelState}
-            setPanelState={setPanelState}
-            queryState={queryState}
-            setQueryState={setQueryState}
-            renderer={renderer}
-          />
-        </TabPanel>
+          <TabPanel value={selected} index={0}>
+            <NetworkPropertyPanel
+              cx={cx}
+              panelState={panelState}
+              setPanelState={setPanelState}
+              queryState={queryState}
+              setQueryState={setQueryState}
+              renderer={renderer}
+            />
+          </TabPanel>
 
-        <TabPanel value={selected} index={1}>
-          {getTable(nodes, 'node')}
-        </TabPanel>
-        <TabPanel value={selected} index={2}>
-          {getTable(edges, 'edge')}
-        </TabPanel>
-      </Tabs>
+          <TabPanel value={selected} index={1}>
+            {getTable(nodes, 'node')}
+          </TabPanel>
+          <TabPanel value={selected} index={2}>
+            {getTable(edges, 'edge')}
+          </TabPanel>
+        </Tabs>
+      </div>
     </div>
   )
 }

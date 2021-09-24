@@ -14,16 +14,27 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%',
       padding: 0,
       margin: 0,
+      boxSizing: 'border-box',
+    },
+    wrapper: {
+      width: '100%',
+      height: '100%',
+      padding: 0,
+      margin: 0,
       display: 'flex',
       flexDirection: 'column',
       boxSizing: 'border-box',
+
+    },
+    header: {
+      // border: '3px solid teal',
     },
     main: {
       flexGrow: 1,
       background: '#EEEEEE',
       display: 'flex',
       flexDirection: 'column',
-      alignItems: 'stretch',
+      // alignItems: 'stretch',
       boxSizing: 'border-box',
       width: '100%',
       height: '100%',
@@ -50,16 +61,21 @@ const AppShell: FC = () => {
 
   return (
     <div className={classes.appShell}>
-      <NDExAccountProvider ndexServerURL={config.ndexHttps} googleClientId={config.googleClientId}>
-        <header>
-          <ToolBar />
-        </header>
-        <main className={classes.main}>
-          <MainSplitPane />
-        </main>
-        <footer className={classes.footer}>
-          <FooterPanel />
-        </footer>
+      <NDExAccountProvider
+        ndexServerURL={config.ndexHttps}
+        googleClientId={config.googleClientId}
+      >
+        <div className={classes.wrapper}>
+          <header className={classes.header}>
+            <ToolBar />
+          </header>
+          <main className={classes.main}>
+            <MainSplitPane />
+          </main>
+          <footer className={classes.footer}>
+            <FooterPanel />
+          </footer>
+        </div>
       </NDExAccountProvider>
       <div id="sandbox"></div>
     </div>

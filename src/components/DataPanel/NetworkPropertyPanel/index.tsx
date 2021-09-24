@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       width: '100%',
       height: '100%',
-      overflowY: 'auto',
+      overflowY: 'hidden',
       margin: 0,
       padding: 0,
       display: 'flex',
@@ -25,9 +25,9 @@ const useStyles = makeStyles((theme: Theme) =>
     description: {
       padding: 0,
       margin: 0,
-      backgroundColor: theme.palette.background.default,
+      backgroundColor: 'inherit',
       height: '100%',
-      overflowY: 'auto',
+      overflowY: 'hidden',
     },
   }),
 )
