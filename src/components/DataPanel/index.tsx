@@ -73,7 +73,6 @@ const useStyles = makeStyles((theme: Theme) => {
       margin: 0,
       minHeight: '3.1em',
       // borderBottom: `1px solid ${theme.palette.divider}`,
-
     },
     tab: {
       '&:disabled': {
@@ -113,11 +112,13 @@ type GraphObjectCount = {
 // Default threshold of selected nodes to be displayed in the table
 const SELECTION_TH = 10000
 
-const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
-  width,
-  cx,
-  renderer,
-}): ReactElement => {
+const DataPanel: FC<{
+  width: number
+  cx: any[]
+  renderer: string
+  objectCount: number
+  cxDataSize: number
+}> = ({ width, cx, renderer, objectCount, cxDataSize }): ReactElement => {
   const baseRef = useRef(null)
   const titleRef = useRef(null)
   const tabsRef = useRef(null)
@@ -134,6 +135,8 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
   const { ndexCredential, config, selectionState, uiState } = useContext(
     AppContext,
   )
+
+  const { maxNumObjects, maxDataSize } = config
 
   useEffect(() => {
     if (baseRef.current && titleRef.current) {
@@ -161,6 +164,15 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
 
   useEffect(() => {
     if (cx !== undefined && cx !== null && Array.isArray(cx) && cx.length > 0) {
+
+
+      if( objectCount > maxNumObjects || cxDataSize > config.maxDataSize ) {
+        setTabsDisabled(true)
+        return
+      } else {
+        setTabsDisabled(false)
+      }
+
       const allNodeCount = getNodeCount(cx)
       const allEdgeCount = getEdgeCount(cx)
       setObjCount({ nodeCount: allNodeCount, edgeCount: allEdgeCount })
@@ -197,12 +209,12 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
       main.nodes.length <= 1 &&
       main.edges.length <= 1 &&
       sub.nodes.length <= 1 &&
-      sub.edges.length <=1
+      sub.edges.length <= 1
     ) {
       setSelected(TabType.Network)
-      setTabsDisabled(true)
+      // setTabsDisabled(true)
     } else {
-      setTabsDisabled(false)
+      // setTabsDisabled(false)
       setSelected(TabType.Node)
       setChanged(!changed)
     }
@@ -344,10 +356,10 @@ const DataPanel: FC<{ width: number; cx: any[]; renderer: string }> = ({
         >
           <TabList className={classes.tabList} ref={tabsRef}>
             <Tab key={'network-tab'}>Network</Tab>
-            <Tab key={'nodes-tab'}>
+            <Tab disabled={tabsDisabled} key={'nodes-tab'}>
               <div>Nodes {nodeTabTitle}</div>
             </Tab>
-            <Tab key={'edges-tab'}>
+            <Tab disabled={tabsDisabled} key={'edges-tab'}>
               <div>Edges {edgeTabTitle}</div>
             </Tab>
           </TabList>

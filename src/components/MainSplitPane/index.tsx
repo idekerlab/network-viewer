@@ -268,6 +268,8 @@ const MainSplitPane = () => {
                 width={rightWidth}
                 cx={uiState.mainNetworkNotDisplayed ? subCx : originalCx}
                 renderer={fetchParams.renderer}
+                objectCount={count}
+                cxDataSize={cxDataSize}
               />
             ) : (
               <ClosedPanel />
