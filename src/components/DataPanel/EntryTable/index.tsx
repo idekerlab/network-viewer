@@ -1,5 +1,5 @@
-import React, { VFC, useMemo, useContext, useEffect, useState } from 'react'
-import Linkify from 'linkifyjs/react'
+import React, { VFC, useMemo, useContext } from 'react'
+import Linkify from 'linkify-react'
 import {
   processList,
   processItem,
@@ -261,7 +261,6 @@ const EntryTable: VFC<{
   }, [selectedObjects])
 
   return (
-    // <VirtualizedTable3 columns={finalColumns} data={data[0]} parentSize={parentSize} />
     <VirtualizedTable2
       columns={finalColumns}
       data={data[0]}
@@ -269,7 +268,6 @@ const EntryTable: VFC<{
       selected={selected}
     />
   )
-  // return <VirtualizedTable columns={finalColumns} data={data[0]} parentSize={parentSize} />
 }
 
 export default EntryTable

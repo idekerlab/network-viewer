@@ -21,6 +21,7 @@
   "dependencies": {
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
+    "@material-ui/styles": "^4.11.4",
     "@types/node": "^14.6.1",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.3",
@@ -38,7 +39,8 @@
     "googleapis": "^59.0.0",
     "html-react-parser": "^1.2.4",
     "large-graph-renderer": "link:../large-graph-renderer",
-    "linkifyjs": "^2.1.9",
+    "linkify-react": "^3.0.1",
+    "linkifyjs": "^3.0.1",
     "namor": "^2.0.2",
     "ndex-client": "link:../ndex-js-client",
     "react": "^17.0.2",

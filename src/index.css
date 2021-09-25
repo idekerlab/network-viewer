@@ -13,6 +13,10 @@ body,
   background-color: #ffffff;
 }
 
+body {
+  min-width:30vh;
+}
+
 a {
   text-decoration: none;
 }

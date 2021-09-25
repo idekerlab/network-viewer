@@ -3,7 +3,7 @@ import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import Typography from '@material-ui/core/Typography'
-import Linkify from 'linkifyjs/react'
+import Linkify from 'linkify-react'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -61,7 +61,7 @@ const PropList = ({ attrMap }) => {
               component="div"
               className={classes.bigText}
             >
-              <Linkify>{attrMap.get(key)}</Linkify>
+              <Linkify key={key}>{attrMap.get(key)}</Linkify>
             </Typography>
           </ListItem>
         )

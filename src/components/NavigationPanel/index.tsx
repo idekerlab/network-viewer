@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const NavigationPanel = ({ target = 'main'}) => {
+const NavigationPanel = ({ target = 'main' }) => {
   const classes = useStyles()
   const { cyReference, lgrReference } = useContext(AppContext)
 
@@ -75,14 +75,12 @@ const NavigationPanel = ({ target = 'main'}) => {
       color="secondary"
       variant="outlined"
       disableFocusRipple={true}
-      // disableRipple={true}
+      disableRipple={true}
     >
-      {target === 'main' ? <ExpandButton /> : <div/>}
+      {target === 'main' ? <ExpandButton /> : <div />}
       <IconButton
         color={'secondary'}
         style={{ backgroundColor: 'transparent' }}
-        disableFocusRipple={true}
-        // disableRipple={true}
         onClick={handleFit}
       >
         <FitIcon />
@@ -90,26 +88,22 @@ const NavigationPanel = ({ target = 'main'}) => {
       {cy === null || cy === undefined ? (
         <div />
       ) : (
-        <React.Fragment>
+        [
           <IconButton
             color={'secondary'}
             style={{ backgroundColor: 'transparent' }}
-            disableFocusRipple={true}
-            // disableRipple={true}
             onClick={handleZoomIn}
           >
             <ZoomInIcon />
-          </IconButton>
+          </IconButton>,
           <IconButton
             color={'secondary'}
             style={{ backgroundColor: 'transparent' }}
-            disableFocusRipple={true}
-            // disableRipple={true}
             onClick={handleZoomOut}
           >
             <ZoomOutIcon />
-          </IconButton>
-        </React.Fragment>
+          </IconButton>,
+        ]
       )}
     </ButtonGroup>
   )

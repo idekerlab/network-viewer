@@ -65,7 +65,6 @@ const useStyles = makeStyles((theme: Theme) => {
       width: '100%',
       height: '100%',
       overflowY: 'hidden',
-      // border: '8px solid orange',
     },
     tabList: {
       boxSizing: 'border-box',

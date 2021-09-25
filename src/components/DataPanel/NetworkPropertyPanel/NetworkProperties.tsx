@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { makeStyles } from '@material-ui/styles'
-import Linkify from 'linkifyjs/react'
+import Linkify from 'linkify-react'
 import parse from 'html-react-parser'
 import CollapsiblePanel from './CollapsiblePanel'
 import NetworkPropertySegment from './NetworkPropertySegment'
@@ -288,7 +288,8 @@ const formatContent = (string) => {
     .toString()
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script\ *>/gi, '')
   string = parse(string)
-  return <Linkify>{string}</Linkify>
+  return string
+  // return <Linkify key={`key-${Math.random()}`}>{string}</Linkify>
 }
 
 const formatDescription = (string) => {

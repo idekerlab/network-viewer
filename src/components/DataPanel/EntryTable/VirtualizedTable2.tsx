@@ -1,7 +1,6 @@
 import React, { VFC, useRef, useState, useEffect, useCallback } from 'react'
 import {
   useTable,
-  useBlockLayout,
   usePagination,
   useSortBy,
   useFilters,
@@ -24,7 +23,6 @@ import UpIcon from '@material-ui/icons/ArrowDropUp'
 
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import Popup from './Popup'
-import { Typography } from '@material-ui/core'
 
 const scrollbarWidth = () => {
   const scrollDiv = document.createElement('div')
@@ -53,6 +51,8 @@ const useStyles = makeStyles((theme: Theme) => {
       background: theme.palette.background.paper,
       boxSizing: 'border-box',
       color: '#333333',
+      // border: '5px solid red',
+      overflow: 'hidden',
     },
 
     // Area for virtualized table
@@ -60,6 +60,9 @@ const useStyles = makeStyles((theme: Theme) => {
       flexGrow: 1,
       width: '100%',
       height: '100%',
+      // border: '6px solid darkorange',
+      boxSizing: 'border-box',
+      overflowY: 'hidden',
     },
 
     tableBody: {
@@ -83,7 +86,7 @@ const useStyles = makeStyles((theme: Theme) => {
       background: theme.palette.background.paper,
       height: '3em',
       padding: theme.spacing(1),
-      border: theme.palette.divider,
+      borderTop: `1px solid ${theme.palette.divider}`,
       boxSizing: 'border-box',
       zIndex: 100,
     },
@@ -223,22 +226,23 @@ const VirtualizedTable2: VFC<{
   const [position, setPosition] = useState({ x: 0, y: 0 })
   const [selectedValue, setSelectedValue] = useState(null)
 
-  const pagenationRef = useRef(null)
   const gridRef = useRef(null)
+  const pageRef = useRef(null)
+  const rootRef = useRef(null)
+  // const tablePanelRef = useRef(null)
 
-  const tablePanelRef = useRef(null)
-  const [tablePanelHeight, setTablePanelHeight] = useState(1)
-  const [pageHeight, setPageHeight] = useState(1)
+  // const [tablePanelHeight, setTablePanelHeight] = useState(1)
+  const [pagePanelHeight, setPagePanelHeight] = useState(1)
+  const [rootPanelHeight, setRootPanelHeight] = useState(1)
 
-  const rootRef = useCallback((node) => {
-    if (node !== null) {
-      const newHeight = node.getBoundingClientRect().height
-      setRootHeight(newHeight)
-    }
-  }, [])
+  // const rootRef = useCallback((node) => {
+  //   if (node !== null) {
+  //     const newHeight = node.getBoundingClientRect().height
+  //     setRootHeight(newHeight)
+  //   }
+  // }, [])
 
-  // const rootRef = useRef(null)
-  const [rootHeight, setRootHeight] = useState(1)
+  // const [rootHeight, setRootHeight] = useState(1)
 
   const classes = useStyles()
 
@@ -249,30 +253,60 @@ const VirtualizedTable2: VFC<{
     [],
   )
 
-  const updateHeight = () => {
-    if (tablePanelRef.current) {
-      const newHeight = tablePanelRef.current.offsetHeight
-      if (
-        newHeight !== null &&
-        newHeight !== 0 &&
-        newHeight !== tablePanelHeight
-      ) {
-        setTablePanelHeight(newHeight)
-        console.log('Height changed!! = ', newHeight)
-      }
-    }
-  }
+  // const updateHeight = () => {
+  //   if (tablePanelRef.current) {
+  //     const newHeight = tablePanelRef.current.offsetHeight
+  //     if (
+  //       newHeight !== null &&
+  //       newHeight !== 0 &&
+  //       newHeight !== tablePanelHeight
+  //     ) {
+  //       setTablePanelHeight(newHeight)
+  //       console.log('TP Height changed!! = ', newHeight)
+  //     }
+  //   }
+  // }
+
   const _handleResize = (evt) => {
-    updateHeight()
+    if (rootRef.current === undefined) {
+      return
+    }
+    const height = rootRef.current.offsetHeight
+    if (height !== 0) {
+      setRootPanelHeight(height)
+      console.log('Root height delay', height)
+    }
   }
 
   useEffect(() => {
     window.addEventListener('resize', _handleResize)
-    console.log('resize listener added')
   }, [])
 
   useEffect(() => {
-    updateHeight()
+    const height = rootRef.current.offsetHeight
+    setRootPanelHeight(height)
+    console.log('Root height', height)
+  }, [rootRef])
+
+  useEffect(() => {
+    const height = pageRef.current.offsetHeight
+    // console.log('FOOTER height', height)
+  }, [pageRef])
+
+  useEffect(() => {
+    const height = pageRef.current.offsetHeight
+    const rootHeight = rootRef.current.offsetHeight
+
+    if (height !== 0) {
+      setPagePanelHeight(height)
+      console.log('FOOTER select up height', height)
+    }
+
+    if (rootHeight !== 0) {
+      setRootPanelHeight(rootHeight)
+      console.log('Root select up height', rootHeight)
+    }
+    // updateHeight()
   }, [selected])
 
   const {
@@ -452,16 +486,12 @@ const VirtualizedTable2: VFC<{
   const overscanRowCount = 5
   const rowHeight = 57
   const rowCount = page.length
-  const height: number = tablePanelHeight - rowHeight
-  const getColumnWidth = (props: { index: number }) => {
-    const column = columns[props.index]
-    return column === undefined ? columnWidth : column.width
-  }
+  const height: number = rootPanelHeight - (pagePanelHeight + rowHeight)
 
   return (
     <>
       <div ref={rootRef} className={classes.root}>
-        <div ref={tablePanelRef} className={classes.tablePanel}>
+        <div className={classes.tablePanel}>
           <ScrollSync>
             {({
               clientHeight,
@@ -522,7 +552,7 @@ const VirtualizedTable2: VFC<{
                     />
                   </div>
                   <div className={classes.gridColumn}>
-                    <AutoSizer disableHeight>
+                    <AutoSizer>
                       {({ width }) => (
                         <div>
                           <div
@@ -577,7 +607,7 @@ const VirtualizedTable2: VFC<{
           </ScrollSync>
         </div>
 
-        <div className={classes.pagination}>
+        <div ref={pageRef} className={classes.pagination}>
           <div className={classes.buttons}>
             <button
               className={classes.button}
