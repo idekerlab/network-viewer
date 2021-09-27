@@ -6,7 +6,7 @@ import FitIcon from '@material-ui/icons/ZoomOutMap'
 import ZoomInIcon from '@material-ui/icons/ZoomIn'
 import ZoomOutIcon from '@material-ui/icons/ZoomOut'
 
-import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
+import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import AppContext from '../../context/AppState'
 
 import ExpandButton from './ExpandButton'
@@ -79,6 +79,7 @@ const NavigationPanel = ({ target = 'main' }) => {
     >
       {target === 'main' ? <ExpandButton /> : <div />}
       <IconButton
+        key={'fitButton'}
         color={'secondary'}
         style={{ backgroundColor: 'transparent' }}
         onClick={handleFit}
@@ -90,6 +91,7 @@ const NavigationPanel = ({ target = 'main' }) => {
       ) : (
         [
           <IconButton
+            key={'zoomInButton'}
             color={'secondary'}
             style={{ backgroundColor: 'transparent' }}
             onClick={handleZoomIn}
@@ -97,6 +99,7 @@ const NavigationPanel = ({ target = 'main' }) => {
             <ZoomInIcon />
           </IconButton>,
           <IconButton
+            key={'zoomOutButton'}
             color={'secondary'}
             style={{ backgroundColor: 'transparent' }}
             onClick={handleZoomOut}

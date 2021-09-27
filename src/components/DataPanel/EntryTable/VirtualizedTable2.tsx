@@ -1,13 +1,5 @@
-import React, { VFC, useRef, useState, useEffect, useCallback } from 'react'
-import {
-  useTable,
-  usePagination,
-  useSortBy,
-  useFilters,
-  useGlobalFilter,
-  useFlexLayout,
-} from 'react-table'
-import theme from '../../../theme'
+import React, { FC, useRef, useState, useEffect } from 'react'
+import { useTable, usePagination, useSortBy, useFlexLayout } from 'react-table'
 
 import {
   Grid,
@@ -215,12 +207,14 @@ const useStyles = makeStyles((theme: Theme) => {
   })
 })
 
-const VirtualizedTable2: VFC<{
+const VirtualizedTable2: FC<{
   columns: any[]
   data: any
   parentSize: [number, number]
   selected: boolean
 }> = ({ columns, data, parentSize, selected }) => {
+  const classes = useStyles()
+
   // Popup control
   const [openPopup, setOpenPopup] = useState(false)
   const [position, setPosition] = useState({ x: 0, y: 0 })
@@ -229,22 +223,9 @@ const VirtualizedTable2: VFC<{
   const gridRef = useRef(null)
   const pageRef = useRef(null)
   const rootRef = useRef(null)
-  // const tablePanelRef = useRef(null)
 
-  // const [tablePanelHeight, setTablePanelHeight] = useState(1)
   const [pagePanelHeight, setPagePanelHeight] = useState(1)
   const [rootPanelHeight, setRootPanelHeight] = useState(1)
-
-  // const rootRef = useCallback((node) => {
-  //   if (node !== null) {
-  //     const newHeight = node.getBoundingClientRect().height
-  //     setRootHeight(newHeight)
-  //   }
-  // }, [])
-
-  // const [rootHeight, setRootHeight] = useState(1)
-
-  const classes = useStyles()
 
   const defaultColumn = React.useMemo(
     () => ({
@@ -253,20 +234,6 @@ const VirtualizedTable2: VFC<{
     [],
   )
 
-  // const updateHeight = () => {
-  //   if (tablePanelRef.current) {
-  //     const newHeight = tablePanelRef.current.offsetHeight
-  //     if (
-  //       newHeight !== null &&
-  //       newHeight !== 0 &&
-  //       newHeight !== tablePanelHeight
-  //     ) {
-  //       setTablePanelHeight(newHeight)
-  //       console.log('TP Height changed!! = ', newHeight)
-  //     }
-  //   }
-  // }
-
   const _handleResize = (evt) => {
     if (rootRef.current === undefined) {
       return
@@ -274,7 +241,6 @@ const VirtualizedTable2: VFC<{
     const height = rootRef.current.offsetHeight
     if (height !== 0) {
       setRootPanelHeight(height)
-      console.log('Root height delay', height)
     }
   }
 
@@ -285,13 +251,7 @@ const VirtualizedTable2: VFC<{
   useEffect(() => {
     const height = rootRef.current.offsetHeight
     setRootPanelHeight(height)
-    console.log('Root height', height)
   }, [rootRef])
-
-  useEffect(() => {
-    const height = pageRef.current.offsetHeight
-    // console.log('FOOTER height', height)
-  }, [pageRef])
 
   useEffect(() => {
     const height = pageRef.current.offsetHeight
@@ -299,12 +259,10 @@ const VirtualizedTable2: VFC<{
 
     if (height !== 0) {
       setPagePanelHeight(height)
-      console.log('FOOTER select up height', height)
     }
 
     if (rootHeight !== 0) {
       setRootPanelHeight(rootHeight)
-      console.log('Root select up height', rootHeight)
     }
     // updateHeight()
   }, [selected])
@@ -440,12 +398,9 @@ const VirtualizedTable2: VFC<{
 
     const cells = row.cells.map((cell) => cell)
     const cell = [cells[columnIndex]]
-    const cellProps = cell[0].getCellProps()
 
     const cellClass = rowIndex % 2 === 0 ? classes.evenRow : classes.oddRow
 
-    const column = columns[columnIndex]
-    const columnName = column.Header
     let originalValue = cell[0].value.props.children
     let value = originalValue
 
@@ -504,7 +459,7 @@ const VirtualizedTable2: VFC<{
             }) => {
               const leftColor = '#222222'
               const topColor = '#222222'
-              const middleColor = '#555555'
+              const middleColor = '#222222'
 
               return (
                 <div className={classes.gridRow}>
