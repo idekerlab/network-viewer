@@ -203,6 +203,9 @@ const useStyles = makeStyles((theme: Theme) => {
     },
     cellOverflow: {
       cursor: 'pointer',
+      wordWrap: 'break-word',
+      width: '100%',
+      overflowWrap: 'break-word'
     },
   })
 })
