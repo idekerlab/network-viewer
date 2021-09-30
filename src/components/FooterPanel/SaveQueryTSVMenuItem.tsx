@@ -1,15 +1,15 @@
-import React, { useContext } from 'react'
+import React, { FC, ReactElement, useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import useSearch from '../../hooks/useSearch'
 import AppContext from '../../context/AppState'
 import ExportTsvMenuItem from '../ExportTsvMenuItem'
 
-const SaveQueryTSVMenuItem = () => {
+const SaveQueryTSVMenuItem: FC<{ setOpen: (open: boolean) => void }> = ({
+  setOpen,
+}): ReactElement => {
   const { uuid } = useParams()
-
-  const { query, queryMode, ndexCredential, config, summary } = useContext(
-    AppContext,
-  )
+  const { query, queryMode, ndexCredential, config, summary } =
+    useContext(AppContext)
 
   const { status, data } = useSearch(
     uuid,
@@ -27,7 +27,6 @@ const SaveQueryTSVMenuItem = () => {
     : 0
 
   const subCx = data !== undefined ? data['cx'] : undefined
-
   const fileName = uuid ? uuid + ' subnet.tsv' : 'subnet.tsv'
 
   return (
@@ -41,6 +40,7 @@ const SaveQueryTSVMenuItem = () => {
           : undefined
       }
       fileName={fileName}
+      setOpen={setOpen}
     />
   )
 }

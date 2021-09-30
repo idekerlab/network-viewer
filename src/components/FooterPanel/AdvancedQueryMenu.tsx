@@ -1,8 +1,7 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 
 import Menu from '@material-ui/core/Menu'
-
 import IconButton from '@material-ui/core/IconButton'
 import MoreIcon from '@material-ui/icons/MoreVert'
 import SaveQueryTSVMenuItem from './SaveQueryTSVMenuItem'
@@ -22,17 +21,19 @@ const AdvancedQueryMenu = () => {
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
+    setOpen(true)
   }
 
   const handleClose = () => {
     setAnchorEl(null)
+    setOpen(false)
   }
 
-  const open = Boolean(anchorEl)
+  const [open, setOpen] = useState<boolean>(Boolean(anchorEl))
   const id = open ? 'advanced-menu' : undefined
 
   return (
-    <div>
+    <>
       <Tooltip title="Search query advanced menu">
         <IconButton aria-describedby={id} onClick={handleClick} color="inherit">
           <MoreIcon />
@@ -52,9 +53,9 @@ const AdvancedQueryMenu = () => {
           horizontal: 'center',
         }}
       >
-        <SaveQueryTSVMenuItem />
+        <SaveQueryTSVMenuItem setOpen={setOpen}/>
       </Menu>
-    </div>
+    </>
   )
 }
 

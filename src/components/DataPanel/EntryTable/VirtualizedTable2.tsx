@@ -238,7 +238,7 @@ const VirtualizedTable2: FC<{
   )
 
   const _handleResize = (evt) => {
-    if (rootRef.current === undefined) {
+    if (rootRef.current === undefined || rootRef.current === null) {
       return
     }
     const height = rootRef.current.offsetHeight
@@ -252,6 +252,9 @@ const VirtualizedTable2: FC<{
   }, [])
 
   useEffect(() => {
+    if (rootRef.current === undefined || rootRef.current === null) {
+      return
+    }
     const height = rootRef.current.offsetHeight
     setRootPanelHeight(height)
   }, [rootRef])

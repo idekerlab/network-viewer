@@ -6,11 +6,11 @@ import DownloadIcon from '@material-ui/icons/CloudDownload'
 
 import { cx2tsv } from '../../utils/cx2tsv'
 
-const ExportTsvButton: FC<{ cx: any[]; fileName: string }> = ({
-  cx,
-  fileName,
-}): ReactElement => {
-  
+const ExportTsvButton: FC<{
+  cx: any[]
+  fileName: string
+  setOpen: (open: boolean) => void
+}> = ({ cx, fileName, setOpen }): ReactElement => {
   let disabled = true
   if (cx !== undefined) {
     disabled = false
@@ -24,13 +24,14 @@ const ExportTsvButton: FC<{ cx: any[]; fileName: string }> = ({
     a.click()
   }
 
-  const handleClick = () => {
+  const _handleClick = () => {
+    setOpen(false)
     const tsvString = cx2tsv(cx)
     exportTsv(tsvString, fileName, 'application/json')
   }
 
   return (
-    <MenuItem onClick={handleClick} disabled={disabled}>
+    <MenuItem onClick={_handleClick} disabled={disabled}>
       <ListItemIcon>
         <DownloadIcon fontSize="small" />
       </ListItemIcon>
