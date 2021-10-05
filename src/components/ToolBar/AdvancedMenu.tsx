@@ -1,8 +1,6 @@
 import React from 'react'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
-import Popover from '@material-ui/core/Popover'
-import Typography from '@material-ui/core/Typography'
-import IconButton from '@material-ui/core/Button'
+import IconButton from '@material-ui/core/IconButton'
 import MoreIcon from '@material-ui/icons/MoreVert'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -10,11 +8,15 @@ import { Tooltip } from '@material-ui/core'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    typography: {
-      padding: theme.spacing(2),
-    },
     button: {
-      margin: theme.spacing(1),
+      height: theme.spacing(5),
+      padding: 0,
+      margin: 0,
+      marginRight: theme.spacing(2),
+      backgroundColor: 'transparent',
+      '&:hover': {
+        backgroundColor: 'transparent',
+      },
     },
   }),
 )
@@ -35,9 +37,17 @@ const AdvancedMenu = () => {
   const id = open ? 'advanced-popover' : undefined
 
   return (
-    <div>
+    <>
       <Tooltip title="Advanced menu">
-        <IconButton size="small" className={classes.button} aria-describedby={id} onClick={handleClick} color="inherit">
+        <IconButton
+          className={classes.button}
+          aria-describedby={id}
+          onClick={handleClick}
+          color="inherit"
+          disableRipple={true}
+          disableFocusRipple={true}
+          disableTouchRipple={true}
+        >
           <MoreIcon />
         </IconButton>
       </Tooltip>
@@ -83,7 +93,7 @@ const AdvancedMenu = () => {
           FAQ
         </MenuItem>
       </Menu>
-    </div>
+    </>
   )
 }
 

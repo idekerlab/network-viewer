@@ -1,6 +1,5 @@
 import React, { FC, useContext, useRef, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
-import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
+import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 
 import { NDExSignInButton } from 'cytoscape-explore-components'
@@ -21,9 +20,9 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'flex-start',
       top: theme.spacing(1),
       left: theme.spacing(1),
-      height: '3em',
+      height: theme.spacing(6.5),
       padding: theme.spacing(1),
-      background: 'rgba(255, 255, 255, 0.95)',
+      backgroundColor: 'rgba(255,255,255, 0.9)',
       zIndex: 300,
       borderRadius: 5,
     },
@@ -99,7 +98,7 @@ const ToolBar: FC = (props) => {
           <NdexHomeButton />
           <div ref={ndexButton}>
             <NDExSignInButton
-              size="small"
+              size={"medium"}
               myAccountURL={ndexServerUrl + '/#/myAccount'}
               onLoginStateUpdated={loginStateUpdated}
             />
