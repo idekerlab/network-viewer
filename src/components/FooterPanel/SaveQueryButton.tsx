@@ -8,14 +8,8 @@ import { SaveToNDExButton } from 'cytoscape-explore-components'
 
 const SaveQueryButton = () => {
   const { uuid } = useParams()
-  const {
-    query,
-    queryMode,
-    uiState,
-    ndexCredential,
-    config,
-    summary,
-  } = useContext(AppContext)
+  const { query, queryMode, uiState, ndexCredential, config, summary } =
+    useContext(AppContext)
   const searchResult = useSearch(
     uuid,
     query,
@@ -73,8 +67,9 @@ const SaveQueryButton = () => {
           tooltip="Save to NDEx"
         />
         <Snackbar
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
           open={snackMessage !== undefined}
-          autoHideDuration={6000}
+          autoHideDuration={1500}
           onClose={handleClose}
           message={snackMessage}
         />
