@@ -2,6 +2,7 @@ import React, { FC, ReactElement, useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import IconButton from '@material-ui/core/IconButton'
 import EditIcon from '@material-ui/icons/Edit'
+import LockIcon from '@material-ui/icons/Lock'
 import AppContext from '../../context/AppState'
 import useNetworkPermissions from '../../hooks/useNetworkPermissions'
 import { Tooltip } from '@material-ui/core'
@@ -22,12 +23,16 @@ const EditMetadataButton: FC = (): ReactElement => {
   )
   const networkSummary = summaryResponse.data
   let isDoiAvailable = false
+  let readOnly = false
+
   if (networkSummary !== undefined && networkSummary !== null) {
     const { doi } = summary
     if (doi !== undefined) {
       // DOI status available.
       isDoiAvailable = true
     }
+
+    readOnly = networkSummary.isReadOnly
   }
 
   const permissions = useNetworkPermissions(
@@ -59,8 +64,13 @@ const EditMetadataButton: FC = (): ReactElement => {
       message =
         'Network properties cannot be modified once a DOI has been requested or assigned'
     } else {
-      message = 'Edit network properties'
-      disabled = false
+      if (readOnly) {
+        message = 'This network is read-only'
+        disabled = true
+      } else {
+        message = 'Edit network properties'
+        disabled = false
+      }
     }
   } else if (!hasPermission && login) {
     message = "You don't have permission to edit this network"
@@ -79,7 +89,7 @@ const EditMetadataButton: FC = (): ReactElement => {
             '/null?returnto=nnv'
           }
         >
-          <EditIcon />
+          {readOnly || disabled ? <LockIcon /> : <EditIcon />}
         </IconButton>
       </div>
     </Tooltip>
