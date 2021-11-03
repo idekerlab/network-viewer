@@ -15,6 +15,9 @@ import UpIcon from '@material-ui/icons/ArrowDropUp'
 
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import Popup from './Popup'
+import { Tooltip, withStyles } from '@material-ui/core'
+
+import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 
 const scrollbarWidth = () => {
   const scrollDiv = document.createElement('div')
@@ -205,7 +208,7 @@ const useStyles = makeStyles((theme: Theme) => {
       cursor: 'pointer',
       wordWrap: 'break-word',
       width: '100%',
-      overflowWrap: 'break-word'
+      overflowWrap: 'break-word',
     },
   })
 })
@@ -219,6 +222,7 @@ const VirtualizedTable2: FC<{
   const classes = useStyles()
 
   // Popup control
+  const [tooltipOpen, setTooltipOpen] = React.useState(false)
   const [openPopup, setOpenPopup] = useState(false)
   const [position, setPosition] = useState({ x: 0, y: 0 })
   const [selectedValue, setSelectedValue] = useState(null)
@@ -411,9 +415,21 @@ const VirtualizedTable2: FC<{
     let value = originalValue
 
     let isLongValue = false
-    if (originalValue !== undefined && originalValue.length > valueLengthTH) {
-      value = originalValue.substring(0, valueLengthTH)
-      isLongValue = true
+
+    // Check data type
+    if (originalValue !== undefined && originalValue !== null) {
+      if (typeof originalValue !== 'string') {
+        if (Array.isArray(originalValue)) {
+          value = originalValue.slice(0, 5)
+          isLongValue = true
+        } 
+      } else if (
+        typeof originalValue === 'string' &&
+        originalValue.length > valueLengthTH
+      ) {
+        value = originalValue.substring(0, valueLengthTH)
+        isLongValue = true
+      }
     }
 
     return (
@@ -425,7 +441,7 @@ const VirtualizedTable2: FC<{
         onClick={(event) => _onCellClick(event, originalValue)}
       >
         {isLongValue ? (
-          <p className={classes.cellOverflow}>{`${value}...`}</p>
+          getArrayString(value)
         ) : (
           value
         )}
@@ -433,9 +449,43 @@ const VirtualizedTable2: FC<{
     )
   }
 
+  const getArrayString = (value) => {
+    if(typeof value === 'string') {
+      return (<p className={classes.cellOverflow}>{value} ...</p>)
+    }
+
+    if (value.length === 0) {
+      return '[]'
+    } else {
+      if(value.length<=3) {
+        return <p className={classes.cellOverflow}>[{value}]</p>
+      }
+      return <p className={classes.cellOverflow}>[{value} ...]</p>
+    }
+  }
+
+  const isLongValue = (value: any): boolean => {
+    if (value === null && value === undefined) {
+      return false
+    }
+
+    if (typeof value === 'string' && value.length > valueLengthTH) {
+      return true
+    }
+
+    if (Array.isArray(value)) {
+      if(value.length === 0) {
+        return false
+      }
+      return true
+    }
+
+    return false
+  }
+
   const _onCellClick = (evt, value) => {
-    if (value !== null && value !== undefined && value.length > valueLengthTH) {
-      setOpenPopup(true)
+    if (isLongValue(value)) {
+      setOpenPopup(!openPopup)
       setPosition({ x: evt.pageX, y: evt.pageY })
       setSelectedValue(value)
     }

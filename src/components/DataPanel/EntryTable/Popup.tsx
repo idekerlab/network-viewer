@@ -1,10 +1,10 @@
 import React, { VFC } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
-import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
-import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
+import Linkify from 'linkify-react'
+import CloseIcon from '@material-ui/icons/Close'
 
 const useStyles = makeStyles({
   root: {
@@ -22,6 +22,14 @@ const useStyles = makeStyles({
     overflowY: 'scroll',
     width: '100%',
     height: '100%',
+  },
+  titleBar: {
+    display: 'flex',
+    height: '2em',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    marginBottom: '0.5em',
+
   },
   bullet: {
     display: 'inline-block',
@@ -55,24 +63,33 @@ const Popup: VFC<{
     return null
   }
 
+  const getLinks = (value) => {
+    return value.map((v, i) => (
+      <Linkify properties={{ target: '_blank' }}>{v}</Linkify>
+    ))
+  }
   return (
     <Card
       className={classes.root}
       style={{ left: x, top: y }}
       variant="outlined"
-      onClick={_handleClick}
     >
       <CardContent className={classes.content}>
-        <Typography
-          className={classes.title}
-          color="textSecondary"
-          gutterBottom
-        >
-          Cell contents (click to close)
-        </Typography>
-        <Typography variant="body2" component="p">
-          {value}
-        </Typography>
+        <div className={classes.titleBar}>
+          <CloseIcon onClick={_handleClick} />
+          <Typography
+            className={classes.title}
+            color="textSecondary"
+            
+          >
+            Cell Contents
+          </Typography>
+        </div>
+        {Array.isArray(value) ? (
+          getLinks(value)
+        ) : (
+          <Typography variant="body2">{value}</Typography>
+        )}
       </CardContent>
     </Card>
   )
