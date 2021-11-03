@@ -1,8 +1,26 @@
 # NDEx Network Viewer
+
 React-based network viewer for NDEx and other apps
 
 ## How to build and deploy
+
 (TBD)
+
+### How to build network-viewer for development
+
+The `network-viewer` depends on the following packages:
+
+- `cx-viz-converter`
+- `ce-components`
+- `large-graph-renderer`
+- `ndex-js-client`
+
+Running the `build-all.sh` script will set up all packages properly via `yarn link`.
+By default, the build script checks out the develop versions of the dependent packages.
+
+1. Copy the build script `build-all.sh` to the directory you want to install `network-viewer` in:
+2. Run the build script: `./build-all.sh`
+3. Checkout the `develop` branch in `network-viewer`
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
