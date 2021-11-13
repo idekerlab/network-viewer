@@ -115,7 +115,6 @@ const lockMain = (cy, lock: boolean): void => {
   }
 }
 
-
 const initializeCy = (cy, eventHandlers) => {
   cy.on('tap, click', (event) => tapHandler(cy, eventHandlers, event))
   cy.on('boxend', (event) => boxSelectHandler(cy, eventHandlers, event))
@@ -210,10 +209,15 @@ const updateNetwork = (cyjs, cy, annotationRenderer, backgroundColor) => {
     const elements = cyjs.network.elements
     cy.add(elements)
 
-    const newVS = addExtraStyle(cyjs.visualStyle)
-    cy.style().fromJson(newVS).update()
+    const originalVS = cyjs.visualStyle
+    const newVS = addExtraStyle(originalVS)
+    try {
+      const newState = cy.style().fromJson(newVS)
+      newState.update()
+    } catch (ex) {
+      console.warn('The visual style object contains invalid value:', ex)
+    }
 
-    console.log('handling annotations: ', cyjs.annotationNiceCX)
     annotationRenderer.drawAnnotationsFromNiceCX(cy, cyjs.annotationNiceCX)
     annotationRenderer.drawBackground(cy, backgroundColor)
   }
