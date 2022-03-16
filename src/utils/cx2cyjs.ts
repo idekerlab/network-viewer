@@ -1,5 +1,5 @@
-import { CxToJs, CyNetworkUtils } from 'cytoscape-cx2js'
-import { CxToCyCanvas } from 'cyannotation-cx2js';
+import { CxToJs, CyNetworkUtils } from '@js4cytoscape/cx2js'
+import { CxToCyCanvas } from '@js4cytoscape/cyannotation-cx2js'
 
 const utils = new CyNetworkUtils()
 const cx2js = new CxToJs(utils)

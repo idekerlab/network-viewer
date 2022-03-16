@@ -1,5 +1,5 @@
 import NdexCredential from '../model/NdexCredential'
-import * as ndex from 'ndex-client'
+import * as ndex from '@js4cytoscape/ndex-client'
 
 const getGoogleHeader = (userInfo) => {
   const token = userInfo.tokenObj.token_type + ' ' + userInfo.tokenObj.id_token

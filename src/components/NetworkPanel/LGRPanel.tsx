@@ -7,7 +7,7 @@ import {
   LargeGraphRenderer,
 } from 'large-graph-renderer'
 
-import * as cxVizConverter from 'cx-viz-converter'
+import * as cxVizConverter from '@js4cytoscape/cx-viz-converter'
 import Loading from './Loading'
 import { getEntry } from '../../utils/cxUtil'
 import AppContext from '../../context/AppState'

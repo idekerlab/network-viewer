@@ -1,4 +1,4 @@
-import * as ndex from 'ndex-client'
+import * as ndex from '@js4cytoscape/ndex-client'
 import NdexCredential from '../model/NdexCredential'
 
 const useNdexClient = (baseUrl: string, ndexCredential: NdexCredential) => {
