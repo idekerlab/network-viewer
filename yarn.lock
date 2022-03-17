@@ -1525,12 +1525,13 @@
   resolved "https://registry.yarnpkg.com/@js4cytoscape/cx-viz-converter/-/cx-viz-converter-0.1.6.tgz#bf448719a09f1792187bf03035fae09fccac7379"
   integrity sha512-LaQoj4qwWPGlWUW2Ydnp2BGcE5bJf3YNs4qL5MsB3WD5lvUl2KskMh4EGgvhc3Hb91rlSjWMr6TEkCrjq3r5UA==
 
-"@js4cytoscape/cx2js@^0.6.5":
-  version "0.6.5"
-  resolved "https://registry.yarnpkg.com/@js4cytoscape/cx2js/-/cx2js-0.6.5.tgz#31a9b7472ef3f7d48c0bdfa54a89f984fec1d6b3"
-  integrity sha512-0fpluIhYZssoRvCGjclmStNgjgQ/nKtl/dcGp5LIjGjfW4vER+QlKfwiH2imLVQ1QVJsYMW3gmG4S9ClZ6FiGw==
+"@js4cytoscape/cx2js@0.6.7-alpha.0":
+  version "0.6.7-alpha.0"
+  resolved "https://registry.yarnpkg.com/@js4cytoscape/cx2js/-/cx2js-0.6.7-alpha.0.tgz#6cef756f08651e0ba9154135c708ef0f2b1602b9"
+  integrity sha512-tuJ9JP3kAdp30WbfqFsi+Oa6uW5+Zjc8OgxMMZr9Ubl6o8mcgVr5cWOHC23QI0qBbs8SHCZaApzNTuHz1tkhbQ==
   dependencies:
     cytoscape-canvas "3.0.1"
+    fs "^0.0.1-security"
     lodash "^4.17.10"
 
 "@js4cytoscape/cyannotation-cx2js@^0.8.4":
@@ -4557,10 +4558,10 @@ cytoscape-canvas@3.0.1, cytoscape-canvas@^3.0.1:
   resolved "https://registry.yarnpkg.com/cytoscape-canvas/-/cytoscape-canvas-3.0.1.tgz#7d963be51e6e5f3f2482b05d22562c8ee941d125"
   integrity sha512-R1nCLnJHGTR5fWEpNQQBPyoigdnfhnk1lOHegzmzz1Kg6yxzVf0hfdRAMa0wPAhtC4kkgyoViiIfZ/zyCqMhEQ==
 
-cytoscape-explore-components@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/cytoscape-explore-components/-/cytoscape-explore-components-0.2.1.tgz#191eb352e801976f00fe61e98e2f1d7737ed672e"
-  integrity sha512-wfhuTp7vbT/h6U7qTcMWeXT/qTAGFlWkxJtdrXCKp3vNpqUybmAzp62sWjAYXDd7lRvScr5mVogxfUJUXUD+Sw==
+cytoscape-explore-components@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/cytoscape-explore-components/-/cytoscape-explore-components-0.2.2.tgz#6cdac6fd66c29ae05d2eb198f8213571f7fbab3a"
+  integrity sha512-uP50Fj9jLenmMsAHEvoubF9R9VVkB19ZCgHhuMTzzhABAe/wemdk64C18FBelAprSIQ9ckNPOk6JMDJJoRuiyw==
   dependencies:
     react-google-login "^5.2.2"
 
@@ -6025,6 +6026,11 @@ fs.realpath@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
   integrity sha1-FQStJSMVjKpA20onh8sBQRmU6k8=
+
+fs@^0.0.1-security:
+  version "0.0.1-security"
+  resolved "https://registry.yarnpkg.com/fs/-/fs-0.0.1-security.tgz#8a7bd37186b6dddf3813f23858b57ecaaf5e41d4"
+  integrity sha1-invTcYa23d84E/I4WLV+yq9eQdQ=
 
 fsevents@^1.2.7:
   version "1.2.13"
