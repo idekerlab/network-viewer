@@ -9,6 +9,9 @@ import {
 import AppContext from '../../../context/AppState'
 import VirtualizedTable2 from './VirtualizedTable2'
 
+// All attributes with this prefix will not be displayed
+const HIDDEN_ATTR_PREFIX = '__'
+
 const EdgeAttributes = {
   SOURCE: 'source',
   TARGET: 'target',
@@ -95,8 +98,12 @@ const EntryTable: VFC<{
     return Math.min(MAX_WIDTH, width)
   }
 
-  const columns = useMemo(() => {
-    const columnsList = []
+  const filterColumns = (allColumns: string[]): string[] => {
+    return allColumns.filter(colName => !colName.startsWith(HIDDEN_ATTR_PREFIX))
+  }
+
+  const columns: string[] = useMemo((): string[] => {
+    const columnsList: string[] = []
     for (let id of selectedObjects) {
       const attrs = attributes[id]
       if (attrs === undefined || attrs === null) {
@@ -165,7 +172,7 @@ const EntryTable: VFC<{
         }
       }
     }
-    return columnsList
+    return filterColumns(columnsList)
   }, [selectedObjects])
 
   const data = useMemo(() => {

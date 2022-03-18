@@ -8026,10 +8026,10 @@ language-tags@^1.0.5:
   dependencies:
     language-subtag-registry "~0.3.2"
 
-large-graph-renderer@^0.3.2:
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/large-graph-renderer/-/large-graph-renderer-0.3.2.tgz#79adbb2a51f3bbe3f79a038cf134ccab0d3eb011"
-  integrity sha512-EXwyO5ukDC6+fFKJvbed6w7s4g+HsIazeiqRgIj9zaP0ivnsreAJW50QYCQLi4g8XVKuFTN4cuZOnmcqRn5o8g==
+large-graph-renderer@^0.3.3:
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/large-graph-renderer/-/large-graph-renderer-0.3.3.tgz#3ce37162d5ba712770bdf4e8cd1de27e68022229"
+  integrity sha512-T7Fny13k06pxLJwlv2lxczhU0puG9RYHImMPd3qDlnLBDKGkvdUodvqLIiqI7+XEdNHHQXBVrdVjnSwuQ1hF6g==
   dependencies:
     "@deck.gl/core" "^8.4.17"
     "@deck.gl/layers" "^8.4.17"

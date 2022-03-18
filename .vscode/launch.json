@@ -12,8 +12,14 @@
     // Private network
     // "url": "http://localhost:3000/viewer/networks/536bafd5-ecc5-11ea-8a8c-525400c25d22",
 
+    // Nodes only network
+    // "url": "http://localhost:3000/viewer/networks/0b4917ff-a640-11ec-b777-767437b87d4a",
+    
+    // Hidden attribute example (MUSIC)
+    "url": "http://localhost:3000/viewer/networks/fbf311d2-a653-11ec-b777-767437b87d4a",
+    
     // Public small human
-    "url": "http://localhost:3000/viewer/networks/4d42c2a2-3768-11ec-a229-525400c25d22",
+    // "url": "http://localhost:3000/viewer/networks/4d42c2a2-3768-11ec-a229-525400c25d22",
     
     // Crash Bug large net
     // "url": "http://localhost:3000/viewer/networks/0258f1e1-bdf6-11eb-82cb-525400c25d22",
