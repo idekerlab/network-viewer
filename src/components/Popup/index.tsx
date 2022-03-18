@@ -12,6 +12,7 @@ import {
 } from '../../utils/contextUtil'
 import { SelectionActions } from '../../reducer/selectionStateReducer'
 
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {

@@ -10,7 +10,7 @@ import AppContext from '../../../context/AppState'
 import VirtualizedTable2 from './VirtualizedTable2'
 
 // All attributes with this prefix will not be displayed
-const HIDDEN_ATTR_PREFIX = '__'
+export const HIDDEN_ATTR_PREFIX: string = '__'
 
 const EdgeAttributes = {
   SOURCE: 'source',

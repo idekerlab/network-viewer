@@ -5,6 +5,8 @@ import ListItem from '@material-ui/core/ListItem'
 import Typography from '@material-ui/core/Typography'
 import Linkify from 'linkify-react'
 
+import { HIDDEN_ATTR_PREFIX } from '../DataPanel/EntryTable'
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -36,16 +38,18 @@ const PropList = ({ attrMap }) => {
     attrMap.delete('Represents')
   }
 
-  const keys = [...attrMap.keys()].sort((a, b) => a.localeCompare(b))
+  const keys: string[] = [...attrMap.keys()].sort((a, b) => a.localeCompare(b))
 
   if (represents != undefined) {
     keys.unshift('Represents')
     attrMap.set('Represents', represents)
   }
 
+
+  // Display all attributes except the hidden ones (with prefix __)
   return (
     <List className={classes.root}>
-      {keys.map((key) => {
+      {keys.filter(key => !key.startsWith(HIDDEN_ATTR_PREFIX)).map((key) => {
         return (
           <ListItem key={key} className={classes.text} disableGutters>
             <Typography
