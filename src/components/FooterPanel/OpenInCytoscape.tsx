@@ -1,6 +1,7 @@
 import React, { FC, useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import Snackbar from '@material-ui/core/Snackbar'
+import { createStyles, makeStyles } from '@material-ui/core/styles'
 
 import {
   CyNDExProvider,
@@ -12,12 +13,22 @@ import useNetworkMetaData from '../../hooks/useNetworkMetaData'
 
 import AppContext from '../../context/AppState'
 
+const useStyles = makeStyles(() =>
+  createStyles({
+    wrapper: {
+      // backgroundColor: 'red',
+      minWidth: '12em',
+      minHeight: '2em'
+    },
+  }),
+)
+
 const OpenInCytoscape: FC = () => {
+  const classes = useStyles()
   const { uuid } = useParams()
 
-  const { query, queryMode, ndexCredential, config, summary } = useContext(
-    AppContext,
-  )
+  const { query, queryMode, ndexCredential, config, summary } =
+    useContext(AppContext)
 
   const { data } = useSearch(
     uuid,
@@ -77,20 +88,24 @@ const OpenInCytoscape: FC = () => {
     <CyNDExProvider port={1234}>
       {useQueryResult ? (
         subCx ? (
+          <div className={classes.wrapper}>
+            <OpenInCytoscapeButton
+              size="small"
+              fetchCX={fetchCX}
+              onSuccess={onSuccess}
+              onFailure={onFailure}
+            />
+          </div>
+        ) : null
+      ) : (
+        <div className={classes.wrapper}>
           <OpenInCytoscapeButton
             size="small"
-            fetchCX={fetchCX}
+            ndexNetworkProperties={ndexNetworkProperties}
             onSuccess={onSuccess}
             onFailure={onFailure}
           />
-        ) : null
-      ) : (
-        <OpenInCytoscapeButton
-          size="small"
-          ndexNetworkProperties={ndexNetworkProperties}
-          onSuccess={onSuccess}
-          onFailure={onFailure}
-        />
+        </div>
       )}
       <Snackbar
         open={snackMessage !== undefined}
