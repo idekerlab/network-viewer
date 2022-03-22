@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useContext } from 'react'
+import React, { FC, ReactElement, useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import IconButton from '@material-ui/core/IconButton'
 import EditIcon from '@material-ui/icons/Edit'
@@ -10,10 +10,20 @@ import { Tooltip } from '@material-ui/core'
 import { getCurrentServer } from '../../utils/locationUtil'
 import useNetworkSummary from '../../hooks/useNetworkSummary'
 
+// The network is editable only if the following values are set to "permissions"
+const EDITABLE = {
+  ADMIN: 'ADMIN',
+  WRITE: 'WRITE',
+} as const
+
+type Editable = typeof EDITABLE[keyof typeof EDITABLE]
+
 const EditMetadataButton: FC = (): ReactElement => {
   const { summary, ndexCredential, config } = useContext(AppContext)
   const { uuid } = useParams()
   const { isLogin } = ndexCredential
+
+  const [isEditable, setIsEditable] = useState<boolean>(false)
 
   const summaryResponse = useNetworkSummary(
     uuid,
@@ -42,14 +52,15 @@ const EditMetadataButton: FC = (): ReactElement => {
     ndexCredential,
   )
 
-  let hasPermission = false
-  if (
-    permissions !== undefined &&
-    permissions !== null &&
-    permissions.data === 'ADMIN'
-  ) {
-    hasPermission = true
-  }
+  useEffect(() => {
+    if (permissions !== undefined && permissions !== null) {
+      const accessLevel: Editable = permissions.data
+      if (accessLevel === EDITABLE.ADMIN || accessLevel === EDITABLE.WRITE) {
+        setIsEditable(true)
+      }
+    }
+  }, [permissions])
+
 
   let login: boolean = false
   if (isLogin && summary !== undefined) {
@@ -59,7 +70,7 @@ const EditMetadataButton: FC = (): ReactElement => {
   let message = 'This feature is only available to signed-in users'
 
   let disabled = true
-  if (hasPermission && login) {
+  if (isEditable && login) {
     if (isDoiAvailable) {
       message =
         'Network properties cannot be modified once a DOI has been requested or assigned'
@@ -72,7 +83,7 @@ const EditMetadataButton: FC = (): ReactElement => {
         disabled = false
       }
     }
-  } else if (!hasPermission && login) {
+  } else if (!isEditable && login) {
     message = "You don't have permission to edit this network"
   }
 
