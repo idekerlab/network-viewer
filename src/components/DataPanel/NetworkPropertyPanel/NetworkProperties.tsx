@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, ReactElement } from 'react'
 import { makeStyles } from '@material-ui/styles'
 import Linkify from 'linkify-react'
 import parse from 'html-react-parser'
@@ -185,7 +185,7 @@ const NetworkProperties: FC<{
         propertiesTableContent.push(
           <tr key={predicate}>
             <td className={classes.tdTitle}>{formatTitle(predicate)}</td>
-            <td className={classes.tdContent}>{formatContent(value)}</td>
+            <td className={classes.tdContent}>{formatPropertyValue(value)}</td>
           </tr>,
         )
       }
@@ -214,14 +214,16 @@ const NetworkProperties: FC<{
           {rights ? (
             <tr>
               <td className={classes.tdTitle}>Rights</td>
-              <td className={classes.tdContent}>{formatContent(rights)}</td>
+              <td className={classes.tdContent}>
+                {formatPropertyValue(rights)}
+              </td>
             </tr>
           ) : null}
           {rightsHolder ? (
             <tr>
               <td className={classes.tdTitle}>Rights holder</td>
               <td className={classes.tdContent}>
-                {formatContent(rightsHolder)}
+                {formatPropertyValue(rightsHolder)}
               </td>
             </tr>
           ) : null}
@@ -231,7 +233,7 @@ const NetworkProperties: FC<{
     descriptionList.push(['Rights', rightsTable])
   }
   if (reference) {
-    descriptionList.push(['Reference', formatContent(reference)])
+    descriptionList.push(['Reference', formatPropertyValue(reference)])
   }
   if (descriptionList.length > 0) {
     descriptionDisplay = formatDisplay(descriptionList)
@@ -280,16 +282,22 @@ const formatTitle = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
-const formatContent = (string) => {
-  if (string === undefined) {
-    return
+const formatPropertyValue = (value: string) => {
+  if (value === undefined) {
+    return null
   }
-  string = string
+
+  let processedValue: string = value
     .toString()
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script\ *>/gi, '')
-  string = parse(string)
-  return string
-  // return <Linkify key={`key-${Math.random()}`}>{string}</Linkify>
+  const parsedValue = parse(processedValue)
+  return (
+    <Linkify
+      key={`key-${Math.random()}`}
+    >
+      {parsedValue}
+    </Linkify>
+  )
 }
 
 const formatDescription = (string) => {
