@@ -19,8 +19,10 @@
     // "url": "http://localhost:3000/viewer/networks/fbf311d2-a653-11ec-b777-767437b87d4a",
     
     // Permission test
-    "url": "http://localhost:3000/viewer/networks/fd4a8f5d-4061-11ec-8511-5e2a6510d7f7",
+    // "url": "http://localhost:3000/viewer/networks/fd4a8f5d-4061-11ec-8511-5e2a6510d7f7",
     
+    // Source target are hidden problem
+    "url": "http://localhost:3000/viewer/networks/7eb0631e-aaee-11ec-99e1-767437b87d4a",
     // Public small human
     // "url": "http://localhost:3000/viewer/networks/4d42c2a2-3768-11ec-a229-525400c25d22",
     

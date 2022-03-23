@@ -99,7 +99,9 @@ const EntryTable: VFC<{
   }
 
   const filterColumns = (allColumns: string[]): string[] => {
-    return allColumns.filter(colName => !colName.startsWith(HIDDEN_ATTR_PREFIX))
+    return allColumns.filter(
+      (colName) => !colName.startsWith(HIDDEN_ATTR_PREFIX),
+    )
   }
 
   const columns: string[] = useMemo((): string[] => {
@@ -112,10 +114,7 @@ const EntryTable: VFC<{
       for (let attr of attrs) {
         if (
           attr[0] === Attributes.NAME ||
-          (type === 'edge' &&
-            (attr[0] === EdgeAttributes.SOURCE ||
-              attr[0] === EdgeAttributes.TARGET ||
-              attr[0] === EdgeAttributes.INTERACTION))
+          (type === 'edge' && attr[0] === EdgeAttributes.INTERACTION)
         ) {
           continue
         } else {

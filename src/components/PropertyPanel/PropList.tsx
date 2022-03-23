@@ -40,36 +40,37 @@ const PropList = ({ attrMap }) => {
 
   const keys: string[] = [...attrMap.keys()].sort((a, b) => a.localeCompare(b))
 
-  if (represents != undefined) {
+  if (represents !== undefined) {
     keys.unshift('Represents')
     attrMap.set('Represents', represents)
   }
 
-
   // Display all attributes except the hidden ones (with prefix __)
   return (
     <List className={classes.root}>
-      {keys.filter(key => !key.startsWith(HIDDEN_ATTR_PREFIX)).map((key) => {
-        return (
-          <ListItem key={key} className={classes.text} disableGutters>
-            <Typography
-              color="textSecondary"
-              variant="caption"
-              variantMapping={{ caption: 'div' }}
-              className={classes.smallText}
-            >
-              {key}
-            </Typography>
-            <Typography
-              variant="body2"
-              component="div"
-              className={classes.bigText}
-            >
-              <Linkify key={key}>{attrMap.get(key)}</Linkify>
-            </Typography>
-          </ListItem>
-        )
-      })}
+      {keys
+        .filter((key) => !key.startsWith(HIDDEN_ATTR_PREFIX))
+        .map((key) => {
+          return (
+            <ListItem key={key} className={classes.text} disableGutters>
+              <Typography
+                color="textSecondary"
+                variant="caption"
+                variantMapping={{ caption: 'div' }}
+                className={classes.smallText}
+              >
+                {key}
+              </Typography>
+              <Typography
+                variant="body2"
+                component="div"
+                className={classes.bigText}
+              >
+                <Linkify key={key}>{attrMap.get(key)}</Linkify>
+              </Typography>
+            </ListItem>
+          )
+        })}
     </List>
   )
 }

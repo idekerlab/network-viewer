@@ -83,7 +83,7 @@ const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
   }, [uiState.showSearchResult])
 
   if (
-    cx == undefined ||
+    cx === undefined ||
     !lastSelected.showPropPanel ||
     selectionState.lastSelected.id == null
   ) {
@@ -152,7 +152,7 @@ const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
     if (Array.isArray(item[1])) {
       value = processList(item[1], context)
     } else {
-      if (item[0] == Attributes.NDEX_INTERNAL_LINK) {
+      if (item[0] === Attributes.NDEX_INTERNAL_LINK) {
         value = processInternalLink(item[1], config.ndexUrl)
       } else {
         value = processItem(item[1], context, true)
@@ -172,6 +172,12 @@ const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
         nonEmptyMap.set(Attributes.NAME, source + ' (-) ' + target)
       }
     }
+  }
+  
+  // Add source and target to the list
+  if (source && target) {
+    nonEmptyMap.set(EdgeAttributes.SOURCE, source)
+    nonEmptyMap.set(EdgeAttributes.TARGET, target)
   }
 
   //Calculate position based on pointer position in window
