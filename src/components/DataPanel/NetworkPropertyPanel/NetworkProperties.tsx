@@ -1,4 +1,4 @@
-import React, { FC, ReactElement } from 'react'
+import React, { FC } from 'react'
 import { makeStyles } from '@material-ui/styles'
 import Linkify from 'linkify-react'
 import parse from 'html-react-parser'
@@ -6,6 +6,7 @@ import CollapsiblePanel from './CollapsiblePanel'
 import NetworkPropertySegment from './NetworkPropertySegment'
 import { NetworkPanelState } from '..'
 import { Theme } from '@material-ui/core'
+import { HIDDEN_ATTR_PREFIX } from '../EntryTable'
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -167,7 +168,7 @@ const NetworkProperties: FC<{
   for (let property of properties) {
     const value = property.value.trim()
     const predicate = property.predicateString.trim()
-    if (value !== '' && !predicate.startsWith('__')) {
+    if (value !== '' && !predicate.startsWith(HIDDEN_ATTR_PREFIX)) {
       if (predicate === '@context') {
         continue
       } else if (predicate === 'rights') {
@@ -291,13 +292,7 @@ const formatPropertyValue = (value: string) => {
     .toString()
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script\ *>/gi, '')
   const parsedValue = parse(processedValue)
-  return (
-    <Linkify
-      key={`key-${Math.random()}`}
-    >
-      {parsedValue}
-    </Linkify>
-  )
+  return <Linkify key={`key-${Math.random()}`}>{parsedValue}</Linkify>
 }
 
 const formatDescription = (string) => {
