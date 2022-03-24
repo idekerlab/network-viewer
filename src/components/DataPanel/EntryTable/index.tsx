@@ -35,11 +35,11 @@ const replacePeriods = (text: string): string => {
 const isEmptyString = (text: string): boolean => {
   return text === undefined || text === ''
 }
-const startsWithNumber = (entry) => {
+const startsWithNumber = (entry: string): boolean => {
   if (
     entry === undefined ||
     entry === null ||
-    entry === '' ||
+    typeof entry !== 'string' ||
     entry.length === 0
   ) {
     return false
