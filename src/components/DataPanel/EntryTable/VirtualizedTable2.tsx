@@ -427,7 +427,8 @@ const VirtualizedTable2: FC<{
         typeof originalValue === 'string' &&
         originalValue.length > valueLengthTH
       ) {
-        value = originalValue.substring(0, valueLengthTH)
+        const strVal = originalValue.toString()
+        value = strVal.substring(0, valueLengthTH)
         isLongValue = true
       }
     }
