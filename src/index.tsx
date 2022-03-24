@@ -51,7 +51,7 @@ async function loadResource() {
 
   const config: AppConfig = {
     ndexUrl,
-    ndexHttps: `https://${ndexUrl}`,
+    ndexHttps: (ndexUrl === 'localhost')? `http://${ndexUrl}`: `https://${ndexUrl}`,
     googleClientId,
     viewerThreshold: viewerTh,
     maxNumObjects,
