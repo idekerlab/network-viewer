@@ -74,7 +74,7 @@ const CytoscapeRenderer = ({
       layout.run()
       setTimeout(() => {
         cyInstance.fit()
-      }, 500)
+      }, 400)
     }
   }, [cyInstance])
 

@@ -12,7 +12,6 @@ import {
 } from '../../utils/contextUtil'
 import { SelectionActions } from '../../reducer/selectionStateReducer'
 
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -54,17 +53,14 @@ type PopupProps = {
   subHeight: number
 }
 
+const FOOTER_HEIGHT = 60
+
 const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
   const classes = useStyles()
   const { uuid } = useParams()
-  const {
-    uiState,
-    selectionState,
-    selectionStateDispatch,
-    config,
-  } = useContext(AppContext)
+  const { uiState, selectionState, selectionStateDispatch, config } =
+    useContext(AppContext)
   const { windowHeight, windowWidth } = useWindowDimensions()
-  const FOOTER_HEIGHT = 60
 
   const attr = useAttributes(uuid, cx, uiState.mainNetworkNotDisplayed)
   const context = useMemo(() => getContextFromCx(cx), [cx])
@@ -82,10 +78,22 @@ const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
     setShowPropPanelFalse()
   }, [uiState.showSearchResult])
 
+  const isMultipleSelection = (selectionState): boolean => {
+    const { main, sub } = selectionState
+    const sumMain = main.nodes.length + main.edges.length
+    const sumSub = sub.nodes.length + sub.edges.length
+
+    if (sumMain > 1 || sumSub > 1) {
+      return true
+    } else {
+      return false
+    }
+  }
   if (
     cx === undefined ||
     !lastSelected.showPropPanel ||
-    selectionState.lastSelected.id == null
+    selectionState.lastSelected.id === null ||
+    isMultipleSelection(selectionState)
   ) {
     return <div />
   }
@@ -98,8 +106,7 @@ const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
     attrMap = attr.edgeAttr[id]
   }
 
-  //Process attrMap to only display non-empty fields
-  //and properly display links and lists
+  // Process attrMap to only display non-empty fields and properly display links and lists
   const nonEmptyMap = new Map()
   let source, target, interaction
   let noNameEdge = true
@@ -173,7 +180,7 @@ const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
       }
     }
   }
-  
+
   // Add source and target to the list
   if (source && target) {
     nonEmptyMap.set(EdgeAttributes.SOURCE, source)
