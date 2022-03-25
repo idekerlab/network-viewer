@@ -5,8 +5,6 @@ import {
   Grid,
   ScrollSync,
   AutoSizer,
-  CellMeasurer,
-  CellMeasurerCache,
 } from 'react-virtualized'
 
 import SortIcon from '@material-ui/icons/Sort'
@@ -15,9 +13,6 @@ import UpIcon from '@material-ui/icons/ArrowDropUp'
 
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import Popup from './Popup'
-import { Tooltip, withStyles } from '@material-ui/core'
-
-import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 
 const scrollbarWidth = () => {
   const scrollDiv = document.createElement('div')
@@ -46,7 +41,6 @@ const useStyles = makeStyles((theme: Theme) => {
       background: theme.palette.background.paper,
       boxSizing: 'border-box',
       color: '#333333',
-      // border: '5px solid red',
       overflow: 'hidden',
     },
 
@@ -55,7 +49,6 @@ const useStyles = makeStyles((theme: Theme) => {
       flexGrow: 1,
       width: '100%',
       height: '100%',
-      // border: '6px solid darkorange',
       boxSizing: 'border-box',
       overflowY: 'hidden',
     },
@@ -84,9 +77,6 @@ const useStyles = makeStyles((theme: Theme) => {
       borderTop: `1px solid ${theme.palette.divider}`,
       boxSizing: 'border-box',
       zIndex: 100,
-    },
-    buttons: {
-      // marginRight: theme.spacing(1)
     },
     pageLabel: {
       width: '7em',
@@ -222,7 +212,6 @@ const VirtualizedTable2: FC<{
   const classes = useStyles()
 
   // Popup control
-  const [tooltipOpen, setTooltipOpen] = React.useState(false)
   const [openPopup, setOpenPopup] = useState(false)
   const [position, setPosition] = useState({ x: 0, y: 0 })
   const [selectedValue, setSelectedValue] = useState(null)
@@ -278,8 +267,6 @@ const VirtualizedTable2: FC<{
   }, [selected])
 
   const {
-    getTableProps,
-    getTableBodyProps,
     headerGroups,
     prepareRow,
     page,
@@ -620,7 +607,7 @@ const VirtualizedTable2: FC<{
         </div>
 
         <div ref={pageRef} className={classes.pagination}>
-          <div className={classes.buttons}>
+          <div>
             <button
               className={classes.button}
               onClick={() => _handleGoToPage(0)}

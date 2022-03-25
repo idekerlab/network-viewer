@@ -1,8 +1,3 @@
-const OBJ_TYPE = {
-  NODES: 'nodes',
-  EDGES: 'edges',
-}
-
 const getEntry = (tag: string, cx: any[]) => {
   if (tag === undefined || tag === null) {
     return {}
@@ -11,8 +6,6 @@ const getEntry = (tag: string, cx: any[]) => {
   if (cx === undefined || cx === null) {
     return {}
   }
-
-  let len = cx.length
 
   for (let entry of cx) {
     const value = entry[tag]

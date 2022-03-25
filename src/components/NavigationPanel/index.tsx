@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import ButtonGroup from '@material-ui/core/ButtonGroup'
 import IconButton from '@material-ui/core/IconButton'
 
@@ -74,8 +74,8 @@ const NavigationPanel = ({ target = 'main' }) => {
       orientation="vertical"
       color="secondary"
       variant="outlined"
-      disableFocusRipple={true}
-      disableRipple={true}
+      // disableFocusRipple={true}
+      // disableRipple={true}
     >
       {target === 'main' ? <ExpandButton /> : <div />}
       <IconButton

@@ -27,13 +27,13 @@
     // "url": "http://localhost:3000/viewer/networks/4d42c2a2-3768-11ec-a229-525400c25d22",
     
     // Scroll crash bug
-    "url": "http://localhost:3000/viewer/networks/9f1dd498-ab23-11ec-aa7a-767437b87d4a",
+    // "url": "http://localhost:3000/viewer/networks/9f1dd498-ab23-11ec-aa7a-767437b87d4a",
     
     // Crash Bug large net
     // "url": "http://localhost:3000/viewer/networks/0258f1e1-bdf6-11eb-82cb-525400c25d22",
     
     // Large net1 clustered
-    // "url": "http://localhost:3000/viewer/networks/eaff6b63-b7a0-11eb-82cb-525400c25d22",
+    "url": "http://localhost:3000/viewer/networks/eaff6b63-b7a0-11eb-82cb-525400c25d22",
     // Public large networks
     // "url": "http://localhost:3000/viewer/networks/eaff6b63-b7a0-11eb-82cb-525400c25d22",
     // "url":  "http://localhost:3000/viewer/networks/25704eb4-c038-11ea-86e2-525400c25d22",

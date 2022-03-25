@@ -1,9 +1,7 @@
 import React, { FC, useContext, useRef, useEffect } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
-
 import { NDExSignInButton } from 'cytoscape-explore-components'
-
 import AppContext from '../../context/AppState'
 import ClassicModeButton from './ClassicModeButton'
 import NdexHomeButton from './NdexHomeButton'
@@ -33,13 +31,8 @@ const ToolBar: FC = (props) => {
   const classes = useStyles()
   const ndexButton = useRef(null)
 
-  const {
-    config,
-    summary,
-    ndexCredential,
-    setNdexCredential,
-    setNdexLoginWrapper,
-  } = useContext(AppContext)
+  const { summary, ndexCredential, setNdexCredential, setNdexLoginWrapper } =
+    useContext(AppContext)
 
   useEffect(() => {
     setNdexLoginWrapper(ndexButton.current.lastChild)
@@ -67,8 +60,7 @@ const ToolBar: FC = (props) => {
       }
     } else {
       if (ndexCredential.loaded && ndexCredential.isLogin) {
-        console.log('going from logged in to logged out: ', summary)
-        if (!summary || summary.visibility == 'PRIVATE') {
+        if (!summary || summary.visibility === 'PRIVATE') {
           window.location.href = ndexServerUrl
         }
       }
@@ -98,7 +90,7 @@ const ToolBar: FC = (props) => {
           <NdexHomeButton />
           <div ref={ndexButton}>
             <NDExSignInButton
-              size={"medium"}
+              size={'medium'}
               myAccountURL={ndexServerUrl + '/#/myAccount'}
               onLoginStateUpdated={loginStateUpdated}
             />

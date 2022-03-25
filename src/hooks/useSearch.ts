@@ -113,7 +113,7 @@ export const saveQuery = async (
   return fetch(url, settings)
 }
 
-const queryNetwork = async <T>(
+const queryNetwork = async (
   uuid: string,
   query: string,
   serverUrl: string,

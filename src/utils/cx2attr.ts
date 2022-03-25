@@ -94,7 +94,6 @@ const getNodeAttrsV2 = (kvMap: object) => {
     const entry = nodes[len]
     const attrs = entry['v']
     const current = new Map()
-    // const keys = Object.keys(attrs)
     attrKeys.forEach((key) => {
       if (
         key === SPECIAL_TAGS.name.label ||
@@ -210,7 +209,7 @@ const addSourceTargetInteraction = (nodeAttr, edges, id2attr) => {
 }
 
 const addSourceTargetInteractionV2 = (nodeAttr, edges, id2attr) => {
-  if (edges == undefined) {
+  if (edges === undefined) {
     return
   }
   let len = edges.length

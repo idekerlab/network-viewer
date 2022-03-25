@@ -1,4 +1,4 @@
-import React, { useState, useReducer, FC } from 'react'
+import React, { useState, useReducer } from 'react'
 import { Helmet } from 'react-helmet'
 
 import './App.css'
@@ -7,7 +7,7 @@ import { Switch, Route, BrowserRouter } from 'react-router-dom'
 
 import AppShell from './components/AppShell'
 import AccountShell from './components/AccountShell'
-import AccountSignUpPane from './components/AccountSignUpPane' 
+import AccountSignUpPane from './components/AccountSignUpPane'
 import AccountForgotPasswordPane from './components/AccountForgotPasswordPane'
 
 import AppContext from './context/AppState'
@@ -21,7 +21,6 @@ import cyReducer, { INITIAL_CY_REFERENCE } from './reducer/cyReducer'
 import uiStateReducer, { INITIAL_UI_STATE } from './reducer/uiStateReducer'
 import NdexCredential from './model/NdexCredential'
 import Summary from './model/Summary'
-import AppConfig from './model/AppConfig'
 
 const defNdexCredential: NdexCredential = {
   loaded: false,
@@ -39,7 +38,7 @@ const App = ({ config }) => {
   const [query, setQuery] = useState('')
   const [queryMode, setQueryMode] = useState('firstStepNeighborhood')
   const [summary, setSummary] = useState(defSummary)
-  
+
   const [lgrReference, setLgrReference] = useState(null)
 
   const [ndexCredential, setNdexCredential] = useState(defNdexCredential)
@@ -54,7 +53,7 @@ const App = ({ config }) => {
     INITIAL_UI_STATE,
   )
 
-  const [ndexLoginWrapper, setNdexLoginWrapper] = useState(null) 
+  const [ndexLoginWrapper, setNdexLoginWrapper] = useState(null)
 
   // TODO: use reducer?
   const defState: AppState = {
@@ -84,7 +83,7 @@ const App = ({ config }) => {
     selectionStateDispatch,
 
     ndexLoginWrapper,
-    setNdexLoginWrapper
+    setNdexLoginWrapper,
   }
 
   return (
@@ -98,21 +97,20 @@ const App = ({ config }) => {
         <Route path="/signup">
           <AppContext.Provider value={defState}>
             <AccountShell>
-              <AccountSignUpPane/>
+              <AccountSignUpPane />
             </AccountShell>
           </AppContext.Provider>
         </Route>
         <Route path="/recoverPassword">
           <AppContext.Provider value={defState}>
             <AccountShell>
-              <AccountForgotPasswordPane/>
+              <AccountForgotPasswordPane />
             </AccountShell>
           </AppContext.Provider>
         </Route>
         <Route path="/">
           <TopPanel config={config} />
         </Route>
-       
       </Switch>
     </BrowserRouter>
   )

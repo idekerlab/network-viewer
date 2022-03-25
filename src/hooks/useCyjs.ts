@@ -4,7 +4,7 @@ import NDExError from '../utils/error/NDExError'
 
 export default function useCyjs(uuid: string, cx: object[]) {
   const [cyjs, setCyjs] = useState(null)
-  const [id, setUuid] = useState(null)
+  const [id, setUuid] = useState<string|null>(null)
 
 
   if(cx === undefined || cx === null) {

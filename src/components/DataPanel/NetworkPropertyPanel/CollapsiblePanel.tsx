@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useState, useEffect } from 'react'
+import React, { FC, ReactNode } from 'react'
 import { Collapse, makeStyles, Theme, Typography } from '@material-ui/core'
 import { ExpandLess, ExpandMore } from '@material-ui/icons'
 
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     height: '2.8em',
   },
   collapsiblePanel: {
-    paddingBottom: theme.spacing(2)
+    paddingBottom: theme.spacing(2),
   },
   expandIcon: {
     float: 'right',
@@ -25,9 +25,9 @@ type CollapsiblePanelProps = {
   openByDefault?: boolean
   title: string
   children: ReactNode
-  backgroundColor?: string,
-  className?: string,
-  open: boolean,
+  backgroundColor?: string
+  className?: string
+  open: boolean
   setOpen: (boolean) => void
 }
 
@@ -37,15 +37,9 @@ const CollapsiblePanel: FC<CollapsiblePanelProps> = ({
   children,
   backgroundColor,
   open,
-  setOpen
-
+  setOpen,
 }) => {
-
   const classes = useStyles()
-
-  useEffect(() => {
-    console.log(open)
-  }, [])
 
   const _handleClick = () => {
     setOpen(!open)

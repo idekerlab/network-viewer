@@ -38,18 +38,13 @@ const getNdexClient = (baseUrl: string, ndexCredential: NdexCredential) => {
     //console.log('NDEx client with Basic Auth ::', ndexClient)
   }
 
-  ndexClient.getStatus().then((response) => {
-    console.log('* NDEx Status checked:', response.message)
-  })
-  
-
   return ndexClient
 }
 
-const getAccessKey = (searchString: string):string=> {
+const getAccessKey = (searchString: string):string => {
   const trimed = searchString.replaceAll('?', '')
   const params = trimed.split('&')
-  let key = null
+  let key: string | null = null
   params.forEach(pair => {
     const keyValue = pair.split('=')
     if(keyValue[0] === 'accesskey') {

@@ -24,7 +24,7 @@ const baseUrl = location.href
 const protocol = baseUrl.split('//')[0]
 const urlBody = baseUrl.replace(`${protocol}//`, '')
 const updatedUrl = urlBody.replace(/\/\/+/g, '/')
-if(updatedUrl !== urlBody) {
+if (updatedUrl !== urlBody) {
   location.replace(`${protocol}//${updatedUrl}`)
 }
 
@@ -37,10 +37,12 @@ async function loadResource() {
   const response = await fetch(`${process.env.PUBLIC_URL}/resource.json`)
 
   if (response.status !== 200) {
-    throw new Error('Failed to load resource file.  Could not find NDEx server location')
+    throw new Error(
+      'Failed to load resource file.  Could not find NDEx server location',
+    )
   }
   const resource = await response.json()
-  console.log('* Resource file loaded:', resource)
+  console.info('Resource file loaded', resource)
   const ndexUrl = resource['ndexUrl']
   const googleClientId = resource['googleClientId']
   const viewerTh = resource['viewerThreshold']

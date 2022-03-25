@@ -44,7 +44,6 @@ const AdvancedMenu = () => {
           aria-describedby={id}
           onClick={handleClick}
           color="inherit"
-          disableRipple={true}
           disableFocusRipple={true}
           disableTouchRipple={true}
         >

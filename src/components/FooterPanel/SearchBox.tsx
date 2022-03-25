@@ -220,7 +220,7 @@ const SearchBox: FC = () => {
         <IconButton
           color="inherit"
           disableFocusRipple
-          disableRipple
+          // disableRipple
           onClick={handleHelpOpen}
         >
           <InfoIcon />
@@ -247,7 +247,7 @@ const SearchBox: FC = () => {
       <IconButton
         color="inherit"
         disableFocusRipple
-        disableRipple
+        // disableRipple
         disabled={disableQuery}
         onClick={handleClick}
       >
@@ -259,7 +259,7 @@ const SearchBox: FC = () => {
       <IconButton
         color="inherit"
         disableFocusRipple
-        disableRipple
+        // disableRipple
         className={classes.button}
         disabled={disableQuery}
         onClick={handleClear}

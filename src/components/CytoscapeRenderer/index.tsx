@@ -4,8 +4,6 @@ import useCyjs from '../../hooks/useCyjs'
 import { getAnnotationRenderer } from '../../utils/cx2cyjs'
 import AppContext from '../../context/AppState'
 
-// Style for the network canvas area
-
 type CytoscapeRendererProps = {
   uuid: string
   cx: object[]
@@ -71,10 +69,7 @@ const CytoscapeRenderer = ({
     if (layoutName !== undefined && cyInstance !== null) {
       const layout = cyInstance.layout({
         name: layoutName,
-        animate: false,
-        stop: function () {
-          console.log('Initial layout finished')
-        },
+        animate: false
       })
       layout.run()
       setTimeout(() => {
@@ -121,7 +116,6 @@ const initializeCy = (cy, eventHandlers) => {
 }
 
 const boxSelectHandler = (cy, eventHandlers, event) => {
-  const t0 = performance.now()
   setTimeout(() => {
     const selectedNodes = cy.$('node:selected')
     const selectedEdges = cy.$('edge:selected')
@@ -132,11 +126,7 @@ const boxSelectHandler = (cy, eventHandlers, event) => {
 }
 const tapHandler = (cy, eventHandlers, event) => {
   const evtTarget = event.target
-  const t0 = performance.now()
-
   if (evtTarget === cy) {
-    console.log('* tap on background2')
-
     setTimeout(() => {
       eventHandlers.clearAll()
     }, 10)
@@ -144,7 +134,6 @@ const tapHandler = (cy, eventHandlers, event) => {
     const data = evtTarget.data()
 
     if (evtTarget.isNode()) {
-      console.log('* tap on Node', evtTarget.data())
       setTimeout(() => {
         const selectedNodes = cy.$('node:selected')
         const selectedEdges = cy.$('edge:selected')
@@ -159,7 +148,6 @@ const tapHandler = (cy, eventHandlers, event) => {
         )
       }, 5)
     } else {
-      console.log('* tap on Edge', evtTarget.data())
       setTimeout(() => {
         const selectedNodes = cy.$('node:selected')
         const selectedEdges = cy.$('edge:selected')
@@ -175,7 +163,6 @@ const tapHandler = (cy, eventHandlers, event) => {
       }, 5)
     }
   }
-  console.log('tap clear', performance.now() - t0)
 }
 
 const addExtraStyle = (visualStyle) => {
@@ -217,7 +204,6 @@ const updateNetwork = (cyjs, cy, annotationRenderer, backgroundColor) => {
     } catch (ex) {
       console.warn('The visual style object contains invalid value:', ex)
     }
-
     annotationRenderer.drawAnnotationsFromNiceCX(cy, cyjs.annotationNiceCX)
     annotationRenderer.drawBackground(cy, backgroundColor)
   }

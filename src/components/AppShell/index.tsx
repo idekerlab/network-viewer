@@ -24,10 +24,6 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       boxSizing: 'border-box',
-
-    },
-    header: {
-      // border: '3px solid teal',
     },
     main: {
       flexGrow: 1,
@@ -66,7 +62,7 @@ const AppShell: FC = () => {
         googleClientId={config.googleClientId}
       >
         <div className={classes.wrapper}>
-          <header className={classes.header}>
+          <header>
             <ToolBar />
           </header>
           <main className={classes.main}>

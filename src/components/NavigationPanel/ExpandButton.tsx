@@ -52,8 +52,8 @@ const ExpandButton = () => {
         <IconButton
           color={'secondary'}
           style={{ backgroundColor: 'transparent' }}
-          disableFocusRipple={true}
-          disableRipple={true}
+          // disableFocusRipple={true}
+          // disableRipple={true}
           onClick={handleClick}
         >
           {showSearchResult ? <FullScreenIcon /> : <ExitFullScreenIcon />}
