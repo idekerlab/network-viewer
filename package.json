@@ -44,7 +44,7 @@
     "google-auth-library": "^6.0.6",
     "googleapis": "^59.0.0",
     "html-react-parser": "^1.2.4",
-    "large-graph-renderer": "^0.3.3",
+    "large-graph-renderer": "^0.3.4",
     "linkify-react": "^3.0.4",
     "linkifyjs": "^3.0.5",
     "namor": "^2.0.2",
