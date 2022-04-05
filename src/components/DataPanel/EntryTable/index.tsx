@@ -12,6 +12,7 @@ import VirtualizedTable2 from './VirtualizedTable2'
 // All attributes with this prefix will not be displayed
 export const HIDDEN_ATTR_PREFIX: string = '__'
 
+// Special cases: Virtual Columns
 const EdgeAttributes = {
   SOURCE: 'source',
   TARGET: 'target',

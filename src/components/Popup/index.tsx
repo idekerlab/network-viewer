@@ -181,9 +181,11 @@ const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
     }
   }
 
-  // Add source and target to the list
-  if (source && target) {
+  // Add source and target to the list if those are available in the original attr
+  if (source) {
     nonEmptyMap.set(EdgeAttributes.SOURCE, source)
+  }
+  if (target) {
     nonEmptyMap.set(EdgeAttributes.TARGET, target)
   }
 

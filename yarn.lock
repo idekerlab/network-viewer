@@ -1534,10 +1534,10 @@
   resolved "https://registry.yarnpkg.com/@js4cytoscape/cx-viz-converter/-/cx-viz-converter-0.1.6.tgz#bf448719a09f1792187bf03035fae09fccac7379"
   integrity sha512-LaQoj4qwWPGlWUW2Ydnp2BGcE5bJf3YNs4qL5MsB3WD5lvUl2KskMh4EGgvhc3Hb91rlSjWMr6TEkCrjq3r5UA==
 
-"@js4cytoscape/cx2js@0.6.7-alpha.0":
-  version "0.6.7-alpha.0"
-  resolved "https://registry.yarnpkg.com/@js4cytoscape/cx2js/-/cx2js-0.6.7-alpha.0.tgz#6cef756f08651e0ba9154135c708ef0f2b1602b9"
-  integrity sha512-tuJ9JP3kAdp30WbfqFsi+Oa6uW5+Zjc8OgxMMZr9Ubl6o8mcgVr5cWOHC23QI0qBbs8SHCZaApzNTuHz1tkhbQ==
+"@js4cytoscape/cx2js@0.6.7-alpha.1":
+  version "0.6.7-alpha.1"
+  resolved "https://registry.yarnpkg.com/@js4cytoscape/cx2js/-/cx2js-0.6.7-alpha.1.tgz#cf1b1365f754d1cc04194cd2eea302eab7ab6c5f"
+  integrity sha512-recBwB/MXK/L+EQ/jrtgsSRlUjjAYirSgYzC5aFY/4ODYhlpgEjJfEzjAoo1dfGbv0/3IBjfq70wRE/cwEZMig==
   dependencies:
     cytoscape-canvas "3.0.1"
     fs "^0.0.1-security"
