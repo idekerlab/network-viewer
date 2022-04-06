@@ -192,7 +192,7 @@ const EntryTable: VFC<{
           row[replacePeriods(column)] = processList(value, context)
           textRow[replacePeriods(column)] = processListAsText(value)
         } else {
-          if (column == Attributes.NDEX_INTERNAL_LINK) {
+          if (column === Attributes.NDEX_INTERNAL_LINK) {
             row[column] = processInternalLink(attrs.get(column), config.ndexUrl)
           } else {
             row[replacePeriods(column)] = processItem(

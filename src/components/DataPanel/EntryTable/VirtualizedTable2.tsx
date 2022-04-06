@@ -1,11 +1,7 @@
-import React, { FC, useRef, useState, useEffect } from 'react'
+import React, { FC, useRef, useState, useEffect, ReactElement } from 'react'
 import { useTable, usePagination, useSortBy, useFlexLayout } from 'react-table'
 
-import {
-  Grid,
-  ScrollSync,
-  AutoSizer,
-} from 'react-virtualized'
+import { Grid, ScrollSync, AutoSizer } from 'react-virtualized'
 
 import SortIcon from '@material-ui/icons/Sort'
 import DownIcon from '@material-ui/icons/ArrowDropDown'
@@ -13,6 +9,9 @@ import UpIcon from '@material-ui/icons/ArrowDropUp'
 
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import Popup from './Popup'
+import ReactDOMServer from 'react-dom/server'
+
+const MAX_STRING_LEN = 350
 
 const scrollbarWidth = () => {
   const scrollDiv = document.createElement('div')
@@ -409,7 +408,7 @@ const VirtualizedTable2: FC<{
         if (Array.isArray(originalValue)) {
           value = originalValue.slice(0, 5)
           isLongValue = true
-        } 
+        }
       } else if (
         typeof originalValue === 'string' &&
         originalValue.length > valueLengthTH
@@ -428,27 +427,50 @@ const VirtualizedTable2: FC<{
         style={style}
         onClick={(event) => _onCellClick(event, originalValue)}
       >
-        {isLongValue ? (
-          getArrayString(value)
-        ) : (
-          value
-        )}
+        {isLongValue ? getArrayString(value) : value}
       </div>
     )
   }
 
-  const getArrayString = (value) => {
-    if(typeof value === 'string') {
-      return (<p className={classes.cellOverflow}>{value} ...</p>)
+  const getArrayString = (value): ReactElement => {
+    if (value === undefined) {
+      return
     }
 
-    if (value.length === 0) {
-      return '[]'
+    if (typeof value === 'string') {
+      return <p className={classes.cellOverflow}>{value} ...</p>
+    }
+
+    if (Array.isArray(value) === false || value.length === 0) {
+      return <p>[]</p>
     } else {
-      if(value.length<=3) {
+      // Check HTML
+      let length = 0
+      value.forEach((val) => {
+        if (
+          typeof val !== 'string' &&
+          typeof val !== 'boolean' &&
+          typeof val !== 'number'
+        ) {
+          // This is an object (Links, etc.)
+          // If list is part of tag, do not display all
+          const tagType = val.type
+          if (tagType !== undefined) {
+            const renderedStr = ReactDOMServer.renderToString(val)
+            length = length + renderedStr.length
+          }
+        } else {
+          length = length + val.toString().length
+        }
+      })
+      if (value.length <= 3 && length < MAX_STRING_LEN) {
         return <p className={classes.cellOverflow}>[{value}]</p>
+      } else if (length > MAX_STRING_LEN) {
+        return <p className={classes.cellOverflow}>[{value.slice(0, 2)} ...]</p>
+      } else {
+        return <p className={classes.cellOverflow}>[{value} ...]</p>
+
       }
-      return <p className={classes.cellOverflow}>[{value} ...]</p>
     }
   }
 
@@ -462,7 +484,7 @@ const VirtualizedTable2: FC<{
     }
 
     if (Array.isArray(value)) {
-      if(value.length === 0) {
+      if (value.length === 0) {
         return false
       }
       return true
