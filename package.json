@@ -22,6 +22,8 @@
   "resolutions": {
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "@types/react": "17.0.2",
+    "@types/react-dom": "17.0.2",
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/styles": "^4.11.4"
@@ -48,10 +50,10 @@
     "linkify-react": "^3.0.4",
     "linkifyjs": "^3.0.5",
     "namor": "^2.0.2",
-    "react": "^17.0.2",
+    "react": "17.0.2",
     "react-copy-to-clipboard": "^5.0.2",
     "react-cytoscapejs": "^1.2.1",
-    "react-dom": "^17.0.2",
+    "react-dom": "17.0.2",
     "react-draft-wysiwyg": "^1.14.5",
     "react-draggable": "^4.4.3",
     "react-google-login": "^5.2.2",
