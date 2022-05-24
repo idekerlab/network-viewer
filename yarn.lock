@@ -4671,10 +4671,10 @@ cytoscape-canvas@3.0.1, cytoscape-canvas@^3.0.1:
   resolved "https://registry.yarnpkg.com/cytoscape-canvas/-/cytoscape-canvas-3.0.1.tgz#7d963be51e6e5f3f2482b05d22562c8ee941d125"
   integrity sha512-R1nCLnJHGTR5fWEpNQQBPyoigdnfhnk1lOHegzmzz1Kg6yxzVf0hfdRAMa0wPAhtC4kkgyoViiIfZ/zyCqMhEQ==
 
-cytoscape-explore-components@^0.2.2:
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/cytoscape-explore-components/-/cytoscape-explore-components-0.2.2.tgz#6cdac6fd66c29ae05d2eb198f8213571f7fbab3a"
-  integrity sha512-uP50Fj9jLenmMsAHEvoubF9R9VVkB19ZCgHhuMTzzhABAe/wemdk64C18FBelAprSIQ9ckNPOk6JMDJJoRuiyw==
+cytoscape-explore-components@^0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/cytoscape-explore-components/-/cytoscape-explore-components-0.2.3.tgz#20e1b42d03e519024be2aef6d080eb7037227033"
+  integrity sha512-SdJSTwIQLEEN/VMWYoxfWYbqxv2aBSnzTJ+7kE6EFEFNHpP5zorqIe7RvfpH7cQvXEAW60yJDnFmjn/miSXahQ==
   dependencies:
     react-google-login "^5.2.2"
 

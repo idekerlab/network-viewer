@@ -41,6 +41,12 @@ const App = ({ config }) => {
 
   const [lgrReference, setLgrReference] = useState(null)
 
+  
+  const { googleClientId } = config
+  if(googleClientId === undefined) {
+    // Google login feature will not be used. Assume credential is ready
+    defNdexCredential.loaded = true
+  }
   const [ndexCredential, setNdexCredential] = useState(defNdexCredential)
 
   const [selectionState, selectionStateDispatch] = useReducer(

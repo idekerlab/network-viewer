@@ -39,7 +39,7 @@
     "clsx": "^1.1.1",
     "cytoscape": "^3.21.0",
     "cytoscape-canvas": "^3.0.1",
-    "cytoscape-explore-components": "^0.2.2",
+    "cytoscape-explore-components": "^0.2.3",
     "deck.gl": "^8.4.11",
     "draft-js": "^0.11.7",
     "draftjs-to-html": "^0.9.1",

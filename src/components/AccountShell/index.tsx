@@ -23,15 +23,20 @@ const useStyles = makeStyles((theme: Theme) =>
 const AccountShell: FC = (props) => {
   const classes = useStyles()
   const { config } = useContext(AppContext)
+  const { ndexHttps, googleClientId } = config
 
   return (
     <div className={classes.accountShell}>
-      <NDExAccountProvider
-        ndexServerURL={config.ndexHttps}
-        googleClientId={config.googleClientId}
-      >
-        {props.children}
-      </NDExAccountProvider>
+      {googleClientId !== undefined ? (
+        <NDExAccountProvider
+          ndexServerURL={ndexHttps}
+          googleClientId={googleClientId}
+        >
+          {props.children}
+        </NDExAccountProvider>
+      ) : (
+        props.children
+      )}
     </div>
   )
 }

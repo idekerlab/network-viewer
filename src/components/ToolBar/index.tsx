@@ -1,4 +1,4 @@
-import React, { FC, useContext, useRef, useEffect } from 'react'
+import { FC, useContext, useRef, useEffect } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import { NDExSignInButton } from 'cytoscape-explore-components'
