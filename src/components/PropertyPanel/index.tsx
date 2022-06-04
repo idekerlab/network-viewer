@@ -56,7 +56,7 @@ const PropertyPanel = ({ attrMap, onClose }) => {
       <div className={classes.propList}>
         <div>
           <PropList attrMap={attrMap} />
-        </div>{' '}
+        </div>
       </div>
     </div>
   )

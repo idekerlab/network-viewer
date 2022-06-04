@@ -1,13 +1,11 @@
-import React, { FC, useContext } from 'react'
+import React, { FC } from 'react'
 import { Button, Tooltip } from '@material-ui/core'
 import ReturnIcon from '@material-ui/icons/OpenInBrowser'
-import AppContext from '../../context/AppState'
 import { useParams } from 'react-router-dom'
 
 import { getCurrentServer } from '../../utils/locationUtil'
 
 const ClassicModeButton: FC = () => {
-  const { config } = useContext(AppContext)
   const { uuid } = useParams()
 
   const baseUrl: string = getCurrentServer();

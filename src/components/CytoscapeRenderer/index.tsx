@@ -1,9 +1,8 @@
-import React, { useRef, useEffect, useState, Children } from 'react'
+import React, { useRef, useEffect, useState, useContext } from 'react'
 import { createCytoscape } from './create-cytoscape'
 import useCyjs from '../../hooks/useCyjs'
 import { getAnnotationRenderer } from '../../utils/cx2cyjs'
-
-// Style for the network canvas area
+import AppContext from '../../context/AppState'
 
 type CytoscapeRendererProps = {
   uuid: string
@@ -13,6 +12,12 @@ type CytoscapeRendererProps = {
   setCyReference: Function
   setBusy?: Function
   backgroundColor?: string
+}
+
+const baseStyle = {
+  width: '100%',
+  height: '100%',
+  backgroundColor: 'rgba(0,0,0,0)',
 }
 
 const CytoscapeRenderer = ({
@@ -26,12 +31,7 @@ const CytoscapeRenderer = ({
 }: CytoscapeRendererProps) => {
   const cyEl = useRef(null)
   const [cyInstance, setCyInstance] = useState(null)
-
-  let baseStyle = {
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(0,0,0,0)',
-  }
+  const { uiState, cyReference } = useContext(AppContext)
 
   const cyjsNetwork = useCyjs(uuid, cx)
   const annotationRenderer = getAnnotationRenderer()
@@ -69,15 +69,12 @@ const CytoscapeRenderer = ({
     if (layoutName !== undefined && cyInstance !== null) {
       const layout = cyInstance.layout({
         name: layoutName,
-        animate: false,
-        stop: function () {
-          console.log('Initial layout finished')
-        },
+        animate: false
       })
       layout.run()
       setTimeout(() => {
         cyInstance.fit()
-      }, 500)
+      }, 400)
     }
   }, [cyInstance])
 
@@ -89,13 +86,28 @@ const CytoscapeRenderer = ({
       // Expose Cyjs instance to other component
       if (setCyReference !== undefined) {
         setCyReference(newCyInstance)
+        setCyInstance(newCyInstance)
       }
       initializeCy(newCyInstance, eventHandlers)
-      setCyInstance(newCyInstance)
     }
-  }, [cyEl])
+  }, [])
 
+  if (cyInstance !== null && cyReference.main === cyInstance) {
+    lockMain(cyInstance, uiState.showSearchResult)
+  }
   return <div style={baseStyle} ref={cyEl} />
+}
+
+const lockMain = (cy, lock: boolean): void => {
+  if (lock) {
+    cy.boxSelectionEnabled(false)
+    cy.autounselectify(true)
+    cy.nodes().lock()
+  } else {
+    cy.boxSelectionEnabled(true)
+    cy.autounselectify(false)
+    cy.nodes().unlock()
+  }
 }
 
 const initializeCy = (cy, eventHandlers) => {
@@ -104,7 +116,6 @@ const initializeCy = (cy, eventHandlers) => {
 }
 
 const boxSelectHandler = (cy, eventHandlers, event) => {
-  const t0 = performance.now()
   setTimeout(() => {
     const selectedNodes = cy.$('node:selected')
     const selectedEdges = cy.$('edge:selected')
@@ -115,11 +126,7 @@ const boxSelectHandler = (cy, eventHandlers, event) => {
 }
 const tapHandler = (cy, eventHandlers, event) => {
   const evtTarget = event.target
-  const t0 = performance.now()
-
   if (evtTarget === cy) {
-    console.log('* tap on background2')
-
     setTimeout(() => {
       eventHandlers.clearAll()
     }, 10)
@@ -127,26 +134,35 @@ const tapHandler = (cy, eventHandlers, event) => {
     const data = evtTarget.data()
 
     if (evtTarget.isNode()) {
-      console.log('* tap on Node', evtTarget.data())
       setTimeout(() => {
         const selectedNodes = cy.$('node:selected')
         const selectedEdges = cy.$('edge:selected')
         const nodeIds = selectedNodes.map((node) => node.data().id)
         const edgeIds = selectedEdges.map((edge) => edge.data().id.slice(1))
-        eventHandlers.setSelectedNodesAndEdges(nodeIds, edgeIds, 'node', [data.id], event.renderedPosition)
+        eventHandlers.setSelectedNodesAndEdges(
+          nodeIds,
+          edgeIds,
+          'node',
+          [data.id],
+          event.renderedPosition,
+        )
       }, 5)
     } else {
-      console.log('* tap on Edge', evtTarget.data())
       setTimeout(() => {
         const selectedNodes = cy.$('node:selected')
         const selectedEdges = cy.$('edge:selected')
         const nodeIds = selectedNodes.map((node) => node.data().id)
         const edgeIds = selectedEdges.map((edge) => edge.data().id.slice(1))
-        eventHandlers.setSelectedNodesAndEdges(nodeIds, edgeIds, 'edge', [data.id.slice(1)], event.renderedPosition)
+        eventHandlers.setSelectedNodesAndEdges(
+          nodeIds,
+          edgeIds,
+          'edge',
+          [data.id.slice(1)],
+          event.renderedPosition,
+        )
       }, 5)
     }
   }
-  console.log('tap clear', performance.now() - t0)
 }
 
 const addExtraStyle = (visualStyle) => {
@@ -180,10 +196,14 @@ const updateNetwork = (cyjs, cy, annotationRenderer, backgroundColor) => {
     const elements = cyjs.network.elements
     cy.add(elements)
 
-    const newVS = addExtraStyle(cyjs.visualStyle)
-    cy.style().fromJson(newVS).update()
-
-    console.log('handling annotations: ', cyjs.annotationNiceCX)
+    const originalVS = cyjs.visualStyle
+    const newVS = addExtraStyle(originalVS)
+    try {
+      const newState = cy.style().fromJson(newVS)
+      newState.update()
+    } catch (ex) {
+      console.warn('The visual style object contains invalid value:', ex)
+    }
     annotationRenderer.drawAnnotationsFromNiceCX(cy, cyjs.annotationNiceCX)
     annotationRenderer.drawBackground(cy, backgroundColor)
   }

@@ -1,4 +1,4 @@
-import { CyNetworkUtils } from 'cytoscape-cx2js'
+import { CyNetworkUtils } from '@js4cytoscape/cx2js'
 
 const cyNetworkUtils = new CyNetworkUtils()
 

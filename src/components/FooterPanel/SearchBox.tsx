@@ -1,4 +1,4 @@
-import React, { FC, useState, useContext } from 'react'
+import React, { FC, useState, useContext, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import InputBase from '@material-ui/core/InputBase'
@@ -19,6 +19,8 @@ import SaveQueryButton from './SaveQueryButton'
 import AdvancedQueryMenu from './AdvancedQueryMenu'
 import UIState from '../../model/UIState'
 import { UIStateActions } from '../../reducer/uiStateReducer'
+import SelectionState from '../../model/SelectionState'
+import { SelectionActions } from '../../reducer/selectionStateReducer'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,7 +32,8 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.grey[100],
       marginRight: theme.spacing(1),
       marginLeft: theme.spacing(1),
-      padding: theme.spacing(0),
+      padding: 0,
+      paddingRight: theme.spacing(1) 
     },
     search: {
       maxWidth: '60vh',
@@ -59,7 +62,6 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: 0,
     },
     button: {
-      width: '2em',
       padding: 0,
     },
   }),
@@ -90,14 +92,23 @@ const SearchBox: FC = () => {
     setQueryMode,
     uiStateDispatch,
     uiState,
+    selectionState,
+    selectionStateDispatch,
     ndexCredential,
     config,
-    summary
+    summary,
   } = useContext(AppContext)
 
   const [searchType, setSearchType] = useState(queryMode)
 
-  const searchResult = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode, config.maxEdgeQuery)
+  const searchResult = useSearch(
+    uuid,
+    query,
+    config.ndexHttps,
+    ndexCredential,
+    queryMode,
+    config.maxEdgeQuery,
+  )
 
   const subnet = searchResult.data
   let subCx
@@ -105,11 +116,15 @@ const SearchBox: FC = () => {
     subCx = subnet['cx']
   }
 
-  const edgeLimitExceeded: boolean = subnet !== undefined ? subnet['edgeLimitExceeded'] : false
-  const summaryObjectCount = summary ? summary.subnetworkNodeCount + summary.subnetworkEdgeCount : 0;
+  const edgeLimitExceeded: boolean =
+    subnet !== undefined ? subnet['edgeLimitExceeded'] : false
+  const summaryObjectCount = summary
+    ? summary.subnetworkNodeCount + summary.subnetworkEdgeCount
+    : 0
 
+  const data = summaryObjectCount > 0 ? subCx : undefined 
   const downloadProps: DownloadProps = {
-    data: summaryObjectCount > 0 ? subCx : undefined,
+    data,
     tooltip: 'Download query result as CX',
     fileName: `${uuid} subnet.cx`,
   }
@@ -130,14 +145,28 @@ const SearchBox: FC = () => {
   }
 
   const setShowSearchResult = (state: UIState) =>
-    uiStateDispatch({ type: UIStateActions.SET_SHOW_SEARCH_RESULT, uiState: state })
+    uiStateDispatch({
+      type: UIStateActions.SET_SHOW_SEARCH_RESULT,
+      uiState: state,
+    })
+  const setClearSelection = (state: SelectionState) => {
+    selectionStateDispatch({
+      type: SelectionActions.CLEAR_ALL_SUB,
+      selectionState: state,
+    })
+    selectionStateDispatch({
+      type: SelectionActions.CLEAR_ALL_MAIN,
+      selectionState: state,
+    })
+  }
 
   const handleClick = () => {
     setQuery(rawQuery)
     setShowSearchResult({ ...uiState, showSearchResult: true })
+    setClearSelection({ ...selectionState })
     setTimeout(() => {
       fitContent(cyReference)
-      lockMainWindow(cyReference, true)
+      // lockMainWindow(cyReference, true)
     }, 300)
   }
 
@@ -146,9 +175,10 @@ const SearchBox: FC = () => {
     setQuery('')
     setDisableQuery(true)
     setShowSearchResult({ ...uiState, showSearchResult: false })
+    setClearSelection({ ...selectionState })
     setTimeout(() => {
       fitContent(cyReference)
-      lockMainWindow(cyReference, false)
+      // lockMainWindow(cyReference, false)
     }, 300)
   }
 
@@ -187,7 +217,12 @@ const SearchBox: FC = () => {
         />
       </div>
       <Tooltip title="Learn more">
-        <IconButton size={'small'} disableFocusRipple disableRipple className={classes.button} onClick={handleHelpOpen}>
+        <IconButton
+          color="inherit"
+          disableFocusRipple
+          // disableRipple
+          onClick={handleHelpOpen}
+        >
           <InfoIcon />
         </IconButton>
       </Tooltip>
@@ -210,24 +245,21 @@ const SearchBox: FC = () => {
         </Select>
       </FormControl>
       <IconButton
-        color="secondary"
-        size="small"
+        color="inherit"
         disableFocusRipple
-        disableRipple
-        className={classes.button}
+        // disableRipple
         disabled={disableQuery}
         onClick={handleClick}
       >
         <SearchIcon />
       </IconButton>
       {!edgeLimitExceeded && <DownloadButton {...downloadProps} />}
-      {!edgeLimitExceeded && <SaveQueryButton /> }
+      {!edgeLimitExceeded && <SaveQueryButton />}
       <AdvancedQueryMenu />
       <IconButton
-        color="secondary"
-        size="small"
+        color="inherit"
         disableFocusRipple
-        disableRipple
+        // disableRipple
         className={classes.button}
         disabled={disableQuery}
         onClick={handleClear}

@@ -4,7 +4,12 @@ import { useParams } from 'react-router-dom'
 import AppContext from '../../context/AppState'
 import useAttributes from '../../hooks/useAttributes'
 import PropertyPanel from '../PropertyPanel'
-import { getContextFromCx, processList, processItem, processInternalLink } from '../../utils/contextUtil'
+import {
+  getContextFromCx,
+  processList,
+  processItem,
+  processInternalLink,
+} from '../../utils/contextUtil'
 import { SelectionActions } from '../../reducer/selectionStateReducer'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -32,25 +37,10 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const PopupTarget = {
-  MAIN: 'main',
-  SUB: 'sub',
-  LAST: 'last',
-}
-
-const ObjectType = {
-  NODE: 'node',
-  EDGE: 'edge',
-}
-
 const EdgeAttributes = {
   SOURCE: 'source',
   TARGET: 'target',
   INTERACTION: 'interaction',
-}
-
-const NodeAttributes = {
-  REPRESENTS: 'represents',
 }
 
 const Attributes = {
@@ -63,19 +53,22 @@ type PopupProps = {
   subHeight: number
 }
 
+const FOOTER_HEIGHT = 60
+
 const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
   const classes = useStyles()
   const { uuid } = useParams()
-  const { uiState, selectionState, selectionStateDispatch, config } = useContext(AppContext)
+  const { uiState, selectionState, selectionStateDispatch, config } =
+    useContext(AppContext)
   const { windowHeight, windowWidth } = useWindowDimensions()
-  const FOOTER_HEIGHT = 60
 
   const attr = useAttributes(uuid, cx, uiState.mainNetworkNotDisplayed)
   const context = useMemo(() => getContextFromCx(cx), [cx])
 
   const { lastSelected } = selectionState
 
-  const setShowPropPanelFalse = () => selectionStateDispatch({ type: SelectionActions.CLOSE_PROP_PANEL })
+  const setShowPropPanelFalse = () =>
+    selectionStateDispatch({ type: SelectionActions.CLOSE_PROP_PANEL })
 
   const onClose = () => {
     setShowPropPanelFalse()
@@ -85,7 +78,23 @@ const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
     setShowPropPanelFalse()
   }, [uiState.showSearchResult])
 
-  if (cx == undefined || !lastSelected.showPropPanel || selectionState.lastSelected.id == null) {
+  const isMultipleSelection = (selectionState): boolean => {
+    const { main, sub } = selectionState
+    const sumMain = main.nodes.length + main.edges.length
+    const sumSub = sub.nodes.length + sub.edges.length
+
+    if (sumMain > 1 || sumSub > 1) {
+      return true
+    } else {
+      return false
+    }
+  }
+  if (
+    cx === undefined ||
+    !lastSelected.showPropPanel ||
+    selectionState.lastSelected.id === null ||
+    isMultipleSelection(selectionState)
+  ) {
     return <div />
   }
 
@@ -97,16 +106,21 @@ const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
     attrMap = attr.edgeAttr[id]
   }
 
-  //Process attrMap to only display non-empty fields
-  //and properly display links and lists
+  // Process attrMap to only display non-empty fields and properly display links and lists
   const nonEmptyMap = new Map()
   let source, target, interaction
   let noNameEdge = true
-  let represents
   const include = []
+
   for (let item of attrMap) {
     if (!selectionState.lastSelected.isNode) {
-      if ([EdgeAttributes.SOURCE, EdgeAttributes.TARGET, EdgeAttributes.INTERACTION].includes(item[0])) {
+      if (
+        [
+          EdgeAttributes.SOURCE,
+          EdgeAttributes.TARGET,
+          EdgeAttributes.INTERACTION,
+        ].includes(item[0])
+      ) {
         if (item[0] === EdgeAttributes.SOURCE) {
           source = item[1]
         } else if (item[0] === EdgeAttributes.TARGET) {
@@ -145,7 +159,7 @@ const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
     if (Array.isArray(item[1])) {
       value = processList(item[1], context)
     } else {
-      if (item[0] == Attributes.NDEX_INTERNAL_LINK) {
+      if (item[0] === Attributes.NDEX_INTERNAL_LINK) {
         value = processInternalLink(item[1], config.ndexUrl)
       } else {
         value = processItem(item[1], context, true)
@@ -157,11 +171,22 @@ const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
   if (noNameEdge) {
     if (source && target) {
       if (interaction) {
-        nonEmptyMap.set(Attributes.NAME, source + ' (' + interaction + ') ' + target)
+        nonEmptyMap.set(
+          Attributes.NAME,
+          source + ' (' + interaction + ') ' + target,
+        )
       } else {
         nonEmptyMap.set(Attributes.NAME, source + ' (-) ' + target)
       }
     }
+  }
+
+  // Add source and target to the list if those are available in the original attr
+  if (source) {
+    nonEmptyMap.set(EdgeAttributes.SOURCE, source)
+  }
+  if (target) {
+    nonEmptyMap.set(EdgeAttributes.TARGET, target)
   }
 
   //Calculate position based on pointer position in window
@@ -207,6 +232,7 @@ const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
       style['bottom'] = subHeight - y
     }
   }
+
   return (
     <div className={classes.root} style={style}>
       <PropertyPanel attrMap={nonEmptyMap} onClose={onClose} />
@@ -223,7 +249,9 @@ function getWindowDimensions() {
 }
 
 function useWindowDimensions() {
-  const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions())
+  const [windowDimensions, setWindowDimensions] = useState(
+    getWindowDimensions(),
+  )
 
   useEffect(() => {
     function handleResize() {

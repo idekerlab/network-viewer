@@ -1,48 +1,48 @@
 import React, { FC, useContext } from 'react'
-import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import { useParams } from 'react-router-dom'
-
 import Snackbar from '@material-ui/core/Snackbar'
+import { createStyles, makeStyles } from '@material-ui/core/styles'
 
-import { CyNDExProvider, OpenInCytoscapeButton } from 'cytoscape-explore-components'
+import {
+  CyNDExProvider,
+  OpenInCytoscapeButton,
+} from 'cytoscape-explore-components'
 
 import useSearch from '../../hooks/useSearch'
-import useCX from '../../hooks/useCx'
 import useNetworkMetaData from '../../hooks/useNetworkMetaData'
 
 import AppContext from '../../context/AppState'
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
-    toolBar: {
-      position: 'fixed',
-      bottom: 0,
-      left: 0,
-      margin: 0,
-      padding: 0,
-      backgroundColor: 'rgba(255,255,255, 0.3)',
-    },
-    grow: {
-      flexGrow: 1,
-    },
-    cyLogo: {
-      width: '1.2em',
+    wrapper: {
+      // backgroundColor: 'red',
+      minWidth: '12em',
+      minHeight: '2em'
     },
   }),
 )
 
-const V2 = 'v2'
-
 const OpenInCytoscape: FC = () => {
+  const classes = useStyles()
   const { uuid } = useParams()
 
-  const { query, queryMode, ndexCredential, config, summary } = useContext(AppContext)
+  const { query, queryMode, ndexCredential, config, summary } =
+    useContext(AppContext)
 
-  const { data } = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode, config.maxEdgeQuery)
+  const { data } = useSearch(
+    uuid,
+    query,
+    config.ndexHttps,
+    ndexCredential,
+    queryMode,
+    config.maxEdgeQuery,
+  )
 
-  const useQueryResult = data !== undefined && data['cx'] ;
+  const useQueryResult = data !== undefined && data['cx']
 
-  const subCx = data !== undefined && !data['edgeLimitExceeded'] ? data['cx'] : undefined
+  const subCx =
+    data !== undefined && !data['edgeLimitExceeded'] ? data['cx'] : undefined
 
   const fetchCX = () =>
     new Promise((resolve, reject) => {
@@ -52,8 +52,6 @@ const OpenInCytoscape: FC = () => {
         reject('No search result is available')
       }
     })
-
-  // console.log('Open in Cytoscape useSearch: ' + (subCx !== undefined))
 
   const [snackMessage, setSnackMessage] = React.useState(undefined)
 
@@ -69,30 +67,52 @@ const OpenInCytoscape: FC = () => {
     setSnackMessage(undefined)
   }
 
-  const metaDataResponse = useNetworkMetaData(uuid, config.ndexHttps, 'v2', ndexCredential)
-  const metaData = metaDataResponse.data ? metaDataResponse.data.metaData : undefined
+  const metaDataResponse = useNetworkMetaData(
+    uuid,
+    config.ndexHttps,
+    'v2',
+    ndexCredential,
+  )
+  // @ts-ignore
+  const metaData = metaDataResponse.data
+    ? metaDataResponse.data.metaData
+    : undefined
 
   const ndexNetworkProperties = {
     uuid: uuid,
     summary: summary,
-    metaData: metaData
+    metaData: metaData,
   }
 
   return (
     <CyNDExProvider port={1234}>
-      {useQueryResult 
-      ? (
-        subCx ? <OpenInCytoscapeButton size="small" fetchCX={fetchCX} onSuccess={onSuccess} onFailure={onFailure} />
-        : null
+      {useQueryResult ? (
+        subCx ? (
+          <div className={classes.wrapper}>
+            <OpenInCytoscapeButton
+              size="small"
+              fetchCX={fetchCX}
+              onSuccess={onSuccess}
+              onFailure={onFailure}
+            />
+          </div>
+        ) : null
       ) : (
-        <OpenInCytoscapeButton
-          size="small"
-          ndexNetworkProperties={ndexNetworkProperties}
-          onSuccess={onSuccess}
-          onFailure={onFailure}
-        />
+        <div className={classes.wrapper}>
+          <OpenInCytoscapeButton
+            size="small"
+            ndexNetworkProperties={ndexNetworkProperties}
+            onSuccess={onSuccess}
+            onFailure={onFailure}
+          />
+        </div>
       )}
-      <Snackbar open={snackMessage != undefined} autoHideDuration={6000} onClose={handleClose} message={snackMessage} />
+      <Snackbar
+        open={snackMessage !== undefined}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message={snackMessage}
+      />
     </CyNDExProvider>
   )
 }

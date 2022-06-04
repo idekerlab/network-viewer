@@ -1,17 +1,18 @@
 import { useQuery } from 'react-query'
 import NdexCredential from '../model/NdexCredential'
+import { getAccessKey, getNdexClient } from '../utils/credentialUtil'
+import NDExError from '../utils/error/NDExError'
 
-import { getNdexClient } from '../utils/credentialUtil'
+import { useLocation } from "react-router-dom"
 
 const summaryMap = {}
 
-const getNetworkSummary = async <T>(
-  _,
+async function getNetworkSummary(
   uuid: string,
   serverUrl: string,
   apiVersion: string,
   credential: NdexCredential,
-) => {
+) {
   const cache = summaryMap[uuid]
 
   if (cache !== undefined) {
@@ -22,13 +23,41 @@ const getNetworkSummary = async <T>(
     return undefined
   }
 
-  const ndexClient = getNdexClient(`${serverUrl}/v2`, credential)
+  const ndexUrl = `${serverUrl}/${apiVersion}`
+  try {
+    const ndexClient = getNdexClient(ndexUrl, credential)
+    let summary = null
+    if(credential.accesskey !== undefined && credential.accesskey !== '') {
+      summary = await ndexClient.getNetworkSummary(uuid, credential.accesskey)
+    } else {
+      summary = await ndexClient.getNetworkSummary(uuid)
+    }
+    summaryMap[uuid] = summary
 
-  let summary
-  summary = await ndexClient.getNetworkSummary(uuid)
+    if (!isValidSummary(summary)) {
+      throw new NDExError(summary.errorMessage, {
+        subMessage: 'The entry contains invalid data in summary',
+      })
+    }
 
-  summaryMap[uuid] = summary
-  return summary
+    return summary
+  } catch (e: unknown) {
+    throw new NDExError(e['message'], e)
+  }
+}
+
+const isValidSummary = (summary: object): boolean => {
+  console.log('Summary:', summary)
+  if (summary === undefined || summary === null) {
+    return false
+  } else if (
+    summary['errorMessage'] !== '' &&
+    summary['errorMessage'] !== undefined
+  ) {
+    return false
+  }
+
+  return true
 }
 
 export default function useNetworkSummary(
@@ -37,11 +66,18 @@ export default function useNetworkSummary(
   apiVersion: string = 'v2',
   credential: NdexCredential,
 ) {
-  const res = useQuery(['networkSummary', uuid, serverUrl, apiVersion, credential], getNetworkSummary, {
-    onError: (e) => {
-      console.error('* Fetch summary error:', e)
-    },
-  })
 
-  return res
+  const location = useLocation()
+  const accessKey: string = getAccessKey(location.search)
+  if(accessKey !== null) {
+    credential.accesskey = accessKey
+  }
+
+  return useQuery(
+    ['networkSummary', uuid, serverUrl, apiVersion, credential],
+    () => getNetworkSummary(uuid, serverUrl, apiVersion, credential),
+    {
+      retry: false,
+    },
+  )
 }

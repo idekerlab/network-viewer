@@ -1,20 +1,27 @@
 import parse from 'html-react-parser'
 
-const getContextFromCx = (cx) => {
-  if (cx == undefined) {
+const getContextFromCx = (cx: any[]) => {
+  if (cx === null || cx === undefined) {
     return {}
   }
-
+  //Check version
+  let version2 = false
+  for (let obj of cx) {
+    if (obj['CXVersion'] === '2.0') {
+      version2 = true
+      break
+    }
+  }
   for (let obj of cx) {
     if (obj['networkAttributes']) {
       for (let item of obj['networkAttributes']) {
-        if (item['n'] === '@context') {
-          try {
-            const oldContext = JSON.parse(item['v'])
-            return Object.keys(oldContext).reduce((c, k) => ((c[k.toUpperCase()] = oldContext[k]), c), {})
-          } catch (error) {
-            console.error("Could not parse @context network attribute as JSON: ", error);
-            return {}
+        if (version2) {
+          if (item['@context']) {
+            return parseContext(item['@context'])
+          }
+        } else {
+          if (item['n'] === '@context') {
+            return parseContext(item['v'])
           }
         }
       }
@@ -23,7 +30,20 @@ const getContextFromCx = (cx) => {
   return null
 }
 
-const processList = (list, context) => {
+const parseContext = (context: string) => {
+  try {
+    const oldContext = JSON.parse(context)
+    return Object.keys(oldContext).reduce(
+      (c, k) => ((c[k.toUpperCase()] = oldContext[k]), c),
+      {},
+    )
+  } catch (error) {
+    console.warn('Could not parse @context network attribute as JSON: ', error)
+    return {}
+  }
+}
+
+const processList = (list: string[], context) => {
   let listString = ''
   for (let item of list) {
     listString += processItem(item, context, false) + ', '
@@ -31,7 +51,7 @@ const processList = (list, context) => {
   return parse(listString.slice(0, -2))
 }
 
-const processListAsText = (list) => {
+const processListAsText = (list: string[]) => {
   let listString = ''
   for (let item of list) {
     listString += item + ', '
@@ -39,28 +59,41 @@ const processListAsText = (list) => {
   return listString.slice(0, -2)
 }
 
-const processItem = (item, context, parseItem) => {
-  if (context == undefined || item == undefined) {
+const processItem = (item: string, context: object, parseItem: boolean) => {
+  if (item === undefined || item === null) {
     return item
   }
 
-  let returnString = item
-  const [prefix, id] = item.split(':')
+  let itemString = item.toString()
+
+  if (context === undefined || context === null) {
+    if (parseItem) {
+      return parse(itemString)
+    }
+    return itemString
+  }
+
+  const [prefix, id] = String(item).split(':')
   if (prefix && id) {
     if (prefix.toUpperCase() in context) {
-      returnString =
-        '<a href=' + context[prefix.toUpperCase()] + id + ' target="_blank" rel="noopener noreferrer">' + item + '</a>'
+      itemString =
+        '<a href=' +
+        context[prefix.toUpperCase()] +
+        id +
+        ' target="_blank" rel="noopener noreferrer">' +
+        item +
+        '</a>'
     }
   }
 
   if (parseItem) {
-    return parse(returnString)
+    return parse(itemString)
   }
 
-  return returnString
+  return itemString
 }
 
-const processInternalLink = (item, url) => {
+const processInternalLink = (item: string, url: string) => {
   return parse(
     '<a href=https://' +
       url +
@@ -72,4 +105,10 @@ const processInternalLink = (item, url) => {
   )
 }
 
-export { getContextFromCx, processList, processItem, processInternalLink, processListAsText }
+export {
+  getContextFromCx,
+  processList,
+  processItem,
+  processInternalLink,
+  processListAsText,
+}

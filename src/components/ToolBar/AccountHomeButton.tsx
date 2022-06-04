@@ -1,13 +1,11 @@
-import React, { FC, useContext } from 'react'
+import React, { FC } from 'react'
 import { IconButton, Tooltip } from '@material-ui/core'
-import AppContext from '../../context/AppState'
 import ReturnIcon from '@material-ui/icons/FolderShared'
 
 import { getCurrentServer } from '../../utils/locationUtil'
 
-const AccountHomeButton: FC = () => {
-  const { config } = useContext(AppContext)
-  const baseUrl: string = getCurrentServer();
+const AccountHomeButton: FC = (): React.ReactElement => {
+  const baseUrl: string = getCurrentServer()
 
   const handleClick = (): void => {
     window.open(baseUrl, '_self')

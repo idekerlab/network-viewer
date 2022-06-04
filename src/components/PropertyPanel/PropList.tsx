@@ -3,7 +3,9 @@ import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import Typography from '@material-ui/core/Typography'
-import Linkify from 'linkifyjs/react'
+import Linkify from 'linkify-react'
+
+import { HIDDEN_ATTR_PREFIX } from '../DataPanel/EntryTable'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,32 +38,39 @@ const PropList = ({ attrMap }) => {
     attrMap.delete('Represents')
   }
 
-  const keys = [...attrMap.keys()].sort((a, b) => a.localeCompare(b))
+  const keys: string[] = [...attrMap.keys()].sort((a, b) => a.localeCompare(b))
 
-  if (represents != undefined) {
+  if (represents !== undefined) {
     keys.unshift('Represents')
     attrMap.set('Represents', represents)
   }
 
+  // Display all attributes except the hidden ones (with prefix __)
   return (
     <List className={classes.root}>
-      {keys.map((key) => {
-        return (
-          <ListItem key={key} className={classes.text} disableGutters>
-            <Typography
-              color="textSecondary"
-              variant="caption"
-              variantMapping={{ caption: 'div' }}
-              className={classes.smallText}
-            >
-              {key}
-            </Typography>
-            <Typography variant="body2" component="div" className={classes.bigText}>
-              <Linkify target="_blank">{attrMap.get(key)}</Linkify>
-            </Typography>
-          </ListItem>
-        )
-      })}
+      {keys
+        .filter((key) => !key.startsWith(HIDDEN_ATTR_PREFIX))
+        .map((key) => {
+          return (
+            <ListItem key={key} className={classes.text} disableGutters>
+              <Typography
+                color="textSecondary"
+                variant="caption"
+                variantMapping={{ caption: 'div' }}
+                className={classes.smallText}
+              >
+                {key}
+              </Typography>
+              <Typography
+                variant="body2"
+                component="div"
+                className={classes.bigText}
+              >
+                <Linkify key={key}>{attrMap.get(key)}</Linkify>
+              </Typography>
+            </ListItem>
+          )
+        })}
     </List>
   )
 }

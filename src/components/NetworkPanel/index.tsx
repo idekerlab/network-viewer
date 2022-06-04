@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect, Suspense, useState } from 'react'
+import React, { FC, useContext, useEffect, useState, useRef } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import LGRPanel from './LGRPanel'
 import CytoscapeRenderer from '../CytoscapeRenderer'
@@ -11,7 +11,13 @@ import Loading from './Loading'
 import { SelectionActions } from '../../reducer/selectionStateReducer'
 import CyReference from '../../model/CyReference'
 import { CyActions } from '../../reducer/cyReducer'
-import { getCyjsLayout, getEdgeCount, getLgrLayout, getNetworkBackgroundColor, getNodeCount } from '../../utils/cxUtil'
+import {
+  getCyjsLayout,
+  getEdgeCount,
+  getLgrLayout,
+  getNetworkBackgroundColor,
+  getNodeCount,
+} from '../../utils/cxUtil'
 import EmptyView from './EmptyView'
 import Popup from '../Popup'
 import NavigationPanel from '../NavigationPanel'
@@ -19,6 +25,7 @@ import EdgeLimitExceededPanel from '../FooterPanel/EdgeLimitExceededPanel'
 import SplitPane from 'react-split-pane'
 import UIState from '../../model/UIState'
 import { UIStateActions } from '../../reducer/uiStateReducer'
+import { NodeView, EdgeView } from 'large-graph-renderer'
 
 const splitBorder = '1px solid #BBBBBB'
 
@@ -106,7 +113,14 @@ const NetworkPanel: FC<ViewProps> = ({
     setSummary,
   } = useContext(AppContext)
 
-  const searchResult = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode, config.maxEdgeQuery)
+  const searchResult = useSearch(
+    uuid,
+    query,
+    config.ndexHttps,
+    ndexCredential,
+    queryMode,
+    config.maxEdgeQuery,
+  )
 
   const handleDrag = (newSize) => {
     setSize(newSize)
@@ -115,6 +129,14 @@ const NetworkPanel: FC<ViewProps> = ({
   const { maxNumObjects } = config
   const { showSearchResult } = uiState
 
+  const usePrevious = (val) => {
+    const ref = useRef()
+    useEffect(() => {
+      ref.current = val
+    })
+    return ref.current
+  }
+
   const subnet = searchResult.data
   let subCx
   if (subnet !== undefined) {
@@ -122,31 +144,43 @@ const NetworkPanel: FC<ViewProps> = ({
     setSubCx(subCx)
   }
 
+  const last = usePrevious(subCx)
+
   const getObjectCount = (countFunction, subCx) => {
-    const count = countFunction(subCx);
-    return count ? count : 0;
+    const count = countFunction(subCx)
+    return count ? count : 0
   }
 
-  const edgeLimitExceeded = subnet !== undefined ? subnet['edgeLimitExceeded'] : false
+  const edgeLimitExceeded =
+    subnet !== undefined ? subnet['edgeLimitExceeded'] : false
 
- 
   useEffect(() => {
-    if (subCx !== undefined) {
-      const subnetworkNodeCount = getObjectCount(getNodeCount, subCx);
-      const subnetworkEdgeCount = getObjectCount(getEdgeCount, subCx);
-    
-      setSummary({ ...summary, subnetworkNodeCount: subnetworkNodeCount, subnetworkEdgeCount: subnetworkEdgeCount })
+    if (subCx === undefined) {
+      return
+    }
+
+    if (last !== subCx) {
+      const subnetworkNodeCount = getObjectCount(getNodeCount, subCx)
+      const subnetworkEdgeCount = getObjectCount(getEdgeCount, subCx)
+
+      setSummary({
+        ...summary,
+        subnetworkNodeCount: subnetworkNodeCount,
+        subnetworkEdgeCount: subnetworkEdgeCount,
+      })
     }
   }, [searchResult])
 
-  useEffect(() => {
-    console.log(cyReference)
-  }, [cyReference])
-
   const mainEventHandlers = {
-    setSelectedNodesAndEdges: (nodes, edges, lastSelectedType, lastSelectedId, lastSelectedCoordinates) => {
+    setSelectedNodesAndEdges: (
+      nodes,
+      edges,
+      lastSelectedType,
+      lastSelectedId,
+      lastSelectedCoordinates,
+    ) => {
       if (lastSelectedType) {
-        return selectionStateDispatch({
+        selectionStateDispatch({
           type: SelectionActions.SET_MAIN_NODES_AND_EDGES,
           selectionState: {
             ...selectionState,
@@ -161,7 +195,7 @@ const NetworkPanel: FC<ViewProps> = ({
           },
         })
       } else {
-        return selectionStateDispatch({
+        selectionStateDispatch({
           type: SelectionActions.SET_MAIN_NODES_AND_EDGES,
           selectionState: {
             ...selectionState,
@@ -176,18 +210,85 @@ const NetworkPanel: FC<ViewProps> = ({
           },
         })
       }
+      //Set active tab if multiple select
+      if (nodes.length > 1 || edges.length > 1) {
+        if (lastSelectedType === 'node' && nodes.length > 1) {
+          uiStateDispatch({
+            type: UIStateActions.SET_ACTIVE_TAB,
+            uiState: {
+              ...uiState,
+              activeTab: 1,
+            },
+          })
+        } else if (lastSelectedType === 'edge' && edges.length > 1) {
+          uiStateDispatch({
+            type: UIStateActions.SET_ACTIVE_TAB,
+            uiState: {
+              ...uiState,
+              activeTab: 2,
+            },
+          })
+        } else if (nodes.length > 1) {
+          uiStateDispatch({
+            type: UIStateActions.SET_ACTIVE_TAB,
+            uiState: {
+              ...uiState,
+              activeTab: 1,
+            },
+          })
+        } else {
+          uiStateDispatch({
+            type: UIStateActions.SET_ACTIVE_TAB,
+            uiState: {
+              ...uiState,
+              activeTab: 2,
+            },
+          })
+        }
+      }
+      //Handle deselects
+      if (uiState.activeTab === 1 && nodes.length <= 1) {
+        uiStateDispatch({
+          type: UIStateActions.SET_ACTIVE_TAB,
+          uiState: {
+            ...uiState,
+            activeTab: 0,
+          },
+        })
+      } else if (uiState.activeTab === 2 && edges.length <= 1) {
+        uiStateDispatch({
+          type: UIStateActions.SET_ACTIVE_TAB,
+          uiState: {
+            ...uiState,
+            activeTab: 0,
+          },
+        })
+      }
     },
     clearAll: () => {
-      return selectionStateDispatch({
+      selectionStateDispatch({
         type: SelectionActions.CLEAR_ALL_MAIN,
+      })
+      uiStateDispatch({
+        type: UIStateActions.SET_ACTIVE_TAB,
+        uiState: {
+          ...uiState,
+          activeTab: 0,
+        },
       })
     },
   }
 
   const subEventHandlers = {
-    setSelectedNodesAndEdges: (nodes, edges, lastSelectedType, lastSelectedId, lastSelectedCoordinates) => {
+    setSelectedNodesAndEdges: (
+      nodes,
+      edges,
+      lastSelectedType,
+      lastSelectedId,
+      lastSelectedCoordinates,
+    ) => {
       if (lastSelectedType) {
-        return selectionStateDispatch({
+        selectionStateDispatch({
           type: SelectionActions.SET_SUB_NODES_AND_EDGES,
           selectionState: {
             ...selectionState,
@@ -202,7 +303,7 @@ const NetworkPanel: FC<ViewProps> = ({
           },
         })
       } else {
-        return selectionStateDispatch({
+        selectionStateDispatch({
           type: SelectionActions.SET_SUB_NODES_AND_EDGES,
           selectionState: {
             ...selectionState,
@@ -211,10 +312,45 @@ const NetworkPanel: FC<ViewProps> = ({
           },
         })
       }
+      //Set active tab if multiple select
+      if (nodes.length > 1 || edges.length > 1) {
+        if (lastSelectedType !== null) {
+          uiStateDispatch({
+            type: UIStateActions.SET_ACTIVE_TAB,
+            uiState: {
+              ...uiState,
+              activeTab: lastSelectedType === 'node' ? 1 : 2,
+            },
+          })
+        } else if (nodes.length > 1) {
+          uiStateDispatch({
+            type: UIStateActions.SET_ACTIVE_TAB,
+            uiState: {
+              ...uiState,
+              activeTab: 1,
+            },
+          })
+        } else {
+          uiStateDispatch({
+            type: UIStateActions.SET_ACTIVE_TAB,
+            uiState: {
+              ...uiState,
+              activeTab: 2,
+            },
+          })
+        }
+      }
     },
     clearAll: () => {
-      return selectionStateDispatch({
+      selectionStateDispatch({
         type: SelectionActions.CLEAR_ALL_SUB,
+      })
+      uiStateDispatch({
+        type: UIStateActions.SET_ACTIVE_TAB,
+        uiState: {
+          ...uiState,
+          activeTab: 0,
+        },
       })
     },
   }
@@ -222,7 +358,7 @@ const NetworkPanel: FC<ViewProps> = ({
   const lgrEventHandlers = {
     setSelectedNodeOrEdge: (id, lastSelectedType, lastSelectedCoordinates) => {
       if (lastSelectedType === 'node') {
-        return selectionStateDispatch({
+        selectionStateDispatch({
           type: SelectionActions.SET_MAIN_NODES_AND_EDGES,
           selectionState: {
             ...selectionState,
@@ -240,7 +376,7 @@ const NetworkPanel: FC<ViewProps> = ({
           },
         })
       } else {
-        return selectionStateDispatch({
+        selectionStateDispatch({
           type: SelectionActions.SET_MAIN_NODES_AND_EDGES,
           selectionState: {
             ...selectionState,
@@ -259,21 +395,50 @@ const NetworkPanel: FC<ViewProps> = ({
         })
       }
     },
+    setSelectedObjects: (nodes: NodeView[], edges: EdgeView[]): void => {
+      const nodeIds = nodes.map((nv) => nv.id)
+      const edgeIds = edges.map((ev) => ev.id)
+      selectionStateDispatch({
+        type: SelectionActions.SET_MAIN_NODES_AND_EDGES,
+        selectionState: {
+          ...selectionState,
+          main: {
+            nodes: nodeIds,
+            edges: edgeIds,
+          },
+        },
+      })
+    },
     clearAll: () => {
-      return selectionStateDispatch({ type: SelectionActions.CLEAR_ALL_MAIN })
+      selectionStateDispatch({ type: SelectionActions.CLEAR_ALL_MAIN })
+      uiStateDispatch({
+        type: UIStateActions.SET_ACTIVE_TAB,
+        uiState: {
+          ...uiState,
+          activeTab: 0,
+        },
+      })
     },
   }
 
-  const setMain = (cy: CyReference) => cyDispatch({ type: CyActions.SET_MAIN, cyReference: cy })
-  const setSub = (cy: CyReference) => cyDispatch({ type: CyActions.SET_SUB, cyReference: cy })
+  const setMain = (cy: CyReference) =>
+    cyDispatch({ type: CyActions.SET_MAIN, cyReference: cy })
+  const setSub = (cy: CyReference) =>
+    cyDispatch({ type: CyActions.SET_SUB, cyReference: cy })
   const setMainNetworkNotDisplayed = (state: UIState) =>
-    uiStateDispatch({ type: UIStateActions.SET_MAIN_NETWORK_NOT_DISPLAYED, uiState: state })
+    uiStateDispatch({
+      type: UIStateActions.SET_MAIN_NETWORK_NOT_DISPLAYED,
+      uiState: state,
+    })
 
   const getMainRenderer = (renderer: string) => {
     // Make sure renderer can display network
     if (!isWebGL2 && objectCount > config.viewerThreshold) {
       if (!uiState.mainNetworkNotDisplayed) {
-        setMainNetworkNotDisplayed({ ...uiState, mainNetworkNotDisplayed: true })
+        setMainNetworkNotDisplayed({
+          ...uiState,
+          mainNetworkNotDisplayed: true,
+        })
       }
       return (
         <EmptyView
@@ -285,18 +450,32 @@ const NetworkPanel: FC<ViewProps> = ({
               using the query function below.)`}
         />
       )
-    } else if (objectCount > maxNumObjects || cxDataSize > config.maxDataSize || noView) {
+    } else if (
+      objectCount > maxNumObjects ||
+      cxDataSize > config.maxDataSize ||
+      noView
+    ) {
       if (!uiState.mainNetworkNotDisplayed) {
-        setMainNetworkNotDisplayed({ ...uiState, mainNetworkNotDisplayed: true })
+        setMainNetworkNotDisplayed({
+          ...uiState,
+          mainNetworkNotDisplayed: true,
+        })
       }
-      let title = 'Network data is too large'
-      let message = `There are ${objectCount} objects in this network and it is too large to display. 
+      let title = 'Large Network Entry Selected'
+      let message = `There are ${objectCount} objects in this network and it is too large to display at once. 
           You can use the query functions below to extract sub-networks.`
       if (noView) {
-        title = 'No network view mode'
-        message = 'You can use the query functions below to extract sub-networks.'
+        title = 'No Network View Mode'
+        message =
+          'To explore this network, you can use the query functions below to extract sub-networks.'
       }
-      return <EmptyView showIcons={!uiState.showSearchResult} title={title} message={message} />
+      return (
+        <EmptyView
+          showIcons={!uiState.showSearchResult}
+          title={title}
+          message={message}
+        />
+      )
     }
 
     const bgColor = getNetworkBackgroundColor(cx)
@@ -342,19 +521,27 @@ const NetworkPanel: FC<ViewProps> = ({
       return <Loading message={message} showLoading={true} />
     }
 
-    
-
     if (edgeLimitExceeded) {
       return <EdgeLimitExceededPanel />
     }
 
-    const count = summary.subnetworkNodeCount + summary.subnetworkEdgeCount;
-  
+    const count = summary.subnetworkNodeCount + summary.subnetworkEdgeCount
+
     if (count === 0 && showSearchResult) {
-      return <Loading message={'No nodes matching your query were found in this network.'} showLoading={false} />
+      return (
+        <Loading
+          message={'No nodes matching your query were found in this network.'}
+          showLoading={false}
+        />
+      )
     }
 
-    if (searchResult.status === 'success' && !searchResult.isLoading && subCx !== undefined && showSearchResult) {
+    if (
+      searchResult.status === 'success' &&
+      !searchResult.isLoading &&
+      subCx !== undefined &&
+      showSearchResult
+    ) {
       const layout = getCyjsLayout(subCx, LAYOUT_TH)
       // For showing border between top and bottom panels
       border = splitBorder
@@ -379,10 +566,13 @@ const NetworkPanel: FC<ViewProps> = ({
   }
 
   const topStyle = { background: '#FFFFFF', zIndex: 0 }
-  const bottomStyle = {background: '#FFFFFF', zIndex: 10}
+  const bottomStyle = { background: '#FFFFFF', zIndex: 10 }
   return (
     <div className={classes.rootA}>
-      <Popup cx={uiState.mainNetworkNotDisplayed ? subCx : cx} subHeight={subHeight} />
+      <Popup
+        cx={uiState.mainNetworkNotDisplayed ? subCx : cx}
+        subHeight={subHeight}
+      />
       {showSearchResult ? (
         <SplitPane
           split="horizontal"
@@ -394,8 +584,12 @@ const NetworkPanel: FC<ViewProps> = ({
           onDragFinished={handleDrag}
         >
           <div className={classes.lowerPanel}>
-            {renderer !== 'lgr' ? <NavigationPanel target={'main'} /> : <div />}
-            {!showSearchResult ? <div /> : <Typography className={classes.title}>Overview</Typography>}
+            <NavigationPanel target={'main'} />
+            {!showSearchResult ? (
+              <div />
+            ) : (
+              <Typography className={classes.title}>Overview</Typography>
+            )}
             {getMainRenderer(renderer)}
           </div>
           <AutoSizer disableWidth>
@@ -405,7 +599,11 @@ const NetworkPanel: FC<ViewProps> = ({
               }
               return (
                 <div className={classes.subnet} style={{ height: height }}>
-                  {showSearchResult ? <NavigationPanel target={'sub'} /> : <div />}
+                  {showSearchResult ? (
+                    <NavigationPanel target={'sub'} />
+                  ) : (
+                    <div />
+                  )}
                   {getSubRenderer()}
                 </div>
               )
@@ -414,8 +612,12 @@ const NetworkPanel: FC<ViewProps> = ({
         </SplitPane>
       ) : (
         <div className={classes.lowerPanel}>
-          {renderer !== 'lgr' ? <NavigationPanel target={'main'} /> : <div />}
-          {!showSearchResult ? <div /> : <Typography className={classes.title}>Overview</Typography>}
+          <NavigationPanel target={'main'} />
+          {!showSearchResult ? (
+            <div />
+          ) : (
+            <Typography className={classes.title}>Overview</Typography>
+          )}
           {getMainRenderer(renderer)}
         </div>
       )}

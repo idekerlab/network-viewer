@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import ButtonGroup from '@material-ui/core/ButtonGroup'
 import IconButton from '@material-ui/core/IconButton'
 
@@ -6,20 +6,21 @@ import FitIcon from '@material-ui/icons/ZoomOutMap'
 import ZoomInIcon from '@material-ui/icons/ZoomIn'
 import ZoomOutIcon from '@material-ui/icons/ZoomOut'
 
-import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
+import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import AppContext from '../../context/AppState'
+
+import ExpandButton from './ExpandButton'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       zIndex: 300,
-      width: '3em',
-      borderRadius: 6,
+      borderRadius: 5,
       border: '1px solid #DDDDDD',
       backgroundColor: '#FFFFFF',
       position: 'absolute',
-      right: '2em',
-      bottom: '2em',
+      right: '1em',
+      bottom: '1em',
     },
     subnet: {
       width: '100%',
@@ -29,10 +30,9 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-// TODO: support for LGR
 const NavigationPanel = ({ target = 'main' }) => {
   const classes = useStyles()
-  const { cyReference, uiState } = useContext(AppContext)
+  const { cyReference, lgrReference } = useContext(AppContext)
 
   let cy = cyReference.main
   if (target === 'sub') {
@@ -42,6 +42,9 @@ const NavigationPanel = ({ target = 'main' }) => {
   const handleFit = (evt) => {
     if (cy !== null && cy !== undefined) {
       cy.fit()
+    } else if (lgrReference !== undefined && lgrReference !== null) {
+      // @ts-ignore
+      lgrReference.fit()
     }
   }
   const handleZoomIn = (evt) => {
@@ -49,6 +52,9 @@ const NavigationPanel = ({ target = 'main' }) => {
       const currentZoom = cy.zoom()
       const newLevel = currentZoom * 1.2
       cy.zoom(newLevel)
+    } else if (lgrReference !== undefined && lgrReference !== null) {
+      // @ts-ignore
+      lgrReference.zoomIn()
     }
   }
   const handleZoomOut = (evt) => {
@@ -56,20 +62,52 @@ const NavigationPanel = ({ target = 'main' }) => {
       const currentZoom = cy.zoom()
       const newLevel = currentZoom * 0.8
       cy.zoom(newLevel)
+    } else if (lgrReference !== undefined && lgrReference !== null) {
+      // @ts-ignore
+      lgrReference.zoomOut()
     }
   }
 
   return (
-    <ButtonGroup className={classes.root} orientation="vertical" color="secondary" variant="outlined">
-      <IconButton onClick={handleFit}>
+    <ButtonGroup
+      className={classes.root}
+      orientation="vertical"
+      color="secondary"
+      variant="outlined"
+      // disableFocusRipple={true}
+      // disableRipple={true}
+    >
+      {target === 'main' ? <ExpandButton /> : <div />}
+      <IconButton
+        key={'fitButton'}
+        color={'secondary'}
+        style={{ backgroundColor: 'transparent' }}
+        onClick={handleFit}
+      >
         <FitIcon />
       </IconButton>
-      <IconButton onClick={handleZoomIn}>
-        <ZoomInIcon />
-      </IconButton>
-      <IconButton onClick={handleZoomOut}>
-        <ZoomOutIcon />
-      </IconButton>
+      {cy === null || cy === undefined ? (
+        <div />
+      ) : (
+        [
+          <IconButton
+            key={'zoomInButton'}
+            color={'secondary'}
+            style={{ backgroundColor: 'transparent' }}
+            onClick={handleZoomIn}
+          >
+            <ZoomInIcon />
+          </IconButton>,
+          <IconButton
+            key={'zoomOutButton'}
+            color={'secondary'}
+            style={{ backgroundColor: 'transparent' }}
+            onClick={handleZoomOut}
+          >
+            <ZoomOutIcon />
+          </IconButton>,
+        ]
+      )}
     </ButtonGroup>
   )
 }

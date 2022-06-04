@@ -1,9 +1,16 @@
-import React, { useState, useEffect } from 'react'
-import { NodeView, EdgeView, GraphView, GraphViewFactory, LargeGraphRenderer } from 'large-graph-renderer'
+import React, { useState, useEffect, useContext } from 'react'
+import {
+  NodeView,
+  EdgeView,
+  GraphView,
+  GraphViewFactory,
+  LargeGraphRenderer,
+} from 'large-graph-renderer'
 
-import * as cxVizConverter from 'cx-viz-converter'
+import * as cxVizConverter from '@js4cytoscape/cx-viz-converter'
 import Loading from './Loading'
 import { getEntry } from '../../utils/cxUtil'
+import AppContext from '../../context/AppState'
 
 type LGRPanelProps = {
   eventHandlers: EventHandlers
@@ -17,7 +24,8 @@ type LGRPanelProps = {
 }
 
 export type EventHandlers = {
-  setSelectedNodeOrEdge: Function
+  setSelectedNodeOrEdge: Function,
+  setSelectedObjects: (nodes: NodeView[], edges: EdgeView[]) => (void),
   clearAll: Function
 }
 
@@ -30,14 +38,16 @@ const LGRPanel = ({
   layoutName = 'preset',
   pickable,
 }: LGRPanelProps) => {
-  const t00 = performance.now()
-
+  const { setLgrReference } = useContext(AppContext)
   const [render3d, setRender3d] = useState(false)
-  const [painted, setPainted] = useState(false)
   const [data, setData] = useState<GraphView | null>(null)
 
   // TODO: support multiple selection
-  const _handleNodeClick = (selectedNodeEvent: NodeView, x: number, y: number): void => {
+  const _handleNodeClick = (
+    selectedNodeEvent: NodeView,
+    x: number,
+    y: number,
+  ): void => {
     console.log('* Node click event:', selectedNodeEvent)
     if (selectedNodes.length !== 0) {
       selectedNodes.forEach((nodeId) => {
@@ -51,13 +61,19 @@ const LGRPanel = ({
     eventHandlers.setSelectedNodeOrEdge(nodeId, 'node', { x: x, y: y })
   }
 
-  const _handleEdgeClick = (selectedEdgeEvent: EdgeView, x: number, y: number): void => {
+  const _handleEdgeClick = (
+    selectedEdgeEvent: EdgeView,
+    x: number,
+    y: number,
+  ): void => {
     console.log('* Edge click event:', selectedEdgeEvent)
     if (selectedEdges.length !== 0) {
       selectedEdges.forEach((edgeId) => {
         const lastSelectedEdge = data.edgeViews.get(edgeId)
-        lastSelectedEdge.selected = false
-        console.log('Clear edge selection:', lastSelectedEdge)
+        if (lastSelectedEdge !== undefined) {
+          lastSelectedEdge.selected = false
+          console.log('Clear edge selection:', lastSelectedEdge)
+        }
       })
     }
     const edgeId: string = selectedEdgeEvent.id
@@ -65,28 +81,18 @@ const LGRPanel = ({
   }
 
   const _handleBackgroundClick = (event: object): void => {
-    clearSelection()
     eventHandlers.clearAll()
-    console.log('Reset election:', selectedNodes, selectedEdges)
+    console.log('Reset selection:', selectedNodes, selectedEdges)
   }
 
-  const clearSelection = () => {
-    selectedNodes.forEach((nodeId) => {
-      const lastSelectedNode = data.nodeViews.get(nodeId)
-      lastSelectedNode.selected = false
-      console.log('Clear Node selection:', lastSelectedNode)
-    })
-    selectedEdges.forEach((edgeId) => {
-      const lastSelectedEdge = data.edgeViews.get(edgeId)
-      lastSelectedEdge.selected = false
-      console.log('Clear edge selection:', lastSelectedEdge)
-    })
-    eventHandlers.clearAll()
+  const _handleSelected = (selectedNodes: NodeView[], selectedEdges: EdgeView[]): void => {
+
+    eventHandlers.setSelectedObjects(selectedNodes, selectedEdges)
+    console.log('Selection Set--------------',selectedNodes, selectedEdges)
   }
 
   useEffect(() => {
     if (cx !== undefined && data === null) {
-
       const t0 = performance.now()
       const result = cxVizConverter.convert(cx, 'lnv')
 
@@ -95,6 +101,7 @@ const LGRPanel = ({
       if (layoutName !== 'preset') {
         nodeViews = randomCircularLayout(nodeViews)
       }
+      // nodeViews = gridLayout(nodeViews)
 
       if (edgeViews !== undefined) {
         const edges = getEntry('edges', cx)
@@ -102,7 +109,6 @@ const LGRPanel = ({
       }
       const gv = GraphViewFactory.createGraphView(nodeViews, result.edgeViews)
       setData(gv)
-
     }
   }, [cx])
 
@@ -111,17 +117,17 @@ const LGRPanel = ({
     return <Loading message={loadingMessage} />
   }
 
-  console.log('@@@@@@@@@@@@ 2LGR', performance.now() -t00)
-
   return (
     <LargeGraphRenderer
       graphView={data}
       onNodeClick={_handleNodeClick}
       onEdgeClick={_handleEdgeClick}
+      onSelect={_handleSelected}
       onBackgroundClick={_handleBackgroundClick}
       render3d={render3d}
       backgroundColor={backgroundColor}
       pickable={pickable}
+      commandProxy={setLgrReference}
     />
   )
 }
@@ -200,6 +206,28 @@ const randomCircularLayout = (nodeViews: NodeView[]): NodeView[] => {
   return nodeViews
 }
 
+const gridLayout = (nodeViews: NodeView[]): NodeView[] => {
+  let idx = nodeViews.length
+  const scalingFactor = 940 // TODO: compute from viewport
+
+  while (idx--) {
+    const nv: NodeView = nodeViews[idx]
+
+    const t = 2 * Math.PI * Math.random()
+    const u = Math.random() + Math.random()
+    let r = 0
+    if (u > 1) {
+      r = 2 - u
+    } else {
+      r = u
+    }
+    const x = r * Math.cos(t) * scalingFactor
+    const y = r * Math.sin(t) * scalingFactor
+    nv.position = [x, y]
+  }
+  return nodeViews
+}
+
 const createLayers = (edgeViews: EdgeView[], edges: object[]): EdgeView[] => {
   let edgeIdx = edges.length
 
@@ -222,15 +250,14 @@ const createLayers = (edgeViews: EdgeView[], edges: object[]): EdgeView[] => {
   }
   let size = id2weight.length
   const topEdges = 100000
-  for(let i = 0; i < size; i++) {
+  for (let i = 0; i < size; i++) {
     const id = id2weight[i][0].toString()
     const ev = id2ev.get(id)
 
-    if(i < topEdges) {
+    if (i < topEdges) {
       ev['layer'] = 1
     } else {
       ev['layer'] = 2
-
     }
   }
 

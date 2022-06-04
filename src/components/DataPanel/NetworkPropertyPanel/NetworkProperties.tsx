@@ -1,17 +1,29 @@
-import React from 'react'
-
+import React, { FC } from 'react'
 import { makeStyles } from '@material-ui/styles'
-import Typography from '@material-ui/core/Typography'
-import SearchIcon from '@material-ui/icons/Search'
-
-import Linkify from 'linkifyjs/react'
+import Linkify from 'linkify-react'
 import parse from 'html-react-parser'
-
 import CollapsiblePanel from './CollapsiblePanel'
 import NetworkPropertySegment from './NetworkPropertySegment'
-import { Tooltip } from '@material-ui/core'
+import { NetworkPanelState } from '..'
+import { Theme } from '@material-ui/core'
+import { HIDDEN_ATTR_PREFIX } from '../EntryTable'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
+  wrapper: {
+    height: '100%',
+    maxHeight: '100%',
+    minHeight: '100%',
+    overflowY: 'hidden',
+    paddingBottom: '3.1em',
+    background: 'inherit',
+  },
+
+  innerWrapper: {
+    height: '100%',
+    background: 'white',
+    overflowY: 'auto',
+    // maxHeight: '80%',
+  },
   table: {
     cellSpacing: 0,
     borderSpacing: 0,
@@ -36,12 +48,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const NetworkProperties = (props) => {
-  const { summary } = props
+const NetworkProperties: FC<{
+  summary: any
+  panelState: NetworkPanelState
+  setPanelState: (state: NetworkPanelState) => void
+}> = ({ summary, panelState, setPanelState }) => {
   const properties = summary.properties
   const description = summary.description
   const classes = useStyles()
 
+  const _handleInfoOpen = (val: boolean) => {
+    setPanelState({ ...panelState, netInfoOpen: val })
+  }
+
+  const _handleDescriptionOpen = (val: boolean) => {
+    setPanelState({ ...panelState, descriptionOpen: val })
+  }
+
+  const _handlePropsOpen = (val: boolean) => {
+    setPanelState({ ...panelState, propsOpen: val })
+  }
   let informationDisplay
   let descriptionDisplay
   let propertiesDisplay
@@ -62,7 +88,9 @@ const NetworkProperties = (props) => {
       <tr key="created">
         <td className={classes.tdTitle}>Created</td>
         <td className={classes.tdContent}>
-          {creationDate.toLocaleDateString() + ' ' + creationDate.toLocaleTimeString()}
+          {creationDate.toLocaleDateString() +
+            ' ' +
+            creationDate.toLocaleTimeString()}
         </td>
       </tr>,
     )
@@ -73,7 +101,9 @@ const NetworkProperties = (props) => {
       <tr key="lastModified">
         <td className={classes.tdTitle}>Last modified</td>
         <td className={classes.tdContent}>
-          {modificationDate.toLocaleDateString() + ' ' + modificationDate.toLocaleTimeString()}
+          {modificationDate.toLocaleDateString() +
+            ' ' +
+            modificationDate.toLocaleTimeString()}
         </td>
       </tr>,
     )
@@ -86,12 +116,23 @@ const NetworkProperties = (props) => {
       </tr>,
     )
   }
+  if (summary.version) {
+    informationTableContents.push(
+      <tr key="version">
+        <td className={classes.tdTitle}>Version</td>
+        <td className={classes.tdContent}>{summary.version}</td>
+      </tr>,
+    )
+  }
   if (summary.visibility) {
-    if (summary.indexLevel && (summary.indexLevel === 'ALL' || summary.indexLevel === 'META')) {
+    if (
+      summary.indexLevel &&
+      (summary.indexLevel === 'ALL' || summary.indexLevel === 'META')
+    ) {
       informationTableContents.push(
         <tr key="visibility">
           <td className={classes.tdTitle}>Visibility</td>
-          <td className={classes.tdContent} valign="center">
+          <td className={classes.tdContent} valign="middle">
             P{summary.visibility.toLowerCase().slice(1)} (searchable)
           </td>
         </tr>,
@@ -100,7 +141,9 @@ const NetworkProperties = (props) => {
       informationTableContents.push(
         <tr key="visibility">
           <td className={classes.tdTitle}>Visibility</td>
-          <td className={classes.tdContent}>P{summary.visibility.toLowerCase().slice(1)} (not searchable)</td>
+          <td className={classes.tdContent}>
+            P{summary.visibility.toLowerCase().slice(1)} (not searchable)
+          </td>
         </tr>,
       )
     }
@@ -125,7 +168,7 @@ const NetworkProperties = (props) => {
   for (let property of properties) {
     const value = property.value.trim()
     const predicate = property.predicateString.trim()
-    if (value !== '' && !predicate.startsWith('__')) {
+    if (value !== '' && !predicate.startsWith(HIDDEN_ATTR_PREFIX)) {
       if (predicate === '@context') {
         continue
       } else if (predicate === 'rights') {
@@ -143,7 +186,7 @@ const NetworkProperties = (props) => {
         propertiesTableContent.push(
           <tr key={predicate}>
             <td className={classes.tdTitle}>{formatTitle(predicate)}</td>
-            <td className={classes.tdContent}>{formatContent(value)}</td>
+            <td className={classes.tdContent}>{formatPropertyValue(value)}</td>
           </tr>,
         )
       }
@@ -172,13 +215,17 @@ const NetworkProperties = (props) => {
           {rights ? (
             <tr>
               <td className={classes.tdTitle}>Rights</td>
-              <td className={classes.tdContent}>{formatContent(rights)}</td>
+              <td className={classes.tdContent}>
+                {formatPropertyValue(rights)}
+              </td>
             </tr>
           ) : null}
           {rightsHolder ? (
             <tr>
               <td className={classes.tdTitle}>Rights holder</td>
-              <td className={classes.tdContent}>{formatContent(rightsHolder)}</td>
+              <td className={classes.tdContent}>
+                {formatPropertyValue(rightsHolder)}
+              </td>
             </tr>
           ) : null}
         </tbody>
@@ -187,7 +234,7 @@ const NetworkProperties = (props) => {
     descriptionList.push(['Rights', rightsTable])
   }
   if (reference) {
-    descriptionList.push(['Reference', formatContent(reference)])
+    descriptionList.push(['Reference', formatPropertyValue(reference)])
   }
   if (descriptionList.length > 0) {
     descriptionDisplay = formatDisplay(descriptionList)
@@ -195,56 +242,66 @@ const NetworkProperties = (props) => {
 
   let darkBackground = 0
   return (
-    <>
-      {informationDisplay ? (
-        <CollapsiblePanel
-          openByDefault={true}
-          summary="Network information"
-          children={informationDisplay}
-          backgroundColor={darkBackground++ % 2 === 0 ? 'inherit' : 'white'}
-        />
-      ) : null}
-      {descriptionDisplay ? (
-        <CollapsiblePanel
-          openByDefault={true}
-          summary="Description"
-          children={descriptionDisplay}
-          backgroundColor={darkBackground++ % 2 === 0 ? 'inherit' : 'white'}
-        />
-      ) : null}
-      {propertiesDisplay ? (
-        <CollapsiblePanel
-          openByDefault={true}
-          summary="Properties"
-          children={propertiesDisplay}
-          backgroundColor={darkBackground++ % 2 === 0 ? 'inherit' : 'white'}
-        />
-      ) : null}
-    </>
+    <div className={classes.wrapper}>
+      <div className={classes.innerWrapper}>
+        {informationDisplay ? (
+          <CollapsiblePanel
+            title="Network information"
+            children={informationDisplay}
+            backgroundColor={darkBackground++ % 2 === 0 ? 'inherit' : 'white'}
+            open={panelState.netInfoOpen}
+            setOpen={_handleInfoOpen}
+          />
+        ) : null}
+        {descriptionDisplay ? (
+          <CollapsiblePanel
+            title="Description"
+            children={descriptionDisplay}
+            backgroundColor={darkBackground++ % 2 === 0 ? 'inherit' : 'white'}
+            open={panelState.descriptionOpen}
+            setOpen={_handleDescriptionOpen}
+          />
+        ) : null}
+        {propertiesDisplay ? (
+          <CollapsiblePanel
+            title="Properties"
+            children={propertiesDisplay}
+            backgroundColor={darkBackground++ % 2 === 0 ? 'inherit' : 'white'}
+            open={panelState.propsOpen}
+            setOpen={_handlePropsOpen}
+          />
+        ) : null}
+      </div>
+    </div>
   )
 }
 
 const formatTitle = (string) => {
-  if (string == undefined) {
+  if (string === undefined) {
     return
   }
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
-const formatContent = (string) => {
-  if (string == undefined) {
-    return
+const formatPropertyValue = (value: string) => {
+  if (value === undefined) {
+    return null
   }
-  string = string.toString().replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script\ *>/gi, '')
-  string = parse(string)
-  return <Linkify target="_blank">{string}</Linkify>
+
+  let processedValue: string = value
+    .toString()
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script\ *>/gi, '')
+  const parsedValue = parse(processedValue)
+  return <Linkify key={`key-${Math.random()}`}>{parsedValue}</Linkify>
 }
 
 const formatDescription = (string) => {
-  if (string == undefined) {
+  if (string === undefined) {
     return
   }
-  string = string.toString().replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script\ *>/gi, '')
+  string = string
+    .toString()
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script\ *>/gi, '')
   string = parse(string)
   return string
 }
@@ -253,7 +310,13 @@ const formatDisplay = (propertiesList) => {
   const display = []
   let index = 0
   for (let property of propertiesList) {
-    display.push(<NetworkPropertySegment summary={property[0]} details={property[1]} key={index++} />)
+    display.push(
+      <NetworkPropertySegment
+        summary={property[0]}
+        details={property[1]}
+        key={index++}
+      />,
+    )
   }
   return display
 }

@@ -8,23 +8,41 @@ import { ThemeProvider } from '@material-ui/core/styles'
 import theme from './theme'
 import ErrorBoundary from './components/ErrorBoundary'
 
-import { ReactQueryConfigProvider, ReactQueryCacheProvider, QueryCache } from 'react-query'
+import { QueryClientProvider, QueryCache, QueryClient } from 'react-query'
 import AppConfig from './model/AppConfig'
 
 const ROOT_TAG = 'root'
 
+// Avoid HTTP
+const location = window.location
+if (location.hostname !== 'localhost' && location.protocol !== 'https:') {
+  location.replace(`https:${location.href.substring(location.protocol.length)}`)
+}
+
+// Remove duplicate slashes if necessary
+const baseUrl = location.href
+const protocol = baseUrl.split('//')[0]
+const urlBody = baseUrl.replace(`${protocol}//`, '')
+const updatedUrl = urlBody.replace(/\/\/+/g, '/')
+if (updatedUrl !== urlBody) {
+  location.replace(`${protocol}//${updatedUrl}`)
+}
+
 // This avoids too many fetch calls from remote API
-const queryConfig: object = { queries: { refetchOnWindowFocus: false } }
+const queryConfig = { queries: { refetchOnWindowFocus: false } }
 const queryCache = new QueryCache()
+const queryClient = new QueryClient({ queryCache, defaultOptions: queryConfig })
 
 async function loadResource() {
   const response = await fetch(`${process.env.PUBLIC_URL}/resource.json`)
 
   if (response.status !== 200) {
-    throw new Error('Failed to load resource file.  Could not find NDEx server location')
+    throw new Error(
+      'Failed to load resource file.  Could not find NDEx server location',
+    )
   }
   const resource = await response.json()
-  console.log('* Resource file loaded:', resource)
+  console.info('Resource file loaded', resource)
   const ndexUrl = resource['ndexUrl']
   const googleClientId = resource['googleClientId']
   const viewerTh = resource['viewerThreshold']
@@ -35,7 +53,7 @@ async function loadResource() {
 
   const config: AppConfig = {
     ndexUrl,
-    ndexHttps: `https://${ndexUrl}`,
+    ndexHttps: (ndexUrl === 'localhost')? `http://${ndexUrl}`: `https://${ndexUrl}`,
     googleClientId,
     viewerThreshold: viewerTh,
     maxNumObjects,
@@ -48,13 +66,11 @@ async function loadResource() {
     <React.StrictMode>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <ReactQueryConfigProvider config={queryConfig}>
-          <ReactQueryCacheProvider queryCache={queryCache}>
-            <ErrorBoundary>
-              <App config={config} />
-            </ErrorBoundary>
-          </ReactQueryCacheProvider>
-        </ReactQueryConfigProvider>
+        <QueryClientProvider client={queryClient}>
+          <ErrorBoundary>
+            <App config={config} />
+          </ErrorBoundary>
+        </QueryClientProvider>
       </ThemeProvider>
     </React.StrictMode>,
     document.getElementById(ROOT_TAG),

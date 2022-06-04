@@ -1,6 +1,4 @@
 import React, { useContext } from 'react'
-
-import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import { useParams } from 'react-router-dom'
 import useSearch from '../../hooks/useSearch'
 import AppContext from '../../context/AppState'
@@ -8,31 +6,35 @@ import Snackbar from '@material-ui/core/Snackbar'
 
 import { SaveToNDExButton } from 'cytoscape-explore-components'
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    button: {
-      height: '2em',
-      width: '2em',
-      borderRadius: 2,
-    },
-  }),
-)
-
 const SaveQueryButton = () => {
   const { uuid } = useParams()
-  const { query, queryMode, uiState, ndexCredential, config, summary } = useContext(AppContext)
-  const searchResult = useSearch(uuid, query, config.ndexHttps, ndexCredential, queryMode, config.maxEdgeQuery)
-  const subnet = searchResult.data
-  const edgeLimitExceeded: boolean = subnet !== undefined ? subnet['edgeLimitExceeded'] : false
-  const summaryObjectCount = summary ? summary.subnetworkNodeCount + summary.subnetworkEdgeCount : 0;
+  const { query, queryMode, uiState, ndexCredential, config, summary } =
+    useContext(AppContext)
+  const searchResult = useSearch(
+    uuid,
+    query,
+    config.ndexHttps,
+    ndexCredential,
+    queryMode,
+    config.maxEdgeQuery,
+  )
 
-  const subCx = subnet !== undefined && summaryObjectCount > 0 ? subnet['cx'] : undefined
+  const { isLogin } = ndexCredential
+
+  const subnet = searchResult.data
+  const edgeLimitExceeded: boolean =
+    subnet !== undefined ? subnet['edgeLimitExceeded'] : false
+  const summaryObjectCount = summary
+    ? summary.subnetworkNodeCount + summary.subnetworkEdgeCount
+    : 0
+
+  const subCx =
+    subnet !== undefined && summaryObjectCount > 0 ? subnet['cx'] : undefined
 
   const fetchCX = () => {
-      return new Promise<Object>(function (resolve, reject) {
-        console.log(JSON.stringify(subCx))
-        resolve(subCx)
-      })
+    return new Promise<Object>(function (resolve, reject) {
+      resolve(subCx)
+    })
   }
 
   const [snackMessage, setSnackMessage] = React.useState(undefined)
@@ -51,25 +53,30 @@ const SaveQueryButton = () => {
   }
 
   if (uiState.showSearchResult) {
+    let disabled = false
+    if (subCx === undefined || edgeLimitExceeded || !isLogin) {
+      disabled = true
+    }
     return (
-      <div>
+      <>
         <SaveToNDExButton
-          disabled={subCx == undefined || edgeLimitExceeded}
+          disabled={disabled}
           fetchCX={fetchCX}
           onSuccess={onSuccess}
           onFailure={onFailure}
           tooltip="Save to NDEx"
-        /> 
+        />
         <Snackbar
-          open={snackMessage != undefined}
-          autoHideDuration={6000}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+          open={snackMessage !== undefined}
+          autoHideDuration={1500}
           onClose={handleClose}
           message={snackMessage}
         />
-      </div>
+      </>
     )
   } else {
-    return <SaveToNDExButton disabled />
+    return <SaveToNDExButton disabled={true} />
   }
 }
 

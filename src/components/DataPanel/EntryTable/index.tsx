@@ -1,10 +1,18 @@
-import React, { useMemo, useEffect, useState, useContext } from 'react'
-import Table from './Table'
-import Twinble from './Table2'
-import { processList, processItem, processInternalLink, processListAsText } from '../../../utils/contextUtil'
-import pixelWidth from 'string-pixel-width'
+import React, { VFC, useMemo, useContext } from 'react'
+import Linkify from 'linkify-react'
+import {
+  processList,
+  processItem,
+  processInternalLink,
+  processListAsText,
+} from '../../../utils/contextUtil'
 import AppContext from '../../../context/AppState'
+import VirtualizedTable2 from './VirtualizedTable2'
 
+// All attributes with this prefix will not be displayed
+export const HIDDEN_ATTR_PREFIX: string = '__'
+
+// Special cases: Virtual Columns
 const EdgeAttributes = {
   SOURCE: 'source',
   TARGET: 'target',
@@ -20,38 +28,58 @@ const Attributes = {
   NDEX_INTERNAL_LINK: 'ndex:internalLink',
 }
 
-const EntryTable = (props) => {
-  const { selectedObjects, attributes, label, type, context, width, height, letterWidths } = props
+const regex = /\./gi
+const replacePeriods = (text: string): string => {
+  return text.replace(regex, '(_)')
+}
+
+const isEmptyString = (text: string): boolean => {
+  return text === undefined || text === ''
+}
+const startsWithNumber = (entry: string): boolean => {
+  if (
+    entry === undefined ||
+    entry === null ||
+    typeof entry !== 'string' ||
+    entry.length === 0
+  ) {
+    return false
+  }
+  return '0123456789'.includes(entry.charAt(0))
+}
+
+const EntryTable: VFC<{
+  selectedObjects: any[]
+  attributes: any
+  type?: string
+  context
+  letterWidths
+  label
+  parentSize: [number, number]
+  selected: boolean
+}> = ({
+  selectedObjects,
+  attributes,
+  type,
+  context,
+  letterWidths,
+  label,
+  parentSize,
+  selected,
+}) => {
   const { config } = useContext(AppContext)
-  const [state, setState] = useState(true)
 
-  const replacePeriods = (string) => {
-    const regex = /\./gi
-    return string.replace(regex, '(_)')
-  }
-
-  const isEmptyString = (string) => {
-    return string === undefined || string === ''
-  }
-
-  const startsWithNumber = (string) => {
-    if (string === undefined || string === '') {
-      return false
-    }
-    return '0123456789'.includes(string.charAt(0))
-  }
-
-  const getWidth = (phrase) => {
+  const getWidth = (phrase: string | undefined): number => {
     if (phrase === undefined) {
       phrase = ''
     }
-    let width = 0
+    let width: number = 0
     for (let i = 0; i < phrase.length; i++) {
       let letter = phrase[i]
       if (letter === ' ') {
         letter = '&nbsp'
       }
-      if (letterWidths[letter] == undefined) {
+      if (letterWidths[letter] === undefined) {
         width += letterWidths['default']
       } else {
         width += letterWidths[letter]
@@ -63,12 +91,22 @@ const EntryTable = (props) => {
   const getColumnWidth = (rows, accessor, header) => {
     const PADDING = 18
     const MAX_WIDTH = 300 + PADDING
-    const width = Math.max(...rows.map((row) => getWidth(`${row[accessor]}` || '')), getWidth(header)) + PADDING
+    const width =
+      Math.max(
+        ...rows.map((row) => getWidth(`${row[accessor]}` || '')),
+        getWidth(header),
+      ) + PADDING
     return Math.min(MAX_WIDTH, width)
   }
 
-  const columns = useMemo(() => {
-    const columnsList = []
+  const filterColumns = (allColumns: string[]): string[] => {
+    return allColumns.filter(
+      (colName) => !colName.startsWith(HIDDEN_ATTR_PREFIX),
+    )
+  }
+
+  const columns: string[] = useMemo((): string[] => {
+    const columnsList: string[] = []
     for (let id of selectedObjects) {
       const attrs = attributes[id]
       if (attrs === undefined || attrs === null) {
@@ -77,10 +115,7 @@ const EntryTable = (props) => {
       for (let attr of attrs) {
         if (
           attr[0] === Attributes.NAME ||
-          (type === 'edge' &&
-            (attr[0] === EdgeAttributes.SOURCE ||
-              attr[0] === EdgeAttributes.TARGET ||
-              attr[0] === EdgeAttributes.INTERACTION))
+          (type === 'edge' && attr[0] === EdgeAttributes.INTERACTION)
         ) {
           continue
         } else {
@@ -112,7 +147,10 @@ const EntryTable = (props) => {
       for (let id of selectedObjects) {
         const attrs = attributes[id]
         if (!attrs.has(Attributes.NAME)) {
-          if (attrs.has(EdgeAttributes.SOURCE) && attrs.has(EdgeAttributes.TARGET)) {
+          if (
+            attrs.has(EdgeAttributes.SOURCE) &&
+            attrs.has(EdgeAttributes.TARGET)
+          ) {
             if (attrs.has(EdgeAttributes.INTERACTION)) {
               attrs.set(
                 Attributes.NAME,
@@ -123,21 +161,27 @@ const EntryTable = (props) => {
                   attrs.get(EdgeAttributes.TARGET),
               )
             } else {
-              attrs.set(Attributes.NAME, attrs.get(EdgeAttributes.SOURCE) + ' (-) ' + attrs.get(EdgeAttributes.TARGET))
+              attrs.set(
+                Attributes.NAME,
+                attrs.get(EdgeAttributes.SOURCE) +
+                  ' (-) ' +
+                  attrs.get(EdgeAttributes.TARGET),
+              )
             }
           }
         }
       }
     }
-    return columnsList
+    return filterColumns(columnsList)
   }, [selectedObjects])
 
   const data = useMemo(() => {
     const dataList = []
     const textDataList = []
+    let idx = 0
     for (let id of selectedObjects) {
       const attrs = attributes[id]
-      if (attrs == undefined) {
+      if (attrs === undefined) {
         continue
       }
       const row = {}
@@ -148,16 +192,21 @@ const EntryTable = (props) => {
           row[replacePeriods(column)] = processList(value, context)
           textRow[replacePeriods(column)] = processListAsText(value)
         } else {
-          if (column == Attributes.NDEX_INTERNAL_LINK) {
+          if (column === Attributes.NDEX_INTERNAL_LINK) {
             row[column] = processInternalLink(attrs.get(column), config.ndexUrl)
           } else {
-            row[replacePeriods(column)] = processItem(attrs.get(column), context, true)
+            row[replacePeriods(column)] = processItem(
+              attrs.get(column),
+              context,
+              true,
+            )
           }
           textRow[replacePeriods(column)] = attrs.get(column)
         }
       }
       dataList.push(row)
       textDataList.push(textRow)
+      idx++
     }
 
     const empty = dataList.filter((entry) => isEmptyString(entry.name))
@@ -169,7 +218,15 @@ const EntryTable = (props) => {
     nonNumbers.sort((a, b) => (a.name > b.name ? 1 : -1))
     numbers.sort((a, b) => (a.name > b.name ? 1 : -1))
 
-    return [nonNumbers.concat(numbers).concat(empty), textDataList]
+    const sortedDataList = nonNumbers.concat(numbers).concat(empty)
+    for (let i = 0; i < sortedDataList.length; i++) {
+      const row = sortedDataList[i]
+      for (const [key, value] of Object.entries(row)) {
+        row[key] = <Linkify>{value}</Linkify>
+      }
+    }
+
+    return [sortedDataList, textDataList]
   }, [selectedObjects])
 
   const finalColumns = useMemo(() => {
@@ -191,11 +248,13 @@ const EntryTable = (props) => {
     if (hasName) {
       columns.unshift(Attributes.NAME)
     }
-    const columnsObject = columns.map((column) => {
+
+    return columns.map((column) => {
       if (column === Attributes.NAME) {
         return {
           Header: label,
           accessor: Attributes.NAME,
+          // sticky: 'left',
           width: getColumnWidth(data[1], Attributes.NAME, label),
         }
       } else {
@@ -206,20 +265,15 @@ const EntryTable = (props) => {
         }
       }
     })
-    return columnsObject
   }, [selectedObjects])
 
-  useEffect(() => {
-    setState(!state)
-  }, [selectedObjects])
-
-  //The DynamicSizeList used in the Table component has trouble updating
-  //So I'm doing this to force it to make a whole new table every time
-  //Please fix if there's a better way
   return (
-    <div style={{ width: width, height: height }}>
-      {state ? <Table columns={finalColumns} data={data[0]} /> : <Twinble columns={finalColumns} data={data[0]} />}
-    </div>
+    <VirtualizedTable2
+      columns={finalColumns}
+      data={data[0]}
+      parentSize={parentSize}
+      selected={selected}
+    />
   )
 }
 

@@ -1,10 +1,7 @@
-import React, { FC, useContext } from 'react'
-import { useParams } from 'react-router-dom'
-import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles'
+import { FC, useContext, useRef, useEffect } from 'react'
+import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
-
 import { NDExSignInButton } from 'cytoscape-explore-components'
-
 import AppContext from '../../context/AppState'
 import ClassicModeButton from './ClassicModeButton'
 import NdexHomeButton from './NdexHomeButton'
@@ -21,9 +18,9 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'flex-start',
       top: theme.spacing(1),
       left: theme.spacing(1),
-      height: '3em',
+      height: theme.spacing(6.5),
       padding: theme.spacing(1),
-      background: 'rgba(255, 255, 255, 0.95)',
+      backgroundColor: 'rgba(255,255,255, 0.9)',
       zIndex: 300,
       borderRadius: 5,
     },
@@ -32,15 +29,26 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const ToolBar: FC = (props) => {
   const classes = useStyles()
+  const ndexButton = useRef(null)
 
-  const { config, summary, ndexCredential, setNdexCredential } = useContext(AppContext)
+  const { summary, ndexCredential, setNdexCredential, setNdexLoginWrapper } =
+    useContext(AppContext)
 
-  const ndexServerUrl = getCurrentServer();
+  useEffect(() => {
+    setNdexLoginWrapper(ndexButton.current.lastChild)
+  }, [])
+
+  const ndexServerUrl = getCurrentServer()
 
   const loginStateUpdated = (loginState) => {
     if (loginState) {
       if (loginState.isGoogle) {
-        setNdexCredential({ loaded: true, isLogin: true, isGoogle: true, oauth: loginState })
+        setNdexCredential({
+          loaded: true,
+          isLogin: true,
+          isGoogle: true,
+          oauth: loginState,
+        })
       } else {
         const details = loginState.loginDetails
         setNdexCredential({
@@ -52,9 +60,8 @@ const ToolBar: FC = (props) => {
       }
     } else {
       if (ndexCredential.loaded && ndexCredential.isLogin) {
-        console.log('going from logged in to logged out: ', summary)
-        if (!summary || summary.visibility == 'PRIVATE') {
-          window.location.href = ndexServerUrl;
+        if (!summary || summary.visibility === 'PRIVATE') {
+          window.location.href = ndexServerUrl
         }
       }
       setNdexCredential({
@@ -65,22 +72,38 @@ const ToolBar: FC = (props) => {
     }
   }
 
- 
-
   return (
     <div className={classes.root}>
-      <Grid container direction="row" justify="flex-start" alignItems="center" spacing={0}>
-        <Grid container direction="row" justify="flex-start" alignItems="center">
+      <Grid
+        container
+        direction="row"
+        justify="flex-start"
+        alignItems="center"
+        spacing={0}
+      >
+        <Grid
+          container
+          direction="row"
+          justify="flex-start"
+          alignItems="center"
+        >
           <NdexHomeButton />
-          <NDExSignInButton
-            size="small"
-            myAccountURL={ ndexServerUrl + '/#/myAccount' }
-            onLoginStateUpdated={loginStateUpdated}
-          />
+          <div ref={ndexButton}>
+            <NDExSignInButton
+              size={'medium'}
+              myAccountURL={ndexServerUrl + '/#/myAccount'}
+              onLoginStateUpdated={loginStateUpdated}
+            />
+          </div>
           <AdvancedMenu />
           <ClassicModeButton />
         </Grid>
-        <Grid container direction="row" justify="flex-end" alignItems="center"></Grid>
+        <Grid
+          container
+          direction="row"
+          justify="flex-end"
+          alignItems="center"
+        ></Grid>
       </Grid>
     </div>
   )

@@ -1,8 +1,6 @@
-import React, { useState, createContext } from 'react'
-import AppState from '../model/AppState';
+import React from 'react'
+import AppState from '../model/AppState'
 
-
-const AppContext = 
-  React.createContext<Partial<AppState>>({});
+const AppContext = React.createContext<Partial<AppState>>({})
 
 export default AppContext

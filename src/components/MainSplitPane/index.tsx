@@ -1,4 +1,10 @@
-import React, { useState, useContext, useEffect, useRef, useLayoutEffect } from 'react'
+import React, {
+  useState,
+  useContext,
+  useEffect,
+  useRef,
+  useLayoutEffect,
+} from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import NetworkPanel from '../NetworkPanel'
 import DataPanel from '../DataPanel'
@@ -13,7 +19,11 @@ import { UIStateActions } from '../../reducer/uiStateReducer'
 import { isWebGL2supported } from '../../utils/browserTest'
 import Title from '../Title'
 
+import { convertError } from '../../utils/error/errorHandler'
+
 import InitializationPanel from './InitializationPanel'
+import NDExError from '../../utils/error/NDExError'
+import ErrorMessage from '../../utils/error/ErrorMessage'
 
 const V2 = 'v2'
 
@@ -84,12 +94,21 @@ const MainSplitPane = () => {
   const classes = useStyles()
   const containerRef = useRef()
   const { uuid } = useParams()
-  const { uiState, ndexCredential, config, uiStateDispatch } = useContext(AppContext)
+  const { uiState, ndexCredential, config, uiStateDispatch } = useContext(
+    AppContext,
+  )
   const maxObj = config.maxNumObjects
   const th = config.viewerThreshold
 
-  const summaryResponse = useNetworkSummary(uuid, config.ndexHttps, V2, ndexCredential)
-  const summary = summaryResponse.data
+  const summaryResponse = useNetworkSummary(
+    uuid,
+    config.ndexHttps,
+    V2,
+    ndexCredential,
+  )
+
+  const { isLoading, isError, isLoadingError } = summaryResponse
+  const summary: object = summaryResponse.data
   const fetchParams = getFetchParams(summary, th)
 
   // First, give null as UUID to hold immediate loading.
@@ -103,7 +122,8 @@ const MainSplitPane = () => {
     fetchParams.count,
     fetchParams.cxVersion,
   )
-  const originalCx = cxResponse.data
+
+  const originalCx: object[] = cxResponse.data
 
   // Local states
   const [rightWidth, setRightWidth] = useState(getDefaultPanelWidth())
@@ -116,9 +136,6 @@ const MainSplitPane = () => {
 
   const windowWidth = useWindowWidth()
   const [subCx, setSubCx] = useState(null)
-
-  // True if data is too large
-  const [isDataTooLarge, setIsDataTooLarge] = useState(true)
 
   const assignNewHeight = () => {
     const curRef = containerRef?.current ?? { offsetHeight: 0 }
@@ -149,7 +166,6 @@ const MainSplitPane = () => {
       setCxDataSize(cxSize)
 
       if (count < config.maxNumObjects && cxDataSize < config.maxDataSize) {
-        setIsDataTooLarge(false)
         if (isWebGL2 && !noView) {
           setCurUuid(uuid)
         } else if (!isWebGL2 && count < config.viewerThreshold) {
@@ -168,10 +184,16 @@ const MainSplitPane = () => {
   }, [uiState.dataPanelOpen])
 
   const setRightPanelWidth = (state: UIState) =>
-    uiStateDispatch({ type: UIStateActions.SET_RIGHT_PANEL_WIDTH, uiState: state })
+    uiStateDispatch({
+      type: UIStateActions.SET_RIGHT_PANEL_WIDTH,
+      uiState: state,
+    })
 
   const setDataPanelOpen = (state: UIState) =>
-    uiStateDispatch({ type: UIStateActions.SET_DATA_PANEL_OPEN, uiState: state })
+    uiStateDispatch({
+      type: UIStateActions.SET_DATA_PANEL_OPEN,
+      uiState: state,
+    })
 
   useEffect(() => {
     setRightPanelWidth({ ...uiState, rightPanelWidth: rightWidth })
@@ -242,7 +264,13 @@ const MainSplitPane = () => {
           >
             {getNetworkPanel()}
             {uiState.dataPanelOpen ? (
-              <DataPanel cx={uiState.mainNetworkNotDisplayed ? subCx : originalCx} />
+              <DataPanel
+                width={rightWidth}
+                cx={uiState.mainNetworkNotDisplayed ? subCx : originalCx}
+                renderer={fetchParams.renderer}
+                objectCount={count}
+                cxDataSize={cxDataSize}
+              />
             ) : (
               <ClosedPanel />
             )}
@@ -254,13 +282,29 @@ const MainSplitPane = () => {
 
   // Check Summary error
   if (summaryResponse.isError) {
-    return <InitializationPanel message={`${summaryResponse.error}`} error={true} setProceed={setProceed} />
+    const { error } = summaryResponse
+    const ndexError = error as NDExError
+    const errorMessage: ErrorMessage = convertError(ndexError)
+    return (
+      <InitializationPanel
+        message={errorMessage.message}
+        subMessage={errorMessage.originalMessage}
+        optionalMessage={errorMessage.optionalMessage}
+        code={errorMessage.code}
+        error={true}
+        setProceed={setProceed}
+      />
+    )
   }
 
   // Step 1: Summary is not available yet
-  if (summary === undefined || summaryResponse.isLoading) {
+  if (summary === undefined || isLoading) {
     return (
-      <InitializationPanel message={'Loading summary of the network...'} showProgress={true} setProceed={setProceed} />
+      <InitializationPanel
+        message={'Loading summary of the network...'}
+        showProgress={true}
+        setProceed={setProceed}
+      />
     )
   }
 
@@ -268,7 +312,8 @@ const MainSplitPane = () => {
     if (
       cxResponse.error['response'] &&
       cxResponse.error['response'].data &&
-      cxResponse.error['response'].data.message !== 'CX2 network is not available for this network.'
+      cxResponse.error['response'].data.message !==
+        'CX2 network is not available for this network.'
     ) {
       return (
         <InitializationPanel
@@ -281,7 +326,12 @@ const MainSplitPane = () => {
     } else {
       console.log('CXResponse error data:', cxResponse.error['response'].data)
       return (
-        <InitializationPanel summary={summary} message={`${cxResponse.error}`} error={true} setProceed={setProceed} />
+        <InitializationPanel
+          summary={summary}
+          message={`${cxResponse.error}`}
+          error={true}
+          setProceed={setProceed}
+        />
       )
     }
   }

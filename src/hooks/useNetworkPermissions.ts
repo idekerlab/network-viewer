@@ -2,30 +2,37 @@ import { useQuery } from 'react-query'
 import NdexCredential from '../model/NdexCredential'
 
 import { getNdexClient } from '../utils/credentialUtil'
+import NDExError from '../utils/error/NDExError'
 
 const permissionsMap = {}
 
-const getNetworkPermissions = async <T>(
-  _,
+const getNetworkPermissions = async (
   uuid: string,
   serverUrl: string,
   apiVersion: string,
-  credential: NdexCredential
+  credential: NdexCredential,
 ) => {
   const cache = permissionsMap[uuid]
 
-  if(cache !== undefined) {
+  if (cache !== undefined) {
     return cache
   }
 
-  if (!credential.loaded || !credential.isLogin) {
+  if (credential === undefined || !credential.loaded || !credential.isLogin) {
     return undefined
   }
 
-  const ndexClient = getNdexClient(`${serverUrl}/v2`, credential)
-  const permissions = await ndexClient.getNetworkPermissionsByUUIDs([uuid])
-  const networkPermission = permissions[uuid];
-  permissionsMap[uuid] = networkPermission
+  const url = `${serverUrl}/${apiVersion}`
+  let networkPermission = null
+
+  try {
+    const ndexClient = getNdexClient(url, credential)
+    const permissions = await ndexClient.getNetworkPermissionsByUUIDs([uuid])
+    networkPermission = permissions[uuid]
+    permissionsMap[uuid] = networkPermission
+  } catch (e: unknown) {
+    throw new NDExError(e['message'], e)
+  }
 
   return networkPermission
 }
@@ -36,5 +43,11 @@ export default function useNetworkPermissions(
   apiVersion: string = 'v2',
   credential: NdexCredential,
 ) {
-  return useQuery(['networkPermissions', uuid, serverUrl, apiVersion, credential], getNetworkPermissions)
+  return useQuery(
+    ['networkPermissions', uuid, serverUrl, apiVersion, credential],
+    () => getNetworkPermissions(uuid, serverUrl, apiVersion, credential),
+    {
+      retry: false,
+    },
+  )
 }

@@ -1,56 +1,102 @@
-import { Chip, createStyles, makeStyles, Theme, Tooltip } from '@material-ui/core'
+import React, { useContext, useState, FC } from 'react'
+import {
+  Chip,
+  createStyles,
+  Grid,
+  makeStyles,
+  Theme,
+  Tooltip,
+} from '@material-ui/core'
 import { Typography } from '@material-ui/core'
 import WarningIcon from '@material-ui/icons/AnnouncementOutlined'
 import ErrorIcon from '@material-ui/icons/ErrorOutline'
-import React, { useContext, useRef, useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import AppContext from '../../../context/AppState'
+import QueryPanel from './QueryPanel'
+import DeleteDOIButton from '../../DeleteDOIButton'
+import CollapsiblePanel from './CollapsiblePanel'
+import { NetworkPanelState } from '..'
+import QueryState from './QueryPanel/QueryState'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    networkDetails: {
-      margin: theme.spacing(1),
+    root: {
+      backgroundColor: theme.palette.background.paper,
+      margin: 0,
+      paddingTop: theme.spacing(1),
     },
     item: {
       marginRight: theme.spacing(1),
     },
     label: {
       marginRight: theme.spacing(1),
+      padding: 0,
+      paddingLeft: theme.spacing(1),
     },
     row: {
       display: 'flex',
       alignItems: 'center',
       boxSizing: 'border-box',
-      padding: theme.spacing(1),
+    },
+    grid: {
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      paddingTop: theme.spacing(1),
+      paddingBottom: theme.spacing(1),
+    },
+    chip: {
+      paddingLeft: theme.spacing(1),
     },
     warning: {
-      color: 'deeppink',
+      color: theme.palette.warning.main,
     },
     error: {
-      color: 'red',
-    },
-    buttonContainer: {
-      margin: theme.spacing(1),
+      color: theme.palette.error.main,
     },
     copySpan: {
       display: 'none',
     },
+    queryPanel: {},
   }),
 )
 
-const NetworkDetails = () => {
+const NetworkDetails: FC<{
+  cx: any
+  panelState: NetworkPanelState
+  setPanelState: (NetworkPanelState) => void
+  queryState: QueryState
+  setQueryState: (QueryState) => void
+  renderer: string
+}> = ({
+  cx,
+  panelState,
+  setPanelState,
+  queryState,
+  setQueryState,
+  renderer,
+}) => {
   const classes = useStyles()
+  const { uuid } = useParams()
   const { summary, uiState, config } = useContext(AppContext)
   const { viewerThreshold, warningThreshold } = config
   const [doiCopiedHoverText, setDoiCopiedHoverText] = useState(false)
 
-  if (summary === undefined) {
+  const _handleQueryOpen = (val: boolean) => {
+    setPanelState({ ...panelState, queryOpen: val })
+  }
+
+  if (summary === undefined || summary === null) {
     return null
   }
+
   const getInformationIcon = (objectCount: number) => {
     if (objectCount >= viewerThreshold && objectCount < warningThreshold) {
       return (
-        <Tooltip arrow title="Large network loaded: showing network in simplified mode">
+        <Tooltip
+          arrow
+          title="Large network loaded: showing network in simplified mode"
+        >
           <WarningIcon fontSize="large" className={classes.warning} />
         </Tooltip>
       )
@@ -72,23 +118,54 @@ const NetworkDetails = () => {
   }
 
   return (
-    <div className={classes.networkDetails}>
+    <div className={classes.root}>
       {summary.doi ? (
-        <div className={classes.buttonContainer}>
+        <>
           {summary.doi === 'Pending' ? (
-            <Chip label={'DOI: Pending'} size="small" variant="outlined" className={classes.item} />
+            <Grid className={classes.grid} container alignItems={'center'}>
+              <Grid item>
+                <DeleteDOIButton uuid={uuid} />{' '}
+              </Grid>
+              <Grid item>
+                <Chip
+                  variant={'outlined'}
+                  label={'DOI Status: Pending'}
+                  size={'small'}
+                  color={'default'}
+                />
+              </Grid>
+            </Grid>
           ) : (
-            <Tooltip title={doiCopiedHoverText ? 'Copied!' : 'Copy network DOI to clipboard'} className={classes.item}>
-              <CopyToClipboard text={'https://doi.org/' + summary.doi} onCopy={copyDoi}>
-                <Chip clickable label={`DOI: ${summary.doi}`} variant="outlined" onMouseEnter={mouseEnter} />
-              </CopyToClipboard>
-            </Tooltip>
+            <div className={classes.chip}>
+              <Tooltip
+                title={
+                  doiCopiedHoverText
+                    ? 'Copied!'
+                    : 'Copy network DOI to clipboard'
+                }
+                className={classes.item}
+              >
+                <CopyToClipboard
+                  text={'https://doi.org/' + summary.doi}
+                  onCopy={copyDoi}
+                >
+                  <Chip
+                    clickable
+                    label={`DOI: ${summary.doi}`}
+                    size={'small'}
+                    color={'default'}
+                    variant="outlined"
+                    onMouseEnter={mouseEnter}
+                  />
+                </CopyToClipboard>
+              </Tooltip>
+            </div>
           )}
-        </div>
+        </>
       ) : null}
 
-      <div className={classes.row}>
-        <Typography className={classes.label} variant="subtitle2">
+      <Grid container className={classes.grid}>
+        <Typography className={classes.label} variant="body1">
           Network Size:
         </Typography>
         <Chip
@@ -106,9 +183,10 @@ const NetworkDetails = () => {
           className={classes.item}
         />
         {getInformationIcon(summary.edgeCount + summary.nodeCount)}
-      </div>
+      </Grid>
+
       {uiState.showSearchResult && summary.subnetworkNodeCount !== undefined ? (
-        <div className={classes.row}>
+        <Grid container className={classes.grid}>
           <Typography className={classes.label} variant="subtitle2">
             Query Result:
           </Typography>
@@ -124,8 +202,31 @@ const NetworkDetails = () => {
             variant="outlined"
             className={classes.item}
           />
-        </div>
+        </Grid>
       ) : null}
+
+      {renderer === 'lgr' && !uiState.showSearchResult ? (
+        <div />
+      ) : (
+        <CollapsiblePanel
+          openByDefault={false}
+          title={
+            !uiState.showSearchResult
+              ? 'Query External Database'
+              : 'Query External Database (for sub network)'
+          }
+          children={
+            <QueryPanel
+              cx={cx}
+              queryState={queryState}
+              setQueryState={setQueryState}
+            />
+          }
+          open={panelState.queryOpen}
+          setOpen={_handleQueryOpen}
+          backgroundColor={'#f5f5f5'}
+        />
+      )}
     </div>
   )
 }

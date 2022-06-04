@@ -22,10 +22,12 @@ export const getAttributeMap = (cx: object[]) => {
     const key = Object.keys(entry)[0]
     const value = entry[key]
 
-    if (key in resultObject) {
-      resultObject[key].push(...value)
-    } else {
-      resultObject[key] = value
+    if (resultObject[key] === undefined) {
+      if (key in resultObject) {
+        resultObject[key].push(...value)
+      } else {
+        resultObject[key] = value
+      }
     }
   }
   if (isV2) {
@@ -43,16 +45,18 @@ export const getAttributeMap = (cx: object[]) => {
   }
 }
 
-const getDefaultValues = (definition: object, tag: string): Map<string, any> => {
-
+const getDefaultValues = (
+  definition: object,
+  tag: string,
+): Map<string, any> => {
   const defValues = new Map<string, any>()
 
   const defMap = definition[tag]
   const keys = Object.keys(defMap)
-  keys.forEach(key => {
+  keys.forEach((key) => {
     const entry = defMap[key]
     const val = entry['v']
-    if(val !== undefined) {
+    if (val !== undefined) {
       defValues.set(key, val)
     }
   })
@@ -69,12 +73,12 @@ const getNodeAttrsV2 = (kvMap: object) => {
   const SPECIAL_TAGS = {
     name: {
       tag: 'n',
-      label: 'name'
+      label: 'name',
     },
     represents: {
       tag: 'r',
-      label: 'represents'
-    }
+      label: 'represents',
+    },
   }
 
   const attributeDeclarationsTag = 'attributeDeclarations'
@@ -90,20 +94,22 @@ const getNodeAttrsV2 = (kvMap: object) => {
     const entry = nodes[len]
     const attrs = entry['v']
     const current = new Map()
-    // const keys = Object.keys(attrs)
-    attrKeys.forEach(key => {
-      if (key === SPECIAL_TAGS.name.label || key === SPECIAL_TAGS.represents.label) {
-        const tag = SPECIAL_TAGS[key]['tag'] 
+    attrKeys.forEach((key) => {
+      if (
+        key === SPECIAL_TAGS.name.label ||
+        key === SPECIAL_TAGS.represents.label
+      ) {
+        const tag = SPECIAL_TAGS[key]['tag']
         const label = SPECIAL_TAGS[key]['label']
         const val = attrs[tag]
         current.set(label, val)
       } else {
         let value = attrs ? attrs[key] : undefined
-        if(value === undefined) {
+        if (value === undefined) {
           // Try default value
           value = defValues.get(key)
         }
-        if(value !== undefined) {
+        if (value !== undefined) {
           current.set(key, value)
         }
       }
@@ -172,7 +178,7 @@ const getEdgeAttrs = (nodeAttr, kvMap: object) => {
 }
 
 const addSourceTargetInteraction = (nodeAttr, edges, id2attr) => {
-  if (edges == undefined) {
+  if (edges === undefined) {
     return
   }
   let len = edges.length
@@ -190,12 +196,12 @@ const addSourceTargetInteraction = (nodeAttr, edges, id2attr) => {
     const s = nodeAttr[source]
     const t = nodeAttr[target]
 
-    if (s !== undefined) {
-      id2attr[id].set('source', s.get('name'))
-    }
-    if (t !== undefined) {
-      id2attr[id].set('target', t.get('name'))
-    }
+    // if (s !== undefined) {
+    //   id2attr[id].set('source', s.get('name'))
+    // }
+    // if (t !== undefined) {
+    //   id2attr[id].set('target', t.get('name'))
+    // }
     if (interaction !== undefined) {
       id2attr[id].set('interaction', interaction)
     }
@@ -203,7 +209,7 @@ const addSourceTargetInteraction = (nodeAttr, edges, id2attr) => {
 }
 
 const addSourceTargetInteractionV2 = (nodeAttr, edges, id2attr) => {
-  if (edges == undefined) {
+  if (edges === undefined) {
     return
   }
   let len = edges.length

@@ -1,50 +1,77 @@
-import React, { useState } from 'react'
+import React, { FC, ReactNode } from 'react'
 import { Collapse, makeStyles, Theme, Typography } from '@material-ui/core'
 import { ExpandLess, ExpandMore } from '@material-ui/icons'
 
 const useStyles = makeStyles((theme: Theme) => ({
   collapsiblePanelTitle: {
     padding: theme.spacing(1),
+    borderTop: `1px solid ${theme.palette.divider}`,
+    borderBottom: `1px solid ${theme.palette.divider}`,
     '&:hover': {
       backgroundColor: 'rgba(0, 0, 0, 0.04) !important',
       cursor: 'pointer',
     },
+    height: '2.8em',
   },
   collapsiblePanel: {
-    padding: theme.spacing(1),
-    paddingTop: 0,
+    paddingBottom: theme.spacing(2),
   },
   expandIcon: {
     float: 'right',
   },
 }))
 
-const CollapsiblePanel = (props) => {
-  const classes = useStyles()
-  const { openByDefault, summary, children, backgroundColor } = props
-  const [open, setOpen] = useState(openByDefault)
+type CollapsiblePanelProps = {
+  openByDefault?: boolean
+  title: string
+  children: ReactNode
+  backgroundColor?: string
+  className?: string
+  open: boolean
+  setOpen: (boolean) => void
+}
 
-  const handleClick = () => {
+const CollapsiblePanel: FC<CollapsiblePanelProps> = ({
+  openByDefault = true,
+  title = '?',
+  children,
+  backgroundColor,
+  open,
+  setOpen,
+}) => {
+  const classes = useStyles()
+
+  const _handleClick = () => {
     setOpen(!open)
   }
 
   return (
     <>
-      <div onClick={handleClick} className={classes.collapsiblePanelTitle} style={{ backgroundColor: backgroundColor }}>
-        <Typography variant="caption" color="textSecondary">
-          {summary}
-          {open ? <ExpandLess className={classes.expandIcon} /> : <ExpandMore className={classes.expandIcon} />}
+      <div
+        onClick={_handleClick}
+        className={classes.collapsiblePanelTitle}
+        style={{ backgroundColor }}
+      >
+        <Typography variant="subtitle2" color="textSecondary">
+          {title}
+          {open ? (
+            <ExpandLess className={classes.expandIcon} />
+          ) : (
+            <ExpandMore className={classes.expandIcon} />
+          )}
         </Typography>
       </div>
-      <Collapse
-        in={open}
-        timeout="auto"
-        unmountOnExit
-        className={classes.collapsiblePanel}
-        style={{ backgroundColor: backgroundColor }}
-      >
-        {children}
-      </Collapse>
+      <div style={{ minHeight: 'auto' }}>
+        <Collapse
+          in={open}
+          timeout="auto"
+          unmountOnExit
+          className={classes.collapsiblePanel}
+          style={{ backgroundColor, marginBottom: '-16px' }}
+        >
+          {children}
+        </Collapse>
+      </div>
     </>
   )
 }
