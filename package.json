@@ -59,8 +59,7 @@
     "react-google-login": "^5.2.2",
     "react-helmet": "^6.1.0",
     "react-query": "^3.13.0",
-    "react-router": "^5.2.0",
-    "react-router-dom": "^5.2.0",
+    "react-router-dom": "6",
     "react-scrollbar-size": "^3.0.1",
     "react-split-pane": "^0.1.92",
     "react-table": "^7.7.0",
@@ -93,8 +92,7 @@
         "files": [
           "**/*.ts?(x)"
         ],
-        "rules": {
-        }
+        "rules": {}
       }
     ]
   },
@@ -111,21 +109,21 @@
     ]
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.11.9",
-    "@testing-library/react": "^11.2.5",
-    "@testing-library/user-event": "^13.0.7",
-    "@types/jest": "^26.0.21",
-    "@types/node": "^14.6.1",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.3.0",
+    "@testing-library/user-event": "^14.2.0",
+    "@types/jest": "^28.1.1",
+    "@types/node": "^18.0.0",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.14",
-    "@types/react-table": "^7.7.2",
-    "@typescript-eslint/eslint-plugin": "^5.16.0",
-    "@typescript-eslint/parser": "^5.16.0",
+    "@types/react-table": "^7.7.12",
+    "@typescript-eslint/eslint-plugin": "^5.28.0",
+    "@typescript-eslint/parser": "^5.28.0",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-config-react-app": "^7.0.0",
-    "prettier": "^2.6.0",
+    "eslint-config-react-app": "^7.0.1",
+    "prettier": "^2.7.1",
     "react-scripts": "^4.0.3",
-    "typescript": "^4.6.3"
+    "typescript": "^4.7.3"
   },
   "homepage": "/viewer"
 }

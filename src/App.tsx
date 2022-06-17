@@ -2,8 +2,7 @@ import React, { useState, useReducer } from 'react'
 import { Helmet } from 'react-helmet'
 
 import './App.css'
-import { useHistory } from 'react-router-dom'
-import { Switch, Route, BrowserRouter } from 'react-router-dom'
+import { Routes, Route, BrowserRouter } from 'react-router-dom'
 
 import AppShell from './components/AppShell'
 import AccountShell from './components/AccountShell'
@@ -33,7 +32,7 @@ const defSummary: Summary = {
 }
 
 const App = ({ config }) => {
-  const history = useHistory(INITIAL_UI_STATE)
+  // const history = useNavigate(INITIAL_UI_STATE)
 
   const [query, setQuery] = useState('')
   const [queryMode, setQueryMode] = useState('firstStepNeighborhood')
@@ -41,9 +40,8 @@ const App = ({ config }) => {
 
   const [lgrReference, setLgrReference] = useState(null)
 
-  
   const { googleClientId } = config
-  if(googleClientId === undefined) {
+  if (googleClientId === undefined) {
     // Google login feature will not be used. Assume credential is ready
     // defNdexCredential.loaded = true
   }
@@ -93,31 +91,38 @@ const App = ({ config }) => {
   }
 
   return (
-    <BrowserRouter basename={process.env.PUBLIC_URL} history={history}>
-      <Switch>
-        <Route path="/networks/:uuid">
-          <AppContext.Provider value={defState}>
-            <AppShell />
-          </AppContext.Provider>
-        </Route>
-        <Route path="/signup">
-          <AppContext.Provider value={defState}>
-            <AccountShell>
-              <AccountSignUpPane />
-            </AccountShell>
-          </AppContext.Provider>
-        </Route>
-        <Route path="/recoverPassword">
-          <AppContext.Provider value={defState}>
-            <AccountShell>
-              <AccountForgotPasswordPane />
-            </AccountShell>
-          </AppContext.Provider>
-        </Route>
-        <Route path="/">
-          <TopPanel config={config} />
-        </Route>
-      </Switch>
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
+      <Routes>
+        <Route
+          path="/networks/:uuid"
+          element={
+            <AppContext.Provider value={defState}>
+              <AppShell />
+            </AppContext.Provider>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <AppContext.Provider value={defState}>
+              <AccountShell>
+                <AccountSignUpPane />
+              </AccountShell>
+            </AppContext.Provider>
+          }
+        />
+        <Route
+          path="/recoverPassword"
+          element={
+            <AppContext.Provider value={defState}>
+              <AccountShell>
+                <AccountForgotPasswordPane />
+              </AccountShell>
+            </AppContext.Provider>
+          }
+        />
+        <Route path="/" element={<TopPanel config={config} />} />
+      </Routes>
     </BrowserRouter>
   )
 }
