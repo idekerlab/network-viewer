@@ -45,7 +45,7 @@ const App = ({ config }) => {
   const { googleClientId } = config
   if(googleClientId === undefined) {
     // Google login feature will not be used. Assume credential is ready
-    defNdexCredential.loaded = true
+    // defNdexCredential.loaded = true
   }
   const [ndexCredential, setNdexCredential] = useState(defNdexCredential)
 

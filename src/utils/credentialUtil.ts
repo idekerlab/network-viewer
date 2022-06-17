@@ -19,23 +19,36 @@ const getAuthorization = (ndexCredential: NdexCredential) => {
   return undefined;
 }
 
+/**
+ * Utility function to create new NDEx Client using the given credential.
+ * 
+ * @param baseUrl 
+ * @param ndexCredential 
+ * @returns 
+ */
 const getNdexClient = (baseUrl: string, ndexCredential: NdexCredential) => {
+
   const ndexClient = new ndex.NDEx(baseUrl)
   
   if (!ndexCredential.isLogin) {
     // Client without credential.
-    console.warn('Not logged-in. Public networks only.')
+    console.info('No credential. Access to public networks only.')
     return ndexClient
   }
   
   if (ndexCredential.isGoogle) {
-    ndexClient.setAuthToken(ndexCredential.oauth['loginDetails'].tokenId);
-    //console.log('Auth Token ID: ' + ndexCredential.oauth['loginDetails'].tokenId);
-    //console.log('NDEx client with OAuth ::', ndexClient)
+    const { oauth } = ndexCredential
+    const { tokenId } = oauth['loginDetails']
+
+    if(tokenId === undefined || tokenId === null || tokenId === '') {
+      console.warn('Google login token does not exist. Access to public networks only.')
+      return ndexClient
+    } else {
+      ndexClient.setAuthToken(tokenId)
+    }
   } else if (ndexCredential.basic) {
     const basicAuth = ndexCredential.basic
     ndexClient.setBasicAuth(basicAuth.userId, basicAuth.password)
-    //console.log('NDEx client with Basic Auth ::', ndexClient)
   }
 
   return ndexClient
@@ -53,6 +66,5 @@ const getAccessKey = (searchString: string):string => {
   })
   return key
 }
-
 
 export { getGoogleHeader, getAuthorization,  getNdexClient, getAccessKey }
