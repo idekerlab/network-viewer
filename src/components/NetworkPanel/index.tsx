@@ -27,6 +27,7 @@ import UIState from '../../model/UIState'
 import { UIStateActions } from '../../reducer/uiStateReducer'
 import { NodeView, EdgeView } from 'large-graph-renderer'
 
+
 const splitBorder = '1px solid #BBBBBB'
 
 const useStyles = makeStyles((theme: Theme) =>

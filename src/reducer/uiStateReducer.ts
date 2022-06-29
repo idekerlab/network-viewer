@@ -21,6 +21,7 @@ export const INITIAL_UI_STATE: UIState = {
   rightPanelWidth: 0,
   mainNetworkNotDisplayed: false,
   activeTab: 0,
+  maximizeResultView: false
 }
 
 const uiStateReducer = (state: UIState, action: UIStateAction): UIState => {

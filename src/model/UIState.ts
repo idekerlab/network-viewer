@@ -4,6 +4,7 @@ type UIState = {
   rightPanelWidth: number
   mainNetworkNotDisplayed: boolean
   activeTab: number
+  maximizeResultView: boolean
 }
 
 export default UIState

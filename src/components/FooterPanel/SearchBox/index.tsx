@@ -1,5 +1,5 @@
-import React, { FC, useState, useContext, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { FC, useState, useContext, useEffect } from 'react'
+import { URLSearchParamsInit, useParams, useSearchParams } from 'react-router-dom'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import InputBase from '@material-ui/core/InputBase'
 import SearchIcon from '@material-ui/icons/Search'
@@ -9,18 +9,23 @@ import InfoIcon from '@material-ui/icons/InfoOutlined'
 import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 import { IconButton, Tooltip } from '@material-ui/core'
-import AppContext from '../../context/AppState'
-import SearchHelpDialog from './SearchHelpDialog'
+import AppContext from '../../../context/AppState'
+import SearchHelpDialog from '../SearchHelpDialog'
 import { DownloadButton, DownloadProps } from 'cytoscape-explore-components'
-import { fitContent, lockMainWindow } from '../../utils/cyjsUtil'
+import { fitContent } from '../../../utils/cyjsUtil'
 
-import useSearch from '../../hooks/useSearch'
-import SaveQueryButton from './SaveQueryButton'
-import AdvancedQueryMenu from './AdvancedQueryMenu'
-import UIState from '../../model/UIState'
-import { UIStateActions } from '../../reducer/uiStateReducer'
-import SelectionState from '../../model/SelectionState'
-import { SelectionActions } from '../../reducer/selectionStateReducer'
+import useSearch from '../../../hooks/useSearch'
+import SaveQueryButton from '../SaveQueryButton'
+import AdvancedQueryMenu from '../AdvancedQueryMenu'
+import UIState from '../../../model/UIState'
+import { UIStateActions } from '../../../reducer/uiStateReducer'
+import SelectionState from '../../../model/SelectionState'
+import { SelectionActions } from '../../../reducer/selectionStateReducer'
+import {
+  NetworkQueryParams,
+} from '../../../utils/NetworkQueryParams'
+import { QueryType } from './QueryType'
+import { NetworkQuery } from './NetworkQuery'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginRight: theme.spacing(1),
       marginLeft: theme.spacing(1),
       padding: 0,
-      paddingRight: theme.spacing(1) 
+      paddingRight: theme.spacing(1),
     },
     search: {
       maxWidth: '60vh',
@@ -67,22 +72,50 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const queryModes = {
-  direct: 'Direct',
-  firstStepNeighborhood: '1-Step Neighborhood',
-  firstStepAdjacent: '1-step adjacent',
-  interconnect: 'Interconnect',
-  twoStepNeighborhood: '2-step neighborhood',
-  twoStepAdjacent: '2-step adjacent',
-}
-
 const SearchBox: FC = () => {
   const classes = useStyles()
-  const [open, setOpen] = useState(false)
-  const [disableQuery, setDisableQuery] = useState(true)
-  const [rawQuery, setRawQuery] = useState('')
-
   const { uuid } = useParams()
+
+  const [open, setOpen] = useState<boolean>(false)
+  const [disableQuery, setDisableQuery] = useState<boolean>(true)
+  const [rawQuery, setRawQuery] = useState<string>('')
+
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  useEffect(() => {
+    const geneListString: string | null = searchParams.get(
+      NetworkQueryParams.Query,
+    )
+    const queryTypeString: string | null = searchParams.get(
+      NetworkQueryParams.QueryType,
+    )
+
+    // Check query is available in the serch parameter or not
+    if (
+      geneListString !== null &&
+      geneListString.length !== 0 &&
+      queryTypeString !== null &&
+      queryTypeString.length !== 0
+    ) {
+      updateQueryFields(geneListString)
+    } else {
+      handleClear()
+      return
+    }
+
+    // Check type of query
+    if (queryTypeString !== null || queryTypeString.length !== 0) {
+      const targetMode: string | undefined = QueryType[queryTypeString]
+      if (targetMode !== undefined) {
+        setSearchType(queryTypeString)
+        setQueryMode(queryTypeString)
+        // Run search only when network is available
+        setQuery(geneListString)
+        displayResult()  
+      }
+    }
+  }, [searchParams])
+
 
   const {
     cyReference,
@@ -122,7 +155,7 @@ const SearchBox: FC = () => {
     ? summary.subnetworkNodeCount + summary.subnetworkEdgeCount
     : 0
 
-  const data = summaryObjectCount > 0 ? subCx : undefined 
+  const data = summaryObjectCount > 0 ? subCx : undefined
   const downloadProps: DownloadProps = {
     data,
     tooltip: 'Download query result as CX',
@@ -134,14 +167,19 @@ const SearchBox: FC = () => {
     setSearchType(val)
     setQueryMode(val)
   }
-  const handleQueryChange = (evt) => {
-    const q: string = evt.target.value
+
+  const updateQueryFields = (q: string): void => {
     if (q !== undefined && q.length !== 0) {
       setDisableQuery(false)
     } else {
       setDisableQuery(true)
     }
     setRawQuery(q)
+  }
+
+  const handleQueryChange = (evt): void => {
+    const q: string = evt.target.value
+    updateQueryFields(q)
   }
 
   const setShowSearchResult = (state: UIState) =>
@@ -160,14 +198,36 @@ const SearchBox: FC = () => {
     })
   }
 
-  const handleClick = () => {
-    setQuery(rawQuery)
+  const displayResult = (): void => {
     setShowSearchResult({ ...uiState, showSearchResult: true })
     setClearSelection({ ...selectionState })
     setTimeout(() => {
       fitContent(cyReference)
-      // lockMainWindow(cyReference, true)
     }, 300)
+  }
+
+  const validateQueryType = (queryTypeString: string): QueryType => {
+    const defaultQueryType: QueryType = 'direct'
+    const queryType: string | undefined = QueryType[queryTypeString]
+    if (queryType !== undefined) {
+      return queryType as QueryType
+    } else {
+      return defaultQueryType
+    }
+  }
+
+  const handleClick = (): void => {
+    const queryType: QueryType = validateQueryType(searchType)
+
+    setQuery(rawQuery)
+    const networkQuery: NetworkQuery = {
+      [NetworkQueryParams.Query]: rawQuery,
+      [NetworkQueryParams.QueryType]: queryType,
+      [NetworkQueryParams.MaximizeResultView]: true,
+    }
+
+    setSearchParams(networkQuery as URLSearchParamsInit)
+    displayResult()
   }
 
   const handleClear = () => {
@@ -180,6 +240,7 @@ const SearchBox: FC = () => {
       fitContent(cyReference)
       // lockMainWindow(cyReference, false)
     }, 300)
+    setSearchParams({})
   }
 
   const handleHelpClose = () => {
@@ -207,6 +268,7 @@ const SearchBox: FC = () => {
           autoFocus={true}
           placeholder="Enter query terms"
           value={rawQuery}
+          defaultValue={''}
           classes={{
             root: classes.inputRoot,
             input: classes.inputInput,
@@ -237,9 +299,9 @@ const SearchBox: FC = () => {
             id: 'search-type',
           }}
         >
-          {Object.keys(queryModes).map((key) => (
+          {Object.keys(QueryType).map((key) => (
             <option key={key} value={key}>
-              {queryModes[key]}
+              {QueryType[key]}
             </option>
           ))}
         </Select>

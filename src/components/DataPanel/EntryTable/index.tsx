@@ -108,6 +108,10 @@ const EntryTable: VFC<{
   const columns: string[] = useMemo((): string[] => {
     const columnsList: string[] = []
     for (let id of selectedObjects) {
+      if (attributes === undefined || attributes === null) {
+        continue
+      }
+
       const attrs = attributes[id]
       if (attrs === undefined || attrs === null) {
         continue
@@ -180,6 +184,10 @@ const EntryTable: VFC<{
     const textDataList = []
     let idx = 0
     for (let id of selectedObjects) {
+      if (attributes === undefined) {
+        continue
+      }
+      
       const attrs = attributes[id]
       if (attrs === undefined) {
         continue
