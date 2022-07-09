@@ -95,8 +95,7 @@ const InitPanel: FC<InitPanelProps> = ({
   setNoView,
 }) => {
   const classes = useStyles()
-  const { uuid } = useParams()
-  const { config, ndexLoginWrapper } = useContext(AppContext)
+  const { config, ndexLoginWrapper, uiState } = useContext(AppContext)
 
   const [open, setOpen] = useState(false)
 
@@ -118,7 +117,7 @@ const InitPanel: FC<InitPanelProps> = ({
       if (total <= config.warningThreshold) {
         const hasLayout = summary['hasLayout']
 
-        if (!hasLayout && total > config.viewerThreshold) {
+        if (!hasLayout && total > config.viewerThreshold && uiState.maximizeResultView === false) {
           setDialogTitle(`No layout available for this network`)
           setDialogMessage(
             'Do you want to visualize the network with random layout? Or click cancel to explore it without view',

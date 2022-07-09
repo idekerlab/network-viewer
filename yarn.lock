@@ -1566,10 +1566,10 @@
   resolved "https://registry.yarnpkg.com/@js4cytoscape/cx-viz-converter/-/cx-viz-converter-0.1.6.tgz#bf448719a09f1792187bf03035fae09fccac7379"
   integrity sha512-LaQoj4qwWPGlWUW2Ydnp2BGcE5bJf3YNs4qL5MsB3WD5lvUl2KskMh4EGgvhc3Hb91rlSjWMr6TEkCrjq3r5UA==
 
-"@js4cytoscape/cx2js@0.6.7-alpha.1":
-  version "0.6.7-alpha.1"
-  resolved "https://registry.yarnpkg.com/@js4cytoscape/cx2js/-/cx2js-0.6.7-alpha.1.tgz#cf1b1365f754d1cc04194cd2eea302eab7ab6c5f"
-  integrity sha512-recBwB/MXK/L+EQ/jrtgsSRlUjjAYirSgYzC5aFY/4ODYhlpgEjJfEzjAoo1dfGbv0/3IBjfq70wRE/cwEZMig==
+"@js4cytoscape/cx2js@0.6.8":
+  version "0.6.8"
+  resolved "https://registry.yarnpkg.com/@js4cytoscape/cx2js/-/cx2js-0.6.8.tgz#c21bf5b290ad39111a44d98a0caeb5dffb0de058"
+  integrity sha512-LNeickt/6B4+8gJ2NXpln/NhOlwPvqWJyNpgMwiBdwaO1R7BOf+RKs5rk2MmAYjgRSUW9Hfib7DAcDSMdzcHAg==
   dependencies:
     cytoscape-canvas "3.0.1"
     fs "^0.0.1-security"
@@ -1825,7 +1825,7 @@
   dependencies:
     "@mapbox/point-geometry" "~0.1.0"
 
-"@material-ui/core@^4.12.3":
+"@material-ui/core@^4.12.3", "@material-ui/core@^4.12.4":
   version "4.12.4"
   resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-4.12.4.tgz#4ac17488e8fcaf55eb6a7f5efb2a131e10138a73"
   integrity sha512-tr7xekNlM9LjA6pagJmL8QCgZXaubWUwkJnoYcMKd4gw/t4XiyvnTkjdGrUVicyB2BsdaAv1tvow45bPM4sSwQ==
@@ -1843,7 +1843,7 @@
     react-is "^16.8.0 || ^17.0.0"
     react-transition-group "^4.4.0"
 
-"@material-ui/icons@^4.11.2":
+"@material-ui/icons@^4.11.2", "@material-ui/icons@^4.11.3":
   version "4.11.3"
   resolved "https://registry.yarnpkg.com/@material-ui/icons/-/icons-4.11.3.tgz#b0693709f9b161ce9ccde276a770d968484ecff1"
   integrity sha512-IKHlyx6LDh8n19vzwH5RtHIOHl9Tu90aAAxcbWME6kp4dmvODM3UvOHJeMIDzUbd4muuJKHmlNoBN+mDY4XkBA==
@@ -4803,10 +4803,21 @@ cytoscape-explore-components@^0.2.5:
   dependencies:
     react-google-login "^5.2.2"
 
-cytoscape@^3.2.19, cytoscape@^3.21.0:
+cytoscape@^3.2.19:
   version "3.21.1"
   resolved "https://registry.yarnpkg.com/cytoscape/-/cytoscape-3.21.1.tgz#2d3a8b8ade8661c9efab2e9bf7a354b374d6cf0e"
   integrity sha512-mxdxCzuGHOMSWHUFO+/ZQPeMNtJAm81LGzdwP02LhT592ZRfHWCvHUY++HpnSjg/SgrKg1CMqegY/HvYLUS1qg==
+  dependencies:
+    heap "^0.2.6"
+    lodash.debounce "^4.0.8"
+    lodash.get "^4.4.2"
+    lodash.set "^4.3.2"
+    lodash.topath "^4.5.2"
+
+cytoscape@^3.21.2:
+  version "3.21.2"
+  resolved "https://registry.yarnpkg.com/cytoscape/-/cytoscape-3.21.2.tgz#95ce212092e82decf6a446ac06c64462b34d9d73"
+  integrity sha512-VFvgKCaiPnZHpBQFZP6lYAQrnzNAy62Dw7ehcgejxn1Lb2xX2oaVxTuMrAz0kwRifJK/z9sc6M6I3dObSckUrw==
   dependencies:
     heap "^0.2.6"
     lodash.debounce "^4.0.8"
@@ -12634,10 +12645,10 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==
 
-typescript@^4.7.3:
-  version "4.7.3"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.7.3.tgz#8364b502d5257b540f9de4c40be84c98e23a129d"
-  integrity sha512-WOkT3XYvrpXx4vMMqlD+8R8R37fZkjyLGlxavMc4iB8lrl8L0DeTcHbYgw/v0N/z9wAFsgBhcsF0ruoySS22mA==
+typescript@^4.7.4:
+  version "4.7.4"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.7.4.tgz#1a88596d1cf47d59507a1bcdfb5b9dfe4d488235"
+  integrity sha512-C0WQT0gezHuw6AdY1M2jxUO83Rjf0HP7Sk1DtXj6j1EwkQNZrHAg2XPWlq62oqEhYvONq5pkC2Y9oPljWToLmQ==
 
 typical@^4.0.0:
   version "4.0.0"

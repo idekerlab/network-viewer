@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect, useState, useRef } from 'react'
+import { useContext, useEffect, useState, useRef } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import LGRPanel from './LGRPanel'
 import CytoscapeRenderer from '../CytoscapeRenderer'
@@ -26,7 +26,7 @@ import SplitPane from 'react-split-pane'
 import UIState from '../../model/UIState'
 import { UIStateActions } from '../../reducer/uiStateReducer'
 import { NodeView, EdgeView } from 'large-graph-renderer'
-
+import ExpandPanelButton from './ExpandPanelButton'
 
 const splitBorder = '1px solid #BBBBBB'
 
@@ -61,11 +61,17 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '8em',
     },
     expandButton: {
-      position: 'fixed',
-      bottom: '5em',
-      left: '1em',
-      color: 'rgba(100,100,100,1)',
-      zIndex: 100,
+      position: 'absolute',
+      right: theme.spacing(2),
+      top: theme.spacing(1),
+      display: 'flex',
+      flexDirection: 'column',
+      zIndex: 300,
+    },
+    subnetworkPanel: {
+      width: '100%',
+      height: '100%',
+      border: splitBorder,
     },
   }),
 )
@@ -82,7 +88,7 @@ type ViewProps = {
   noView: boolean
 }
 
-const NetworkPanel: FC<ViewProps> = ({
+const NetworkPanel = ({
   cx,
   renderer,
   objectCount,
@@ -93,11 +99,6 @@ const NetworkPanel: FC<ViewProps> = ({
 }: ViewProps) => {
   const classes = useStyles()
   const { uuid } = useParams()
-  const [busy, setBusy] = useState(false)
-  const defSize = window.innerHeight * 0.3
-  const minSize = window.innerHeight * 0.1
-  const [size, setSize] = useState(defSize)
-  const [subHeight, setSubHeight] = useState(0)
 
   const {
     query,
@@ -105,7 +106,6 @@ const NetworkPanel: FC<ViewProps> = ({
     uiStateDispatch,
     uiState,
     cyDispatch,
-    cyReference,
     selectionState,
     selectionStateDispatch,
     config,
@@ -113,6 +113,22 @@ const NetworkPanel: FC<ViewProps> = ({
     summary,
     setSummary,
   } = useContext(AppContext)
+
+  const { maxNumObjects } = config
+  const { showSearchResult, maximizeResultView } = uiState
+
+  const defSize = maximizeResultView ? 0 : window.innerHeight * 0.3
+  const minSize = maximizeResultView ? 0 : window.innerHeight * 0.1
+  const [size, setSize] = useState(defSize)
+  const [subHeight, setSubHeight] = useState(0)
+
+  useEffect(() => {
+    if (maximizeResultView && showSearchResult) {
+      setSize(0)
+    } else {
+      setSize(window.innerHeight * 0.3)
+    }
+  }, [maximizeResultView])
 
   const searchResult = useSearch(
     uuid,
@@ -126,9 +142,6 @@ const NetworkPanel: FC<ViewProps> = ({
   const handleDrag = (newSize) => {
     setSize(newSize)
   }
-
-  const { maxNumObjects } = config
-  const { showSearchResult } = uiState
 
   const usePrevious = (val) => {
     const ref = useRef()
@@ -433,6 +446,17 @@ const NetworkPanel: FC<ViewProps> = ({
     })
 
   const getMainRenderer = (renderer: string) => {
+    // If query result is maximized, do not display the main network
+    if (maximizeResultView) {
+      return (
+        <EmptyView
+          showIcons={false}
+          title="Query Result Mode"
+          message={'Query result is displayed below'}
+        />
+      )
+    }
+
     // Make sure renderer can display network
     if (!isWebGL2 && objectCount > config.viewerThreshold) {
       if (!uiState.mainNetworkNotDisplayed) {
@@ -508,7 +532,6 @@ const NetworkPanel: FC<ViewProps> = ({
     }
   }
 
-  let border = 'none'
   const getSubRenderer = () => {
     // Case 1:
     if (!searchResult.isLoading && subCx === undefined && showSearchResult) {
@@ -545,16 +568,17 @@ const NetworkPanel: FC<ViewProps> = ({
     ) {
       const layout = getCyjsLayout(subCx, LAYOUT_TH)
       // For showing border between top and bottom panels
-      border = splitBorder
       const bgColor = getNetworkBackgroundColor(subCx)
       return (
-        <div style={{ width: '100%', height: '100%', borderTop: border }}>
+        <div className={classes.subnetworkPanel}>
+          <div className={classes.expandButton}>
+            <ExpandPanelButton />
+          </div>
           <CytoscapeRenderer
             uuid={uuid}
             cx={subCx}
             eventHandlers={subEventHandlers}
             layoutName={layout}
-            setBusy={setBusy}
             setCyReference={setSub}
             backgroundColor={bgColor}
           />

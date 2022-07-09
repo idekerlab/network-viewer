@@ -5,11 +5,11 @@ import React, {
   useRef,
   useLayoutEffect,
 } from 'react'
+import { useParams, useSearchParams } from 'react-router-dom'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import NetworkPanel from '../NetworkPanel'
 import DataPanel from '../DataPanel'
 import SplitPane from 'react-split-pane'
-import { useParams } from 'react-router-dom'
 import useNetworkSummary from '../../hooks/useNetworkSummary'
 import useCx from '../../hooks/useCx'
 import AppContext from '../../context/AppState'
@@ -24,6 +24,7 @@ import { convertError } from '../../utils/error/errorHandler'
 import InitializationPanel from './InitializationPanel'
 import NDExError from '../../utils/error/NDExError'
 import ErrorMessage from '../../utils/error/ErrorMessage'
+import { NetworkQueryParams } from '../../utils/NetworkQueryParams'
 
 const V2 = 'v2'
 
@@ -94,9 +95,20 @@ const MainSplitPane = () => {
   const classes = useStyles()
   const containerRef = useRef()
   const { uuid } = useParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const { uiState, ndexCredential, config, uiStateDispatch } = useContext(
     AppContext,
   )
+
+  useEffect(() => {
+    const maximizeResultView: boolean = !!searchParams.get(NetworkQueryParams.MaximizeResultView)
+
+    if(uiState.maximizeResultView !== maximizeResultView) {
+      const newState: UIState = {...uiState, maximizeResultView}
+      uiStateDispatch({ type: UIStateActions.SET_MAXIMIZE_RESULT_VIEW, uiState: newState })
+    }
+  }, [searchParams])
+  
   const maxObj = config.maxNumObjects
   const th = config.viewerThreshold
 
@@ -107,7 +119,7 @@ const MainSplitPane = () => {
     ndexCredential,
   )
 
-  const { isLoading, isError, isLoadingError } = summaryResponse
+  const { isLoading } = summaryResponse
   const summary: object = summaryResponse.data
   const fetchParams = getFetchParams(summary, th)
 
