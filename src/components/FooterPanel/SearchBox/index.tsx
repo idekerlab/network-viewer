@@ -1,5 +1,9 @@
 import { FC, useState, useContext, useEffect } from 'react'
-import { URLSearchParamsInit, useParams, useSearchParams } from 'react-router-dom'
+import {
+  URLSearchParamsInit,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import InputBase from '@material-ui/core/InputBase'
 import SearchIcon from '@material-ui/icons/Search'
@@ -21,9 +25,7 @@ import UIState from '../../../model/UIState'
 import { UIStateActions } from '../../../reducer/uiStateReducer'
 import SelectionState from '../../../model/SelectionState'
 import { SelectionActions } from '../../../reducer/selectionStateReducer'
-import {
-  NetworkQueryParams,
-} from '../../../utils/NetworkQueryParams'
+import { NetworkQueryParams } from '../../../utils/NetworkQueryParams'
 import { QueryType } from './QueryType'
 import { NetworkQuery } from './NetworkQuery'
 
@@ -111,11 +113,10 @@ const SearchBox: FC = () => {
         setQueryMode(queryTypeString)
         // Run search only when network is available
         setQuery(geneListString)
-        displayResult()  
+        displayResult()
       }
     }
   }, [searchParams])
-
 
   const {
     cyReference,
@@ -240,7 +241,13 @@ const SearchBox: FC = () => {
       fitContent(cyReference)
       // lockMainWindow(cyReference, false)
     }, 300)
-    setSearchParams({})
+    const newSearchParams = {}
+
+    if (searchParams.has('accesskey')) {
+      newSearchParams['accesskey'] = searchParams.get('accesskey')
+    }
+
+    setSearchParams(newSearchParams)
   }
 
   const handleHelpClose = () => {
