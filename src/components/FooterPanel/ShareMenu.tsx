@@ -15,7 +15,7 @@ import CreateDOIMenuItem from '../CreateDOIMenuItem'
 import { Tooltip } from '@material-ui/core'
 import AppContext from '../../context/AppState'
 import useNetworkPermissions from '../../hooks/useNetworkPermissions'
-import { EDITABLE, Editable } from './Editable'
+import { EDITABLE } from './Editable'
 import useCurrentUser from '../../hooks/useCurrentUser'
 
 const DISABLED_MENU_TOOLTIP =

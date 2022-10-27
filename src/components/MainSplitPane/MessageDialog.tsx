@@ -6,10 +6,6 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 
-import { useHistory } from 'react-router-dom'
-
-
-
 export type MessageDialogProps = {
   open: boolean
   setOpen: Function
@@ -20,7 +16,6 @@ export type MessageDialogProps = {
 }
 
 const MessageDialog: FC<MessageDialogProps> = ({ title = '', message = '', open, setOpen, setProceed, setNoView }) => {
-  let history = useHistory()
 
   const handleProceed = () => {
 
@@ -35,7 +30,6 @@ const MessageDialog: FC<MessageDialogProps> = ({ title = '', message = '', open,
     setNoView(true)
     setOpen(false)
     setProceed(true)
-    // history.goBack()
   }
 
   return (

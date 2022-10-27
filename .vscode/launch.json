@@ -33,8 +33,13 @@
     
    
     // overrapping cell value in table (UD-2109)
-    "url": "http://localhost:3000/viewer/networks/8efd1be8-b113-11ec-aa7a-767437b87d4a",
+    "url": "http://localhost:3000/viewer/networks/8efd1be8-b113-11ec-aa7a-767437b87d4a?query=c* brca1 brca2 tp53&queryType=firstStepNeighborhood&maximizeResultView=true",
     
+    // Huge: b83dcd1e-500f-11e9-a05d-525400c25d22
+    // Medium: 0498a7f8-a756-11e9-8818-525400c25d22
+    // New query parameters test
+    // "url": "http://localhost:3000/viewer/networks/b83dcd1e-500f-11e9-a05d-525400c25d22?query=ata*&queryType=firstStepNeighborhood&maximizeResultView=true",
+
     // Crash Bug large net
     // "url": "http://localhost:3000/viewer/networks/0258f1e1-bdf6-11eb-82cb-525400c25d22",
     

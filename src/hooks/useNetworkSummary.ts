@@ -22,7 +22,7 @@ async function getNetworkSummary(
   if (!credential.loaded) {
     return undefined
   }
-
+  
   const ndexUrl = `${serverUrl}/${apiVersion}`
   try {
     const ndexClient = getNdexClient(ndexUrl, credential)
@@ -47,7 +47,6 @@ async function getNetworkSummary(
 }
 
 const isValidSummary = (summary: object): boolean => {
-  console.log('Summary:', summary)
   if (summary === undefined || summary === null) {
     return false
   } else if (

@@ -2,7 +2,7 @@ import UIState from '../model/UIState'
 
 export type UIStateAction = {
   type: string
-  uiState: any
+  uiState: UIState
 }
 
 export const UIStateActions = {
@@ -13,6 +13,7 @@ export const UIStateActions = {
   SET_SHOW_PROP_PANEL_FALSE: 'setShowPropPanelFalse',
   SET_MAIN_NETWORK_NOT_DISPLAYED: 'setMainNetworkNotDisplayed',
   SET_ACTIVE_TAB: 'setActiveTab',
+  SET_MAXIMIZE_RESULT_VIEW: 'setMaximizeResultView'
 }
 
 export const INITIAL_UI_STATE: UIState = {
@@ -21,6 +22,7 @@ export const INITIAL_UI_STATE: UIState = {
   rightPanelWidth: 0,
   mainNetworkNotDisplayed: false,
   activeTab: 0,
+  maximizeResultView: false
 }
 
 const uiStateReducer = (state: UIState, action: UIStateAction): UIState => {
@@ -38,6 +40,8 @@ const uiStateReducer = (state: UIState, action: UIStateAction): UIState => {
       }
     case UIStateActions.SET_ACTIVE_TAB:
       return { ...state, activeTab: action.uiState.activeTab }
+    case UIStateActions.SET_MAXIMIZE_RESULT_VIEW:
+      return { ...state, maximizeResultView: action.uiState.maximizeResultView }
     default:
       throw new Error('Invalid action')
   }

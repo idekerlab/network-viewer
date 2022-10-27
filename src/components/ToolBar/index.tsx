@@ -33,6 +33,7 @@ const ToolBar: FC = (props) => {
 
   const { summary, ndexCredential, setNdexCredential, setNdexLoginWrapper } =
     useContext(AppContext)
+  
 
   useEffect(() => {
     setNdexLoginWrapper(ndexButton.current.lastChild)
