@@ -211,7 +211,7 @@ const SearchBox: FC = () => {
     const defaultQueryType: QueryType = 'direct'
     const queryType: string | undefined = QueryType[queryTypeString]
     if (queryType !== undefined) {
-      return queryType as QueryType
+      return queryTypeString as QueryType
     } else {
       return defaultQueryType
     }
@@ -221,13 +221,17 @@ const SearchBox: FC = () => {
     const queryType: QueryType = validateQueryType(searchType)
 
     setQuery(rawQuery)
-    const networkQuery: NetworkQuery = {
+    const nextQueryParams: NetworkQuery = {
       [NetworkQueryParams.Query]: rawQuery,
       [NetworkQueryParams.QueryType]: queryType,
       [NetworkQueryParams.MaximizeResultView]: true,
     }
 
-    setSearchParams(networkQuery as URLSearchParamsInit)
+    if (searchParams.has('accesskey')) {
+      nextQueryParams['accesskey'] = searchParams.get('accesskey')
+    }
+
+    setSearchParams(nextQueryParams as URLSearchParamsInit)
     displayResult()
   }
 
