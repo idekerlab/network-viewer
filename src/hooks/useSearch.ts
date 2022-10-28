@@ -129,10 +129,12 @@ const queryNetwork = async (
     return {}
   }
 
-  let url = `${serverUrl}/v2/search/network/${uuid}/query`
-  if (mode === 'interconnect' || mode === 'direct') {
-    url = `${serverUrl}/v2/search/network/${uuid}/interconnectquery`
-  }
+  const queryEndpointType =
+    mode === 'interconnect' || mode === 'direct' ? 'interconnectquery' : 'query'
+
+  let url = `${serverUrl}/v2/search/network/${uuid}/${queryEndpointType}${
+    credential.accesskey ? `?accesskey=${credential.accesskey}` : ''
+  }`
 
   edgeLimitParams['edgeLimit'] = maxEdge
   const queryParam = Object.assign(
