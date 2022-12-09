@@ -2594,7 +2594,6 @@
     "@typescript-eslint/scope-manager" "5.28.0"
     "@typescript-eslint/types" "5.28.0"
     "@typescript-eslint/typescript-estree" "5.28.0"
-
     debug "^4.3.4"
 
 "@typescript-eslint/scope-manager@4.33.0":
@@ -2604,7 +2603,6 @@
   dependencies:
     "@typescript-eslint/types" "4.33.0"
     "@typescript-eslint/visitor-keys" "4.33.0"
-
 
 "@typescript-eslint/scope-manager@5.28.0":
   version "5.28.0"
@@ -2620,7 +2618,6 @@
   integrity sha512-SyKjKh4CXPglueyC6ceAFytjYWMoPHMswPQae236zqe1YbhvCVQyIawesYywGiu98L9DwrxsBN69vGIVxJ4mQQ==
   dependencies:
     "@typescript-eslint/utils" "5.28.0"
-
     debug "^4.3.4"
     tsutils "^3.21.0"
 
@@ -4962,9 +4959,9 @@ deck.gl@^8.4.11:
     "@deck.gl/react" "8.7.11"
 
 decode-uri-component@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/decode-uri-component/-/decode-uri-component-0.2.0.tgz#eb3913333458775cb84cd1a1fae062106bb87545"
-  integrity sha512-hjf+xovcEn31w/EUYdTXQh/8smFL/dzYjohQGEIgjyNavaJfBY2p5F527Bo1VPATxv0VYTUC2bOcXvqFwk78Og==
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/decode-uri-component/-/decode-uri-component-0.2.2.tgz#e69dbe25d37941171dd540e024c444cd5188e1e9"
+  integrity sha512-FqUYQ+8o158GyGTrMFJms9qh3CqTKvAqgqsTnkLI8sKu0028orqBhxNMFkFen0zGyg6epACD32pjVk58ngIErQ==
 
 dedent@^0.7.0:
   version "0.7.0"
