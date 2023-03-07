@@ -4,54 +4,54 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
-  {
-    "name": "Launch Chrome",
-    "request": "launch",
-    "type": "pwa-chrome",
+    {
+      "name": "Launch Chrome",
+      "request": "launch",
+      "type": "pwa-chrome",
 
-    // Private network
-    // "url": "http://localhost:3000/viewer/networks/536bafd5-ecc5-11ea-8a8c-525400c25d22",
+      // Private network
+      // "url": "http://localhost:3000/viewer/networks/536bafd5-ecc5-11ea-8a8c-525400c25d22",
 
-    // Nodes only network
-    // "url": "http://localhost:3000/viewer/networks/0b4917ff-a640-11ec-b777-767437b87d4a",
-    
-    // Hidden attribute example (MUSIC)
-    // "url": "http://localhost:3000/viewer/networks/fbf311d2-a653-11ec-b777-767437b87d4a",
-    
-    // Permission test
-    // "url": "http://localhost:3000/viewer/networks/fd4a8f5d-4061-11ec-8511-5e2a6510d7f7",
-    
-    // Source target are hidden problem
-    // "url": "http://localhost:3000/viewer/networks/7eb0631e-aaee-11ec-99e1-767437b87d4a",
-    // "url": "http://localhost:3000/viewer/networks/bf0e0b4a-b119-11ec-aa7a-767437b87d4a", 
-    
-    // Public small human
-    // "url": "http://localhost:3000/viewer/networks/4d42c2a2-3768-11ec-a229-525400c25d22",
-    
-    // Scroll crash bug
-    // "url": "http://localhost:3000/viewer/networks/9f1dd498-ab23-11ec-aa7a-767437b87d4a",
-    
-   
-    // overrapping cell value in table (UD-2109)
-    "url": "http://localhost:3000/viewer/networks/8efd1be8-b113-11ec-aa7a-767437b87d4a?query=c* brca1 brca2 tp53&queryType=firstStepNeighborhood&maximizeResultView=true",
-    
-    // Huge: b83dcd1e-500f-11e9-a05d-525400c25d22
-    // Medium: 0498a7f8-a756-11e9-8818-525400c25d22
-    // New query parameters test
-    // "url": "http://localhost:3000/viewer/networks/b83dcd1e-500f-11e9-a05d-525400c25d22?query=ata*&queryType=firstStepNeighborhood&maximizeResultView=true",
+      // Nodes only network
+      // "url": "http://localhost:3000/viewer/networks/0b4917ff-a640-11ec-b777-767437b87d4a",
 
-    // Crash Bug large net
-    // "url": "http://localhost:3000/viewer/networks/0258f1e1-bdf6-11eb-82cb-525400c25d22",
-    
-    // Large net1 clustered
-    // "url": "http://localhost:3000/viewer/networks/eaff6b63-b7a0-11eb-82cb-525400c25d22",
-    // Public large networks
-    // "url": "http://localhost:3000/viewer/networks/eaff6b63-b7a0-11eb-82cb-525400c25d22",
-    // "url":  "http://localhost:3000/viewer/networks/25704eb4-c038-11ea-86e2-525400c25d22",
-    // "url": "http://localhost:3000/viewer/networks/c8d4ba4a-08d6-11eb-a2d4-525400c25d22",
-    // "url": "http://localhost:3000/viewer/networks/402c6977-a239-11eb-aaa0-525400c25d22",
-    
-    "webRoot": "${workspaceFolder}"
-  },
+      // Hidden attribute example (MUSIC)
+      // "url": "http://localhost:3000/viewer/networks/fbf311d2-a653-11ec-b777-767437b87d4a",
+
+      // Permission test
+      // "url": "http://localhost:3000/viewer/networks/fd4a8f5d-4061-11ec-8511-5e2a6510d7f7",
+
+      // Source target are hidden problem
+      // "url": "http://localhost:3000/viewer/networks/7eb0631e-aaee-11ec-99e1-767437b87d4a",
+      // "url": "http://localhost:3000/viewer/networks/bf0e0b4a-b119-11ec-aa7a-767437b87d4a",
+
+      // Public small human
+      // "url": "http://localhost:3000/viewer/networks/4d42c2a2-3768-11ec-a229-525400c25d22",
+
+      // Scroll crash bug
+      // "url": "http://localhost:3000/viewer/networks/9f1dd498-ab23-11ec-aa7a-767437b87d4a",
+
+      // overrapping cell value in table (UD-2109)
+      // "url": "http://localhost:3000/viewer/networks/8efd1be8-b113-11ec-aa7a-767437b87d4a?query=c* brca1 brca2 tp53&queryType=firstStepNeighborhood&maximizeResultView=true",
+
+      // Huge: b83dcd1e-500f-11e9-a05d-525400c25d22
+      // Medium: 0498a7f8-a756-11e9-8818-525400c25d22
+      // New query parameters test
+      // "url": "http://localhost:3000/viewer/networks/b83dcd1e-500f-11e9-a05d-525400c25d22?query=ata*&queryType=firstStepNeighborhood&maximizeResultView=true",
+
+      // Crash Bug large net
+      // "url": "http://localhost:3000/viewer/networks/0258f1e1-bdf6-11eb-82cb-525400c25d22",
+
+      // Large net1 clustered
+      // "url": "http://localhost:3000/viewer/networks/eaff6b63-b7a0-11eb-82cb-525400c25d22",
+      // Public large networks
+      // "url": "http://localhost:3000/viewer/networks/eaff6b63-b7a0-11eb-82cb-525400c25d22",
+      // "url":  "http://localhost:3000/viewer/networks/25704eb4-c038-11ea-86e2-525400c25d22",
+      // "url": "http://localhost:3000/viewer/networks/c8d4ba4a-08d6-11eb-a2d4-525400c25d22",
+      // "url": "http://localhost:3000/viewer/networks/402c6977-a239-11eb-aaa0-525400c25d22",
+
+      "url": "http://localhost:3000/viewer/networks/a7850741-40fd-11ed-9208-0242c246b7fb",
+      "webRoot": "${workspaceFolder}"
+    }
   ]
 }

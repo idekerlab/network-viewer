@@ -22,7 +22,7 @@ import NdexCredential from './model/NdexCredential'
 import Summary from './model/Summary'
 
 const defNdexCredential: NdexCredential = {
-  loaded: false,
+  loaded: true,
   isLogin: false,
   isGoogle: false,
 }

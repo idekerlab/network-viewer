@@ -1,6 +1,3 @@
-import { NdexSignUpPanel } from 'cytoscape-explore-components'
-import { handleNDExSignOn } from 'cytoscape-explore-components'
-
 import { getCurrentServer } from '../../utils/locationUtil'
 
 import { FC, useState } from 'react'
@@ -81,11 +78,11 @@ const AccountSignUpPane: FC = () => {
           </Typography>
         </Grid>
       </Grid>
-      <NdexSignUpPanel
+      {/* <NdexSignUpPanel
         handleNDExSignOn={handleNDExSignOn}
         onSuccessLogin={onSuccessLogin}
         onWaitForEmailValidation={onWaitForEmailValidation}
-      />
+      /> */}
       {showHomeLink && (
         <div className={classes.footer}>
           <Button onClick={handleHomeClick} className={classes.homeButton}>

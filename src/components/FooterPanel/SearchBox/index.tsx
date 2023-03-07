@@ -15,7 +15,6 @@ import Select from '@material-ui/core/Select'
 import { IconButton, Tooltip } from '@material-ui/core'
 import AppContext from '../../../context/AppState'
 import SearchHelpDialog from '../SearchHelpDialog'
-import { DownloadButton, DownloadProps } from 'cytoscape-explore-components'
 import { fitContent } from '../../../utils/cyjsUtil'
 
 import useSearch from '../../../hooks/useSearch'
@@ -157,11 +156,11 @@ const SearchBox: FC = () => {
     : 0
 
   const data = summaryObjectCount > 0 ? subCx : undefined
-  const downloadProps: DownloadProps = {
-    data,
-    tooltip: 'Download query result as CX',
-    fileName: `${uuid} subnet.cx`,
-  }
+  // const downloadProps: DownloadProps = {
+  //   data,
+  //   tooltip: 'Download query result as CX',
+  //   fileName: `${uuid} subnet.cx`,
+  // }
 
   const handleSearchTypeChange = (evt) => {
     const val = evt.target.value
@@ -326,7 +325,7 @@ const SearchBox: FC = () => {
       >
         <SearchIcon />
       </IconButton>
-      {!edgeLimitExceeded && <DownloadButton {...downloadProps} />}
+      {/* {!edgeLimitExceeded && <DownloadButton {...downloadProps} />} */}
       {!edgeLimitExceeded && <SaveQueryButton />}
       <AdvancedQueryMenu />
       <IconButton

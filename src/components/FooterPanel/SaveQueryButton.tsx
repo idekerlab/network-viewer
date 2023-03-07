@@ -4,8 +4,6 @@ import useSearch from '../../hooks/useSearch'
 import AppContext from '../../context/AppState'
 import Snackbar from '@material-ui/core/Snackbar'
 
-import { SaveToNDExButton } from 'cytoscape-explore-components'
-
 const SaveQueryButton = () => {
   const { uuid } = useParams()
   const { query, queryMode, uiState, ndexCredential, config, summary } =
@@ -59,13 +57,13 @@ const SaveQueryButton = () => {
     }
     return (
       <>
-        <SaveToNDExButton
+        {/* <SaveToNDExButton
           disabled={disabled}
           fetchCX={fetchCX}
           onSuccess={onSuccess}
           onFailure={onFailure}
           tooltip="Save to NDEx"
-        />
+        /> */}
         <Snackbar
           anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
           open={snackMessage !== undefined}
@@ -76,7 +74,8 @@ const SaveQueryButton = () => {
       </>
     )
   } else {
-    return <SaveToNDExButton disabled={true} />
+    return <div />
+    // return <SaveToNDExButton disabled={true} />
   }
 }
 

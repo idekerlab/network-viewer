@@ -1,5 +1,4 @@
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
-import { NDExAccountProvider } from 'cytoscape-explore-components'
 
 import AppContext from '../../context/AppState'
 import { useContext, FC } from 'react'
@@ -23,22 +22,8 @@ const useStyles = makeStyles((theme: Theme) =>
 const AccountShell: FC = (props) => {
   const classes = useStyles()
   const { config } = useContext(AppContext)
-  const { ndexHttps, googleClientId } = config
 
-  return (
-    <div className={classes.accountShell}>
-      {googleClientId !== undefined ? (
-        <NDExAccountProvider
-          ndexServerURL={ndexHttps}
-          googleClientId={googleClientId}
-        >
-          {props.children}
-        </NDExAccountProvider>
-      ) : (
-        props.children
-      )}
-    </div>
-  )
+  return <div className={classes.accountShell}>props.children</div>
 }
 
 AccountShell.propTypes = {

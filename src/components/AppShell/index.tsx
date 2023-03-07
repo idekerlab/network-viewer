@@ -1,6 +1,5 @@
 import { FC } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
-import { NDExAccountProvider } from 'cytoscape-explore-components'
 import AppContext from '../../context/AppState'
 import { useContext } from 'react'
 import CoreComponents from './CoreComponents'
@@ -25,16 +24,9 @@ const AppShell: FC = () => {
   const classes = useStyles()
   const { config } = useContext(AppContext)
 
-  const { ndexHttps, googleClientId } = config
-
   return (
     <div className={classes.appShell}>
-      <NDExAccountProvider
-        ndexServerURL={ndexHttps}
-        googleClientId={googleClientId}
-      >
-        <CoreComponents />
-      </NDExAccountProvider>
+      <CoreComponents />
       <div id="sandbox"></div>
     </div>
   )
