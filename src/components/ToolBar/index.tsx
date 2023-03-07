@@ -1,7 +1,6 @@
 import { FC, useContext, useRef, useEffect } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
-import { NDExSignInButton } from 'cytoscape-explore-components'
 import AppContext from '../../context/AppState'
 import ClassicModeButton from './ClassicModeButton'
 import NdexHomeButton from './NdexHomeButton'
@@ -33,7 +32,6 @@ const ToolBar: FC = (props) => {
 
   const { summary, ndexCredential, setNdexCredential, setNdexLoginWrapper } =
     useContext(AppContext)
-  
 
   useEffect(() => {
     setNdexLoginWrapper(ndexButton.current.lastChild)
@@ -89,13 +87,7 @@ const ToolBar: FC = (props) => {
           alignItems="center"
         >
           <NdexHomeButton />
-          <div ref={ndexButton}>
-            <NDExSignInButton
-              size={'medium'}
-              myAccountURL={ndexServerUrl + '/#/myAccount'}
-              onLoginStateUpdated={loginStateUpdated}
-            />
-          </div>
+          <div ref={ndexButton}></div>
           <AdvancedMenu />
           <ClassicModeButton />
         </Grid>
