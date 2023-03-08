@@ -7,6 +7,7 @@ import NdexHomeButton from './NdexHomeButton'
 import AdvancedMenu from './AdvancedMenu'
 
 import { getCurrentServer } from '../../utils/locationUtil'
+import { LoginButton } from '../Login'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,7 +35,7 @@ const ToolBar: FC = (props) => {
     useContext(AppContext)
 
   useEffect(() => {
-    setNdexLoginWrapper(ndexButton.current.lastChild)
+    // setNdexLoginWrapper(ndexButton.current.lastChild)
   }, [])
 
   const ndexServerUrl = getCurrentServer()
@@ -76,25 +77,27 @@ const ToolBar: FC = (props) => {
       <Grid
         container
         direction="row"
-        justify="flex-start"
+        // justify="flex-start"
         alignItems="center"
         spacing={0}
       >
         <Grid
           container
           direction="row"
-          justify="flex-start"
+          // justify="flex-start"
           alignItems="center"
         >
           <NdexHomeButton />
-          <div ref={ndexButton}></div>
+          <div>
+            <LoginButton />
+          </div>
           <AdvancedMenu />
           <ClassicModeButton />
         </Grid>
         <Grid
           container
           direction="row"
-          justify="flex-end"
+          // justify="flex-end"
           alignItems="center"
         ></Grid>
       </Grid>

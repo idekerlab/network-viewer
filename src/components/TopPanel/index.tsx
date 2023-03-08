@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 import logo from '../../assets/images/ndex-logo.svg'
 
 import { getCurrentServer } from '../../utils/locationUtil'
+import KeycloakContext from '../../context/KeycloakContext'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -43,21 +44,46 @@ const useStyles = makeStyles((theme: Theme) =>
 const TopPage = ({ config }) => {
   const classes = useStyles()
 
-  const url = getCurrentServer();
+  const { client } = useContext(KeycloakContext)
+
+  const url = getCurrentServer()
 
   const handleClick = () => {
-    window.open(url, '_self')
+    // window.open(url, '_self')
+
+    if (client.authenticated) {
+      console.log(
+        'AUTHED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!TopPage client=',
+        client.token,
+      )
+      client.logout().then((result) => {
+        console.log('* Logout success', result)
+      })
+    } else {
+      client.login().then((result) => {
+        console.log('* Login success', result)
+      })
+    }
   }
 
   return (
     <div className={classes.root}>
       <div className={classes.item}>
-        <img alt="NDEx Logo" src={logo} className={classes.ndexLogo} onClick={handleClick} />
+        <img
+          alt="NDEx Logo"
+          src={logo}
+          className={classes.ndexLogo}
+          onClick={handleClick}
+        />
         <Typography className={classes.message} variant="h4">
           Please specify UUID of the network
         </Typography>
 
-        <Typography className={classes.link} onClick={handleClick} variant="body1">
+        <Typography
+          className={classes.link}
+          onClick={handleClick}
+          variant="body1"
+        >
           Back to NDEx Home
         </Typography>
       </div>

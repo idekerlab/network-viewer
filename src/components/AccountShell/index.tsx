@@ -23,7 +23,8 @@ const AccountShell: FC = (props) => {
   const classes = useStyles()
   const { config } = useContext(AppContext)
 
-  return <div className={classes.accountShell}>props.children</div>
+  console.log('SHEll-----------------------------------')
+  return <div className={classes.accountShell}>{props.children}</div>
 }
 
 AccountShell.propTypes = {

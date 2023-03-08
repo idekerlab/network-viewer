@@ -1,4 +1,3 @@
-import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
 import App from './App'
@@ -10,6 +9,7 @@ import ErrorBoundary from './components/ErrorBoundary'
 
 import { QueryClientProvider, QueryCache, QueryClient } from 'react-query'
 import AppConfig from './model/AppConfig'
+import { KeycloakContextProvider } from './context/KeycloakContextProvider'
 
 const ROOT_TAG = 'root'
 
@@ -33,7 +33,7 @@ const queryConfig = { queries: { refetchOnWindowFocus: false } }
 const queryCache = new QueryCache()
 const queryClient = new QueryClient({ queryCache, defaultOptions: queryConfig })
 
-async function loadResource() {
+const loadResource = async (): Promise<AppConfig> => {
   const response = await fetch(`${process.env.PUBLIC_URL}/resource.json`)
 
   if (response.status !== 200) {
@@ -42,28 +42,32 @@ async function loadResource() {
     )
   }
   const resource = await response.json()
-  console.info('Resource file loaded', resource)
   const ndexUrl = resource['ndexUrl']
-  const googleClientId = resource['googleClientId']
   const viewerTh = resource['viewerThreshold']
   const maxNumObjects = resource['maxNumObjects']
   const maxEdgeQuery = resource['maxEdgeQuery']
   const maxDataSize = resource['maxDataSize']
   const warningThreshold = resource['warningThreshold']
+  const keycloakConfig = resource['keycloakConfig']
 
   const config: AppConfig = {
     ndexUrl,
-    ndexHttps: (ndexUrl === 'localhost')? `http://${ndexUrl}`: `https://${ndexUrl}`,
-    googleClientId,
+    ndexHttps:
+      ndexUrl === 'localhost' ? `http://${ndexUrl}` : `https://${ndexUrl}`,
     viewerThreshold: viewerTh,
     maxNumObjects,
     maxDataSize,
     maxEdgeQuery,
     warningThreshold,
+    keycloakConfig,
   }
 
+  return config
+}
+
+const render = (config: AppConfig): void => {
   ReactDOM.render(
-    <React.StrictMode>
+    <KeycloakContextProvider keycloakConfig={config.keycloakConfig}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <QueryClientProvider client={queryClient}>
@@ -72,13 +76,15 @@ async function loadResource() {
           </ErrorBoundary>
         </QueryClientProvider>
       </ThemeProvider>
-    </React.StrictMode>,
+    </KeycloakContextProvider>,
     document.getElementById(ROOT_TAG),
   )
 }
 
 // Load resource and start the app.
-loadResource()
+loadResource().then((config: AppConfig) => {
+  render(config)
+})
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

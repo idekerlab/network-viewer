@@ -1,7 +1,11 @@
 {
-  "version": "0.3.1",
+  "version": "0.6.0",
   "ndexUrl": "dev.ndexbio.org",
-  "googleClientId": "802839698598-mrrd3iq3jl06n6c2fo1pmmc8uugt9ukq.apps.googleusercontent.com",
+  "keycloakConfig": {
+    "url": "https://dev.ndexbio.org/auth2",
+    "clientId": "localtestclient",
+    "realm": "ndex"
+  },
   "viewerThreshold": 10000,
   "maxNumObjects": 2000000,
   "maxEdgeQuery": 10000,

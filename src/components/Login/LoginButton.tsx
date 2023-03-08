@@ -1,118 +1,93 @@
 import { Avatar, Tooltip } from '@material-ui/core'
-import { deepOrange } from '@material-ui/core/colors'
-import Keycloak, { KeycloakTokenParsed } from 'keycloak-js'
-import { ReactElement, useEffect, useRef, useState } from 'react'
+// import { deepOrange } from '@material-ui/core/colors'
+import { KeycloakTokenParsed } from 'keycloak-js'
+import { ReactElement, useContext, useEffect, useRef, useState } from 'react'
 import { LoginPanel } from './LoginPanel'
-// import { useCredentialStore } from '../../store/CredentialStore'
+
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
+import { deepOrange } from '@material-ui/core/colors'
+import KeycloakContext from '../../context/KeycloakContext'
 
 export const LoginButton = (): ReactElement => {
-  const initializing = useRef<boolean>(false)
+  const { client } = useContext(KeycloakContext)
   const [open, setOpen] = useState<boolean>(false)
-  const [enabled, setEnabled] = useState<boolean>(false)
 
-  const client: Keycloak = useCredentialStore((state) => state.client)
-  const setInitialized: (initialized: boolean) => void = useCredentialStore(
-    (state) => state.setInitialized,
+  const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+      root: {
+        display: 'flex',
+        '& > *': {
+          margin: theme.spacing(1),
+        },
+      },
+      orange: {
+        color: theme.palette.getContrastText(deepOrange[500]),
+        backgroundColor: deepOrange[400],
+      },
+    }),
   )
-
-  const setClient: (client: Keycloak) => void = useCredentialStore(
-    (state) => state.setClient,
-  )
+  const classes = useStyles()
 
   useEffect(() => {
-    if (initializing.current) {
-      console.log('Initialization in progress...')
+    if (client === undefined) {
       return
     }
-    initializing.current = true
-    const { keycloakConfig } = appConfig
-    const keycloak = new Keycloak({ ...keycloakConfig })
-    keycloak
-      .init({
-        onLoad: 'check-sso',
-        checkLoginIframe: false,
-        silentCheckSsoRedirectUri:
-          window.location.origin + '/silent-check-sso.html',
-      })
-      .then((authenticated: boolean) => {
-        console.info(
-          'Keycloak initialized. Is authenticated?',
-          authenticated,
-          client,
-        )
+    console.log('++++++++++++++++++ LoginButton:useEffect4', client)
+  }, [client])
 
-        setClient(keycloak)
-        setEnabled(true)
-        console.log('App is ready', client)
-        setTimeout(() => {
-          initializing.current = false
-          setInitialized(true) // This will trigger the rendering of the rest of the app
-        }, 1000)
-      })
-      .catch((e) => {
-        console.warn('Failed to initialize Keycloak client:', e)
-      })
-  }, [])
+  const handleClose = (): void => {
+    // if (!enabled) {
+    //   // Button is not ready yet
+    //   return
+    // }
+    console.log('LoginButton:handleClose token2', client)
 
-  const handleClose = async (): Promise<void> => {
-    if (!enabled) {
-      // Button is not ready yet
-      return
-    }
+    return
+    // const authenticated: boolean = keycloak.authenticated ?? false
 
-    const authenticated: boolean = client?.authenticated ?? false
-
-    if (!open) {
-      const token = client?.token
-      if (token !== undefined && authenticated) {
-        setOpen(true)
-      } else if (!authenticated) {
-        // Need to login
-        client
-          ?.login()
-          .then((result) => {
-            console.log('* Login success', result)
-          })
-          .catch((error: any) => {
-            console.warn('Failed to login', error)
-          })
-      }
-    } else {
-      setOpen(false)
-    }
+    // if (!open) {
+    //   if (authenticated) {
+    //     setOpen(true)
+    //   } else if (!authenticated) {
+    //     // Need to login
+    //     keycloak
+    //       ?.login()
+    //       .then((result) => {
+    //         console.log('* Login success', result)
+    //       })
+    //       .catch((error: any) => {
+    //         console.warn('Failed to login', error)
+    //       })
+    //   }
+    // } else {
+    //   setOpen(false)
+    // }
   }
   const handleLogout = (): void => {
-    if (!enabled) {
-      // Button is not ready yet
-      return
-    }
-    client
-      ?.logout({
-        redirectUri: window.location.origin,
-      })
-      .then(() => {
-        console.log('* Logout success')
-      })
-      .catch((error: any) => {
-        console.warn('Failed to logout', error)
-      })
+    // if (client === undefined) {
+    //   // Button is not ready yet
+    //   return
+    // }
+    // client
+    //   ?.logout({
+    //     redirectUri: window.location.origin,
+    //   })
+    //   .then(() => {
+    //     console.log('* Logout success')
+    //   })
+    //   .catch((error: any) => {
+    //     console.warn('Failed to logout', error)
+    //   })
   }
 
-  const parsed: KeycloakTokenParsed = client.tokenParsed ?? {}
+  const parsed: KeycloakTokenParsed = client?.tokenParsed ?? {}
+  console.log('LoginButton:parsed$$$$$$$$$$$$$', parsed)
   const tooltipTitle =
     parsed.name === undefined ? 'Click to login' : parsed.name
   return (
     <>
       <Tooltip title={tooltipTitle}>
-        <Avatar
-          sx={{
-            bgcolor: parsed.name === undefined ? '#DDDDDD' : deepOrange[300],
-            marginLeft: 2,
-            width: '32',
-            height: '32',
-          }}
-          onClick={handleClose}
-        >
+        <Avatar onClick={handleClose} className={classes.orange}>
           {parsed.name === undefined ? null : parsed.name[0]}
         </Avatar>
       </Tooltip>

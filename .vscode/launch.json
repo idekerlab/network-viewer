@@ -7,7 +7,7 @@
     {
       "name": "Launch Chrome",
       "request": "launch",
-      "type": "pwa-chrome",
+      "type": "chrome",
 
       // Private network
       // "url": "http://localhost:3000/viewer/networks/536bafd5-ecc5-11ea-8a8c-525400c25d22",
@@ -50,7 +50,7 @@
       // "url": "http://localhost:3000/viewer/networks/c8d4ba4a-08d6-11eb-a2d4-525400c25d22",
       // "url": "http://localhost:3000/viewer/networks/402c6977-a239-11eb-aaa0-525400c25d22",
 
-      "url": "http://localhost:3000/viewer/networks/a7850741-40fd-11ed-9208-0242c246b7fb",
+      "url": "http://localhost:5500/viewer/networks/a7850741-40fd-11ed-9208-0242c246b7fb",
       "webRoot": "${workspaceFolder}"
     }
   ]

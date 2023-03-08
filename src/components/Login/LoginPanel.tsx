@@ -1,15 +1,15 @@
-import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
-import CardContent from '@mui/material/CardContent'
-import CardActions from '@mui/material/CardActions'
-import Avatar from '@mui/material/Avatar'
-import IconButton from '@mui/material/IconButton'
-import Typography from '@mui/material/Typography'
-import LogoutIcon from '@mui/icons-material/Logout'
-import CloseIcon from '@mui/icons-material/Close'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
+import Card from '@material-ui/core/Card'
+import CardHeader from '@material-ui/core/CardHeader'
+import CardContent from '@material-ui/core/CardContent'
+import CardActions from '@material-ui/core/CardActions'
+import Avatar from '@material-ui/core/Avatar'
+import IconButton from '@material-ui/core/IconButton'
+import Typography from '@material-ui/core/Typography'
+import LogoutIcon from '@material-ui/icons/ExitToApp'
+import CloseIcon from '@material-ui/icons/Close'
+import MoreVertIcon from '@material-ui/icons/MoreVert'
 import { ReactElement } from 'react'
-import { Button } from '@mui/material'
+import { Button } from '@material-ui/core'
 import { KeycloakTokenParsed } from 'keycloak-js'
 
 interface LoginPanelProps {
@@ -28,13 +28,13 @@ export const LoginPanel = (props: LoginPanelProps): ReactElement => {
 
   return (
     <Card
-      sx={{
-        zIndex: 1000,
-        maxWidth: 345,
-        position: 'fixed',
-        top: 40,
-        right: 10,
-      }}
+    // sx={{
+    //   zIndex: 1000,
+    //   maxWidth: 345,
+    //   position: 'fixed',
+    //   top: 40,
+    //   right: 10,
+    // }}
     >
       <CardHeader
         avatar={<Avatar aria-label="user" />}
@@ -47,7 +47,7 @@ export const LoginPanel = (props: LoginPanelProps): ReactElement => {
         subheader={token?.email}
       />
       <CardContent>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" color="secondary">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
           eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
           minim veniam, quis nostrud exercitation ullamco laboris nisi ut
@@ -63,7 +63,7 @@ export const LoginPanel = (props: LoginPanelProps): ReactElement => {
           Logout
         </Button>
         <Button
-          sx={{ marginLeft: '0.5em' }}
+          // sx={{ marginLeft: '0.5em' }}
           variant="outlined"
           startIcon={<CloseIcon />}
           onClick={props.handleClose}
