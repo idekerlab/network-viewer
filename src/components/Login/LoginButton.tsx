@@ -47,10 +47,10 @@ export const LoginButton = (): ReactElement => {
         setName(client.tokenParsed.name)
       } else {
         console.log('LB NONAME', client)
-        setName('?')
+        setName('')
       }
       setEnabled(true)
-    }, 1000)
+    }, 2000)
   }, [client])
 
   const handleClose = (): void => {

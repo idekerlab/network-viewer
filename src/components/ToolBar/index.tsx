@@ -8,6 +8,7 @@ import AdvancedMenu from './AdvancedMenu'
 
 import { getCurrentServer } from '../../utils/locationUtil'
 import { LoginButton } from '../Login'
+import NDExSignInButton from '../NdexLogin/NDExSignInButton'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const ToolBar: FC = (props) => {
   const classes = useStyles()
-  const ndexButton = useRef(null)
+  // const ndexButton = useRef(null)
 
   const { summary, ndexCredential, setNdexCredential, setNdexLoginWrapper } =
     useContext(AppContext)
@@ -74,32 +75,15 @@ const ToolBar: FC = (props) => {
 
   return (
     <div className={classes.root}>
-      <Grid
-        container
-        direction="row"
-        // justify="flex-start"
-        alignItems="center"
-        spacing={0}
-      >
-        <Grid
-          container
-          direction="row"
-          // justify="flex-start"
-          alignItems="center"
-        >
+      <Grid container direction="row" alignItems="center" spacing={0}>
+        <Grid container direction="row" alignItems="center">
           <NdexHomeButton />
-          <div>
-            <LoginButton />
-          </div>
+          <LoginButton />
+          <NDExSignInButton />
           <AdvancedMenu />
           <ClassicModeButton />
         </Grid>
-        <Grid
-          container
-          direction="row"
-          // justify="flex-end"
-          alignItems="center"
-        ></Grid>
+        <Grid container direction="row" alignItems="center"></Grid>
       </Grid>
     </div>
   )
