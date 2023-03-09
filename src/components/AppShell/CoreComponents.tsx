@@ -1,8 +1,9 @@
-import { FC } from 'react'
+import { FC, useContext } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import MainSplitPane from '../MainSplitPane'
 import ToolBar from '../ToolBar'
 import FooterPanel from '../FooterPanel'
+import KeycloakContext from '../../context/KeycloakContext'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -47,9 +48,7 @@ const CoreComponents: FC = () => {
       <main className={classes.main}>
         <MainSplitPane />
       </main>
-      <footer className={classes.footer}>
-        <FooterPanel />
-      </footer>
+      <footer className={classes.footer}>{/* <FooterPanel /> */}</footer>
     </div>
   )
 }

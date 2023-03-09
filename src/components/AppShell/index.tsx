@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const AppShell: FC = () => {
   const classes = useStyles()
-  const { config } = useContext(AppContext)
+  // const { config } = useContext(AppContext)
 
   return (
     <div className={classes.appShell}>

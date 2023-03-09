@@ -11,6 +11,9 @@ import KeycloakContext from '../../context/KeycloakContext'
 export const LoginButton = (): ReactElement => {
   const { client } = useContext(KeycloakContext)
   const [open, setOpen] = useState<boolean>(false)
+  const [enabled, setEnabled] = useState<boolean>(false)
+
+  const [name, setName] = useState<string>('')
 
   const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -22,7 +25,7 @@ export const LoginButton = (): ReactElement => {
       },
       orange: {
         color: theme.palette.getContrastText(deepOrange[500]),
-        backgroundColor: deepOrange[400],
+        backgroundColor: enabled ? deepOrange[400] : deepOrange[50],
       },
     }),
   )
@@ -32,63 +35,77 @@ export const LoginButton = (): ReactElement => {
     if (client === undefined) {
       return
     }
-    console.log('++++++++++++++++++ LoginButton:useEffect4', client)
+    console.log('LB ++++++++++++++++++ LoginButton Got keycloak', client)
+
+    // TODO: why we need to wait???
+    setTimeout(() => {
+      const tokenObj = client.tokenParsed
+
+      console.log('CheckName', tokenObj, client)
+      if (tokenObj !== undefined) {
+        console.log('LB NAME Available', client.tokenParsed.name)
+        setName(client.tokenParsed.name)
+      } else {
+        console.log('LB NONAME', client)
+        setName('?')
+      }
+      setEnabled(true)
+    }, 1000)
   }, [client])
 
   const handleClose = (): void => {
-    // if (!enabled) {
-    //   // Button is not ready yet
-    //   return
-    // }
+    if (!enabled) {
+      // Button is not ready yet
+      return
+    }
     console.log('LoginButton:handleClose token2', client)
 
-    return
-    // const authenticated: boolean = keycloak.authenticated ?? false
+    const authenticated: boolean = client.authenticated
 
-    // if (!open) {
-    //   if (authenticated) {
-    //     setOpen(true)
-    //   } else if (!authenticated) {
-    //     // Need to login
-    //     keycloak
-    //       ?.login()
-    //       .then((result) => {
-    //         console.log('* Login success', result)
-    //       })
-    //       .catch((error: any) => {
-    //         console.warn('Failed to login', error)
-    //       })
-    //   }
-    // } else {
-    //   setOpen(false)
-    // }
+    if (!open) {
+      if (authenticated) {
+        setOpen(true)
+      } else if (!authenticated) {
+        // Need to login
+        client
+          ?.login()
+          .then((result) => {
+            console.log('* Login success', result)
+          })
+          .catch((error: any) => {
+            console.warn('Failed to login', error)
+          })
+      }
+    } else {
+      setOpen(false)
+    }
   }
   const handleLogout = (): void => {
-    // if (client === undefined) {
-    //   // Button is not ready yet
-    //   return
-    // }
-    // client
-    //   ?.logout({
+    if (client === undefined) {
+      // Button is not ready yet
+      return
+    }
+    // client.logout({
     //     redirectUri: window.location.origin,
     //   })
-    //   .then(() => {
-    //     console.log('* Logout success')
-    //   })
-    //   .catch((error: any) => {
-    //     console.warn('Failed to logout', error)
-    //   })
+    client
+      .logout()
+      .then(() => {
+        console.log('* Logout success')
+        setName('')
+      })
+      .catch((error: any) => {
+        console.warn('Failed to logout', error)
+      })
   }
 
   const parsed: KeycloakTokenParsed = client?.tokenParsed ?? {}
-  console.log('LoginButton:parsed$$$$$$$$$$$$$', parsed)
-  const tooltipTitle =
-    parsed.name === undefined ? 'Click to login' : parsed.name
+  const tooltipTitle = name === '' ? 'Click to login' : name
   return (
     <>
       <Tooltip title={tooltipTitle}>
         <Avatar onClick={handleClose} className={classes.orange}>
-          {parsed.name === undefined ? null : parsed.name[0]}
+          {name.length > 0 ? name[0] : null}
         </Avatar>
       </Tooltip>
       <LoginPanel
