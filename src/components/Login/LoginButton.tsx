@@ -33,37 +33,39 @@ export const LoginButton = (): ReactElement => {
   const classes = useStyles()
 
   useEffect(() => {
-    console.log('LoginButton got keycloak', keycloak)
+    console.log('* LoginButton got keycloak', keycloak)
+    if (keycloak === undefined) {
+      return
+    }
 
-    // const tokenObj = client?.tokenParsed
+    const isAuth: boolean = keycloak.authenticated
 
-    // console.log('CheckName', tokenObj, client)
-    // if (tokenObj !== undefined) {
-    //   console.log('LB NAME Available', client.tokenParsed.name)
-    //   setName(client.tokenParsed.name)
-    // } else {
-    //   console.log('LB NONAME', client)
-    //   setName('')
-    // }
-    // setEnabled(true)
-  }, [])
+    if (isAuth && keycloak.tokenParsed !== undefined) {
+      const tokenObj: KeycloakTokenParsed = keycloak.tokenParsed
+      setName(tokenObj.name)
+    } else {
+      console.log('NO user info yet. Login', keycloak)
+      setName('')
+      // keycloak.login()
+    }
+    setEnabled(true)
+  }, [keycloak])
 
   const handleClose = (): void => {
-    const client = keycloak
     if (!enabled) {
       // Button is not ready yet
       return
     }
-    console.log('LoginButton:handleClose token2', client)
+    console.log('LoginButton: pressed')
 
-    const authenticated: boolean = client.authenticated
+    const authenticated: boolean = keycloak?.authenticated ?? false
 
     if (!open) {
       if (authenticated) {
         setOpen(true)
       } else if (!authenticated) {
         // Need to login
-        client
+        keycloak
           ?.login()
           .then((result) => {
             console.log('* Login success', result)

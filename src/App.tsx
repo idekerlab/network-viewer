@@ -96,17 +96,6 @@ const App = ({ config, keycloak }) => {
   }
 
   const routes = [
-    // {
-    //   path: '/silent-check-sso.html',
-    //   element: <Navigate to="/networks" />,
-    //   // loader: ({ params }) => {
-    //   //   const loc = window.location
-    //   //   console.log('LD:', params['*'], loc)
-    //   // },
-    //   // action: ({ params }) => {
-    //   //   console.log('ACTION', params['*'])
-    //   // },
-    // },
     {
       path: '/networks/:uuid',
       element: (
