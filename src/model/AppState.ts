@@ -39,6 +39,8 @@ type AppState = {
   setNdexLoginWrapper: (button: any) => void
 
   keycloak: Keycloak
+  isReady: boolean
+  setIsReady: (isReady: boolean) => void
 }
 
 export default AppState

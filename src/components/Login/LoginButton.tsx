@@ -8,10 +8,9 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 import { deepOrange } from '@material-ui/core/colors'
 import AppContext from '../../context/AppState'
 
-import Keycloak from 'keycloak-js'
-
+let initialized = false
 export const LoginButton = (): ReactElement => {
-  const { config, keycloak } = useContext(AppContext)
+  const { config, keycloak, isReady } = useContext(AppContext)
   const [open, setOpen] = useState<boolean>(false)
   const [enabled, setEnabled] = useState<boolean>(false)
   const [name, setName] = useState<string>('')
@@ -33,22 +32,74 @@ export const LoginButton = (): ReactElement => {
   const classes = useStyles()
 
   useEffect(() => {
+    console.log(
+      'IS READY INIT -------------------------------',
+      isReady,
+      keycloak,
+    )
+    setEnabled(true)
+    const isAuth: boolean = keycloak.authenticated
+    setEnabled(true)
+    console.log('Auth--------------Login', keycloak)
+
+    if (isAuth && keycloak.tokenParsed !== undefined) {
+      console.log('SET---------Auth--------------Login', keycloak)
+      const tokenObj: KeycloakTokenParsed = keycloak.tokenParsed
+      setName(tokenObj.name)
+      keycloak
+        .loadUserProfile()
+        .then(function (profile) {
+          console.log('Got P+++++++++++++++++', profile)
+        })
+        .catch(function () {
+          alert('Failed to load user profile')
+        })
+    } else {
+      console.log(')))))))))))) Auto NO user info yet. Login', keycloak)
+
+      const keycloakInit = localStorage.getItem('keycloakInit')
+      // if (keycloakInit === 'false') {
+      //   localStorage.setItem('keycloakInit', 'true')
+      //   keycloak.login({
+      //     prompt: 'none',
+      //   })
+      // }
+    }
+  }, [isReady])
+
+  useEffect(() => {
     console.log('* LoginButton got keycloak', keycloak)
     if (keycloak === undefined) {
       return
     }
 
-    const isAuth: boolean = keycloak.authenticated
+    // const isAuth: boolean = keycloak.authenticated
+    // setEnabled(true)
+    // console.log('Auth--------------Login', keycloak)
 
-    if (isAuth && keycloak.tokenParsed !== undefined) {
-      const tokenObj: KeycloakTokenParsed = keycloak.tokenParsed
-      setName(tokenObj.name)
-    } else {
-      console.log('NO user info yet. Login', keycloak)
-      setName('')
-      // keycloak.login()
-    }
-    setEnabled(true)
+    // if (isAuth && keycloak.tokenParsed !== undefined) {
+    //   console.log('SET---------Auth--------------Login', keycloak)
+    //   const tokenObj: KeycloakTokenParsed = keycloak.tokenParsed
+    //   setName(tokenObj.name)
+    //   keycloak
+    //     .loadUserProfile()
+    //     .then(function (profile) {
+    //       console.log('Got P+++++++++++++++++', profile)
+    //     })
+    //     .catch(function () {
+    //       alert('Failed to load user profile')
+    //     })
+    // } else {
+    //   console.log(')))))))))))) Auto NO user info yet. Login', keycloak)
+
+    //   const keycloakInit = localStorage.getItem('keycloakInit')
+    //   // if (keycloakInit === 'false') {
+    //   //   localStorage.setItem('keycloakInit', 'true')
+    //   //   keycloak.login({
+    //   //     prompt: 'none',
+    //   //   })
+    //   // }
+    // }
   }, [keycloak])
 
   const handleClose = (): void => {

@@ -31,6 +31,8 @@ import { basename } from 'path'
 import { KeycloakContextProvider } from './context/KeycloakContextProvider'
 // import { KeycloakContextProvider } from './context/KeycloakContextProvider'
 
+import { redirect } from 'react-router-dom'
+
 const defNdexCredential: NdexCredential = {
   loaded: true,
   isLogin: false,
@@ -61,6 +63,8 @@ const App = ({ config, keycloak }) => {
   )
 
   const [ndexLoginWrapper, setNdexLoginWrapper] = useState(null)
+
+  const [isReady, setIsReady] = useState(false)
 
   // TODO: use reducer?
   const defState: AppState = {
@@ -93,9 +97,19 @@ const App = ({ config, keycloak }) => {
     setNdexLoginWrapper,
 
     keycloak,
+    isReady,
+    setIsReady,
   }
 
   const routes = [
+    // {
+    //   path: '/silent-check-sso.html',
+    //   element: (
+    //     <AppContext.Provider value={defState}>
+    //       <AppShell />
+    //     </AppContext.Provider>
+    //   ),
+    // },
     {
       path: '/networks/:uuid',
       element: (

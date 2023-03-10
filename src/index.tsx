@@ -13,8 +13,16 @@ import Keycloak from 'keycloak-js'
 
 const ROOT_TAG = 'root'
 
+// This is for keycloak silent initialization.
+const LOCATION_TAG = 'originalLocation'
+const SILENT_TAG = '/viewer/silent-check-sso.html'
+
 const originalLoc = window.location.pathname
-localStorage.setItem('originalLoc', originalLoc)
+console.log('Original URL', originalLoc)
+
+if (originalLoc !== SILENT_TAG) {
+  localStorage.setItem(LOCATION_TAG, originalLoc)
+}
 
 // Avoid HTTP
 const location = window.location
@@ -69,16 +77,14 @@ const loadResource = async (): Promise<AppConfig> => {
 }
 
 const auth = async (config: AppConfig): Promise<Keycloak> => {
-  const newClient = new Keycloak(config.keycloakConfig)
+  localStorage.setItem('originalLoc', window.location.pathname)
 
-  console.log('Original URL', window.location)
+  const newClient = new Keycloak(config.keycloakConfig)
   try {
     await newClient.init({
       // onLoad: 'check-sso',
-
-      checkLoginIframe: true,
-      silentCheckSsoRedirectUri:
-        window.location.origin + `/viewer/silent-check-sso.html`,
+      // checkLoginIframe: false,
+      // silentCheckSsoRedirectUri: window.location.origin + SILENT_TAG,
     })
   } catch (e) {
     console.log('Keycloak init failed', e)
@@ -119,8 +125,8 @@ const render = (config: AppConfig, keycloak?: Keycloak): void => {
 
 // Start the app modules in sequence.
 loadResource().then((config: AppConfig) => {
-  auth(config).then((keycloak) => {
-    render(config, keycloak)
+  auth(config).then((newClient: Keycloak) => {
+    render(config, newClient)
   })
 })
 
