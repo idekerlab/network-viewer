@@ -8,6 +8,7 @@ import {
   BrowserRouter,
   createBrowserRouter,
   RouterProvider,
+  Navigate,
 } from 'react-router-dom'
 
 import AppShell from './components/AppShell'
@@ -27,6 +28,7 @@ import uiStateReducer, { INITIAL_UI_STATE } from './reducer/uiStateReducer'
 import NdexCredential from './model/NdexCredential'
 import Summary from './model/Summary'
 import { basename } from 'path'
+import { KeycloakContextProvider } from './context/KeycloakContextProvider'
 // import { KeycloakContextProvider } from './context/KeycloakContextProvider'
 
 const defNdexCredential: NdexCredential = {
@@ -39,7 +41,7 @@ const defSummary: Summary = {
   name: 'N/A',
 }
 
-const App = ({ config }) => {
+const App = ({ config, keycloak }) => {
   const [query, setQuery] = useState('')
   const [queryMode, setQueryMode] = useState('firstStepNeighborhood')
   const [summary, setSummary] = useState(defSummary)
@@ -89,10 +91,22 @@ const App = ({ config }) => {
 
     ndexLoginWrapper,
     setNdexLoginWrapper,
+
+    keycloak,
   }
-  console.log(process.env.PUBLIC_URL)
 
   const routes = [
+    // {
+    //   path: '/silent-check-sso.html',
+    //   element: <Navigate to="/networks" />,
+    //   // loader: ({ params }) => {
+    //   //   const loc = window.location
+    //   //   console.log('LD:', params['*'], loc)
+    //   // },
+    //   // action: ({ params }) => {
+    //   //   console.log('ACTION', params['*'])
+    //   // },
+    // },
     {
       path: '/networks/:uuid',
       element: (
@@ -131,42 +145,6 @@ const App = ({ config }) => {
   })
 
   return <RouterProvider router={router} />
-
-  // return (
-  //   <BrowserRouter basename={process.env.PUBLIC_URL}>
-  //     <Routes>
-  //       <Route
-  //         path="/networks/:uuid"
-  //         element={
-  //           <AppContext.Provider value={defState}>
-  //             <AppShell />
-  //           </AppContext.Provider>
-  //         }
-  //       />
-  //       <Route
-  //         path="/signup"
-  //         element={
-  //           <AppContext.Provider value={defState}>
-  //             <AccountShell>
-  //               <AccountSignUpPane />
-  //             </AccountShell>
-  //           </AppContext.Provider>
-  //         }
-  //       />
-  //       <Route
-  //         path="/recoverPassword"
-  //         element={
-  //           <AppContext.Provider value={defState}>
-  //             <AccountShell>
-  //               <AccountForgotPasswordPane />
-  //             </AccountShell>
-  //           </AppContext.Provider>
-  //         }
-  //       />
-  //       <Route path="/" element={<TopPanel config={config} />} />
-  //     </Routes>
-  //   </BrowserRouter>
-  // )
 }
 
 export default App

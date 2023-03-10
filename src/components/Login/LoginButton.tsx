@@ -6,13 +6,14 @@ import { LoginPanel } from './LoginPanel'
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 import { deepOrange } from '@material-ui/core/colors'
-import KeycloakContext from '../../context/KeycloakContext'
+import AppContext from '../../context/AppState'
+
+import Keycloak from 'keycloak-js'
 
 export const LoginButton = (): ReactElement => {
-  const { client } = useContext(KeycloakContext)
+  const { config, keycloak } = useContext(AppContext)
   const [open, setOpen] = useState<boolean>(false)
   const [enabled, setEnabled] = useState<boolean>(false)
-
   const [name, setName] = useState<string>('')
 
   const useStyles = makeStyles((theme: Theme) =>
@@ -32,28 +33,23 @@ export const LoginButton = (): ReactElement => {
   const classes = useStyles()
 
   useEffect(() => {
-    if (client === undefined) {
-      return
-    }
-    console.log('LB ++++++++++++++++++ LoginButton Got keycloak', client)
+    console.log('LoginButton got keycloak', keycloak)
 
-    // TODO: why we need to wait???
-    setTimeout(() => {
-      const tokenObj = client.tokenParsed
+    // const tokenObj = client?.tokenParsed
 
-      console.log('CheckName', tokenObj, client)
-      if (tokenObj !== undefined) {
-        console.log('LB NAME Available', client.tokenParsed.name)
-        setName(client.tokenParsed.name)
-      } else {
-        console.log('LB NONAME', client)
-        setName('')
-      }
-      setEnabled(true)
-    }, 2000)
-  }, [client])
+    // console.log('CheckName', tokenObj, client)
+    // if (tokenObj !== undefined) {
+    //   console.log('LB NAME Available', client.tokenParsed.name)
+    //   setName(client.tokenParsed.name)
+    // } else {
+    //   console.log('LB NONAME', client)
+    //   setName('')
+    // }
+    // setEnabled(true)
+  }, [])
 
   const handleClose = (): void => {
+    const client = keycloak
     if (!enabled) {
       // Button is not ready yet
       return
@@ -81,13 +77,11 @@ export const LoginButton = (): ReactElement => {
     }
   }
   const handleLogout = (): void => {
+    const client = keycloak
     if (client === undefined) {
       // Button is not ready yet
       return
     }
-    // client.logout({
-    //     redirectUri: window.location.origin,
-    //   })
     client
       .logout()
       .then(() => {
@@ -99,7 +93,7 @@ export const LoginButton = (): ReactElement => {
       })
   }
 
-  const parsed: KeycloakTokenParsed = client?.tokenParsed ?? {}
+  const parsed: KeycloakTokenParsed = keycloak?.tokenParsed ?? {}
   const tooltipTitle = name === '' ? 'Click to login' : name
   return (
     <>

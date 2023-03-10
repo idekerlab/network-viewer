@@ -51,6 +51,7 @@
       // "url": "http://localhost:3000/viewer/networks/402c6977-a239-11eb-aaa0-525400c25d22",
 
       "url": "http://localhost:5500/viewer/networks/a7850741-40fd-11ed-9208-0242c246b7fb",
+      "port": 9222,
       "webRoot": "${workspaceFolder}"
     }
   ]

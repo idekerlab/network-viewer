@@ -4,6 +4,7 @@ import SelectionState from './SelectionState'
 import NdexCredential from './NdexCredential'
 import AppConfig from './AppConfig'
 import Summary from './Summary'
+import Keycloak from 'keycloak-js'
 
 type AppState = {
   config: AppConfig
@@ -36,6 +37,8 @@ type AppState = {
   // (Sharing external component as state)
   ndexLoginWrapper: unknown
   setNdexLoginWrapper: (button: any) => void
+
+  keycloak: Keycloak
 }
 
 export default AppState

@@ -79,7 +79,7 @@ const ToolBar: FC = (props) => {
         <Grid container direction="row" alignItems="center">
           <NdexHomeButton />
           <LoginButton />
-          <NDExSignInButton />
+          {/* <NDExSignInButton /> */}
           <AdvancedMenu />
           <ClassicModeButton />
         </Grid>

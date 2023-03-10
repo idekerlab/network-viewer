@@ -68,7 +68,7 @@ export default function useNetworkSummary(
   credential: NdexCredential,
 ) {
   const { client } = useContext(KeycloakContext)
-  const accessToken: string = client.token
+  // const accessToken: string = client.token
   const location = useLocation()
   const accessKey: string = getAccessKey(location.search)
   if (accessKey !== null) {

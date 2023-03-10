@@ -9,9 +9,12 @@ import ErrorBoundary from './components/ErrorBoundary'
 
 import { QueryClientProvider, QueryCache, QueryClient } from 'react-query'
 import AppConfig from './model/AppConfig'
-import { KeycloakContextProvider } from './context/KeycloakContextProvider'
+import Keycloak from 'keycloak-js'
 
 const ROOT_TAG = 'root'
+
+const originalLoc = window.location.pathname
+localStorage.setItem('originalLoc', originalLoc)
 
 // Avoid HTTP
 const location = window.location
@@ -65,25 +68,60 @@ const loadResource = async (): Promise<AppConfig> => {
   return config
 }
 
-const render = (config: AppConfig): void => {
+const auth = async (config: AppConfig): Promise<Keycloak> => {
+  const newClient = new Keycloak(config.keycloakConfig)
+
+  console.log('Original URL', window.location)
+  try {
+    await newClient.init({
+      // onLoad: 'check-sso',
+
+      checkLoginIframe: true,
+      silentCheckSsoRedirectUri:
+        window.location.origin + `/viewer/silent-check-sso.html`,
+    })
+  } catch (e) {
+    console.log('Keycloak init failed', e)
+    throw new Error('Keycloak init failed', e)
+  }
+  console.log('Keycloak initialized in the root', newClient)
+  if (newClient.authenticated) {
+    console.log(
+      '* User authenticated: ready to load app',
+      newClient.tokenParsed,
+    )
+  } else {
+    console.log('* Not authenticated')
+  }
+
+  return newClient
+}
+
+const render = (config: AppConfig, keycloak?: Keycloak): void => {
+  console.log(
+    '* Rendering start. If you see this more than once, it might be a bug...',
+    config,
+    keycloak,
+    window.location,
+  )
   ReactDOM.render(
-    <KeycloakContextProvider keycloakConfig={config.keycloakConfig}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <QueryClientProvider client={queryClient}>
-          <ErrorBoundary>
-            <App config={config} />
-          </ErrorBoundary>
-        </QueryClientProvider>
-      </ThemeProvider>
-    </KeycloakContextProvider>,
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <QueryClientProvider client={queryClient}>
+        <ErrorBoundary>
+          <App config={config} keycloak={keycloak} />
+        </ErrorBoundary>
+      </QueryClientProvider>
+    </ThemeProvider>,
     document.getElementById(ROOT_TAG),
   )
 }
 
-// Load resource and start the app.
+// Start the app modules in sequence.
 loadResource().then((config: AppConfig) => {
-  render(config)
+  auth(config).then((keycloak) => {
+    render(config, keycloak)
+  })
 })
 
 // If you want your app to work offline and load faster, you can change
