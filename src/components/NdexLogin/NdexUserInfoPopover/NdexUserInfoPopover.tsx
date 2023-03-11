@@ -1,8 +1,8 @@
-import React, { FC, ReactElement } from 'react'
 import { Avatar, Button, Grid, Typography } from '@material-ui/core'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 import Popover from '@material-ui/core/Popover'
 import { blue } from '@material-ui/core/colors'
+import { NdexUserInfoPopoverProps } from './NdexUserInfoPopoverProps'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -18,35 +18,20 @@ const useStyles = makeStyles((theme: Theme) =>
       width: theme.spacing(10),
       height: theme.spacing(10),
     },
-  })
+  }),
 )
 
-interface NdexUserInfoPopoverProps {
-  userId: string
-  userImage: string
-  userName: string
-  onLogout: () => void
-  anchorEl: any
-  isOpen: boolean
-  onClose: () => void
-  myAccountURL: string
-}
-
-const NdexUserInfoPopover: FC<NdexUserInfoPopoverProps> = (
-  props: NdexUserInfoPopoverProps
-): ReactElement => {
+export const NdexUserInfoPopover = ({
+  userId,
+  userImage,
+  userName,
+  onLogout,
+  anchorEl,
+  isOpen,
+  onClose,
+  myAccountUrl = '',
+}: NdexUserInfoPopoverProps): JSX.Element => {
   const classes = useStyles()
-
-  const {
-    userId,
-    userImage,
-    userName,
-    onLogout,
-    anchorEl,
-    isOpen,
-    onClose,
-    myAccountURL,
-  } = props
 
   const _handleLogout = (): void => {
     onClose()
@@ -109,8 +94,8 @@ const NdexUserInfoPopover: FC<NdexUserInfoPopoverProps> = (
 
         <Grid item direction="row" container spacing={1}>
           <Grid item>
-            {myAccountURL && (
-              <Button variant={'outlined'} href={myAccountURL} rel="noopener">
+            {myAccountUrl && (
+              <Button variant={'outlined'} href={myAccountUrl} rel="noopener">
                 Go to My Account
               </Button>
             )}
@@ -129,5 +114,3 @@ const NdexUserInfoPopover: FC<NdexUserInfoPopoverProps> = (
     </Popover>
   )
 }
-
-export default NdexUserInfoPopover

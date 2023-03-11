@@ -1,14 +1,14 @@
-type UserValidation = {
+export type UserValidation = {
   status: number
   userData: any | null
   error: any | null
 }
 
-async function validateLogin(
+export const validateLogin = async (
   id: string,
   password: string,
-  ndexServer: string
-): Promise<UserValidation> {
+  ndexServer: string,
+): Promise<UserValidation> => {
   const auth = 'Basic ' + btoa(id + ':' + password)
   const headers = {
     authorization: auth,
@@ -36,5 +36,3 @@ async function validateLogin(
 
   return validation
 }
-
-export { validateLogin, UserValidation }

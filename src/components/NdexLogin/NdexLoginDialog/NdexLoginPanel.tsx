@@ -1,10 +1,7 @@
-import React from 'react'
-
 import { Divider } from '@material-ui/core'
-
 import { makeStyles } from '@material-ui/styles'
-import NdexGoogleLoginPanel from './NdexGoogleLoginPanel'
-import NdexCredentialsLoginPanel from './NdexCredentialsLoginPanel'
+import NdexGoogleLoginPanel from './Keycloak/NdexGoogleLoginPanel'
+import BasicAuthLoginPanel from './BasicAuth/BasicAuthLoginPanel'
 
 const useStyles = makeStyles({
   root: {
@@ -57,7 +54,7 @@ const NdexLoginPanel = (props) => {
       </div>
       <Divider orientation="vertical" flexItem />
       <div className={classes.rightComponent}>
-        <NdexCredentialsLoginPanel
+        <BasicAuthLoginPanel
           handleNDExSignOn={handleNDExSignOn}
           onSuccessLogin={onSuccessLogin}
           ndexServer={ndexServer}

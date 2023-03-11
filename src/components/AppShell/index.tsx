@@ -37,8 +37,8 @@ const AppShell: FC = () => {
         .then(function (profile) {
           console.log('Got P+++++++++++++++++', profile)
         })
-        .catch(function () {
-          alert('Failed to load user profile')
+        .catch((error) => {
+          console.warn('Failed to load user profile')
         })
     } else {
       // This is a hack: emulating a silent reload.

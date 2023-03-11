@@ -1,14 +1,11 @@
-import { FC, useContext, useRef, useEffect } from 'react'
+import { ReactNode } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
-import AppContext from '../../context/AppState'
 import ClassicModeButton from './ClassicModeButton'
 import NdexHomeButton from './NdexHomeButton'
 import AdvancedMenu from './AdvancedMenu'
-
-import { getCurrentServer } from '../../utils/locationUtil'
 import { LoginButton } from '../Login'
-import NDExSignInButton from '../NdexLogin/NDExSignInButton'
+import { NdexSignInButton } from '../NdexLogin/NdexSignInButton'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,50 +25,43 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const ToolBar: FC = (props) => {
+const ToolBar: ReactNode = () => {
   const classes = useStyles()
-  // const ndexButton = useRef(null)
 
-  const { summary, ndexCredential, setNdexCredential, setNdexLoginWrapper } =
-    useContext(AppContext)
+  // const { config, summary, ndexCredential, setNdexCredential } =
+  //   useContext(AppContext)
 
-  useEffect(() => {
-    // setNdexLoginWrapper(ndexButton.current.lastChild)
-  }, [])
-
-  const ndexServerUrl = getCurrentServer()
-
-  const loginStateUpdated = (loginState) => {
-    if (loginState) {
-      if (loginState.isGoogle) {
-        setNdexCredential({
-          loaded: true,
-          isLogin: true,
-          isGoogle: true,
-          oauth: loginState,
-        })
-      } else {
-        const details = loginState.loginDetails
-        setNdexCredential({
-          loaded: true,
-          isLogin: true,
-          isGoogle: false,
-          basic: { userId: details.id, password: details.password },
-        })
-      }
-    } else {
-      if (ndexCredential.loaded && ndexCredential.isLogin) {
-        if (!summary || summary.visibility === 'PRIVATE') {
-          window.location.href = ndexServerUrl
-        }
-      }
-      setNdexCredential({
-        loaded: true,
-        isLogin: false,
-        isGoogle: false,
-      })
-    }
-  }
+  // const loginStateUpdated = (loginState) => {
+  //   if (loginState) {
+  //     if (loginState.isGoogle) {
+  //       setNdexCredential({
+  //         loaded: true,
+  //         isLogin: true,
+  //         isGoogle: true,
+  //         oauth: loginState,
+  //       })
+  //     } else {
+  //       const details = loginState.loginDetails
+  //       setNdexCredential({
+  //         loaded: true,
+  //         isLogin: true,
+  //         isGoogle: false,
+  //         basic: { userId: details.id, password: details.password },
+  //       })
+  //     }
+  //   } else {
+  //     if (ndexCredential.loaded && ndexCredential.isLogin) {
+  //       if (!summary || summary.visibility === 'PRIVATE') {
+  //         window.location.href = ndexServerUrl
+  //       }
+  //     }
+  //     setNdexCredential({
+  //       loaded: true,
+  //       isLogin: false,
+  //       isGoogle: false,
+  //     })
+  //   }
+  // }
 
   return (
     <div className={classes.root}>
@@ -79,7 +69,7 @@ const ToolBar: FC = (props) => {
         <Grid container direction="row" alignItems="center">
           <NdexHomeButton />
           <LoginButton />
-          {/* <NDExSignInButton /> */}
+          <NdexSignInButton />
           <AdvancedMenu />
           <ClassicModeButton />
         </Grid>

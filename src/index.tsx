@@ -77,10 +77,10 @@ const loadResource = async (): Promise<AppConfig> => {
 }
 
 const auth = async (config: AppConfig): Promise<Keycloak> => {
-  localStorage.setItem('originalLoc', window.location.pathname)
-
   const newClient = new Keycloak(config.keycloakConfig)
   try {
+    // TODO: initialization with silent check does not work.
+    // For now, just initialize without silent check and manually login later if necessary.
     await newClient.init({
       // onLoad: 'check-sso',
       // checkLoginIframe: false,
@@ -90,14 +90,10 @@ const auth = async (config: AppConfig): Promise<Keycloak> => {
     console.log('Keycloak init failed', e)
     throw new Error('Keycloak init failed', e)
   }
-  console.log('Keycloak initialized in the root', newClient)
   if (newClient.authenticated) {
-    console.log(
-      '* User authenticated: ready to load app',
-      newClient.tokenParsed,
-    )
+    console.log('* User authenticated: via Keycloak', newClient.tokenParsed)
   } else {
-    console.log('* Not authenticated')
+    console.log('* Keycloak initialized without authentication')
   }
 
   return newClient
@@ -105,7 +101,7 @@ const auth = async (config: AppConfig): Promise<Keycloak> => {
 
 const render = (config: AppConfig, keycloak?: Keycloak): void => {
   console.log(
-    '* Rendering start. If you see this more than once, it might be a bug...',
+    '* Root component rendering start. If you see this more than once, it might be a bug...',
     config,
     keycloak,
     window.location,

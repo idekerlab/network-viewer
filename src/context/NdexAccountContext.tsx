@@ -1,28 +1,23 @@
 import { useUserProfile } from '../api/ndex'
 import { createContext, useContext, useState } from 'react'
 import NDExAccountModel from '../model/NDExAccountModel'
+import { LoginInfo } from '../model/LoginInfo'
 
-export const NDExAccountContext = createContext<NDExAccountModel>(
+export const NdexAccountContext = createContext<NDExAccountModel>(
   {} as NDExAccountModel,
 )
 
-export const NDExAccountProvider = ({
-  ndexServerURL,
-  googleClientId,
-  children,
-}) => {
-  const [loginInfo, setLoginInfo] = useState<any>(null)
+export const NdexAccountProvider = ({ ndexServerUrl, children }) => {
+  const [loginInfo, setLoginInfo] = useState<LoginInfo>()
 
   const {
     isLoading: isUserProfileLoading,
     data: userProfile,
     error: userProfileError,
     execute: getUserProfile,
-  } = useUserProfile(ndexServerURL)
+  } = useUserProfile(ndexServerUrl)
 
   const defState: NDExAccountModel = {
-    ndexServerURL,
-    googleClientId,
     loginInfo,
     setLoginInfo,
     isUserProfileLoading,
@@ -32,9 +27,9 @@ export const NDExAccountProvider = ({
   }
 
   return (
-    <NDExAccountContext.Provider value={defState}>
+    <NdexAccountContext.Provider value={defState}>
       {children}
-    </NDExAccountContext.Provider>
+    </NdexAccountContext.Provider>
   )
 }
-export const useNDExAccountValue = () => useContext(NDExAccountContext)
+export const useNDExAccountValue = () => useContext(NdexAccountContext)

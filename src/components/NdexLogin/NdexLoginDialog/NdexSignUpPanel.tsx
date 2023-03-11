@@ -7,10 +7,10 @@ import {
   Typography,
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
-import { NDExAccountContext } from '../../context/NDExAccountContext'
-import { isValidEmail, useCreateUser } from '../../api/ndex'
-import { validateLogin } from './validateCredentials'
-import NDExUserModel from '../../model/NDExUserModel'
+import { NdexAccountContext } from '../../../context/NdexAccountContext'
+import { isValidEmail, useCreateUser } from '../../../api/ndex'
+import { validateLogin } from '../validateCredentials'
+import NDExUserModel from '../../../model/NDExUserModel'
 
 const useStyles = makeStyles({
   signUpHeader: {
@@ -44,7 +44,7 @@ const NdexSignUpPanel = (props) => {
 
   const { handleNDExSignOn, onSuccessLogin, onWaitForEmailValidation } = props
 
-  const { ndexServerURL } = useContext(NDExAccountContext)
+  const { ndexServerURL } = useContext(NdexAccountContext)
 
   const [firstName, setFirstName] = useState<string>('')
   const [lastName, setLastName] = useState<string>('')

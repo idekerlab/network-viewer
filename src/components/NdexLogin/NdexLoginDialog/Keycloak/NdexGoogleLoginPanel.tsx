@@ -1,10 +1,6 @@
-import React from 'react'
-
-import GoogleLogo from './assets/images/google-logo.svg'
-import GoogleLogoDisabled from './assets/images/google-logo-disabled.svg'
-import { Button } from '@material-ui/core'
-import Tooltip from '@material-ui/core/Tooltip'
-import Typography from '@material-ui/core/Typography'
+import GoogleLogo from '../../assets/images/google-logo.svg'
+import GoogleLogoDisabled from '../../assets/images/google-logo-disabled.svg'
+import { Button, Tooltip, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 
 const useStyles = makeStyles({
@@ -40,14 +36,14 @@ const NdexGoogleLoginPanel = (props) => {
       disableFocusListener={googleSSO}
       disableHoverListener={googleSSO}
       title={
-        <React.Fragment>
+        <>
           <Typography variant={'subtitle1'} color={'inherit'}>
             Currently this feature is only available for test and public servers
           </Typography>
           <Typography variant={'body1'}>
             {'Server selected: ' + props.ndexServer}
           </Typography>
-        </React.Fragment>
+        </>
       }
     >
       <div className={classes.googlePanel}>

@@ -3,8 +3,8 @@ import { Button, FormControl, TextField } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 import Typography from '@material-ui/core/Typography'
 import { ErrorOutline } from '@material-ui/icons'
-import { validateLogin, UserValidation } from './validateCredentials'
-import LoadingPanel from './LoadingPanel'
+import { validateLogin, UserValidation } from '../../validateCredentials'
+import LoadingPanel from '../../LoadingPanel'
 
 const useStyles = makeStyles({
   root: {
@@ -56,7 +56,7 @@ const FIELD_NAME = {
   PW: 'password',
 }
 
-const NdexCredentialsLoginPanel: FC<{
+const BasicAuthLoginPanel: FC<{
   onSuccessLogin: Function
   handleNDExSignOn: Function
   ndexServer: string
@@ -106,10 +106,9 @@ const NdexCredentialsLoginPanel: FC<{
           image: userData.image,
           details: userData,
         },
-        onSuccessLogin
+        onSuccessLogin,
       )
     }
-    
   }
 
   const handleChange = (tag: string) => (event) => {
@@ -211,4 +210,4 @@ const NdexCredentialsLoginPanel: FC<{
   )
 }
 
-export default NdexCredentialsLoginPanel
+export default BasicAuthLoginPanel

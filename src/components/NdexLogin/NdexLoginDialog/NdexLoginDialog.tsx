@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import { useState, useContext } from 'react'
 
 import {
   Dialog,
@@ -13,9 +13,9 @@ import {
 import NdexLoginPanel from './NdexLoginPanel'
 import { makeStyles } from '@material-ui/styles'
 
-import NdexLogo from '../../assets/images/ndex-logo.svg'
+import NdexLogo from '../../../assets/images/ndex-logo.svg'
 
-import { NDExAccountContext } from '../../context/NDExAccountContext'
+import { NdexAccountContext } from '../../../context/NdexAccountContext'
 
 import NdexSignUpPanel from './NdexSignUpPanel'
 import ForgotPasswordPanel from './ForgotPasswordPanel'
@@ -68,7 +68,7 @@ const useStyles = makeStyles({
   },
 })
 
-const NdexLoginDialog = (props) => {
+export const NdexLoginDialog = (props) => {
   const classes = useStyles()
 
   const {
@@ -88,7 +88,7 @@ const NdexLoginDialog = (props) => {
     onGoogleAgreement,
   } = props
 
-  const { loginInfo } = useContext(NDExAccountContext)
+  const { loginInfo } = useContext(NdexAccountContext)
 
   const [contentMode, setContentMode] = useState(content_mode.SIGN_IN)
 
@@ -180,5 +180,3 @@ const NdexLoginDialog = (props) => {
     </Dialog>
   )
 }
-
-export default NdexLoginDialog

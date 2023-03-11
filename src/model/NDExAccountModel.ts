@@ -1,8 +1,9 @@
+import { LoginInfo } from './LoginInfo'
+
 type NDExAccountModel = {
-  ndexServerURL: string
-  googleClientId: string
-  loginInfo: any
-  setLoginInfo: (loginInfo: any) => void
+  loginInfo: LoginInfo
+  setLoginInfo: (loginInfo: LoginInfo) => void
+
   isUserProfileLoading: boolean
   userProfile: any
   userProfileError?: string

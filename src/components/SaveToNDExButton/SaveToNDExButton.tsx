@@ -3,7 +3,7 @@ import Button from '@material-ui/core/Button'
 import { withStyles } from '@material-ui/core'
 import Tooltip from '@material-ui/core/Tooltip'
 import SaveIcon from '@material-ui/icons/Save'
-import { NDExAccountContext } from '../../context/NDExAccountContext'
+import { NdexAccountContext } from '../../context/NdexAccountContext'
 import ndexClient from '@js4cytoscape/ndex-client'
 
 const styles = () => ({
@@ -34,7 +34,7 @@ const styles = () => ({
 const SaveToNDExButton = (props) => {
   const { classes } = props
 
-  const { ndexServerURL, loginInfo } = useContext(NDExAccountContext)
+  const { ndexServerURL, loginInfo } = useContext(NdexAccountContext)
 
   const { disabled, tooltip, onSuccess, onFailure, variant, fetchCX, size } =
     props
