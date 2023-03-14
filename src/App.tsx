@@ -27,16 +27,13 @@ import cyReducer, { INITIAL_CY_REFERENCE } from './reducer/cyReducer'
 import uiStateReducer, { INITIAL_UI_STATE } from './reducer/uiStateReducer'
 import NdexCredential from './model/NdexCredential'
 import Summary from './model/Summary'
-import { basename } from 'path'
-import { KeycloakContextProvider } from './context/KeycloakContextProvider'
-// import { KeycloakContextProvider } from './context/KeycloakContextProvider'
-
-import { redirect } from 'react-router-dom'
+import { AuthType } from './model/AuthType'
+import { NdexCredentialTag } from './components/NdexLogin/NdexCredentialTag'
+import { getBasicAuth } from './components/NdexLogin/NdexLoginDialog/BasicAuth/basic-auth-util'
 
 const defNdexCredential: NdexCredential = {
-  loaded: true,
-  isLogin: false,
-  isGoogle: false,
+  authType: AuthType.NONE,
+  userName: '',
 }
 
 const defSummary: Summary = {
@@ -62,9 +59,41 @@ const App = ({ config, keycloak }) => {
     INITIAL_UI_STATE,
   )
 
-  const [ndexLoginWrapper, setNdexLoginWrapper] = useState(null)
+  const [isReady, setIsReady] = useState<boolean>(false)
+  const [showLogin, setShowLogin] = useState<boolean>(false)
 
-  const [isReady, setIsReady] = useState(false)
+  useEffect(() => {
+    if (keycloak === undefined) {
+      return
+    }
+
+    console.info('Checking your login status before loading app', keycloak)
+    let credential: NdexCredential
+
+    // Check basic auth
+    const basicAuthInfo = getBasicAuth()
+    if (basicAuthInfo !== undefined) {
+      // use basic auth
+      credential = {
+        authType: AuthType.BASIC,
+        userName: '',
+        accesskey: '',
+        fullName: '',
+      } as const
+    } else if (keycloak.authenticated) {
+      credential = {
+        authType: AuthType.KEYCLOAK,
+        userName: keycloak.tokenParsed.preferred_username,
+        accesskey: keycloak.token,
+        fullName: keycloak.tokenParsed.name,
+      } as const
+    } else {
+      credential = {
+        authType: AuthType.NONE,
+      } as const
+    }
+    setNdexCredential(credential)
+  }, [keycloak])
 
   // TODO: use reducer?
   const defState: AppState = {
@@ -93,12 +122,15 @@ const App = ({ config, keycloak }) => {
     selectionState,
     selectionStateDispatch,
 
-    ndexLoginWrapper,
-    setNdexLoginWrapper,
+    // ndexLoginWrapper,
+    // setNdexLoginWrapper,
 
     keycloak,
     isReady,
     setIsReady,
+
+    showLogin,
+    setShowLogin,
   }
 
   const routes = [

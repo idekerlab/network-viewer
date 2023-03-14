@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
     message: {
       display: 'grid',
       placeItems: 'center',
-      maxWidth: '40em'
+      maxWidth: '40em',
     },
     errorMessage: {
       paddingTop: '1em',
@@ -95,7 +95,7 @@ const InitPanel: FC<InitPanelProps> = ({
   setNoView,
 }) => {
   const classes = useStyles()
-  const { config, ndexLoginWrapper, uiState } = useContext(AppContext)
+  const { config, uiState, setShowLogin } = useContext(AppContext)
 
   const [open, setOpen] = useState(false)
 
@@ -103,35 +103,41 @@ const InitPanel: FC<InitPanelProps> = ({
   const [dialogMessage, setDialogMessage] = useState('')
 
   useEffect(() => {
-    if (summary !== undefined) {
-      const total = summary['nodeCount'] + summary['edgeCount']
-      const cxDataSize = summary['cx2FileSize']
+    if (summary === undefined) {
+      return
+    }
 
-      // Check data size.  If too big, proceed without view
-      if (cxDataSize > config.maxDataSize || total > config.maxNumObjects) {
-        setOpen(false)
-        setProceed(true)
-        return
-      }
+    const total = summary['nodeCount'] + summary['edgeCount']
+    const cxDataSize = summary['cx2FileSize']
 
-      if (total <= config.warningThreshold) {
-        const hasLayout = summary['hasLayout']
+    // Check data size.  If too big, proceed without view
+    if (cxDataSize > config.maxDataSize || total > config.maxNumObjects) {
+      setOpen(false)
+      setProceed(true)
+      return
+    }
 
-        if (!hasLayout && total > config.viewerThreshold && uiState.maximizeResultView === false) {
-          setDialogTitle(`No layout available for this network`)
-          setDialogMessage(
-            'Do you want to visualize the network with random layout? Or click cancel to explore it without view',
-          )
-          setOpen(true)
-        } else {
-          // Small network.  Just load it.
-          setProceed(true)
-        }
+    if (total <= config.warningThreshold) {
+      const hasLayout = summary['hasLayout']
+
+      if (
+        !hasLayout &&
+        total > config.viewerThreshold &&
+        uiState.maximizeResultView === false
+      ) {
+        setDialogTitle(`No layout available for this network`)
+        setDialogMessage(
+          'Do you want to visualize the network with random layout? Or click cancel to explore it without view',
+        )
+        setOpen(true)
       } else {
-        // Network is huge.  Simply pass the empty CX and show warning panel
-        setOpen(false)
+        // Small network.  Just load it.
         setProceed(true)
       }
+    } else {
+      // Network is huge.  Simply pass the empty CX and show warning panel
+      setOpen(false)
+      setProceed(true)
     }
   }, [summary])
 
@@ -141,8 +147,7 @@ const InitPanel: FC<InitPanelProps> = ({
   }
 
   const _handleLoginOpen = () => {
-    // @ts-ignore
-    ndexLoginWrapper.click()
+    setShowLogin(true)
   }
 
   if (error) {

@@ -1,10 +1,15 @@
-import React, { FC, ReactElement, useState, useEffect } from 'react'
+import { FC, ReactElement, useState, useEffect, useContext } from 'react'
 import { Button, FormControl, TextField } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 import Typography from '@material-ui/core/Typography'
 import { ErrorOutline } from '@material-ui/icons'
-import { validateLogin, UserValidation } from '../../validateCredentials'
+import { validateLogin } from '../../validateCredentials'
 import LoadingPanel from '../../LoadingPanel'
+import { UserValidation } from '../../UserValidation'
+import AppContext from '../../../../context/AppState'
+import NdexCredential from '../../../../model/NdexCredential'
+import { AuthType } from '../../../../model/AuthType'
+import { NdexBasicAuthInfo } from '../../NdexSignInButton/handleNdexSignOn'
 
 const useStyles = makeStyles({
   root: {
@@ -69,6 +74,8 @@ const BasicAuthLoginPanel: FC<{
 }): ReactElement => {
   const classes = useStyles()
 
+  const { setNdexCredential, setShowLogin } = useContext(AppContext)
+
   const [isLoading, setLoading] = useState(false)
   const [disabled, setDisabled] = useState(true)
   const [id, setId] = useState('')
@@ -94,20 +101,27 @@ const BasicAuthLoginPanel: FC<{
     setLoading(false)
 
     const { error, userData } = data
-    if (error !== null && error['message'] !== undefined) {
+    if (error !== undefined && error['message'] !== undefined) {
       setErrorMessage(error['message'] as string)
     } else {
-      handleNDExSignOn(
-        {
-          id,
-          password,
-          ndexServer,
-          fullName: userData.firstName + ' ' + userData.lastName,
-          image: userData.image,
-          details: userData,
-        },
-        onSuccessLogin,
-      )
+      setNdexCredential({
+        authType: AuthType.BASIC,
+        userName: id,
+        accesskey: password,
+        fullName: userData.firstName + ' ' + userData.lastName,
+      } as NdexCredential)
+
+      // Close the login dialog
+      setShowLogin(false)
+
+      const loggedInUser: NdexBasicAuthInfo = {
+        externalId: userData.details.externalId,
+        firstName: userData.details.firstName,
+        lastName: userData.details.lastName,
+        password: password,
+        id,
+      }
+      handleNDExSignOn(loggedInUser)
     }
   }
 
@@ -167,7 +181,7 @@ const BasicAuthLoginPanel: FC<{
         </Button>
       </div>
 
-      <div className={classes.signup}>
+      {/* <div className={classes.signup}>
         <Typography variant={'body1'}>
           <a
             href="#"
@@ -190,7 +204,7 @@ const BasicAuthLoginPanel: FC<{
             Click here to sign up!
           </a>
         </Typography>
-      </div>
+      </div> */}
 
       {errorMessage ? (
         <div className={classes.errorPanel}>

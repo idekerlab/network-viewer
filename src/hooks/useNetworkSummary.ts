@@ -21,10 +21,6 @@ async function getNetworkSummary(
     return cache
   }
 
-  if (!credential.loaded) {
-    return undefined
-  }
-
   const ndexUrl = `${serverUrl}/${apiVersion}`
   try {
     const ndexClient = getNdexClient(ndexUrl, credential)
@@ -67,8 +63,7 @@ export default function useNetworkSummary(
   apiVersion: string = 'v2',
   credential: NdexCredential,
 ) {
-  const { client } = useContext(KeycloakContext)
-  // const accessToken: string = client.token
+  // Restore accesskey from URL if necessary
   const location = useLocation()
   const accessKey: string = getAccessKey(location.search)
   if (accessKey !== null) {

@@ -35,8 +35,6 @@ const NdexLoginPanel = (props) => {
     onSuccessLogin,
     onError,
     ndexServer,
-    googleSignIn,
-    googleSSO,
     setContentMode,
   } = props
 
@@ -48,8 +46,6 @@ const NdexLoginPanel = (props) => {
           onLoginSuccess={onLoginSuccess}
           onSuccess={onSuccess}
           ndexServer={ndexServer}
-          googleSignIn={googleSignIn}
-          googleSSO={googleSSO}
         />
       </div>
       <Divider orientation="vertical" flexItem />

@@ -15,12 +15,11 @@ import { makeStyles } from '@material-ui/styles'
 
 import NdexLogo from '../../../assets/images/ndex-logo.svg'
 
-import { NdexAccountContext } from '../../../context/NdexAccountContext'
-
 import NdexSignUpPanel from './NdexSignUpPanel'
 import ForgotPasswordPanel from './ForgotPasswordPanel'
 
 import TermsAndConditionsPanel from './TermsAndConditionsPanel'
+import AppContext from '../../../context/AppState'
 
 const content_mode = {
   SIGN_IN: 'SIGN_IN',
@@ -74,7 +73,6 @@ export const NdexLoginDialog = (props) => {
   const {
     isOpen,
     setDialogState,
-    ndexServer,
     onLoginSuccess,
     onLogout,
     handleNDExSignOn,
@@ -84,11 +82,9 @@ export const NdexLoginDialog = (props) => {
     handleError,
     errorMessage,
     signIn,
-    googleSSO,
-    onGoogleAgreement,
   } = props
 
-  const { loginInfo } = useContext(NdexAccountContext)
+  const { config } = useContext(AppContext)
 
   const [contentMode, setContentMode] = useState(content_mode.SIGN_IN)
 
@@ -106,28 +102,22 @@ export const NdexLoginDialog = (props) => {
             onError={onError}
             handleError={handleError}
             error={errorMessage}
-            ndexServer={ndexServer}
+            ndexServer={config.ndexHttps}
             googleSignIn={signIn}
-            googleSSO={googleSSO}
             setContentMode={setContentMode}
           />
         )
       case content_mode.SIGN_UP:
         return (
           <NdexSignUpPanel
-            ndexServer={ndexServer}
+            ndexServer={config.ndexUrl}
             handleNDExSignOn={handleNDExSignOn}
           />
         )
       case content_mode.FORGOT_PASSWORD:
         return <ForgotPasswordPanel />
       case content_mode.SIGN_TERMS_AND_CONDITIONS:
-        return (
-          <TermsAndConditionsPanel
-            ndexServer={ndexServer}
-            onGoogleAgreement={onGoogleAgreement}
-          />
-        )
+        return <TermsAndConditionsPanel ndexServer={config.ndexUrl} />
       default:
         return <div />
     }
@@ -137,22 +127,14 @@ export const NdexLoginDialog = (props) => {
 
   return (
     <Dialog className={classes.root} open={isOpen}>
-      {loginInfo !== null ? (
-        <div />
-      ) : (
-        <DialogTitle disableTypography={true} className={classes.title}>
-          <div className={classes.titleWrapper}>
-            <img
-              src={NdexLogo}
-              alt={'NDEx Logo'}
-              className={classes.ndexLogo}
-            />
-            <div>
-              <Typography variant={'subtitle1'}>{title}</Typography>
-            </div>
+      <DialogTitle disableTypography={true} className={classes.title}>
+        <div className={classes.titleWrapper}>
+          <img src={NdexLogo} alt={'NDEx Logo'} className={classes.ndexLogo} />
+          <div>
+            <Typography variant={'subtitle1'}>{title}</Typography>
           </div>
-        </DialogTitle>
-      )}
+        </div>
+      </DialogTitle>
       <DialogContent className={classes.content}>{getContent()}</DialogContent>
       <Divider />
       <DialogActions className={classes.actionPanel}>
@@ -167,7 +149,7 @@ export const NdexLoginDialog = (props) => {
           </Button>
         )}
         <Button
-          variant={'contained'}
+          variant={'outlined'}
           onClick={() => {
             setDialogState(false)
             setContentMode(content_mode.SIGN_IN)

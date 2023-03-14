@@ -1,9 +1,8 @@
-export type UserValidation = {
-  status: number
-  userData: any | null
-  error: any | null
-}
+import { UserValidation } from './UserValidation'
 
+/**
+ * Utility function to validate user via basic auth
+ */
 export const validateLogin = async (
   id: string,
   password: string,
@@ -15,24 +14,30 @@ export const validateLogin = async (
   }
   const url = ndexServer + '/v2/user?valid=true'
 
-  const res: Response = await fetch(url, {
-    method: 'GET',
-    headers: headers,
-  })
-  const status = res.status
-  let userData = await res.json()
+  try {
+    const res: Response = await fetch(url, {
+      method: 'GET',
+      headers: headers,
+    })
 
-  let error = null
-  if (!res.ok) {
-    error = userData
-    userData = null
+    const status: number = res.status
+    const result: any = await res.json()
+
+    let error: any
+    if (!res.ok) {
+      error = result
+    }
+
+    return {
+      status,
+      userData: result,
+      error,
+    } as UserValidation
+  } catch (e) {
+    console.error('Failed to validate user', e)
+    return {
+      status: 500,
+      error: e,
+    }
   }
-
-  const validation: UserValidation = {
-    status,
-    userData,
-    error,
-  }
-
-  return validation
 }

@@ -1,4 +1,3 @@
-import { ReactNode } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import ClassicModeButton from './ClassicModeButton'
@@ -25,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const ToolBar: ReactNode = () => {
+const ToolBar = (): JSX.Element => {
   const classes = useStyles()
 
   // const { config, summary, ndexCredential, setNdexCredential } =

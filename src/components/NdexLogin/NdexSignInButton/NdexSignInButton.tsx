@@ -1,7 +1,6 @@
 import { useState, useContext, useEffect, ReactElement } from 'react'
 import IconButton from '@material-ui/core/IconButton'
 import Tooltip from '@material-ui/core/Tooltip'
-import { NdexAccountContext } from '../../../context/NdexAccountContext'
 import Avatar from '@material-ui/core/Avatar'
 import { useStyles } from './buttonStyle'
 import AppContext from '../../../context/AppState'
@@ -19,25 +18,28 @@ import { NdexCredentialTag } from '../NdexCredentialTag'
 export const NdexSignInButton = () => {
   const classes = useStyles()
 
-  const { loginInfo, setLoginInfo, userProfile } =
-    useContext(NdexAccountContext)
+  const [disabled, setDisabled] = useState<boolean>(true)
 
   // New Keycloak client
-  const { config, keycloak } = useContext(AppContext)
-  const { ndexUrl } = config
+  const {
+    config,
+    keycloak,
+    ndexCredential,
+    setNdexCredential,
+    showLogin,
+    setShowLogin,
+  } = useContext(AppContext)
 
   useEffect(() => {
-    if (loginInfo === undefined) {
+    if (ndexCredential === undefined || keycloak === undefined) {
       return
     }
-    console.log('Initializing login button state', keycloak)
-    const { authType } = loginInfo
-    if (keycloak.authenticated) {
-    }
-  }, [keycloak, loginInfo])
+    console.log('Initializing login button state', ndexCredential)
+    setDisabled(false)
+  }, [ndexCredential, keycloak])
 
   // Open/close login dialog
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
+  // const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
   const [anchorEl, setAnchorEl] = useState<ReactElement | null>(null)
   const isPopoverOpen: boolean = Boolean(anchorEl)
 
@@ -52,15 +54,18 @@ export const NdexSignInButton = () => {
   }
 
   const onLogout = (): void => {
-    const { authType } = loginInfo
+    const { authType } = ndexCredential
 
     if (authType === AuthType.BASIC) {
       window.localStorage.removeItem(NdexCredentialTag.NdexCredential)
     } else if (authType === AuthType.KEYCLOAK) {
       keycloak.logout()
     }
-    setLoginInfo(null)
-    setIsDialogOpen(false)
+    // setLoginInfo(null)
+    setNdexCredential({
+      authType: AuthType.NONE,
+    })
+    setShowLogin(false)
   }
 
   const onSuccessLogin = (loginInfo) => {
@@ -119,8 +124,8 @@ export const NdexSignInButton = () => {
   // }
 
   const getTitle = (): string => {
-    return loginInfo && userProfile
-      ? 'Signed in as ' + userProfile.userName
+    return ndexCredential.authType !== AuthType.NONE
+      ? 'Signed in as ' + ndexCredential.userName
       : 'Sign in to NDEx'
   }
 
@@ -139,45 +144,47 @@ export const NdexSignInButton = () => {
   //     : undefined
 
   const handleClick = (event): void => {
-    if (loginInfo) {
+    if (ndexCredential.authType !== AuthType.NONE) {
       setAnchorEl(event.currentTarget)
     } else {
-      setIsDialogOpen(true)
+      setShowLogin(true)
     }
   }
 
   return (
     <>
       <Tooltip disableFocusListener title={getTitle()} placement="bottom">
-        <IconButton className={classes.iconButton} onClick={handleClick}>
-          <Avatar className={classes.iconMedium}>{null}</Avatar>
+        <IconButton
+          className={classes.iconButton}
+          onClick={handleClick}
+          disabled={disabled}
+        >
+          <Avatar className={classes.iconMedium}>
+            {ndexCredential.authType === AuthType.NONE
+              ? null
+              : ndexCredential.fullName[0]}
+          </Avatar>
         </IconButton>
       </Tooltip>
       <NdexLoginDialog
-        setDialogState={setIsDialogOpen}
-        isOpen={isDialogOpen}
+        setDialogState={setShowLogin}
+        isOpen={showLogin}
         ndexServer={config.ndexUrl}
-        // onLoginStateUpdated={onUpdate}
-        // myAccountURL={myAccountURL}
         onLoginSuccess={onLoginSuccess}
         onLogout={onLogout}
-        // handleNDExSignOn={handleNDExSignOn}
         onSuccessLogin={onSuccessLogin}
-        // onGoogleSuccess={onGoogleSuccess}
         onError={onError}
         handleError={handleError}
         errorMessage={errorMessage}
-        // signIn={googleSignIn}
-        // googleSSO={googleSSO}
-        // onGoogleAgreement={onGoogleAgreement}
       />
       <NdexUserInfoPopover
-        userName={'?'}
-        userId={'?'}
+        userName={ndexCredential.fullName}
+        userId={ndexCredential.userName}
         isOpen={isPopoverOpen}
         anchorEl={anchorEl}
         onClose={handleClose}
         onLogout={onLogout}
+        myAccountUrl={config.ndexUrl + '/index.html#/myAccount'}
       />
     </>
   )

@@ -24,9 +24,6 @@ type AppState = {
   queryMode: string
   setQueryMode: Function
 
-  ndexCredential: NdexCredential
-  setNdexCredential: Function
-
   summary: Summary
   setSummary: Function
 
@@ -35,10 +32,17 @@ type AppState = {
 
   // This is a hack, but looks only way to open external component
   // (Sharing external component as state)
-  ndexLoginWrapper: unknown
-  setNdexLoginWrapper: (button: any) => void
+  // ndexLoginWrapper: unknown
+  // setNdexLoginWrapper: (button: any) => void
 
   keycloak: Keycloak
+
+  ndexCredential: NdexCredential
+  setNdexCredential: (credential: NdexCredential) => void
+
+  showLogin: boolean
+  setShowLogin: (showDialog: boolean) => void
+
   isReady: boolean
   setIsReady: (isReady: boolean) => void
 }

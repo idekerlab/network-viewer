@@ -29,13 +29,18 @@ export const NdexUserInfoPopover = ({
   anchorEl,
   isOpen,
   onClose,
-  myAccountUrl = '',
+  myAccountUrl,
 }: NdexUserInfoPopoverProps): JSX.Element => {
   const classes = useStyles()
 
   const _handleLogout = (): void => {
     onClose()
     onLogout()
+  }
+
+  const _handleOpenMyAccount = (): void => {
+    onClose()
+    window.open('https://' + myAccountUrl, 'noopener')
   }
 
   const getInitial = (userName: string): string => {
@@ -95,7 +100,7 @@ export const NdexUserInfoPopover = ({
         <Grid item direction="row" container spacing={1}>
           <Grid item>
             {myAccountUrl && (
-              <Button variant={'outlined'} href={myAccountUrl} rel="noopener">
+              <Button variant={'outlined'} onClick={_handleOpenMyAccount}>
                 Go to My Account
               </Button>
             )}
