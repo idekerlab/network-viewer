@@ -13,17 +13,6 @@ import Keycloak from 'keycloak-js'
 
 const ROOT_TAG = 'root'
 
-// This is for keycloak silent initialization.
-const LOCATION_TAG = 'originalLocation'
-const SILENT_TAG = '/viewer/silent-check-sso.html'
-
-const originalLoc = window.location.pathname
-console.log('Original URL', originalLoc)
-
-if (originalLoc !== SILENT_TAG) {
-  localStorage.setItem(LOCATION_TAG, originalLoc)
-}
-
 // Avoid HTTP
 const location = window.location
 if (location.hostname !== 'localhost' && location.protocol !== 'https:') {

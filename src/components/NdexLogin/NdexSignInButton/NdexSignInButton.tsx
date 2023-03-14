@@ -28,6 +28,7 @@ export const NdexSignInButton = () => {
     setNdexCredential,
     showLogin,
     setShowLogin,
+    summary,
   } = useContext(AppContext)
 
   useEffect(() => {
@@ -55,28 +56,25 @@ export const NdexSignInButton = () => {
 
   const onLogout = (): void => {
     const { authType } = ndexCredential
+    console.log(summary)
+    const { visibility } = summary
 
     if (authType === AuthType.BASIC) {
       window.localStorage.removeItem(NdexCredentialTag.NdexCredential)
     } else if (authType === AuthType.KEYCLOAK) {
       keycloak.logout()
     }
-    // setLoginInfo(null)
     setNdexCredential({
       authType: AuthType.NONE,
     })
     setShowLogin(false)
+    if (visibility === 'PRIVATE') {
+      window.location.reload()
+      window.open(config.ndexHttps + '/index.html#/', '_self')
+    }
   }
 
-  const onSuccessLogin = (loginInfo) => {
-    // setLoginInfo(loginInfo)
-    // if (loginInfo.isGoogle) {
-    //   // getUserProfile(loginInfo.loginDetails.profileObj.email)
-    // } else {
-    //   // getUserProfile(loginInfo.loginDetails.details.emailAddress)
-    // }
-    // setDialogState(false)
-  }
+  const onSuccessLogin = (loginInfo) => {}
 
   const handleError = (error) => {
     console.log('Error:', error)
@@ -85,63 +83,11 @@ export const NdexSignInButton = () => {
 
   const onError = (error: any) => {}
 
-  // const onAutoLoadFinished = (signedIn): void => {
-  //   const loggedInUserString = window.localStorage.getItem('loggedInUser')
-
-  //   if (loggedInUserString) {
-  //     const loggedInUser = JSON.parse(loggedInUserString)
-
-  //     validateLogin(
-  //       loggedInUser.userName,
-  //       loggedInUser.token,
-  //       ndexServerURL,
-  //     ).then((data: UserValidation) => {
-  //       if (data.error !== null) {
-  //         setErrorMessage(data.error.message)
-  //         setLoginInfo(null)
-  //         onLoginStateUpdated(null)
-  //       } else {
-  //         handleNDExSignOn(
-  //           {
-  //             id: loggedInUser.userName,
-  //             password: loggedInUser.token,
-  //             ndexServerURL,
-  //             fullName: data.userData.firstName + ' ' + data.userData.lastName,
-  //             image: data.userData.image,
-  //             details: data.userData,
-  //           },
-  //           onSuccessLogin,
-  //         )
-  //       }
-  //     })
-  //   } else {
-  //     // Check current login status
-  //     if (!signedIn) {
-  //       setLoginInfo(null)
-  //       onLoginStateUpdated(null)
-  //     }
-  //   }
-  // }
-
   const getTitle = (): string => {
     return ndexCredential.authType !== AuthType.NONE
       ? 'Signed in as ' + ndexCredential.userName
       : 'Sign in to NDEx'
   }
-
-  // const userId =
-  //   loginInfo && userProfile && !isUserProfileLoading
-  //     ? userProfile.userName
-  //     : '(Not logged in)'
-
-  // const userName =
-  //   loginInfo && userProfile && !isUserProfileLoading
-  //     ? userProfile.firstName + ' ' + userProfile.lastName
-  //     : ''
-  // const userImage =
-  //   loginInfo && userProfile && !isUserProfileLoading
-  //     ? userProfile.image
-  //     : undefined
 
   const handleClick = (event): void => {
     if (ndexCredential.authType !== AuthType.NONE) {

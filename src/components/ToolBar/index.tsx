@@ -67,7 +67,6 @@ const ToolBar = (): JSX.Element => {
       <Grid container direction="row" alignItems="center" spacing={0}>
         <Grid container direction="row" alignItems="center">
           <NdexHomeButton />
-          <LoginButton />
           <NdexSignInButton />
           <AdvancedMenu />
           <ClassicModeButton />

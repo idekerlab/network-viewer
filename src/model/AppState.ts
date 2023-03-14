@@ -25,15 +25,10 @@ type AppState = {
   setQueryMode: Function
 
   summary: Summary
-  setSummary: Function
+  setSummary: (summary: Summary) => void
 
   selectionState: SelectionState
   selectionStateDispatch: any
-
-  // This is a hack, but looks only way to open external component
-  // (Sharing external component as state)
-  // ndexLoginWrapper: unknown
-  // setNdexLoginWrapper: (button: any) => void
 
   keycloak: Keycloak
 

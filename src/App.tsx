@@ -28,8 +28,8 @@ import uiStateReducer, { INITIAL_UI_STATE } from './reducer/uiStateReducer'
 import NdexCredential from './model/NdexCredential'
 import Summary from './model/Summary'
 import { AuthType } from './model/AuthType'
-import { NdexCredentialTag } from './components/NdexLogin/NdexCredentialTag'
 import { getBasicAuth } from './components/NdexLogin/NdexLoginDialog/BasicAuth/basic-auth-util'
+import { NdexBasicAuthInfo } from './components/NdexLogin/NdexSignInButton/handleNdexSignOn'
 
 const defNdexCredential: NdexCredential = {
   authType: AuthType.NONE,
@@ -71,14 +71,14 @@ const App = ({ config, keycloak }) => {
     let credential: NdexCredential
 
     // Check basic auth
-    const basicAuthInfo = getBasicAuth()
+    const basicAuthInfo: NdexBasicAuthInfo = getBasicAuth()
     if (basicAuthInfo !== undefined) {
       // use basic auth
       credential = {
         authType: AuthType.BASIC,
-        userName: '',
-        accesskey: '',
-        fullName: '',
+        userName: basicAuthInfo.id,
+        accesskey: basicAuthInfo.password,
+        fullName: basicAuthInfo.firstName + ' ' + basicAuthInfo.lastName,
       } as const
     } else if (keycloak.authenticated) {
       credential = {
@@ -121,9 +121,6 @@ const App = ({ config, keycloak }) => {
 
     selectionState,
     selectionStateDispatch,
-
-    // ndexLoginWrapper,
-    // setNdexLoginWrapper,
 
     keycloak,
     isReady,

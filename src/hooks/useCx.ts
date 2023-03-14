@@ -47,6 +47,11 @@ const getCx = async (
       return await ndexClient.getRawNetwork(uuid)
     }
   } catch (e: unknown) {
+    const response = e['response']
+    if (response !== undefined && response.status === 401) {
+      console.warn('Unauthorized access to NDEx network')
+      return EMPTY_CX
+    }
     throw new NDExError(e['message'], e)
   }
 }

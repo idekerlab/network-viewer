@@ -10,6 +10,7 @@ import AppContext from '../../../../context/AppState'
 import NdexCredential from '../../../../model/NdexCredential'
 import { AuthType } from '../../../../model/AuthType'
 import { NdexBasicAuthInfo } from '../../NdexSignInButton/handleNdexSignOn'
+import { saveBasicAuth } from './basic-auth-util'
 
 const useStyles = makeStyles({
   root: {
@@ -115,13 +116,15 @@ const BasicAuthLoginPanel: FC<{
       setShowLogin(false)
 
       const loggedInUser: NdexBasicAuthInfo = {
-        externalId: userData.details.externalId,
-        firstName: userData.details.firstName,
-        lastName: userData.details.lastName,
+        externalId: userData.externalId,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
         password: password,
         id,
       }
-      handleNDExSignOn(loggedInUser)
+
+      // Write the user info to local storage
+      saveBasicAuth(loggedInUser)
     }
   }
 
