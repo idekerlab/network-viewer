@@ -19,9 +19,11 @@ const useStyles = makeStyles({
 
 const NdexGoogleLoginPanel = (props) => {
   const classes = useStyles()
-  const { keycloak, setNdexCredential } = useContext(AppContext)
+  const { keycloak, setNdexCredential, setShowLogin } = useContext(AppContext)
 
   const handleLogin = () => {
+    setShowLogin(false)
+
     keycloak.login().then(() => {
       if (keycloak.authenticated) {
         setNdexCredential({

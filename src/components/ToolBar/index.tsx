@@ -3,7 +3,6 @@ import Grid from '@material-ui/core/Grid'
 import ClassicModeButton from './ClassicModeButton'
 import NdexHomeButton from './NdexHomeButton'
 import AdvancedMenu from './AdvancedMenu'
-import { LoginButton } from '../Login'
 import { NdexSignInButton } from '../NdexLogin/NdexSignInButton'
 
 const useStyles = makeStyles((theme: Theme) =>

@@ -33,7 +33,7 @@ const AppShell: FC = () => {
       setIsReady(true)
       localStorage.setItem('keycloakInit', 'false')
       console.log(
-        'Credential init OK=============================',
+        'Silent check init OK=============================',
         keycloak,
         isReady,
       )
@@ -47,7 +47,6 @@ const AppShell: FC = () => {
       init()
       return
     }
-    console.log('KC is ready-----------INIT in the shell2', keycloak, isReady)
     const isAuth: boolean = keycloak.authenticated
 
     if (isAuth && keycloak.tokenParsed !== undefined) {

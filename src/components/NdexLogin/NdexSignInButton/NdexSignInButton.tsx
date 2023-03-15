@@ -54,30 +54,32 @@ export const NdexSignInButton = () => {
     console.log('Login success', event)
   }
 
-  const onLogout = (): void => {
-    const { authType } = ndexCredential
-    console.log(summary)
+  const postLogout = (): void => {
+    console.log('Post logout cleanup')
     const { visibility } = summary
 
-    if (authType === AuthType.BASIC) {
-      window.localStorage.removeItem(NdexCredentialTag.NdexCredential)
-    } else if (authType === AuthType.KEYCLOAK) {
-      keycloak.logout()
+    setShowLogin(false)
+    if (visibility === 'PRIVATE') {
+      setTimeout(() => {
+        window.location.reload()
+      }, 500)
     }
+  }
+  const onLogout = (): void => {
+    const { authType } = ndexCredential
 
     // Crear credential from global state
     setNdexCredential({
       authType: AuthType.NONE,
     })
 
-    setShowLogin(false)
-    if (visibility === 'PRIVATE') {
-      window.location.reload()
-      window.open(config.ndexHttps + '/index.html#/', '_self')
+    if (authType === AuthType.BASIC) {
+      window.localStorage.removeItem(NdexCredentialTag.NdexCredential)
+      postLogout()
+    } else if (authType === AuthType.KEYCLOAK) {
+      keycloak.logout()
     }
   }
-
-  const onSuccessLogin = (loginInfo) => {}
 
   const handleError = (error) => {
     console.log('Error:', error)
@@ -121,7 +123,6 @@ export const NdexSignInButton = () => {
         ndexServer={config.ndexUrl}
         onLoginSuccess={onLoginSuccess}
         onLogout={onLogout}
-        onSuccessLogin={onSuccessLogin}
         onError={onError}
         handleError={handleError}
         errorMessage={errorMessage}

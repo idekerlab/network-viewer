@@ -76,8 +76,9 @@ const auth = async (config: AppConfig): Promise<Keycloak> => {
     // For now, just initialize without silent check and manually login later if necessary.
     await newClient.init({
       // onLoad: 'check-sso',
-      // checkLoginIframe: false,
-      // silentCheckSsoRedirectUri: window.location.origin + SILENT_TAG,
+      checkLoginIframe: false,
+      // silentCheckSsoRedirectUri:
+      //   window.location.origin + '/viewer/silent-check-sso.html',
     })
   } catch (e) {
     console.log('Keycloak init failed', e)

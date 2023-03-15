@@ -63,39 +63,6 @@ const App = ({ config, keycloak, credential }) => {
   const [isReady, setIsReady] = useState<boolean>(false)
   const [showLogin, setShowLogin] = useState<boolean>(false)
 
-  // useEffect(() => {
-  //   if (keycloak === undefined) {
-  //     return
-  //   }
-
-  //   console.info('Checking your login status before loading app', keycloak)
-  //   let credential: NdexCredential
-
-  //   // Check basic auth
-  //   const basicAuthInfo: NdexBasicAuthInfo = getBasicAuth()
-  //   if (basicAuthInfo !== undefined) {
-  //     // use basic auth
-  //     credential = {
-  //       authType: AuthType.BASIC,
-  //       userName: basicAuthInfo.userName,
-  //       accesskey: basicAuthInfo.token,
-  //       fullName: basicAuthInfo.firstName + ' ' + basicAuthInfo.lastName,
-  //     } as const
-  //   } else if (keycloak.authenticated) {
-  //     credential = {
-  //       authType: AuthType.KEYCLOAK,
-  //       userName: keycloak.tokenParsed.preferred_username,
-  //       accesskey: keycloak.token,
-  //       fullName: keycloak.tokenParsed.name,
-  //     } as const
-  //   } else {
-  //     credential = {
-  //       authType: AuthType.NONE,
-  //     } as const
-  //   }
-  //   setNdexCredential(credential)
-  // }, [keycloak])
-
   // TODO: use reducer?
   const defState: AppState = {
     config,
@@ -132,14 +99,6 @@ const App = ({ config, keycloak, credential }) => {
   }
 
   const routes = [
-    // {
-    //   path: '/silent-check-sso.html',
-    //   element: (
-    //     <AppContext.Provider value={defState}>
-    //       <AppShell />
-    //     </AppContext.Provider>
-    //   ),
-    // },
     {
       path: '/networks/:uuid',
       element: (
