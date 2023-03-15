@@ -10,6 +10,10 @@ import ErrorBoundary from './components/ErrorBoundary'
 import { QueryClientProvider, QueryCache, QueryClient } from 'react-query'
 import AppConfig from './model/AppConfig'
 import Keycloak from 'keycloak-js'
+import NdexCredential from './model/NdexCredential'
+import { getBasicAuth } from './components/NdexLogin/NdexLoginDialog/BasicAuth/basic-auth-util'
+import { NdexBasicAuthInfo } from './components/NdexLogin/NdexLoginDialog/BasicAuth/NdexBasicAuthInfo'
+import { AuthType } from './model/AuthType'
 
 const ROOT_TAG = 'root'
 
@@ -88,7 +92,43 @@ const auth = async (config: AppConfig): Promise<Keycloak> => {
   return newClient
 }
 
-const render = (config: AppConfig, keycloak?: Keycloak): void => {
+const checkInitialLoginStatus = (keycloak: Keycloak): NdexCredential => {
+  console.info(
+    'INDEX:: Checking your login status before loading app',
+    keycloak,
+  )
+  let credential: NdexCredential
+
+  // Check basic auth
+  const basicAuthInfo: NdexBasicAuthInfo = getBasicAuth()
+  if (basicAuthInfo !== undefined) {
+    // use basic auth
+    credential = {
+      authType: AuthType.BASIC,
+      userName: basicAuthInfo.userName,
+      accesskey: basicAuthInfo.token,
+      fullName: basicAuthInfo.firstName + ' ' + basicAuthInfo.lastName,
+    } as const
+  } else if (keycloak.authenticated) {
+    credential = {
+      authType: AuthType.KEYCLOAK,
+      userName: keycloak.tokenParsed.preferred_username,
+      accesskey: keycloak.token,
+      fullName: keycloak.tokenParsed.name,
+    } as const
+  } else {
+    credential = {
+      authType: AuthType.NONE,
+    } as const
+  }
+  return credential
+}
+
+const render = (
+  config: AppConfig,
+  keycloak: Keycloak,
+  credential: NdexCredential,
+): void => {
   console.log(
     '* Root component rendering start. If you see this more than once, it might be a bug...',
     config,
@@ -100,7 +140,7 @@ const render = (config: AppConfig, keycloak?: Keycloak): void => {
       <CssBaseline />
       <QueryClientProvider client={queryClient}>
         <ErrorBoundary>
-          <App config={config} keycloak={keycloak} />
+          <App config={config} keycloak={keycloak} credential={credential} />
         </ErrorBoundary>
       </QueryClientProvider>
     </ThemeProvider>,
@@ -111,7 +151,8 @@ const render = (config: AppConfig, keycloak?: Keycloak): void => {
 // Start the app modules in sequence.
 loadResource().then((config: AppConfig) => {
   auth(config).then((newClient: Keycloak) => {
-    render(config, newClient)
+    const credential = checkInitialLoginStatus(newClient)
+    render(config, newClient, credential)
   })
 })
 

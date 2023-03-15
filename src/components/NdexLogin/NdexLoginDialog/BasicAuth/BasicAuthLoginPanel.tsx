@@ -9,8 +9,8 @@ import { UserValidation } from '../../UserValidation'
 import AppContext from '../../../../context/AppState'
 import NdexCredential from '../../../../model/NdexCredential'
 import { AuthType } from '../../../../model/AuthType'
-import { NdexBasicAuthInfo } from '../../NdexSignInButton/handleNdexSignOn'
 import { saveBasicAuth } from './basic-auth-util'
+import { NdexBasicAuthInfo } from './NdexBasicAuthInfo'
 
 const useStyles = makeStyles({
   root: {
@@ -119,8 +119,8 @@ const BasicAuthLoginPanel: FC<{
         externalId: userData.externalId,
         firstName: userData.firstName,
         lastName: userData.lastName,
-        password: password,
-        id,
+        token: password,
+        userName: id,
       }
 
       // Write the user info to local storage

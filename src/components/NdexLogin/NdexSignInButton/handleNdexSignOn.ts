@@ -1,12 +1,5 @@
 import { NdexCredentialTag } from '../NdexCredentialTag'
-
-export type NdexBasicAuthInfo = {
-  externalId: string
-  firstName: string
-  lastName: string
-  password: string
-  id: string
-}
+import { NdexBasicAuthInfo } from '../NdexLoginDialog/BasicAuth/NdexBasicAuthInfo'
 
 /**
  * Store the user's credentials in local storage

@@ -1,5 +1,5 @@
 import { NdexCredentialTag } from '../../NdexCredentialTag'
-import { NdexBasicAuthInfo } from '../../NdexSignInButton/handleNdexSignOn'
+import { NdexBasicAuthInfo } from './NdexBasicAuthInfo'
 
 export const getBasicAuth = (): NdexBasicAuthInfo | undefined => {
   const basicAuthInfo: string =

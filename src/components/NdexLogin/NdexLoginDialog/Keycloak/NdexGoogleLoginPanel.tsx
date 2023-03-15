@@ -4,6 +4,8 @@ import { Button, Tooltip, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 import { useContext } from 'react'
 import AppContext from '../../../../context/AppState'
+import { AuthType } from '../../../../model/AuthType'
+import NdexCredential from '../../../../model/NdexCredential'
 
 const useStyles = makeStyles({
   googlePanel: {
@@ -17,10 +19,26 @@ const useStyles = makeStyles({
 
 const NdexGoogleLoginPanel = (props) => {
   const classes = useStyles()
-  const { keycloak } = useContext(AppContext)
+  const { keycloak, setNdexCredential } = useContext(AppContext)
 
   const handleLogin = () => {
-    keycloak.login()
+    keycloak.login().then(() => {
+      if (keycloak.authenticated) {
+        setNdexCredential({
+          authType: AuthType.KEYCLOAK,
+          userName: keycloak.tokenParsed.preferred_username,
+          accesskey: keycloak.token,
+          fullName: keycloak.tokenParsed.name,
+        } as NdexCredential)
+        console.log('* Authenticated via keycloak')
+      } else {
+        // Failed
+        setNdexCredential({
+          authType: AuthType.NONE,
+        } as NdexCredential)
+        console.log('Not authenticated')
+      }
+    })
   }
 
   return (

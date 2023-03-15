@@ -4,8 +4,6 @@ import { getAccessKey, getNdexClient } from '../utils/credentialUtil'
 import NDExError from '../utils/error/NDExError'
 
 import { useLocation } from 'react-router-dom'
-import { useContext } from 'react'
-import KeycloakContext from '../context/KeycloakContext'
 
 const summaryMap = {}
 

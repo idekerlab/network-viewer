@@ -29,7 +29,7 @@ import NdexCredential from './model/NdexCredential'
 import Summary from './model/Summary'
 import { AuthType } from './model/AuthType'
 import { getBasicAuth } from './components/NdexLogin/NdexLoginDialog/BasicAuth/basic-auth-util'
-import { NdexBasicAuthInfo } from './components/NdexLogin/NdexSignInButton/handleNdexSignOn'
+import { NdexBasicAuthInfo } from './components/NdexLogin/NdexLoginDialog/BasicAuth/NdexBasicAuthInfo'
 
 const defNdexCredential: NdexCredential = {
   authType: AuthType.NONE,
@@ -40,14 +40,15 @@ const defSummary: Summary = {
   name: 'N/A',
 }
 
-const App = ({ config, keycloak }) => {
+const App = ({ config, keycloak, credential }) => {
   const [query, setQuery] = useState('')
   const [queryMode, setQueryMode] = useState('firstStepNeighborhood')
   const [summary, setSummary] = useState(defSummary)
 
   const [lgrReference, setLgrReference] = useState(null)
 
-  const [ndexCredential, setNdexCredential] = useState(defNdexCredential)
+  // Always use initial state from parent
+  const [ndexCredential, setNdexCredential] = useState(credential)
 
   const [selectionState, selectionStateDispatch] = useReducer(
     selectionStateReducer,
@@ -62,38 +63,38 @@ const App = ({ config, keycloak }) => {
   const [isReady, setIsReady] = useState<boolean>(false)
   const [showLogin, setShowLogin] = useState<boolean>(false)
 
-  useEffect(() => {
-    if (keycloak === undefined) {
-      return
-    }
+  // useEffect(() => {
+  //   if (keycloak === undefined) {
+  //     return
+  //   }
 
-    console.info('Checking your login status before loading app', keycloak)
-    let credential: NdexCredential
+  //   console.info('Checking your login status before loading app', keycloak)
+  //   let credential: NdexCredential
 
-    // Check basic auth
-    const basicAuthInfo: NdexBasicAuthInfo = getBasicAuth()
-    if (basicAuthInfo !== undefined) {
-      // use basic auth
-      credential = {
-        authType: AuthType.BASIC,
-        userName: basicAuthInfo.id,
-        accesskey: basicAuthInfo.password,
-        fullName: basicAuthInfo.firstName + ' ' + basicAuthInfo.lastName,
-      } as const
-    } else if (keycloak.authenticated) {
-      credential = {
-        authType: AuthType.KEYCLOAK,
-        userName: keycloak.tokenParsed.preferred_username,
-        accesskey: keycloak.token,
-        fullName: keycloak.tokenParsed.name,
-      } as const
-    } else {
-      credential = {
-        authType: AuthType.NONE,
-      } as const
-    }
-    setNdexCredential(credential)
-  }, [keycloak])
+  //   // Check basic auth
+  //   const basicAuthInfo: NdexBasicAuthInfo = getBasicAuth()
+  //   if (basicAuthInfo !== undefined) {
+  //     // use basic auth
+  //     credential = {
+  //       authType: AuthType.BASIC,
+  //       userName: basicAuthInfo.userName,
+  //       accesskey: basicAuthInfo.token,
+  //       fullName: basicAuthInfo.firstName + ' ' + basicAuthInfo.lastName,
+  //     } as const
+  //   } else if (keycloak.authenticated) {
+  //     credential = {
+  //       authType: AuthType.KEYCLOAK,
+  //       userName: keycloak.tokenParsed.preferred_username,
+  //       accesskey: keycloak.token,
+  //       fullName: keycloak.tokenParsed.name,
+  //     } as const
+  //   } else {
+  //     credential = {
+  //       authType: AuthType.NONE,
+  //     } as const
+  //   }
+  //   setNdexCredential(credential)
+  // }, [keycloak])
 
   // TODO: use reducer?
   const defState: AppState = {

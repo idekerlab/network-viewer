@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react'
 import { TextField, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
-import { NdexAccountContext } from '../../../context/NdexAccountContext'
 import { useResetPassword } from '../../../api/ndex'
+import AppContext from '../../../context/AppState'
 
 const useStyles = makeStyles({
   root: {
@@ -29,9 +29,9 @@ const ForgotPasswordPanel: React.VFC<{
 }> = ({ onSuccessReset = () => {}, onFailReset = () => {} }) => {
   const classes = useStyles()
 
-  const { ndexServerURL } = useContext(NdexAccountContext)
+  const { config } = useContext(AppContext)
   const [email, setEmail] = useState('')
-  const { isLoading, error, data, execute } = useResetPassword(ndexServerURL)
+  const { isLoading, error, data, execute } = useResetPassword(config.ndexHttps)
 
   const handleEmailChange = (evt) => {
     const email: string = evt.target.value

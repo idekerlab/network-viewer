@@ -64,9 +64,12 @@ export const NdexSignInButton = () => {
     } else if (authType === AuthType.KEYCLOAK) {
       keycloak.logout()
     }
+
+    // Crear credential from global state
     setNdexCredential({
       authType: AuthType.NONE,
     })
+
     setShowLogin(false)
     if (visibility === 'PRIVATE') {
       window.location.reload()
