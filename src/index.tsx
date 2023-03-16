@@ -75,8 +75,9 @@ const auth = async (config: AppConfig): Promise<Keycloak> => {
     // TODO: initialization with silent check does not work.
     // For now, just initialize without silent check and manually login later if necessary.
     await newClient.init({
-      // onLoad: 'check-sso',
+      onLoad: 'check-sso',
       checkLoginIframe: false,
+      responseMode: 'query',
       // silentCheckSsoRedirectUri:
       //   window.location.origin + '/viewer/silent-check-sso.html',
     })
@@ -84,6 +85,38 @@ const auth = async (config: AppConfig): Promise<Keycloak> => {
     console.log('Keycloak init failed', e)
     throw new Error('Keycloak init failed', e)
   }
+
+  // // try login
+  // const isLogin: string = localStorage.getItem('keycloakLogin')
+
+  // if (isLogin !== 'true') {
+  //   localStorage.setItem('keycloakLogin', 'true')
+  //   newClient
+  //     .login({
+  //       prompt: 'none',
+  //     })
+  //     .then(() => {
+  //       if (newClient.authenticated) {
+  //         // setNdexCredential({
+  //         //   authType: AuthType.KEYCLOAK,
+  //         //   userName: keycloak.tokenParsed.preferred_username,
+  //         //   accesskey: keycloak.token,
+  //         //   fullName: keycloak.tokenParsed.name,
+  //         // } as NdexCredential)
+  //         console.log('* Authenticated via keycloak')
+  //         // Record this in local storage to avoid multiple login attempts
+  //       } else {
+  //         // Failed
+  //         // setNdexCredential({
+  //         //   authType: AuthType.NONE,
+  //         // } as NdexCredential)
+  //         console.log('Not authenticated')
+  //       }
+  //       setTimeout(() => {
+  //         localStorage.setItem('keycloakLogin', 'false')
+  //       }, 3000)
+  //     })
+  // }
   if (newClient.authenticated) {
     console.log('* User authenticated: via Keycloak', newClient.tokenParsed)
   } else {

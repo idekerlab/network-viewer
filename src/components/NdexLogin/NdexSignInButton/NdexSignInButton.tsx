@@ -68,7 +68,7 @@ export const NdexSignInButton = () => {
   const onLogout = (): void => {
     const { authType } = ndexCredential
 
-    // Crear credential from global state
+    // Clear credential from global state
     setNdexCredential({
       authType: AuthType.NONE,
     })

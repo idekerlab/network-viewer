@@ -28,73 +28,73 @@ const AppShell: FC = () => {
   const { keycloak, setIsReady, isReady, ndexCredential, setNdexCredential } =
     useContext(AppContext)
 
-  useEffect(() => {
-    const init = () => {
-      setIsReady(true)
-      localStorage.setItem('keycloakInit', 'false')
-      console.log(
-        'Silent check init OK=============================',
-        keycloak,
-        isReady,
-      )
-    }
+  // useEffect(() => {
+  //   const init = () => {
+  //     setIsReady(true)
+  //     localStorage.setItem('keycloakInit', 'false')
+  //     console.log(
+  //       'Silent check init OK=============================',
+  //       keycloak,
+  //       isReady,
+  //     )
+  //   }
 
-    // Check if the user is authenticated via Basic Auth
-    if (
-      ndexCredential !== undefined &&
-      ndexCredential.accesskey !== undefined
-    ) {
-      init()
-      return
-    }
-    const isAuth: boolean = keycloak.authenticated
+  //   // Check if the user is authenticated via Basic Auth
+  //   if (
+  //     ndexCredential !== undefined &&
+  //     ndexCredential.accesskey !== undefined
+  //   ) {
+  //     init()
+  //     return
+  //   }
+  //   const isAuth: boolean = keycloak.authenticated
 
-    if (isAuth && keycloak.tokenParsed !== undefined) {
-      keycloak
-        .loadUserProfile()
-        .then(function (profile) {
-          console.log('Got P+++++++++++++++++', profile)
-        })
-        .catch((error) => {
-          console.warn('Failed to load user profile')
-        })
-    } else {
-      // This is a hack: emulating a silent reload.
-      const keycloakInit = localStorage.getItem('keycloakInit')
-      if (keycloakInit === 'false') {
-        localStorage.setItem('keycloakInit', 'true')
-        keycloak
-          .login({
-            prompt: 'none',
-          })
-          .then(() => {
-            if (keycloak.authenticated) {
-              setNdexCredential({
-                authType: AuthType.KEYCLOAK,
-                userName: keycloak.tokenParsed.preferred_username,
-                accesskey: keycloak.token,
-                fullName: keycloak.tokenParsed.name,
-              } as NdexCredential)
-              console.log('* Authenticated via keycloak')
-            } else {
-              // Failed
-              setNdexCredential({
-                authType: AuthType.NONE,
-              } as NdexCredential)
-              console.log('Not authenticated')
-            }
-          })
-      }
-    }
+  //   if (isAuth && keycloak.tokenParsed !== undefined) {
+  //     keycloak
+  //       .loadUserProfile()
+  //       .then(function (profile) {
+  //         console.log('Got P+++++++++++++++++', profile)
+  //       })
+  //       .catch((error) => {
+  //         console.warn('Failed to load user profile')
+  //       })
+  //   } else {
+  //     // This is a hack: emulating a silent reload.
+  //     const keycloakInit = localStorage.getItem('keycloakInit')
+  //     if (keycloakInit === 'false') {
+  //       localStorage.setItem('keycloakInit', 'true')
+  //       keycloak
+  //         .login({
+  //           prompt: 'none',
+  //         })
+  //         .then(() => {
+  //           if (keycloak.authenticated) {
+  //             setNdexCredential({
+  //               authType: AuthType.KEYCLOAK,
+  //               userName: keycloak.tokenParsed.preferred_username,
+  //               accesskey: keycloak.token,
+  //               fullName: keycloak.tokenParsed.name,
+  //             } as NdexCredential)
+  //             console.log('* Authenticated via keycloak')
+  //           } else {
+  //             // Failed
+  //             setNdexCredential({
+  //               authType: AuthType.NONE,
+  //             } as NdexCredential)
+  //             console.log('Not authenticated')
+  //           }
+  //         })
+  //     }
+  //   }
 
-    setTimeout(() => {
-      init()
-    }, 120)
-  }, [])
+  //   setTimeout(() => {
+  //     init()
+  //   }, 120)
+  // }, [])
 
-  if (!isReady) {
-    return null
-  }
+  // if (!isReady) {
+  //   return null
+  // }
   return (
     <div className={classes.appShell}>
       <CoreComponents />
