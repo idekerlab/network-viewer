@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import useSearch from '../../hooks/useSearch'
 import AppContext from '../../context/AppState'
 import Snackbar from '@material-ui/core/Snackbar'
+import { SaveToNdexButton } from '../SaveToNdexButton'
 
 const SaveQueryButton = () => {
   const { uuid } = useParams()
@@ -17,7 +18,8 @@ const SaveQueryButton = () => {
     config.maxEdgeQuery,
   )
 
-  const { isLogin } = ndexCredential
+  const { accesskey } = ndexCredential
+  const isLogin: boolean = accesskey !== undefined
 
   const subnet = searchResult.data
   const edgeLimitExceeded: boolean =
@@ -28,12 +30,6 @@ const SaveQueryButton = () => {
 
   const subCx =
     subnet !== undefined && summaryObjectCount > 0 ? subnet['cx'] : undefined
-
-  const fetchCX = () => {
-    return new Promise<Object>(function (resolve, reject) {
-      resolve(subCx)
-    })
-  }
 
   const [snackMessage, setSnackMessage] = React.useState(undefined)
 
@@ -57,13 +53,12 @@ const SaveQueryButton = () => {
     }
     return (
       <>
-        {/* <SaveToNDExButton
+        <SaveToNdexButton
           disabled={disabled}
-          fetchCX={fetchCX}
           onSuccess={onSuccess}
           onFailure={onFailure}
-          tooltip="Save to NDEx"
-        /> */}
+          subCx={subCx}
+        />
         <Snackbar
           anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
           open={snackMessage !== undefined}
@@ -74,8 +69,7 @@ const SaveQueryButton = () => {
       </>
     )
   } else {
-    return <div />
-    // return <SaveToNDExButton disabled={true} />
+    return <SaveToNdexButton disabled={true} />
   }
 }
 
