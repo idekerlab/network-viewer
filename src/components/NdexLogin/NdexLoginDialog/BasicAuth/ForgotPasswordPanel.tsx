@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react'
 import { TextField, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
-import { useResetPassword } from '../../../api/ndex'
-import AppContext from '../../../context/AppState'
+import { useResetPassword } from '../../../../api/ndex'
+import AppContext from '../../../../context/AppState'
 
 const useStyles = makeStyles({
   root: {

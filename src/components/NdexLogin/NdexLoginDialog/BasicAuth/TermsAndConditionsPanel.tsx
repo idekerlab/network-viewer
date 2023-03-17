@@ -6,9 +6,8 @@ import {
   Checkbox,
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
-import { NdexAccountContext } from '../../../context/NdexAccountContext'
-import { useCreateGoogleUser } from '../../../api/ndex'
-import AppContext from '../../../context/AppState'
+import { useCreateGoogleUser } from '../../../../api/ndex'
+import AppContext from '../../../../context/AppState'
 
 const useStyles = makeStyles({
   signInHeader: {
@@ -39,12 +38,7 @@ const TermsAndConditionsPanel = (props) => {
 
   const [errorMessage, setErrorMessage] = useState<string>()
 
-  const {
-    isLoading,
-    error,
-    //data,
-    execute,
-  } = useCreateGoogleUser(ndexUrl)
+  const { isLoading, error, data, execute } = useCreateGoogleUser(ndexUrl)
 
   const [readAgreement, setReadAgreement] = useState(false)
 

@@ -1,5 +1,4 @@
 import { useState, useCallback } from 'react'
-import NDExUserModel from '../model/NDExUserModel'
 import HttpResponse from './HttpResponse'
 
 export async function callApi<T>(
@@ -167,7 +166,7 @@ export const useResetPassword = (ndexServer) => {
 export const createUser = async (
   ndexServer: string,
   api: string,
-  user: NDExUserModel,
+  user: object,
 ) => {
   const path = '/' + api + '/user'
   const apiCall = ndexServer + path
@@ -183,12 +182,12 @@ export const createUser = async (
   return callTextApi(apiCall, postConfig)
 }
 
-export const useCreateUser = (ndexServer) => {
+export const useCreateUser = (ndexServer: string) => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string>()
   const [data, setData] = useState<string>()
 
-  const execute = async (user: NDExUserModel) => {
+  const execute = async (user: object) => {
     try {
       setIsLoading(true)
       setError(undefined)

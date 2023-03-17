@@ -15,10 +15,10 @@ import { makeStyles } from '@material-ui/styles'
 
 import NdexLogo from '../../../assets/images/ndex-logo.svg'
 
-import NdexSignUpPanel from './NdexSignUpPanel'
-import ForgotPasswordPanel from './ForgotPasswordPanel'
+import NdexSignUpPanel from './BasicAuth/NdexSignUpPanel'
+import ForgotPasswordPanel from './BasicAuth/ForgotPasswordPanel'
 
-import TermsAndConditionsPanel from './TermsAndConditionsPanel'
+import TermsAndConditionsPanel from './BasicAuth/TermsAndConditionsPanel'
 import AppContext from '../../../context/AppState'
 
 const content_mode = {

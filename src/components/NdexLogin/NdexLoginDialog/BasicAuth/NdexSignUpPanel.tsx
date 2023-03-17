@@ -7,9 +7,10 @@ import {
   Typography,
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
-import { isValidEmail, useCreateUser } from '../../../api/ndex'
-import { validateLogin } from '../validateCredentials'
-import AppContext from '../../../context/AppState'
+import { isValidEmail, useCreateUser } from '../../../../api/ndex'
+import { validateLogin } from '../../validateCredentials'
+import AppContext from '../../../../context/AppState'
+import { AuthType } from '../../../../model/AuthType'
 
 const useStyles = makeStyles({
   signUpHeader: {
@@ -49,9 +50,9 @@ type NdexUserInfo = {
 const NdexSignUpPanel = (props) => {
   const classes = useStyles()
 
-  const { handleNDExSignOn, onSuccessLogin, onWaitForEmailValidation } = props
+  const { onSuccessLogin, onWaitForEmailValidation } = props
 
-  const { config } = useContext(AppContext)
+  const { config, setNdexCredential, setShowLogin } = useContext(AppContext)
   const ndexServerURL = config.ndexHttps
 
   const [firstName, setFirstName] = useState<string>('')
@@ -66,32 +67,36 @@ const NdexSignUpPanel = (props) => {
 
   const [showEmailValidation, setShowEmailValidation] = useState(false)
 
-  const {
-    isLoading,
-    error,
-    //data,
-    execute,
-  } = useCreateUser(ndexServerURL)
+  const { isLoading, error, data, execute } = useCreateUser(ndexServerURL)
 
   const loginAfterCreate = (userName: string, password: string) => {
     setErrorMessage(undefined)
 
     validateLogin(userName, password, ndexServerURL).then((data) => {
       setTimeout(() => {
-        if (data.error !== null) {
+        if (data.error !== null && data.error !== undefined) {
           setErrorMessage(data.error.message)
         } else {
-          handleNDExSignOn(
-            {
-              id: data.userData.userName,
-              password,
-              ndexServer: ndexServerURL,
-              fullName: data.userData.firstName + ' ' + data.userData.lastName,
-              image: data.userData.image,
-              details: data.userData,
-            },
-            onSuccessLogin,
-          )
+          console.log('success login after create')
+
+          setNdexCredential({
+            userName: data.userData.userName,
+            fullName: data.userData.firstName + ' ' + data.userData.lastName,
+            authType: AuthType.BASIC,
+            accesskey: password,
+          })
+          setShowLogin(false)
+          // handleNDExSignOn(
+          //   {
+          //     id: data.userData.userName,
+          //     password,
+          //     ndexServer: ndexServerURL,
+          //     fullName: data.userData.firstName + ' ' + data.userData.lastName,
+          //     image: data.userData.image,
+          //     details: data.userData,
+          //   },
+          //   onSuccessLogin,
+          // )
         }
       }, 500)
     })

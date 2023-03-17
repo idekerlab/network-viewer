@@ -184,7 +184,7 @@ const BasicAuthLoginPanel: FC<{
         </Button>
       </div>
 
-      {/* <div className={classes.signup}>
+      <div className={classes.signup}>
         <Typography variant={'body1'}>
           <a
             href="#"
@@ -207,7 +207,7 @@ const BasicAuthLoginPanel: FC<{
             Click here to sign up!
           </a>
         </Typography>
-      </div> */}
+      </div>
 
       {errorMessage ? (
         <div className={classes.errorPanel}>
