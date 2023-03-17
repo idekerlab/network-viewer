@@ -27,6 +27,8 @@ import { SelectionActions } from '../../../reducer/selectionStateReducer'
 import { NetworkQueryParams } from '../../../utils/NetworkQueryParams'
 import { QueryType } from './QueryType'
 import { NetworkQuery } from './NetworkQuery'
+import { DownloadButton } from '../../DownloadButton'
+import { DownloadProps } from '../../DownloadButton/DownloadProps'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -156,11 +158,11 @@ const SearchBox: FC = () => {
     : 0
 
   const data = summaryObjectCount > 0 ? subCx : undefined
-  // const downloadProps: DownloadProps = {
-  //   data,
-  //   tooltip: 'Download query result as CX',
-  //   fileName: `${uuid} subnet.cx`,
-  // }
+  const downloadProps: DownloadProps = {
+    data,
+    tooltip: 'Download query result as CX',
+    fileName: `${uuid} subnet.cx`,
+  }
 
   const handleSearchTypeChange = (evt) => {
     const val = evt.target.value
@@ -325,7 +327,7 @@ const SearchBox: FC = () => {
       >
         <SearchIcon />
       </IconButton>
-      {/* {!edgeLimitExceeded && <DownloadButton {...downloadProps} />} */}
+      {!edgeLimitExceeded && <DownloadButton {...downloadProps} />}
       {!edgeLimitExceeded && <SaveQueryButton />}
       <AdvancedQueryMenu />
       <IconButton

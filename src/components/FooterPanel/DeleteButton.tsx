@@ -5,13 +5,13 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import AppContext from '../../context/AppState'
 import useNetworkPermissions from '../../hooks/useNetworkPermissions'
 import { Tooltip } from '@material-ui/core'
-import red from '@material-ui/core/colors/red'
 import DeleteDialog from './DeleteDialog'
 
 const DeleteButton: VFC = (): ReactElement => {
   const { summary, ndexCredential, config } = useContext(AppContext)
   const { uuid } = useParams()
-  const { isLogin } = ndexCredential
+  const { accesskey } = ndexCredential
+  const isLogin: boolean = accesskey !== undefined
 
   const [open, setOpen] = useState<boolean>(false)
 

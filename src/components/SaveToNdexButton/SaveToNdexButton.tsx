@@ -50,35 +50,31 @@ export const SaveToNdexButton = ({
   const classes = useStyles()
 
   const { config, ndexCredential } = useContext(AppContext)
-  const { uuid } = useParams()
-  // const { data } = useCx(
-  //   uuid,
-  //   config.ndexHttps,
-  //   'v2',
-  //   ndexCredential,
-  //   config.maxNumObjects,
-  // )
 
-  const saveNetwork = async (cx: any[]): Promise<void> => {
+  const saveNetwork = async (): Promise<void> => {
     const ndexClient = getNdexClient(`${config.ndexHttps}/v2`, ndexCredential)
 
-    const res = ndexClient.createNetworkFromRawCX(subCx)
-    onSuccess(res)
-    // .catch((error) => {
-    //   typeof onFailure !== 'undefined' && onFailure(error)
-    // })
+    try {
+      const res = ndexClient.createNetworkFromRawCX(subCx)
+      onSuccess(res)
+    } catch (error) {
+      typeof onFailure !== 'undefined' && onFailure(error)
+    }
   }
+
   const onClick = (): void => {
     if (subCx !== undefined) {
       try {
-        saveNetwork(subCx)
+        saveNetwork()
           .then((response) => {
             console.log('saveNetwork done', response)
           })
           .catch((error) => {
             typeof onFailure !== 'undefined' && onFailure(error)
           })
-      } catch (error) {}
+      } catch (error) {
+        typeof onFailure !== 'undefined' && onFailure(error)
+      }
     }
   }
 

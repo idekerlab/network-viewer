@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { useParams } from 'react-router-dom'
 
 import AppContext from '../../context/AppState'
@@ -8,25 +8,23 @@ import Tooltip from '@material-ui/core/Tooltip'
 import DownloadIcon from '@material-ui/icons/CloudDownload'
 
 import { appendWindowProtocol } from '../../utils/locationUtil'
+import { AuthType } from '../../model/AuthType'
 
 const SaveNetworkCXButton = () => {
   const { uuid } = useParams()
 
   const { ndexCredential, config, summary } = useContext(AppContext)
+  const { accesskey, authType, userName } = ndexCredential
+  const isLogin: boolean = accesskey !== undefined
 
   const exportCx = () => {
     const a = document.createElement('a')
     let credentialProp = ''
-    if (ndexCredential.isLogin) {
-      if (ndexCredential.isGoogle) {
-        credentialProp =
-          '&id_token=' + ndexCredential.oauth['loginDetails'].tokenId
-      } else {
-        credentialProp =
-          '&auth_token=' +
-          btoa(
-            ndexCredential.basic.userId + ':' + ndexCredential.basic.password,
-          )
+    if (isLogin) {
+      if (authType === AuthType.KEYCLOAK) {
+        credentialProp = '&id_token=' + accesskey
+      } else if (authType === AuthType.BASIC) {
+        credentialProp = '&auth_token=' + btoa(userName + ':' + accesskey)
       }
     }
 

@@ -40,7 +40,7 @@ export const NdexUserInfoPopover = ({
 
   const _handleOpenMyAccount = (): void => {
     onClose()
-    window.open('https://' + myAccountUrl, 'noopener')
+    window.open('https://' + myAccountUrl, '_self')
   }
 
   const getInitial = (userName: string): string => {

@@ -26,41 +26,6 @@ const useStyles = makeStyles((theme: Theme) =>
 const ToolBar = (): JSX.Element => {
   const classes = useStyles()
 
-  // const { config, summary, ndexCredential, setNdexCredential } =
-  //   useContext(AppContext)
-
-  // const loginStateUpdated = (loginState) => {
-  //   if (loginState) {
-  //     if (loginState.isGoogle) {
-  //       setNdexCredential({
-  //         loaded: true,
-  //         isLogin: true,
-  //         isGoogle: true,
-  //         oauth: loginState,
-  //       })
-  //     } else {
-  //       const details = loginState.loginDetails
-  //       setNdexCredential({
-  //         loaded: true,
-  //         isLogin: true,
-  //         isGoogle: false,
-  //         basic: { userId: details.id, password: details.password },
-  //       })
-  //     }
-  //   } else {
-  //     if (ndexCredential.loaded && ndexCredential.isLogin) {
-  //       if (!summary || summary.visibility === 'PRIVATE') {
-  //         window.location.href = ndexServerUrl
-  //       }
-  //     }
-  //     setNdexCredential({
-  //       loaded: true,
-  //       isLogin: false,
-  //       isGoogle: false,
-  //     })
-  //   }
-  // }
-
   return (
     <div className={classes.root}>
       <Grid container direction="row" alignItems="center" spacing={0}>

@@ -7,11 +7,12 @@ import useSearch from '../../hooks/useSearch'
 import useNetworkMetaData from '../../hooks/useNetworkMetaData'
 
 import AppContext from '../../context/AppState'
+import { CyNdexProvider } from '../OpenInCytoscapeButton/CyNdexContext'
+import OpenInCytoscapeButton from '../OpenInCytoscapeButton'
 
 const useStyles = makeStyles(() =>
   createStyles({
     wrapper: {
-      // backgroundColor: 'red',
       minWidth: '12em',
       minHeight: '2em',
     },
@@ -79,36 +80,37 @@ const OpenInCytoscape: FC = () => {
     metaData: metaData,
   }
 
-  return null
-  // <CyNDExProvider port={1234}>
-  //   {useQueryResult ? (
-  //     subCx ? (
-  //       <div className={classes.wrapper}>
-  //         <OpenInCytoscapeButton
-  //           size="small"
-  //           fetchCX={fetchCX}
-  //           onSuccess={onSuccess}
-  //           onFailure={onFailure}
-  //         />
-  //       </div>
-  //     ) : null
-  //   ) : (
-  //     <div className={classes.wrapper}>
-  //       <OpenInCytoscapeButton
-  //         size="small"
-  //         ndexNetworkProperties={ndexNetworkProperties}
-  //         onSuccess={onSuccess}
-  //         onFailure={onFailure}
-  //       />
-  //     </div>
-  //   )}
-  //   <Snackbar
-  //     open={snackMessage !== undefined}
-  //     autoHideDuration={6000}
-  //     onClose={handleClose}
-  //     message={snackMessage}
-  //   />
-  // </CyNDExProvider>
+  return (
+    <CyNdexProvider port={1234}>
+      {useQueryResult ? (
+        subCx ? (
+          <div className={classes.wrapper}>
+            <OpenInCytoscapeButton
+              size="small"
+              fetchCX={fetchCX}
+              onSuccess={onSuccess}
+              onFailure={onFailure}
+            />
+          </div>
+        ) : null
+      ) : (
+        <div className={classes.wrapper}>
+          <OpenInCytoscapeButton
+            size="small"
+            ndexNetworkProperties={ndexNetworkProperties}
+            onSuccess={onSuccess}
+            onFailure={onFailure}
+          />
+        </div>
+      )}
+      <Snackbar
+        open={snackMessage !== undefined}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message={snackMessage}
+      />
+    </CyNdexProvider>
+  )
 }
 
 export default OpenInCytoscape
