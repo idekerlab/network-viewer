@@ -18,14 +18,14 @@ const getNetworkMetaData = async (
     return cache
   }
 
-  if (credential === undefined || !credential.loaded) {
+  if (credential === undefined || credential.accesskey === undefined) {
     return undefined
   }
 
   try {
     const ndexClient = getNdexClient(`${serverUrl}/${apiVersion}`, credential)
     let metaData = null
-    if(credential.accesskey !== undefined && credential.accesskey !== '') {
+    if (credential.accesskey !== undefined && credential.accesskey !== '') {
       metaData = await ndexClient.getMetaData(uuid, credential.accesskey)
     } else {
       metaData = await ndexClient.getMetaData(uuid)
