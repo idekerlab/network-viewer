@@ -43,7 +43,7 @@ const CytoscapeRenderer = ({
 
     updateNetwork(cyjsNetwork, cyInstance, annotationRenderer, backgroundColor)
 
-    if (cyjsNetwork !== {} && cyInstance !== null) {
+    if (Object.keys(cyjsNetwork).length !== 0 && cyInstance !== null) {
       if (layoutName !== undefined && cyInstance !== null) {
         const layout = cyInstance.layout({
           name: layoutName,
