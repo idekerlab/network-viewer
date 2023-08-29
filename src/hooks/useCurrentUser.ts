@@ -4,14 +4,12 @@ import NdexCredential from '../model/NdexCredential'
 import { getNdexClient } from '../utils/credentialUtil'
 import NDExError from '../utils/error/NDExError'
 
-
 const getCurrentUser = async (
   serverUrl: string,
   apiVersion: string,
   credential: NdexCredential,
 ) => {
-
-  if (credential === undefined || !credential.loaded || !credential.isLogin) {
+  if (credential === undefined || credential.accesskey === undefined) {
     return undefined
   }
 

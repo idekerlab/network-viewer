@@ -3,7 +3,7 @@ import NdexCredential from '../model/NdexCredential'
 import { getAccessKey, getNdexClient } from '../utils/credentialUtil'
 import NDExError from '../utils/error/NDExError'
 
-import { useLocation } from "react-router-dom"
+import { useLocation } from 'react-router-dom'
 
 const summaryMap = {}
 
@@ -19,15 +19,11 @@ async function getNetworkSummary(
     return cache
   }
 
-  if (!credential.loaded) {
-    return undefined
-  }
-  
   const ndexUrl = `${serverUrl}/${apiVersion}`
   try {
     const ndexClient = getNdexClient(ndexUrl, credential)
     let summary = null
-    if(credential.accesskey !== undefined && credential.accesskey !== '') {
+    if (credential.accesskey !== undefined && credential.accesskey !== '') {
       summary = await ndexClient.getNetworkSummary(uuid, credential.accesskey)
     } else {
       summary = await ndexClient.getNetworkSummary(uuid)
@@ -65,10 +61,10 @@ export default function useNetworkSummary(
   apiVersion: string = 'v2',
   credential: NdexCredential,
 ) {
-
+  // Restore accesskey from URL if necessary
   const location = useLocation()
   const accessKey: string = getAccessKey(location.search)
-  if(accessKey !== null) {
+  if (accessKey !== null) {
     credential.accesskey = accessKey
   }
 

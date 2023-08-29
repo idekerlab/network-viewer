@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%',
       placeItems: 'center',
       background: '#FFFFFF',
-      zIndex: 0
+      zIndex: 0,
     },
     item: {
       display: 'flex',
@@ -51,23 +51,23 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-
-
 const EdgeLimitExceededPanel = () => {
   const classes = useStyles()
-  
+
   const { uuid } = useParams()
 
   const [snackMessage, setSnackMessage] = useState(undefined)
 
   const { query, queryMode, ndexCredential, config } = useContext(AppContext)
-  
+
   const handleSave = () => {
-    saveQuery(uuid, query, config.ndexHttps, ndexCredential, queryMode).then(() => {
-      setSnackMessage('Query is being saved to NDEx')}
+    saveQuery(uuid, query, config.ndexHttps, ndexCredential, queryMode).then(
+      () => {
+        setSnackMessage('Query is being saved to NDEx')
+      },
     )
   }
-  
+
   const handleClose = () => {
     setSnackMessage(undefined)
   }
@@ -76,18 +76,24 @@ const EdgeLimitExceededPanel = () => {
     <div className={classes.root}>
       <div className={classes.item}>
         <div className={classes.title}>
-          <Typography className={classes.message} variant="h3">
-           
-          </Typography>
+          <Typography className={classes.message} variant="h3"></Typography>
         </div>
         <Typography className={classes.message} variant="subtitle1">
-          Your query returned more than {config.maxEdgeQuery} and cannot be displayed in the browser.<br/> 
-          { ndexCredential.isLogin ? 'You can save this sub-network to NDEx to continue working with it.' : 'Please log in so that the result can be saved to your NDEx account' }
+          Your query returned more than {config.maxEdgeQuery} and cannot be
+          displayed in the browser.
+          <br />
+          {ndexCredential.accesskey !== undefined
+            ? 'You can save this sub-network to NDEx to continue working with it.'
+            : 'Please log in so that the result can be saved to your NDEx account'}
         </Typography>
-        { ndexCredential.isLogin && <Button onClick={handleSave} variant='contained'>Save Result to NDEx</Button> }
+        {ndexCredential.accesskey !== undefined && (
+          <Button onClick={handleSave} variant="contained">
+            Save Result to NDEx
+          </Button>
+        )}
         <Snackbar
           open={snackMessage != undefined}
-          anchorOrigin={ {vertical: 'top', horizontal: 'center' }}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
           autoHideDuration={6000}
           onClose={handleClose}
           message={snackMessage}

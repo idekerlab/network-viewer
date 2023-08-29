@@ -3,22 +3,18 @@ import { useParams } from 'react-router-dom'
 import Snackbar from '@material-ui/core/Snackbar'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 
-import {
-  CyNDExProvider,
-  OpenInCytoscapeButton,
-} from 'cytoscape-explore-components'
-
 import useSearch from '../../hooks/useSearch'
 import useNetworkMetaData from '../../hooks/useNetworkMetaData'
 
 import AppContext from '../../context/AppState'
+import { CyNdexProvider } from '../OpenInCytoscapeButton/CyNdexContext'
+import OpenInCytoscapeButton from '../OpenInCytoscapeButton'
 
 const useStyles = makeStyles(() =>
   createStyles({
     wrapper: {
-      // backgroundColor: 'red',
       minWidth: '12em',
-      minHeight: '2em'
+      minHeight: '2em',
     },
   }),
 )
@@ -85,7 +81,7 @@ const OpenInCytoscape: FC = () => {
   }
 
   return (
-    <CyNDExProvider port={1234}>
+    <CyNdexProvider port={1234}>
       {useQueryResult ? (
         subCx ? (
           <div className={classes.wrapper}>
@@ -113,7 +109,7 @@ const OpenInCytoscape: FC = () => {
         onClose={handleClose}
         message={snackMessage}
       />
-    </CyNDExProvider>
+    </CyNdexProvider>
   )
 }
 

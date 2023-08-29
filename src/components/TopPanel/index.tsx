@@ -1,9 +1,8 @@
-import React from 'react'
+import { useContext } from 'react'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 import logo from '../../assets/images/ndex-logo.svg'
-
-import { getCurrentServer } from '../../utils/locationUtil'
+import AppContext from '../../context/AppState'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,25 +38,27 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }),
 )
+const handleClick = (url: string): void => {
+  window.open(url, '_self')
+}
 
 const TopPage = ({ config }) => {
   const classes = useStyles()
 
-  const url = getCurrentServer();
-
-  const handleClick = () => {
-    window.open(url, '_self')
-  }
-
   return (
     <div className={classes.root}>
       <div className={classes.item}>
-        <img alt="NDEx Logo" src={logo} className={classes.ndexLogo} onClick={handleClick} />
+        <img
+          alt="NDEx Logo"
+          src={logo}
+          className={classes.ndexLogo}
+          onClick={() => handleClick(config.ndexHttps)}
+        />
         <Typography className={classes.message} variant="h4">
           Please specify UUID of the network
         </Typography>
 
-        <Typography className={classes.link} onClick={handleClick} variant="body1">
+        <Typography className={classes.link} variant="body1">
           Back to NDEx Home
         </Typography>
       </div>

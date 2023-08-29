@@ -1,9 +1,11 @@
-import { FC } from 'react'
+import { FC, Suspense, useEffect } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
-import { NDExAccountProvider } from 'cytoscape-explore-components'
 import AppContext from '../../context/AppState'
 import { useContext } from 'react'
 import CoreComponents from './CoreComponents'
+import { KeycloakTokenParsed } from 'keycloak-js'
+import { AuthType } from '../../model/AuthType'
+import NdexCredential from '../../model/NdexCredential'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,18 +25,79 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const AppShell: FC = () => {
   const classes = useStyles()
-  const { config } = useContext(AppContext)
+  const { keycloak, setIsReady, isReady, ndexCredential, setNdexCredential } =
+    useContext(AppContext)
 
-  const { ndexHttps, googleClientId } = config
+  // useEffect(() => {
+  //   const init = () => {
+  //     setIsReady(true)
+  //     localStorage.setItem('keycloakInit', 'false')
+  //     console.log(
+  //       'Silent check init OK=============================',
+  //       keycloak,
+  //       isReady,
+  //     )
+  //   }
 
+  //   // Check if the user is authenticated via Basic Auth
+  //   if (
+  //     ndexCredential !== undefined &&
+  //     ndexCredential.accesskey !== undefined
+  //   ) {
+  //     init()
+  //     return
+  //   }
+  //   const isAuth: boolean = keycloak.authenticated
+
+  //   if (isAuth && keycloak.tokenParsed !== undefined) {
+  //     keycloak
+  //       .loadUserProfile()
+  //       .then(function (profile) {
+  //         console.log('Got P+++++++++++++++++', profile)
+  //       })
+  //       .catch((error) => {
+  //         console.warn('Failed to load user profile')
+  //       })
+  //   } else {
+  //     // This is a hack: emulating a silent reload.
+  //     const keycloakInit = localStorage.getItem('keycloakInit')
+  //     if (keycloakInit === 'false') {
+  //       localStorage.setItem('keycloakInit', 'true')
+  //       keycloak
+  //         .login({
+  //           prompt: 'none',
+  //         })
+  //         .then(() => {
+  //           if (keycloak.authenticated) {
+  //             setNdexCredential({
+  //               authType: AuthType.KEYCLOAK,
+  //               userName: keycloak.tokenParsed.preferred_username,
+  //               accesskey: keycloak.token,
+  //               fullName: keycloak.tokenParsed.name,
+  //             } as NdexCredential)
+  //             console.log('* Authenticated via keycloak')
+  //           } else {
+  //             // Failed
+  //             setNdexCredential({
+  //               authType: AuthType.NONE,
+  //             } as NdexCredential)
+  //             console.log('Not authenticated')
+  //           }
+  //         })
+  //     }
+  //   }
+
+  //   setTimeout(() => {
+  //     init()
+  //   }, 120)
+  // }, [])
+
+  // if (!isReady) {
+  //   return null
+  // }
   return (
     <div className={classes.appShell}>
-      <NDExAccountProvider
-        ndexServerURL={ndexHttps}
-        googleClientId={googleClientId}
-      >
-        <CoreComponents />
-      </NDExAccountProvider>
+      <CoreComponents />
       <div id="sandbox"></div>
     </div>
   )

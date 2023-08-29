@@ -15,7 +15,6 @@ import Select from '@material-ui/core/Select'
 import { IconButton, Tooltip } from '@material-ui/core'
 import AppContext from '../../../context/AppState'
 import SearchHelpDialog from '../SearchHelpDialog'
-import { DownloadButton, DownloadProps } from 'cytoscape-explore-components'
 import { fitContent } from '../../../utils/cyjsUtil'
 
 import useSearch from '../../../hooks/useSearch'
@@ -28,6 +27,8 @@ import { SelectionActions } from '../../../reducer/selectionStateReducer'
 import { NetworkQueryParams } from '../../../utils/NetworkQueryParams'
 import { QueryType } from './QueryType'
 import { NetworkQuery } from './NetworkQuery'
+import { DownloadButton } from '../../DownloadButton'
+import { DownloadProps } from '../../DownloadButton/DownloadProps'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

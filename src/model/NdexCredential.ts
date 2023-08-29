@@ -1,13 +1,10 @@
+import { AuthType } from './AuthType'
+
 type NdexCredential = {
-  loaded: boolean
-  isLogin: boolean
-  isGoogle: boolean
-  oauth?: object
-  basic?: {
-    userId: string
-    password: string
-  }
+  authType: AuthType
+  userName?: string
   accesskey?: string
+  fullName?: string
 }
 
 export default NdexCredential

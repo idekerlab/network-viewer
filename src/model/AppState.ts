@@ -4,6 +4,7 @@ import SelectionState from './SelectionState'
 import NdexCredential from './NdexCredential'
 import AppConfig from './AppConfig'
 import Summary from './Summary'
+import Keycloak from 'keycloak-js'
 
 type AppState = {
   config: AppConfig
@@ -23,19 +24,22 @@ type AppState = {
   queryMode: string
   setQueryMode: Function
 
-  ndexCredential: NdexCredential
-  setNdexCredential: Function
-
   summary: Summary
-  setSummary: Function
+  setSummary: (summary: Summary) => void
 
   selectionState: SelectionState
   selectionStateDispatch: any
 
-  // This is a hack, but looks only way to open external component
-  // (Sharing external component as state)
-  ndexLoginWrapper: unknown
-  setNdexLoginWrapper: (button: any) => void
+  keycloak: Keycloak
+
+  ndexCredential: NdexCredential
+  setNdexCredential: (credential: NdexCredential) => void
+
+  showLogin: boolean
+  setShowLogin: (showDialog: boolean) => void
+
+  isReady: boolean
+  setIsReady: (isReady: boolean) => void
 }
 
 export default AppState

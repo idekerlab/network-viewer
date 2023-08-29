@@ -11,11 +11,10 @@ import { getCurrentServer } from '../../utils/locationUtil'
 import useNetworkSummary from '../../hooks/useNetworkSummary'
 import { EDITABLE, Editable } from './Editable'
 
-
 const EditMetadataButton: FC = (): ReactElement => {
   const { summary, ndexCredential, config } = useContext(AppContext)
   const { uuid } = useParams()
-  const { isLogin } = ndexCredential
+  const { accesskey } = ndexCredential
 
   const [isEditable, setIsEditable] = useState<boolean>(false)
 
@@ -56,7 +55,7 @@ const EditMetadataButton: FC = (): ReactElement => {
   }, [permissions])
 
   let login: boolean = false
-  if (isLogin && summary !== undefined) {
+  if (accesskey !== undefined && summary !== undefined) {
     login = true
   }
 

@@ -1,5 +1,3 @@
-import { ForgotPasswordPanel } from 'cytoscape-explore-components'
-
 import { getCurrentServer } from '../../utils/locationUtil'
 
 import { FC, useState } from 'react'
@@ -31,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
       textTransform: 'none',
     },
     footer: {
-      marginTop: '5em'
+      marginTop: '5em',
     },
     row: {
       marginBottom: '1em',
@@ -88,10 +86,14 @@ const AccountForgotPasswordPane: FC = () => {
         alignItems={'center'}
         xs={12}
       >
-        <ForgotPasswordPanel onSuccessReset={onSuccessReset} />
+        {/* <ForgotPasswordPanel onSuccessReset={onSuccessReset} /> */}
         {showHomeLink && (
           <div className={classes.footer}>
-            <Button fullWidth onClick={handleHomeClick} className={classes.homeButton}>
+            <Button
+              fullWidth
+              onClick={handleHomeClick}
+              className={classes.homeButton}
+            >
               Go to NDEx Home Page to Sing In
             </Button>
           </div>

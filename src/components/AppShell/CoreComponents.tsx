@@ -47,9 +47,7 @@ const CoreComponents: FC = () => {
       <main className={classes.main}>
         <MainSplitPane />
       </main>
-      <footer className={classes.footer}>
-        <FooterPanel />
-      </footer>
+      <footer className={classes.footer}>{<FooterPanel />}</footer>
     </div>
   )
 }

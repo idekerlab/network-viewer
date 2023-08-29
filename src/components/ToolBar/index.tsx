@@ -1,13 +1,9 @@
-import { FC, useContext, useRef, useEffect } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
-import { NDExSignInButton } from 'cytoscape-explore-components'
-import AppContext from '../../context/AppState'
 import ClassicModeButton from './ClassicModeButton'
 import NdexHomeButton from './NdexHomeButton'
 import AdvancedMenu from './AdvancedMenu'
-
-import { getCurrentServer } from '../../utils/locationUtil'
+import { NdexSignInButton } from '../NdexLogin/NdexSignInButton'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,84 +23,19 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const ToolBar: FC = (props) => {
+const ToolBar = (): JSX.Element => {
   const classes = useStyles()
-  const ndexButton = useRef(null)
-
-  const { summary, ndexCredential, setNdexCredential, setNdexLoginWrapper } =
-    useContext(AppContext)
-  
-
-  useEffect(() => {
-    setNdexLoginWrapper(ndexButton.current.lastChild)
-  }, [])
-
-  const ndexServerUrl = getCurrentServer()
-
-  const loginStateUpdated = (loginState) => {
-    if (loginState) {
-      if (loginState.isGoogle) {
-        setNdexCredential({
-          loaded: true,
-          isLogin: true,
-          isGoogle: true,
-          oauth: loginState,
-        })
-      } else {
-        const details = loginState.loginDetails
-        setNdexCredential({
-          loaded: true,
-          isLogin: true,
-          isGoogle: false,
-          basic: { userId: details.id, password: details.password },
-        })
-      }
-    } else {
-      if (ndexCredential.loaded && ndexCredential.isLogin) {
-        if (!summary || summary.visibility === 'PRIVATE') {
-          window.location.href = ndexServerUrl
-        }
-      }
-      setNdexCredential({
-        loaded: true,
-        isLogin: false,
-        isGoogle: false,
-      })
-    }
-  }
 
   return (
     <div className={classes.root}>
-      <Grid
-        container
-        direction="row"
-        justify="flex-start"
-        alignItems="center"
-        spacing={0}
-      >
-        <Grid
-          container
-          direction="row"
-          justify="flex-start"
-          alignItems="center"
-        >
+      <Grid container direction="row" alignItems="center" spacing={0}>
+        <Grid container direction="row" alignItems="center">
           <NdexHomeButton />
-          <div ref={ndexButton}>
-            <NDExSignInButton
-              size={'medium'}
-              myAccountURL={ndexServerUrl + '/#/myAccount'}
-              onLoginStateUpdated={loginStateUpdated}
-            />
-          </div>
+          <NdexSignInButton />
           <AdvancedMenu />
           <ClassicModeButton />
         </Grid>
-        <Grid
-          container
-          direction="row"
-          justify="flex-end"
-          alignItems="center"
-        ></Grid>
+        <Grid container direction="row" alignItems="center"></Grid>
       </Grid>
     </div>
   )

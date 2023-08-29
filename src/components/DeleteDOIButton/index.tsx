@@ -27,6 +27,8 @@ const DeleteDOIButton: VFC<{ uuid: string }> = ({ uuid }) => {
   const classes = useStyles()
 
   const { ndexCredential, config, summary, setSummary } = useContext(AppContext)
+  const isLogin: boolean = ndexCredential.accesskey !== undefined
+
   const permissions = useNetworkPermissions(
     uuid,
     config.ndexHttps,
@@ -67,7 +69,7 @@ const DeleteDOIButton: VFC<{ uuid: string }> = ({ uuid }) => {
   }
 
   if (
-    ndexCredential.isLogin &&
+    isLogin &&
     summary !== undefined &&
     permissions &&
     permissions.data === 'ADMIN'
