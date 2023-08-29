@@ -10,7 +10,7 @@ const useHighlight = (query: string, mode: string, cx: object[]) => {
 
   const [searchId, setSearchId] = useState(null)
   
-  if (cx === undefined || cx === null || cx === []) {
+  if (cx === undefined || cx === null || (Array.isArray(cx) && cx.length === 0)) {
     return null
   }
 
