@@ -533,7 +533,14 @@ const NetworkPanel = ({
   }
 
   const getSubRenderer = () => {
-    // Case 1:
+    // Check the error code 500:
+    if (searchResult.error && typeof searchResult.error === 'object' && 'message' in searchResult.error) {
+      if (searchResult.error.message === '500') {
+        const message = 'Oops! We\'re having trouble connecting to the server.'
+        return <Loading message={message} showLoading={false} />
+      }
+    }
+
     if (!searchResult.isLoading && subCx === undefined && showSearchResult) {
       const message = 'No search result yet.'
       return <Loading message={message} showLoading={false} />
