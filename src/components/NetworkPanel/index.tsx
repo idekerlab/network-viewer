@@ -536,7 +536,7 @@ const NetworkPanel = ({
     // Check the error code 500:
     if (searchResult.error && typeof searchResult.error === 'object' && 'message' in searchResult.error) {
       if (searchResult.error.message === '500') {
-        const message = 'Oops! We\'re having trouble connecting to the server.'
+        const message = 'The service is temporarily unavailable. Please contact us for assistance.'
         return <Loading message={message} showLoading={false} />
       }
     }
