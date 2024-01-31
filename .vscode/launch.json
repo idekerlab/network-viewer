@@ -10,7 +10,7 @@
       "request": "launch",
       "type": "chrome",
       "port": 9222,
-      "url": "http://localhost:5500/viewer/networks/a7850741-40fd-11ed-9208-0242c246b7fb",
+      "url": "http://localhost:5500/viewer/networks/3a512e57-c066-11ee-9971-0242c246b7fb",
       "webRoot": "${workspaceFolder}"
     },
     {
