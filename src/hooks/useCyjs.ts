@@ -1,6 +1,8 @@
 import { cx2cyjs } from '../utils/cx2cyjs'
 import { useState } from 'react'
 import NDExError from '../utils/error/NDExError'
+// Minimum Length of CX: 'numberVerification' and 'status' are the two essential entries in cx.
+const CX_MIN_LEN = 2 
 
 export default function useCyjs(uuid: string, cx: object[]) {
   const [cyjs, setCyjs] = useState(null)
@@ -11,7 +13,7 @@ export default function useCyjs(uuid: string, cx: object[]) {
     return {}
   }
 
-  if (id === null && cx.length >= 6) {
+  if (id === null && cx.length >= CX_MIN_LEN) {
     setUuid(uuid)
 
     try {
