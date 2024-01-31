@@ -28,7 +28,6 @@
     "@material-ui/icons": "^4.11.3",
     "@material-ui/styles": "^4.11.5",
     "@react-keycloak/web": "^3.4.0",
-    "axios": "^1.6.7",
     "clsx": "^1.1.1",
     "cytoscape": "^3.26.0",
     "cytoscape-canvas": "^3.0.1",
