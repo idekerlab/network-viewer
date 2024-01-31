@@ -71,7 +71,7 @@ const DeleteButton: VFC = (): ReactElement => {
     <Tooltip title={message} arrow placement={'top-start'}>
       <div>
         <IconButton color="inherit" disabled={disabled} onClick={_handleClick}>
-          {readOnly ? <LockIcon /> : <DeleteIcon />}
+          <DeleteIcon/>
         </IconButton>
         <DeleteDialog open={open} setOpen={setOpen} />
       </div>
