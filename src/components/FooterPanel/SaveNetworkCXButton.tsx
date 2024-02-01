@@ -25,6 +25,8 @@ const SaveNetworkCXButton = () => {
         credentialProp = '&id_token=' + accesskey
       } else if (authType === AuthType.BASIC) {
         credentialProp = '&auth_token=' + btoa(userName + ':' + accesskey)
+      } else {
+        credentialProp = '&accesskey=' + accesskey
       }
     }
 
