@@ -52,13 +52,15 @@ const DeleteButton: VFC = (): ReactElement => {
   }
 
   let message = 'Delete function is only available to signed-in users'
-
   let disabled = true
-  if (readOnly) {
-    message = 'This network is read-only'
-  } else if (hasPermission && login) {
-    message = 'Delete this network'
-    disabled = false
+
+  if (hasPermission && login) {
+    if(readOnly){
+      message = 'This network is read-only'
+    }else{
+      message = 'Delete this network'
+      disabled = false
+    }
   } else if (!hasPermission && login) {
     message = "You don't have permission to delete this network"
   }
