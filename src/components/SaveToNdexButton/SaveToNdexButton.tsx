@@ -83,8 +83,8 @@ export const SaveToNdexButton = ({
     }
   }
   const tooltipTitle = (showLoginTip)
-    ? 'You must be logged in to save'
-    : 'Save to NDEx';
+    ? 'Save query result function is only available to signed-in users'
+    : 'Save query result to NDEx';
 
   return (
     <Tooltip disableFocusListener title={tooltipTitle}>
