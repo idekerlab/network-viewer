@@ -31,6 +31,9 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSizeLarge: '26px',
     },
     toolTipSpan: {},
+    disabledButtonWrapper: {
+      display: 'inline-flex', 
+    },
   }),
 )
 
@@ -39,6 +42,7 @@ type SaveToNdexButtonProps = {
   subCx?: any[]
   onSuccess?: (data: any) => void
   onFailure?: (err: any) => void
+  showLoginTip?: boolean
 }
 
 export const SaveToNdexButton = ({
@@ -46,6 +50,7 @@ export const SaveToNdexButton = ({
   onSuccess,
   onFailure,
   subCx,
+  showLoginTip = false
 }: SaveToNdexButtonProps): JSX.Element => {
   const classes = useStyles()
 
@@ -77,16 +82,21 @@ export const SaveToNdexButton = ({
       }
     }
   }
+  const tooltipTitle = (showLoginTip)
+    ? 'Save query result function is only available to signed-in users'
+    : 'Save query result to NDEx';
 
   return (
-    <Tooltip disableFocusListener title={'Save to NDEx'}>
-      <IconButton
-        className={classes.button}
-        onClick={onClick}
-        disabled={disabled}
-      >
-        <SaveIcon />
-      </IconButton>
+    <Tooltip disableFocusListener title={tooltipTitle}>
+      <span className={classes.disabledButtonWrapper}> 
+        <IconButton
+          className={classes.button}
+          onClick={onClick}
+          disabled={disabled}
+        >
+          <SaveIcon />
+        </IconButton>
+      </span>
     </Tooltip>
   )
 }

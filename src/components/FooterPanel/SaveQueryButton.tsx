@@ -58,6 +58,7 @@ const SaveQueryButton = () => {
           onSuccess={onSuccess}
           onFailure={onFailure}
           subCx={subCx}
+          showLoginTip = {!isLogin}
         />
         <Snackbar
           anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
