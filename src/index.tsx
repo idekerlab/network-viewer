@@ -69,6 +69,16 @@ const loadResource = async (): Promise<AppConfig> => {
   return config
 }
 
+const loadKeycloakScript = async (keycloakURL : String): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = keycloakURL + '/js/keycloak.js';
+    script.onload = () => resolve();
+    script.onerror = (error) => reject(new Error(`Failed to load Keycloak script: ${error}`));
+    document.head.appendChild(script);
+  });
+};
+
 const auth = async (config: AppConfig): Promise<Keycloak> => {
   const newClient = new Keycloak(config.keycloakConfig)
   try {
@@ -183,12 +193,27 @@ const render = (
 }
 
 // Start the app modules in sequence.
+const initializeApp = async (): Promise<void> => {
+  try {
+    const config = await loadResource();
+    await loadKeycloakScript(config.keycloakConfig.url);
+    const newClient = await auth(config);
+    const credential = checkInitialLoginStatus(newClient);
+    render(config, newClient, credential);
+  } catch (error) {
+    console.error('Application initialization failed:', error);
+  }
+};
+
+initializeApp();
+
+/* old implementation
 loadResource().then((config: AppConfig) => {
   auth(config).then((newClient: Keycloak) => {
     const credential = checkInitialLoginStatus(newClient)
     render(config, newClient, credential)
   })
-})
+}) */
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
