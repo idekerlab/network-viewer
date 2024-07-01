@@ -6,8 +6,8 @@ import { useStyles } from './buttonStyle'
 import AppContext from '../../../context/AppState'
 import { NdexUserInfoPopover } from '../NdexUserInfoPopover'
 import { AuthType } from '../../../model/AuthType'
-import { NdexLoginDialog } from '../NdexLoginDialog'
 import { NdexCredentialTag } from '../NdexCredentialTag'
+import NdexCredential from '../../../model/NdexCredential'
 
 /**
  * Simplified version of NDEx login button
@@ -81,24 +81,40 @@ export const NdexSignInButton = () => {
     }
   }
 
-  const handleError = (error) => {
-    console.log('Error:', error)
-    setErrorMessage(error)
-  }
-
-  const onError = (error: any) => {}
-
   const getTitle = (): string => {
     return ndexCredential.authType !== AuthType.NONE
       ? 'Signed in as ' + ndexCredential.userName
       : 'Sign in to NDEx'
   }
 
+  const handleLogin = () => {
+    setShowLogin(false)
+
+    keycloak.login().then(() => {
+      if (keycloak.authenticated) {
+        setNdexCredential({
+          authType: AuthType.KEYCLOAK,
+          userName: keycloak.tokenParsed.preferred_username,
+          accesskey: keycloak.token,
+          fullName: keycloak.tokenParsed.name,
+        } as NdexCredential)
+        console.log('* Authenticated via keycloak')
+      } else {
+        // Failed
+        setNdexCredential({
+          authType: AuthType.NONE,
+        } as NdexCredential)
+        console.log('Not authenticated')
+        setErrorMessage('Unable to authenticate')
+      }
+    })
+  }
+
   const handleClick = (event): void => {
     if (ndexCredential.authType !== AuthType.NONE) {
       setAnchorEl(event.currentTarget)
     } else {
-      setShowLogin(true)
+      handleLogin()
     }
   }
 
@@ -117,16 +133,6 @@ export const NdexSignInButton = () => {
           </Avatar>
         </IconButton>
       </Tooltip>
-      <NdexLoginDialog
-        setDialogState={setShowLogin}
-        isOpen={showLogin}
-        ndexServer={config.ndexUrl}
-        onLoginSuccess={onLoginSuccess}
-        onLogout={onLogout}
-        onError={onError}
-        handleError={handleError}
-        errorMessage={errorMessage}
-      />
       <NdexUserInfoPopover
         userName={ndexCredential.fullName}
         userId={ndexCredential.userName}
