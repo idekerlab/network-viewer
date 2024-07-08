@@ -14,6 +14,7 @@ import NdexCredential from './model/NdexCredential'
 import { getBasicAuth } from './components/NdexLogin/NdexLoginDialog/BasicAuth/basic-auth-util'
 import { NdexBasicAuthInfo } from './components/NdexLogin/NdexLoginDialog/BasicAuth/NdexBasicAuthInfo'
 import { AuthType } from './model/AuthType'
+import { getNdexClient } from './utils/credentialUtil'
 
 const ROOT_TAG = 'root'
 
@@ -69,15 +70,16 @@ const loadResource = async (): Promise<AppConfig> => {
   return config
 }
 
-const loadKeycloakScript = async (keycloakURL : String): Promise<void> => {
+const loadKeycloakScript = async (keycloakURL: String): Promise<void> => {
   return new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = keycloakURL + '/js/keycloak.js';
-    script.onload = () => resolve();
-    script.onerror = (error) => reject(new Error(`Failed to load Keycloak script: ${error}`));
-    document.head.appendChild(script);
-  });
-};
+    const script = document.createElement('script')
+    script.src = keycloakURL + '/js/keycloak.js'
+    script.onload = () => resolve()
+    script.onerror = (error) =>
+      reject(new Error(`Failed to load Keycloak script: ${error}`))
+    document.head.appendChild(script)
+  })
+}
 
 const auth = async (config: AppConfig): Promise<Keycloak> => {
   const newClient = new Keycloak(config.keycloakConfig)
@@ -168,6 +170,18 @@ const checkInitialLoginStatus = (keycloak: Keycloak): NdexCredential => {
   return credential
 }
 
+const updateNdexSignIn = async (
+  config: AppConfig,
+  keycloak: Keycloak,
+  credential: NdexCredential,
+): Promise<void> => {
+  // When the user initializes the app and if the token is available, sign in to NDEx to sync the sign in status
+  if (keycloak.token !== undefined) {
+    const ndexClient = getNdexClient(`${config.ndexHttps}/v2`, credential)
+    await ndexClient.signInFromIdToken(keycloak.token)
+  }
+}
+
 const render = (
   config: AppConfig,
   keycloak: Keycloak,
@@ -195,17 +209,18 @@ const render = (
 // Start the app modules in sequence.
 const initializeApp = async (): Promise<void> => {
   try {
-    const config = await loadResource();
-    await loadKeycloakScript(config.keycloakConfig.url);
-    const newClient = await auth(config);
-    const credential = checkInitialLoginStatus(newClient);
-    render(config, newClient, credential);
+    const config = await loadResource()
+    await loadKeycloakScript(config.keycloakConfig.url)
+    const newClient = await auth(config)
+    const credential = checkInitialLoginStatus(newClient)
+    await updateNdexSignIn(config, newClient, credential)
+    render(config, newClient, credential)
   } catch (error) {
-    console.error('Application initialization failed:', error);
+    console.error('Application initialization failed:', error)
   }
-};
+}
 
-initializeApp();
+initializeApp()
 
 /* old implementation
 loadResource().then((config: AppConfig) => {
