@@ -57,7 +57,7 @@ const loadResource = async (): Promise<AppConfig> => {
   const config: AppConfig = {
     ndexUrl,
     ndexHttps:
-      ndexUrl === 'localhost' ? `http://${ndexUrl}` : `https://${ndexUrl}`,
+      ndexUrl.startsWith('localhost') ? `http://${ndexUrl}` : `https://${ndexUrl}`,
     viewerThreshold: viewerTh,
     maxNumObjects,
     maxDataSize,
@@ -68,7 +68,7 @@ const loadResource = async (): Promise<AppConfig> => {
 
   return config
 }
-
+/*
 const loadKeycloakScript = async (keycloakURL : String): Promise<void> => {
   return new Promise((resolve, reject) => {
     const script = document.createElement('script');
@@ -77,7 +77,7 @@ const loadKeycloakScript = async (keycloakURL : String): Promise<void> => {
     script.onerror = (error) => reject(new Error(`Failed to load Keycloak script: ${error}`));
     document.head.appendChild(script);
   });
-};
+}; */
 
 const auth = async (config: AppConfig): Promise<Keycloak> => {
   const newClient = new Keycloak(config.keycloakConfig)
@@ -196,7 +196,7 @@ const render = (
 const initializeApp = async (): Promise<void> => {
   try {
     const config = await loadResource();
-    await loadKeycloakScript(config.keycloakConfig.url);
+    //await loadKeycloakScript(config.keycloakConfig.url);
     const newClient = await auth(config);
     const credential = checkInitialLoginStatus(newClient);
     render(config, newClient, credential);
