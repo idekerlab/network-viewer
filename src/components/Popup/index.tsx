@@ -190,6 +190,9 @@ const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
   if (target) {
     nonEmptyMap.set(EdgeAttributes.TARGET, target)
   }
+  if (interaction) {
+    nonEmptyMap.set(EdgeAttributes.INTERACTION, interaction)
+  }
 
   //Calculate position based on pointer position in window
   const x = lastSelected.coordinates.x
