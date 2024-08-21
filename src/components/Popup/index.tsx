@@ -99,8 +99,10 @@ const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
   }
 
   const id = selectionState.lastSelected.id
+  const isNode = selectionState.lastSelected.isNode
+
   let attrMap = null
-  if (selectionState.lastSelected.isNode) {
+  if (isNode) {
     attrMap = attr.nodeAttr[id]
   } else {
     attrMap = attr.edgeAttr[id]
@@ -113,7 +115,7 @@ const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
   const include = []
 
   for (let item of attrMap) {
-    if (!selectionState.lastSelected.isNode) {
+    if (!isNode) {
       if (
         [
           EdgeAttributes.SOURCE,
@@ -235,7 +237,7 @@ const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
 
   return (
     <div className={classes.root} style={style}>
-      <PropertyPanel attrMap={nonEmptyMap} onClose={onClose} />
+      <PropertyPanel attrMap={nonEmptyMap} onClose={onClose} isNode={isNode} />
     </div>
   )
 }
