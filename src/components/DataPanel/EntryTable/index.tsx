@@ -117,10 +117,7 @@ const EntryTable: VFC<{
         continue
       }
       for (let attr of attrs) {
-        if (
-          attr[0] === Attributes.NAME ||
-          (type === 'edge' && attr[0] === EdgeAttributes.INTERACTION)
-        ) {
+        if (attr[0] === Attributes.NAME) {
           continue
         } else {
           if (Array.isArray(attr[1])) {
@@ -146,36 +143,6 @@ const EntryTable: VFC<{
       }
     }
     columnsList.unshift(Attributes.NAME)
-    if (type === 'edge') {
-      //Add name for edges that don't have one
-      for (let id of selectedObjects) {
-        const attrs = attributes[id]
-        if (!attrs.has(Attributes.NAME)) {
-          if (
-            attrs.has(EdgeAttributes.SOURCE) &&
-            attrs.has(EdgeAttributes.TARGET)
-          ) {
-            if (attrs.has(EdgeAttributes.INTERACTION)) {
-              attrs.set(
-                Attributes.NAME,
-                attrs.get(EdgeAttributes.SOURCE) +
-                  ' (' +
-                  attrs.get(EdgeAttributes.INTERACTION) +
-                  ') ' +
-                  attrs.get(EdgeAttributes.TARGET),
-              )
-            } else {
-              attrs.set(
-                Attributes.NAME,
-                attrs.get(EdgeAttributes.SOURCE) +
-                  ' (-) ' +
-                  attrs.get(EdgeAttributes.TARGET),
-              )
-            }
-          }
-        }
-      }
-    }
     return filterColumns(columnsList)
   }, [selectedObjects])
 
@@ -187,7 +154,7 @@ const EntryTable: VFC<{
       if (attributes === undefined) {
         continue
       }
-      
+
       const attrs = attributes[id]
       if (attrs === undefined) {
         continue

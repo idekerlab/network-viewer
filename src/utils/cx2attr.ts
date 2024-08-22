@@ -196,12 +196,12 @@ const addSourceTargetInteraction = (nodeAttr, edges, id2attr) => {
     const s = nodeAttr[source]
     const t = nodeAttr[target]
 
-    // if (s !== undefined) {
-    //   id2attr[id].set('source', s.get('name'))
-    // }
-    // if (t !== undefined) {
-    //   id2attr[id].set('target', t.get('name'))
-    // }
+    if (s !== undefined) {
+      id2attr[id].set('source', s.get('name'))
+    }
+    if (t !== undefined) {
+      id2attr[id].set('target', t.get('name'))
+    }
     if (interaction !== undefined) {
       id2attr[id].set('interaction', interaction)
     }
