@@ -217,7 +217,7 @@ const EntryTable: VFC<{
       [NodeAttributes.REPRESENTS]: 'represents',
       [EdgeAttributes.SOURCE]: 'source node',
       [EdgeAttributes.INTERACTION]: 'interaction',
-      [EdgeAttributes.TARGET]: 'target Node',
+      [EdgeAttributes.TARGET]: 'target node',
     }
 
     const orderedColumns = priorityColumns.filter((col) =>
