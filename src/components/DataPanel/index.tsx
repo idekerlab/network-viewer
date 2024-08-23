@@ -308,7 +308,6 @@ const DataPanel: FC<{
           attributes={attributes.nodeAttr}
           context={context}
           letterWidths={letterWidths}
-          label={'Name'}
           parentSize={size}
           selected={changed}
         />
@@ -322,7 +321,6 @@ const DataPanel: FC<{
           type={'edge'}
           context={context}
           letterWidths={letterWidths}
-          label={'Name'}
           parentSize={size}
           selected={changed}
         />

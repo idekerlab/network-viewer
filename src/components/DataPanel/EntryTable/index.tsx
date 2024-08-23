@@ -54,7 +54,6 @@ const EntryTable: VFC<{
   type?: string
   context
   letterWidths
-  label
   parentSize: [number, number]
   selected: boolean
 }> = ({
@@ -63,7 +62,6 @@ const EntryTable: VFC<{
   type,
   context,
   letterWidths,
-  label,
   parentSize,
   selected,
 }) => {
@@ -202,45 +200,45 @@ const EntryTable: VFC<{
     }
 
     return [sortedDataList, textDataList]
-  }, [selectedObjects])
+  }, [selectedObjects, columns])
 
   const finalColumns = useMemo(() => {
     //Put columns in correct order
-    let hasName = false
-    let hasRepresents = false
-    if (columns.includes(Attributes.NAME)) {
-      hasName = true
-      columns.splice(columns.indexOf(Attributes.NAME), 1)
-    }
-    if (columns.includes(NodeAttributes.REPRESENTS)) {
-      hasRepresents = true
-      columns.splice(columns.indexOf(NodeAttributes.REPRESENTS), 1)
-    }
-    columns.sort((a, b) => a.localeCompare(b))
-    if (hasRepresents) {
-      columns.unshift(NodeAttributes.REPRESENTS)
-    }
-    if (hasName) {
-      columns.unshift(Attributes.NAME)
+    const priorityColumns = [
+      Attributes.NAME,
+      NodeAttributes.REPRESENTS,
+      EdgeAttributes.SOURCE,
+      EdgeAttributes.INTERACTION,
+      EdgeAttributes.TARGET,
+    ]
+
+    const priorityColumnName = {
+      [Attributes.NAME]: 'name',
+      [NodeAttributes.REPRESENTS]: 'represents',
+      [EdgeAttributes.SOURCE]: 'source node',
+      [EdgeAttributes.INTERACTION]: 'interaction',
+      [EdgeAttributes.TARGET]: 'target Node',
     }
 
-    return columns.map((column) => {
-      if (column === Attributes.NAME) {
-        return {
-          Header: label,
-          accessor: Attributes.NAME,
-          // sticky: 'left',
-          width: getColumnWidth(data[1], Attributes.NAME, label),
-        }
-      } else {
-        return {
-          Header: column,
-          accessor: replacePeriods(column),
-          width: getColumnWidth(data[1], column, column),
-        }
+    const orderedColumns = priorityColumns.filter((col) =>
+      columns.includes(col),
+    )
+    const remainingColumns = columns.filter(
+      (col) => !priorityColumns.includes(col),
+    )
+    remainingColumns.sort((a, b) => a.localeCompare(b))
+    const combinedColumns = [...orderedColumns, ...remainingColumns]
+
+    return combinedColumns.map((column) => {
+      return {
+        Header: priorityColumns.includes(column)
+          ? priorityColumnName[column]
+          : column,
+        accessor: replacePeriods(column),
+        width: getColumnWidth(data[1], column, column),
       }
     })
-  }, [selectedObjects])
+  }, [selectedObjects, data, columns])
 
   return (
     <VirtualizedTable2

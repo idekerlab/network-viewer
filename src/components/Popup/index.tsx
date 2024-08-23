@@ -170,26 +170,6 @@ const Popup: FC<PopupProps> = ({ cx, subHeight }: PopupProps) => {
     nonEmptyMap.set(item[0], value)
   }
 
-  if (noNameEdge) {
-    if (source && target) {
-      if (interaction) {
-        nonEmptyMap.set(
-          Attributes.NAME,
-          source + ' (' + interaction + ') ' + target,
-        )
-      } else {
-        nonEmptyMap.set(Attributes.NAME, source + ' (-) ' + target)
-      }
-    }
-  }
-
-  // Add source and target to the list if those are available in the original attr
-  if (source) {
-    nonEmptyMap.set(EdgeAttributes.SOURCE, source)
-  }
-  if (target) {
-    nonEmptyMap.set(EdgeAttributes.TARGET, target)
-  }
   if (interaction) {
     nonEmptyMap.set(EdgeAttributes.INTERACTION, interaction)
   }
