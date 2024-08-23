@@ -115,23 +115,19 @@ const EntryTable: VFC<{
         continue
       }
       for (let attr of attrs) {
-        if (attr[0] === Attributes.NAME) {
-          continue
-        } else {
-          if (Array.isArray(attr[1])) {
-            for (let item of attr[1]) {
-              if (item !== undefined && item !== '') {
-                if (!columnsList.includes(attr[0])) {
-                  columnsList.push(attr[0])
-                }
-                break
-              }
-            }
-          } else {
-            if (attr[1] !== undefined && attr[1] !== '') {
+        if (Array.isArray(attr[1])) {
+          for (let item of attr[1]) {
+            if (item !== undefined && item !== '') {
               if (!columnsList.includes(attr[0])) {
                 columnsList.push(attr[0])
               }
+              break
+            }
+          }
+        } else {
+          if (attr[1] !== undefined && attr[1] !== '') {
+            if (!columnsList.includes(attr[0])) {
+              columnsList.push(attr[0])
             }
           }
         }
@@ -140,7 +136,6 @@ const EntryTable: VFC<{
         }
       }
     }
-    columnsList.unshift(Attributes.NAME)
     return filterColumns(columnsList)
   }, [selectedObjects])
 
