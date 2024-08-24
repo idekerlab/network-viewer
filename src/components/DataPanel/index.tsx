@@ -131,9 +131,8 @@ const DataPanel: FC<{
   const [size, setSize] = useState<[number, number]>([0, 0])
   const [changed, setChanged] = useState<boolean>(false)
 
-  const { ndexCredential, config, selectionState, uiState } = useContext(
-    AppContext,
-  )
+  const { ndexCredential, config, selectionState, uiState } =
+    useContext(AppContext)
 
   const { maxNumObjects, maxDataSize } = config
 
@@ -163,9 +162,7 @@ const DataPanel: FC<{
 
   useEffect(() => {
     if (cx !== undefined && cx !== null && Array.isArray(cx) && cx.length > 0) {
-
-
-      if( objectCount > maxNumObjects || cxDataSize > config.maxDataSize ) {
+      if (objectCount > maxNumObjects || cxDataSize > config.maxDataSize) {
         setTabsDisabled(true)
         return
       } else {
@@ -214,7 +211,11 @@ const DataPanel: FC<{
       // setTabsDisabled(true)
     } else {
       // setTabsDisabled(false)
-      setSelected(TabType.Node)
+      if (sub.nodes.length < 1 && main.nodes.length < 1) {
+        setSelected(TabType.Edge)
+      } else {
+        setSelected(TabType.Node)
+      }
       setChanged(!changed)
     }
 
@@ -307,7 +308,6 @@ const DataPanel: FC<{
           attributes={attributes.nodeAttr}
           context={context}
           letterWidths={letterWidths}
-          label={'Name'}
           parentSize={size}
           selected={changed}
         />
@@ -321,7 +321,6 @@ const DataPanel: FC<{
           type={'edge'}
           context={context}
           letterWidths={letterWidths}
-          label={'Name'}
           parentSize={size}
           selected={changed}
         />

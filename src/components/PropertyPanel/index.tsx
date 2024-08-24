@@ -37,49 +37,29 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const PropertyPanel = ({ attrMap, onClose }) => {
+const PropertyPanel = ({ attrMap, onClose, isNode }) => {
   const classes = useStyles()
 
   const handleClose = () => {
     onClose()
   }
-  if (attrMap.size > 0 && attrMap.get('name')){
-    return (
-      <div className={classes.root}>
-        <div className={classes.title}>
-          <Typography className={classes.name} variant="body1">
-            {attrMap.get('name')}
-          </Typography>
-          <IconButton onClick={handleClose}>
-            <CloseIcon />
-          </IconButton>
-        </div>
-        <div className={classes.propList}>
-          <div>
-            <PropList attrMap={attrMap} />
-          </div>
+  return (
+    <div className={classes.root}>
+      <div className={classes.title}>
+        <Typography className={classes.name} variant="body1">
+          {attrMap.get('name') ?? ''}
+        </Typography>
+        <IconButton onClick={handleClose}>
+          <CloseIcon />
+        </IconButton>
+      </div>
+      <div className={classes.propList}>
+        <div>
+          <PropList attrMap={attrMap} />
         </div>
       </div>
-    )    
-  }else{
-    console.log(attrMap)
-    return (
-      <div className={classes.root}>
-        <div className={classes.title}>
-          <Typography className={classes.name} variant="body1">
-            Dummy Node
-          </Typography>
-          <IconButton onClick={handleClose}>
-            <CloseIcon />
-          </IconButton>
-        </div>
-        <div className={classes.propList}>
-          No attributes are defined for this node.
-        </div>
-      </div>
-    )
-  }
-
+    </div>
+  )
 }
 
 export default PropertyPanel
