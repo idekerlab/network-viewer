@@ -4,7 +4,9 @@ import IconButton from '@material-ui/core/IconButton'
 import MoreIcon from '@material-ui/icons/MoreVert'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
+import { useParams } from 'react-router-dom'
 import { Tooltip } from '@material-ui/core'
+import { getCurrentServer } from '../../utils/locationUtil'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,7 +25,10 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const AdvancedMenu = () => {
   const classes = useStyles()
+  const { uuid } = useParams()
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
+  const baseUrl: string = getCurrentServer()
+  const classicUrl = `${baseUrl}/#/network/${uuid}`
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
@@ -66,6 +71,14 @@ const AdvancedMenu = () => {
           }}
         >
           Docs
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            window.open(classicUrl, '_self')
+            setAnchorEl(null)
+          }}
+        >
+          Legacy Mode
         </MenuItem>
         <MenuItem
           onClick={() => {
