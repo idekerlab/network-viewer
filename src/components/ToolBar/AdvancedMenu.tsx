@@ -56,6 +56,16 @@ const AdvancedMenu = () => {
         </IconButton>
       </Tooltip>
       <Menu open={open} anchorEl={anchorEl} onClose={handleClose}>
+        <Tooltip placement="right" title="Switch to classic viewer">
+          <MenuItem
+            onClick={() => {
+              window.open(classicUrl, '_self')
+              setAnchorEl(null)
+            }}
+          >
+            Legacy
+          </MenuItem>
+        </Tooltip>
         <MenuItem
           onClick={() => {
             window.open('https://home.ndexbio.org/about-ndex/')
@@ -71,14 +81,6 @@ const AdvancedMenu = () => {
           }}
         >
           Docs
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            window.open(classicUrl, '_self')
-            setAnchorEl(null)
-          }}
-        >
-          Legacy Mode
         </MenuItem>
         <MenuItem
           onClick={() => {
