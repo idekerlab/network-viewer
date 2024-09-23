@@ -63,7 +63,7 @@ const AdvancedMenu = () => {
               setAnchorEl(null)
             }}
           >
-            Legacy
+            Legacy Viewer
           </MenuItem>
         </Tooltip>
         <MenuItem
