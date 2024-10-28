@@ -13,7 +13,14 @@ import Keycloak from 'keycloak-js'
 import NdexCredential from './model/NdexCredential'
 import { getBasicAuth } from './components/NdexLogin/NdexLoginDialog/BasicAuth/basic-auth-util'
 import { NdexBasicAuthInfo } from './components/NdexLogin/NdexLoginDialog/BasicAuth/NdexBasicAuthInfo'
+import { EmailVerificationPanel } from './components/EmailVerification'
 import { AuthType } from './model/AuthType'
+import { NDEx } from '@js4cytoscape/ndex-client'
+
+interface UserInfo {
+  preferred_username: string
+  email: string
+}
 
 const ROOT_TAG = 'root'
 
@@ -56,8 +63,9 @@ const loadResource = async (): Promise<AppConfig> => {
 
   const config: AppConfig = {
     ndexUrl,
-    ndexHttps:
-      ndexUrl.startsWith('localhost') ? `http://${ndexUrl}` : `https://${ndexUrl}`,
+    ndexHttps: ndexUrl.startsWith('localhost')
+      ? `http://${ndexUrl}`
+      : `https://${ndexUrl}`,
     viewerThreshold: viewerTh,
     maxNumObjects,
     maxDataSize,
@@ -172,6 +180,11 @@ const render = (
   config: AppConfig,
   keycloak: Keycloak,
   credential: NdexCredential,
+  emailVerificationOpen: boolean,
+  onVerify: () => Promise<void>,
+  onCancel: () => void,
+  userName: string,
+  userEmail: string,
 ): void => {
   console.log(
     '* Root component rendering start. If you see this more than once, it might be a bug...',
@@ -185,6 +198,13 @@ const render = (
       <QueryClientProvider client={queryClient}>
         <ErrorBoundary>
           <App config={config} keycloak={keycloak} credential={credential} />
+          <EmailVerificationPanel
+            open={emailVerificationOpen}
+            onVerify={onVerify}
+            onCancel={onCancel}
+            userName={userName}
+            userEmail={userEmail}
+          />
         </ErrorBoundary>
       </QueryClientProvider>
     </ThemeProvider>,
@@ -192,20 +212,72 @@ const render = (
   )
 }
 
+// Function to check if the email is verified
+const checkEmailVerification = async (
+  ndexUrl: string,
+  keycloakToken: string,
+) => {
+  try {
+    const ndexClient = new NDEx(ndexUrl)
+    ndexClient.setAuthToken(keycloakToken)
+    await ndexClient.getSignedInUser()
+    return true
+  } catch (e) {
+    if (
+      e.status === 401 &&
+      e.response?.data?.errorCode === 'NDEx_User_Account_Not_Verified'
+    ) {
+      return false
+    }
+    return true
+  }
+}
+
 // Start the app modules in sequence.
 const initializeApp = async (): Promise<void> => {
   try {
-    const config = await loadResource();
+    const config = await loadResource()
     //await loadKeycloakScript(config.keycloakConfig.url);
-    const newClient = await auth(config);
-    const credential = checkInitialLoginStatus(newClient);
-    render(config, newClient, credential);
+    const newClient = await auth(config)
+    const credential = checkInitialLoginStatus(newClient)
+    const onVerify = async () => {
+      await newClient.loadUserProfile()
+      window.location.reload()
+    }
+    const onCancel = () => {
+      newClient.logout()
+    }
+    const authByKeycloak = newClient.authenticated
+    let emailUnverified = true
+    let userName = ''
+    let userEmail = ''
+    if (authByKeycloak) {
+      await newClient.loadUserInfo().then((userInfo: UserInfo) => {
+        userName = userInfo.preferred_username
+        userEmail = userInfo.email
+      })
+      const emailVerified = await checkEmailVerification(
+        config.ndexUrl,
+        newClient.token,
+      )
+      emailUnverified = !emailVerified
+    }
+    render(
+      config,
+      newClient,
+      credential,
+      authByKeycloak && emailUnverified,
+      onVerify,
+      onCancel,
+      userName,
+      userEmail,
+    )
   } catch (error) {
-    console.error('Application initialization failed:', error);
+    console.error('Application initialization failed:', error)
   }
-};
+}
 
-initializeApp();
+initializeApp()
 
 /* old implementation
 loadResource().then((config: AppConfig) => {
