@@ -1,6 +1,5 @@
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
-import ClassicModeButton from './ClassicModeButton'
 import NdexHomeButton from './NdexHomeButton'
 import AdvancedMenu from './AdvancedMenu'
 import { NdexSignInButton } from '../NdexLogin/NdexSignInButton'
@@ -33,7 +32,6 @@ const ToolBar = (): JSX.Element => {
           <NdexHomeButton />
           <NdexSignInButton />
           <AdvancedMenu />
-          <ClassicModeButton />
         </Grid>
         <Grid container direction="row" alignItems="center"></Grid>
       </Grid>
