@@ -192,24 +192,51 @@ const render = (
     keycloak,
     window.location,
   )
-  ReactDOM.render(
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <QueryClientProvider client={queryClient}>
-        <ErrorBoundary>
-          <App config={config} keycloak={keycloak} credential={credential} />
-          <EmailVerificationPanel
-            open={emailVerificationOpen}
-            onVerify={onVerify}
-            onCancel={onCancel}
-            userName={userName}
-            userEmail={userEmail}
-          />
-        </ErrorBoundary>
-      </QueryClientProvider>
-    </ThemeProvider>,
-    document.getElementById(ROOT_TAG),
-  )
+  if (emailVerificationOpen) {
+    ReactDOM.render(
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <QueryClientProvider client={queryClient}>
+          <ErrorBoundary>
+            <EmailVerificationPanel
+              onVerify={onVerify}
+              onCancel={onCancel}
+              userName={userName}
+              userEmail={userEmail}
+            />
+          </ErrorBoundary>
+        </QueryClientProvider>
+      </ThemeProvider>,
+      document.getElementById(ROOT_TAG),
+    )
+  } else {
+    ReactDOM.render(
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <QueryClientProvider client={queryClient}>
+          <ErrorBoundary>
+            <App config={config} keycloak={keycloak} credential={credential} />
+          </ErrorBoundary>
+        </QueryClientProvider>
+      </ThemeProvider>,
+      document.getElementById(ROOT_TAG),
+    )
+  }
+}
+
+// Function to parse the error message to get the user information
+const parseMessage = (
+  message: string,
+): { userName: string; userEmail: string } | null => {
+  const pattern = /NDEx user account ([\w.]+) <([\w.]+@[\w.]+)>/
+  const match = message.match(pattern)
+
+  if (match) {
+    const userName = match[1]
+    const userEmail = match[2]
+    return { userName, userEmail }
+  }
+  return null
 }
 
 // Function to check if the email is verified
@@ -219,17 +246,25 @@ const checkEmailVerification = async (
 ) => {
   try {
     const ndexClient = new NDEx(ndexUrl)
-    ndexClient.setAuthToken(keycloakToken)
-    await ndexClient.getSignedInUser()
-    return true
+    const userObj = await ndexClient.signInFromIdToken(keycloakToken)
+    return {
+      isVerified: true,
+    }
   } catch (e) {
     if (
       e.status === 401 &&
       e.response?.data?.errorCode === 'NDEx_User_Account_Not_Verified'
     ) {
-      return false
+      const userInfo = parseMessage(e.response?.data?.message)
+      return {
+        isVerified: false,
+        userName: userInfo?.userName,
+        userEmail: userInfo?.userEmail,
+      }
     }
-    return true
+    return {
+      isVerified: true,
+    }
   }
 }
 
@@ -241,7 +276,6 @@ const initializeApp = async (): Promise<void> => {
     const newClient = await auth(config)
     const credential = checkInitialLoginStatus(newClient)
     const onVerify = async () => {
-      await newClient.loadUserProfile()
       window.location.reload()
     }
     const onCancel = () => {
@@ -252,15 +286,13 @@ const initializeApp = async (): Promise<void> => {
     let userName = ''
     let userEmail = ''
     if (authByKeycloak) {
-      await newClient.loadUserInfo().then((userInfo: UserInfo) => {
-        userName = userInfo.preferred_username
-        userEmail = userInfo.email
-      })
-      const emailVerified = await checkEmailVerification(
+      const verificationStatus = await checkEmailVerification(
         config.ndexUrl,
         newClient.token,
       )
-      emailUnverified = !emailVerified
+      emailUnverified = !verificationStatus.isVerified
+      userName = verificationStatus.userName ?? ''
+      userEmail = verificationStatus.userEmail ?? ''
     }
     render(
       config,

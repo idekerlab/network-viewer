@@ -8,7 +8,6 @@ import DialogContentText from '@material-ui/core/DialogContentText'
 import Button from '@material-ui/core/Button'
 
 interface EmailVerificationPanelProps {
-  open: boolean
   onVerify: () => void
   onCancel: () => void
   userName: string
@@ -16,7 +15,6 @@ interface EmailVerificationPanelProps {
 }
 
 export const EmailVerificationPanel: React.FC<EmailVerificationPanelProps> = ({
-  open,
   onVerify,
   onCancel,
   userName,
@@ -24,7 +22,7 @@ export const EmailVerificationPanel: React.FC<EmailVerificationPanelProps> = ({
 }) => {
   return (
     <Dialog
-      open={open}
+      open={true}
       aria-labelledby="email-verification-title"
       aria-describedby="email-verification-description"
     >
@@ -44,8 +42,12 @@ export const EmailVerificationPanel: React.FC<EmailVerificationPanelProps> = ({
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onVerify}>Already Verified</Button>
-        <Button onClick={onCancel}>Log Out</Button>
+        <Button onClick={onVerify} color="secondary">
+          Already Verified
+        </Button>
+        <Button onClick={onCancel} style={{ color: 'red' }}>
+          Log Out
+        </Button>
       </DialogActions>
     </Dialog>
   )
