@@ -11,10 +11,7 @@ import { QueryClientProvider, QueryCache, QueryClient } from 'react-query'
 import AppConfig from './model/AppConfig'
 import Keycloak from 'keycloak-js'
 import NdexCredential from './model/NdexCredential'
-import { getBasicAuth } from './components/NdexLogin/NdexLoginDialog/BasicAuth/basic-auth-util'
-import { NdexBasicAuthInfo } from './components/NdexLogin/NdexLoginDialog/BasicAuth/NdexBasicAuthInfo'
 import { EmailVerificationPanel } from './components/EmailVerification'
-import { AuthType } from './model/AuthType'
 import { NDEx } from '@js4cytoscape/ndex-client'
 
 interface UserInfo {
@@ -151,26 +148,16 @@ const checkInitialLoginStatus = (keycloak: Keycloak): NdexCredential => {
   )
   let credential: NdexCredential
 
-  // Check basic auth
-  const basicAuthInfo: NdexBasicAuthInfo = getBasicAuth()
-  if (basicAuthInfo !== undefined) {
-    // use basic auth
+  if (keycloak.authenticated) {
     credential = {
-      authType: AuthType.BASIC,
-      userName: basicAuthInfo.userName,
-      accesskey: basicAuthInfo.token,
-      fullName: basicAuthInfo.firstName + ' ' + basicAuthInfo.lastName,
-    } as const
-  } else if (keycloak.authenticated) {
-    credential = {
-      authType: AuthType.KEYCLOAK,
+      authenticated: true,
       userName: keycloak.tokenParsed.preferred_username,
       accesskey: keycloak.token,
       fullName: keycloak.tokenParsed.name,
     } as const
   } else {
     credential = {
-      authType: AuthType.NONE,
+      authenticated: false,
     } as const
   }
   return credential

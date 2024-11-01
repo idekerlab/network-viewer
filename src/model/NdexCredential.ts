@@ -1,7 +1,5 @@
-import { AuthType } from './AuthType'
-
 type NdexCredential = {
-  authType: AuthType
+  authenticated: boolean
   userName?: string
   accesskey?: string
   fullName?: string

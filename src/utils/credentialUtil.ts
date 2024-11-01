@@ -10,11 +10,9 @@ import { AuthType } from '../model/AuthType'
 // }
 
 const getAuthorization = (ndexCredential: NdexCredential) => {
-  const { accesskey, authType, userName } = ndexCredential
-  if (authType === AuthType.KEYCLOAK) {
+  const { accesskey, authenticated, userName } = ndexCredential
+  if (authenticated) {
     return 'Bearer ' + accesskey
-  } else if (authType === AuthType.BASIC) {
-    return 'Basic ' + window.btoa(userName + ':' + accesskey)
   }
   return undefined
 }
@@ -27,26 +25,21 @@ const getAuthorization = (ndexCredential: NdexCredential) => {
  * @returns
  */
 const getNdexClient = (baseUrl: string, ndexCredential: NdexCredential) => {
-  const { accesskey, authType, userName } = ndexCredential
+  const { accesskey, authenticated, userName } = ndexCredential
   const ndexClient = new NDEx(baseUrl)
 
-  if (authType === AuthType.NONE) {
-    // Client without credential.
-    console.info('No credential. Access to public networks only.')
-    return ndexClient
-  }
-
-  if (authType === AuthType.KEYCLOAK) {
+  if (authenticated) {
     if (accesskey === undefined || accesskey === null || accesskey === '') {
       console.warn(
-        'Google login token does not exist. Access to public networks only.',
+        'Keycloak login token does not exist. Access to public networks only.',
       )
       return ndexClient
     } else {
       ndexClient.setAuthToken(accesskey)
     }
-  } else if (authType === AuthType.BASIC) {
-    ndexClient.setBasicAuth(userName, accesskey)
+  } else  {
+    console.info('No credential. Access to public networks only.')
+    return ndexClient
   }
 
   return ndexClient

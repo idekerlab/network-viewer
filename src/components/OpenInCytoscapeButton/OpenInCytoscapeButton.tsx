@@ -57,12 +57,11 @@ const OpenInCytoscapeButton = (props) => {
 
     cyndex.setNDExServer(ndexHttps)
 
-    if (ndexCredential.accesskey !== undefined) {
-      if (ndexCredential.authType === AuthType.KEYCLOAK) {
-        cyndex.setAuthToken(ndexCredential.accesskey)
-      } else {
-        cyndex.setBasicAuth(ndexCredential.userName, ndexCredential.accesskey)
-      }
+    if (
+      ndexCredential.accesskey !== undefined &&
+      ndexCredential.authenticated
+    ) {
+      cyndex.setAuthToken(ndexCredential.accesskey)
     }
 
     const accessKey = ndexNetworkProperties.accessKey

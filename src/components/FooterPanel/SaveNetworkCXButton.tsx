@@ -14,17 +14,15 @@ const SaveNetworkCXButton = () => {
   const { uuid } = useParams()
 
   const { ndexCredential, config, summary } = useContext(AppContext)
-  const { accesskey, authType, userName } = ndexCredential
+  const { accesskey, authenticated, userName } = ndexCredential
   const isLogin: boolean = accesskey !== undefined
 
   const exportCx = () => {
     const a = document.createElement('a')
     let credentialProp = ''
     if (isLogin) {
-      if (authType === AuthType.KEYCLOAK) {
+      if (authenticated) {
         credentialProp = '&id_token=' + accesskey
-      } else if (authType === AuthType.BASIC) {
-        credentialProp = '&auth_token=' + btoa(userName + ':' + accesskey)
       } else {
         credentialProp = '&accesskey=' + accesskey
       }
