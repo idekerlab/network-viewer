@@ -11,9 +11,13 @@ import { QueryClientProvider, QueryCache, QueryClient } from 'react-query'
 import AppConfig from './model/AppConfig'
 import Keycloak from 'keycloak-js'
 import NdexCredential from './model/NdexCredential'
-import { getBasicAuth } from './components/NdexLogin/NdexLoginDialog/BasicAuth/basic-auth-util'
-import { NdexBasicAuthInfo } from './components/NdexLogin/NdexLoginDialog/BasicAuth/NdexBasicAuthInfo'
-import { AuthType } from './model/AuthType'
+import { EmailVerificationPanel } from './components/EmailVerification'
+import { NDEx } from '@js4cytoscape/ndex-client'
+
+interface UserInfo {
+  preferred_username: string
+  email: string
+}
 
 const ROOT_TAG = 'root'
 
@@ -56,8 +60,9 @@ const loadResource = async (): Promise<AppConfig> => {
 
   const config: AppConfig = {
     ndexUrl,
-    ndexHttps:
-      ndexUrl.startsWith('localhost') ? `http://${ndexUrl}` : `https://${ndexUrl}`,
+    ndexHttps: ndexUrl.startsWith('localhost')
+      ? `http://${ndexUrl}`
+      : `https://${ndexUrl}`,
     viewerThreshold: viewerTh,
     maxNumObjects,
     maxDataSize,
@@ -143,26 +148,16 @@ const checkInitialLoginStatus = (keycloak: Keycloak): NdexCredential => {
   )
   let credential: NdexCredential
 
-  // Check basic auth
-  const basicAuthInfo: NdexBasicAuthInfo = getBasicAuth()
-  if (basicAuthInfo !== undefined) {
-    // use basic auth
+  if (keycloak.authenticated) {
     credential = {
-      authType: AuthType.BASIC,
-      userName: basicAuthInfo.userName,
-      accesskey: basicAuthInfo.token,
-      fullName: basicAuthInfo.firstName + ' ' + basicAuthInfo.lastName,
-    } as const
-  } else if (keycloak.authenticated) {
-    credential = {
-      authType: AuthType.KEYCLOAK,
+      authenticated: true,
       userName: keycloak.tokenParsed.preferred_username,
       accesskey: keycloak.token,
       fullName: keycloak.tokenParsed.name,
     } as const
   } else {
     credential = {
-      authType: AuthType.NONE,
+      authenticated: false,
     } as const
   }
   return credential
@@ -172,6 +167,11 @@ const render = (
   config: AppConfig,
   keycloak: Keycloak,
   credential: NdexCredential,
+  emailVerificationOpen: boolean,
+  onVerify: () => Promise<void>,
+  onCancel: () => void,
+  userName: string,
+  userEmail: string,
 ): void => {
   console.log(
     '* Root component rendering start. If you see this more than once, it might be a bug...',
@@ -179,33 +179,124 @@ const render = (
     keycloak,
     window.location,
   )
-  ReactDOM.render(
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <QueryClientProvider client={queryClient}>
-        <ErrorBoundary>
-          <App config={config} keycloak={keycloak} credential={credential} />
-        </ErrorBoundary>
-      </QueryClientProvider>
-    </ThemeProvider>,
-    document.getElementById(ROOT_TAG),
-  )
+  if (emailVerificationOpen) {
+    ReactDOM.render(
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <QueryClientProvider client={queryClient}>
+          <ErrorBoundary>
+            <EmailVerificationPanel
+              onVerify={onVerify}
+              onCancel={onCancel}
+              userName={userName}
+              userEmail={userEmail}
+            />
+          </ErrorBoundary>
+        </QueryClientProvider>
+      </ThemeProvider>,
+      document.getElementById(ROOT_TAG),
+    )
+  } else {
+    ReactDOM.render(
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <QueryClientProvider client={queryClient}>
+          <ErrorBoundary>
+            <App config={config} keycloak={keycloak} credential={credential} />
+          </ErrorBoundary>
+        </QueryClientProvider>
+      </ThemeProvider>,
+      document.getElementById(ROOT_TAG),
+    )
+  }
+}
+
+// Function to parse the error message to get the user information
+const parseMessage = (
+  message: string,
+): { userName: string; userEmail: string } | null => {
+  const pattern = /NDEx user account ([\w.]+) <([\w.]+@[\w.]+)>/
+  const match = message.match(pattern)
+
+  if (match) {
+    const userName = match[1]
+    const userEmail = match[2]
+    return { userName, userEmail }
+  }
+  return null
+}
+
+// Function to check if the email is verified
+const checkEmailVerification = async (
+  ndexUrl: string,
+  keycloakToken: string,
+) => {
+  try {
+    const ndexClient = new NDEx(ndexUrl)
+    const userObj = await ndexClient.signInFromIdToken(keycloakToken)
+    return {
+      isVerified: true,
+    }
+  } catch (e) {
+    if (
+      e.status === 401 &&
+      e.response?.data?.errorCode === 'NDEx_User_Account_Not_Verified'
+    ) {
+      const userInfo = parseMessage(e.response?.data?.message)
+      return {
+        isVerified: false,
+        userName: userInfo?.userName,
+        userEmail: userInfo?.userEmail,
+      }
+    }
+    return {
+      isVerified: true,
+    }
+  }
 }
 
 // Start the app modules in sequence.
 const initializeApp = async (): Promise<void> => {
   try {
-    const config = await loadResource();
+    const config = await loadResource()
     //await loadKeycloakScript(config.keycloakConfig.url);
-    const newClient = await auth(config);
-    const credential = checkInitialLoginStatus(newClient);
-    render(config, newClient, credential);
+    const newClient = await auth(config)
+    const credential = checkInitialLoginStatus(newClient)
+    const onVerify = async () => {
+      window.location.reload()
+    }
+    const onCancel = () => {
+      newClient.logout()
+    }
+    const authByKeycloak = newClient.authenticated
+    let emailUnverified = true
+    let userName = ''
+    let userEmail = ''
+    if (authByKeycloak) {
+      const verificationStatus = await checkEmailVerification(
+        config.ndexUrl,
+        newClient.token,
+      )
+      emailUnverified = !verificationStatus.isVerified
+      userName = verificationStatus.userName ?? ''
+      userEmail = verificationStatus.userEmail ?? ''
+    }
+    render(
+      config,
+      newClient,
+      credential,
+      authByKeycloak && emailUnverified,
+      onVerify,
+      onCancel,
+      userName,
+      userEmail,
+    )
   } catch (error) {
-    console.error('Application initialization failed:', error);
+    console.error('Application initialization failed:', error)
   }
-};
+}
 
-initializeApp();
+initializeApp()
 
 /* old implementation
 loadResource().then((config: AppConfig) => {

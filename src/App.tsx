@@ -27,12 +27,9 @@ import cyReducer, { INITIAL_CY_REFERENCE } from './reducer/cyReducer'
 import uiStateReducer, { INITIAL_UI_STATE } from './reducer/uiStateReducer'
 import NdexCredential from './model/NdexCredential'
 import Summary from './model/Summary'
-import { AuthType } from './model/AuthType'
-import { getBasicAuth } from './components/NdexLogin/NdexLoginDialog/BasicAuth/basic-auth-util'
-import { NdexBasicAuthInfo } from './components/NdexLogin/NdexLoginDialog/BasicAuth/NdexBasicAuthInfo'
 
 const defNdexCredential: NdexCredential = {
-  authType: AuthType.NONE,
+  authenticated: false,
   userName: '',
 }
 

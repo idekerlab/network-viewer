@@ -1,9 +1,9 @@
 {
   "version": "0.6.0",
-  "ndexUrl": "dev.ndexbio.org",
+  "ndexUrl": "dev1.ndexbio.org",
   "keycloakConfig": {
-    "url": "https://dev.ndexbio.org/auth2",
-    "clientId": "localtestclient",
+    "url": "https://dev1.ndexbio.org/auth2",
+    "clientId": "cytoscapendex",
     "realm": "ndex"
   },
   "viewerThreshold": 10000,
