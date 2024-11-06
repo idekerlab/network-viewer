@@ -82,11 +82,11 @@ const EdgeLimitExceededPanel = () => {
           Your query returned more than {config.maxEdgeQuery} and cannot be
           displayed in the browser.
           <br />
-          {ndexCredential.accesskey !== undefined
+          {ndexCredential.authenticated
             ? 'You can save this sub-network to NDEx to continue working with it.'
             : 'Please log in so that the result can be saved to your NDEx account'}
         </Typography>
-        {ndexCredential.accesskey !== undefined && (
+        {ndexCredential.authenticated && (
           <Button onClick={handleSave} variant="contained">
             Save Result to NDEx
           </Button>

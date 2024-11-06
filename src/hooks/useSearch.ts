@@ -133,7 +133,7 @@ const queryNetwork = async (
     mode === 'interconnect' || mode === 'direct' ? 'interconnectquery' : 'query'
 
   let url = `${serverUrl}/v2/search/network/${uuid}/${queryEndpointType}${
-    credential.accesskey ? `?accesskey=${credential.accesskey}` : ''
+    credential.accessKey ? `?accesskey=${credential.accessKey}` : ''
   }`
 
   edgeLimitParams['edgeLimit'] = maxEdge

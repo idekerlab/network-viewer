@@ -12,11 +12,10 @@ import DeleteDialog from './DeleteDialog'
 const DeleteButton: VFC = (): ReactElement => {
   const { summary, ndexCredential, config } = useContext(AppContext)
   const { uuid } = useParams()
-  const { accesskey } = ndexCredential
-  const isLogin: boolean = accesskey !== undefined
+  const isLogin: boolean = ndexCredential.authenticated
 
   const [open, setOpen] = useState<boolean>(false)
-  
+
   // Check whether the network is readonly or not
   let readOnly = false
   const summaryResponse = useNetworkSummary(
@@ -55,9 +54,9 @@ const DeleteButton: VFC = (): ReactElement => {
   let disabled = true
 
   if (hasPermission && login) {
-    if(readOnly){
+    if (readOnly) {
       message = 'This network is read-only'
-    }else{
+    } else {
       message = 'Delete this network'
       disabled = false
     }
@@ -73,7 +72,7 @@ const DeleteButton: VFC = (): ReactElement => {
     <Tooltip title={message} arrow placement={'top-start'}>
       <div>
         <IconButton color="inherit" disabled={disabled} onClick={_handleClick}>
-          <DeleteIcon/>
+          <DeleteIcon />
         </IconButton>
         <DeleteDialog open={open} setOpen={setOpen} />
       </div>

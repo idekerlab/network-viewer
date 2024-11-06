@@ -67,7 +67,7 @@ const ShareMenu: VFC = (): ReactElement => {
   }, [permissions])
 
   // Disable menu items if not logged-in
-  const disabled = ndexCredential.accesskey === undefined
+  const disabled = ndexCredential.authenticated !== true
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
 
@@ -150,7 +150,7 @@ const ShareMenu: VFC = (): ReactElement => {
           title={
             disabled || isDoiAvailable || !isEditable
               ? getDisabledMessage(
-                  ndexCredential.accesskey !== undefined,
+                  ndexCredential.authenticated,
                   isDoiAvailable,
                   isEditable,
                 )

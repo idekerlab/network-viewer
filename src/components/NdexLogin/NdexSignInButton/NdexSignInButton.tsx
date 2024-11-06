@@ -93,7 +93,7 @@ export const NdexSignInButton = () => {
           setNdexCredential({
             authenticated: true,
             userName: keycloak.tokenParsed.preferred_username,
-            accesskey: keycloak.token,
+            idToken: keycloak.token,
             fullName: keycloak.tokenParsed.name,
           } as NdexCredential)
           console.log('Login successfully')

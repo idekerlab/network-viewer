@@ -1,7 +1,8 @@
 type NdexCredential = {
   authenticated: boolean
   userName?: string
-  accesskey?: string
+  accessKey?: string
+  idToken?: string
   fullName?: string
 }
 

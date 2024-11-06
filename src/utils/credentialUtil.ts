@@ -1,6 +1,5 @@
 import NdexCredential from '../model/NdexCredential'
 import { NDEx } from '@js4cytoscape/ndex-client'
-import { AuthType } from '../model/AuthType'
 
 // const getGoogleHeader = (userInfo) => {
 //   const token = userInfo.tokenObj.token_type + ' ' + userInfo.tokenObj.id_token
@@ -10,9 +9,9 @@ import { AuthType } from '../model/AuthType'
 // }
 
 const getAuthorization = (ndexCredential: NdexCredential) => {
-  const { accesskey, authenticated, userName } = ndexCredential
+  const { idToken, authenticated } = ndexCredential
   if (authenticated) {
-    return 'Bearer ' + accesskey
+    return 'Bearer ' + idToken
   }
   return undefined
 }
@@ -25,19 +24,19 @@ const getAuthorization = (ndexCredential: NdexCredential) => {
  * @returns
  */
 const getNdexClient = (baseUrl: string, ndexCredential: NdexCredential) => {
-  const { accesskey, authenticated, userName } = ndexCredential
+  const { idToken, authenticated } = ndexCredential
   const ndexClient = new NDEx(baseUrl)
 
   if (authenticated) {
-    if (accesskey === undefined || accesskey === null || accesskey === '') {
+    if (idToken === undefined || idToken === null || idToken === '') {
       console.warn(
         'Keycloak login token does not exist. Access to public networks only.',
       )
       return ndexClient
     } else {
-      ndexClient.setAuthToken(accesskey)
+      ndexClient.setAuthToken(idToken)
     }
-  } else  {
+  } else {
     console.info('No credential. Access to public networks only.')
     return ndexClient
   }
