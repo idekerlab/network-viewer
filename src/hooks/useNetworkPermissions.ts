@@ -43,11 +43,15 @@ export default function useNetworkPermissions(
   apiVersion: string = 'v2',
   credential: NdexCredential,
 ) {
-  return useQuery(
-    ['networkPermissions', uuid, serverUrl, apiVersion, credential],
-    () => getNetworkPermissions(uuid, serverUrl, apiVersion, credential),
-    {
-      retry: false,
-    },
-  )
+  if (credential.authenticated) {
+    return useQuery(
+      ['networkPermissions', uuid, serverUrl, apiVersion, credential],
+      () => getNetworkPermissions(uuid, serverUrl, apiVersion, credential),
+      {
+        retry: false,
+      },
+    )
+  } else {
+    return null
+  }
 }
