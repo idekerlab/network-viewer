@@ -18,7 +18,9 @@ const getNetworkPermissions = async (
     return cache
   }
 
-  if (credential === undefined || (credential.idToken === undefined && credential.accessKey === undefined)) {
+  const isLogin: boolean = credential && credential.authenticated && credential.idToken !== undefined
+  
+  if (!isLogin) {
     return undefined
   }
 
@@ -43,15 +45,11 @@ export default function useNetworkPermissions(
   apiVersion: string = 'v2',
   credential: NdexCredential,
 ) {
-  if (credential.authenticated) {
-    return useQuery(
-      ['networkPermissions', uuid, serverUrl, apiVersion, credential],
-      () => getNetworkPermissions(uuid, serverUrl, apiVersion, credential),
-      {
-        retry: false,
-      },
-    )
-  } else {
-    return null
-  }
+  return useQuery(
+    ['networkPermissions', uuid, serverUrl, apiVersion, credential],
+    () => getNetworkPermissions(uuid, serverUrl, apiVersion, credential),
+    {
+      retry: false,
+    },
+  )
 }
