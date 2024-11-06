@@ -25,15 +25,16 @@ const getNetworkPermissions = async (
   const url = `${serverUrl}/${apiVersion}`
   let networkPermission = null
 
-  try {
-    const ndexClient = getNdexClient(url, credential)
-    const permissions = await ndexClient.getNetworkPermissionsByUUIDs([uuid])
-    networkPermission = permissions[uuid]
-    permissionsMap[uuid] = networkPermission
-  } catch (e: unknown) {
-    throw new NDExError(e['message'], e)
+  if (credential.authenticated) {
+    try {
+      const ndexClient = getNdexClient(url, credential)
+      const permissions = await ndexClient.getNetworkPermissionsByUUIDs([uuid])
+      networkPermission = permissions[uuid]
+    } catch (e: unknown) {
+      throw new NDExError(e['message'], e)
+    }
   }
-
+  permissionsMap[uuid] = networkPermission
   return networkPermission
 }
 
@@ -43,7 +44,7 @@ export default function useNetworkPermissions(
   apiVersion: string = 'v2',
   credential: NdexCredential,
 ) {
-  if (credential.authenticated) {
+  
     return useQuery(
       ['networkPermissions', uuid, serverUrl, apiVersion, credential],
       () => getNetworkPermissions(uuid, serverUrl, apiVersion, credential),
@@ -51,7 +52,5 @@ export default function useNetworkPermissions(
         retry: false,
       },
     )
-  } else {
-    return null
-  }
+  
 }
