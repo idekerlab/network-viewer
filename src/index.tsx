@@ -152,7 +152,7 @@ const checkInitialLoginStatus = (keycloak: Keycloak): NdexCredential => {
     credential = {
       authenticated: true,
       userName: keycloak.tokenParsed.preferred_username,
-      accesskey: keycloak.token,
+      idToken: keycloak.token,
       fullName: keycloak.tokenParsed.name,
     } as const
   } else {

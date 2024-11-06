@@ -18,7 +18,7 @@ const getNetworkPermissions = async (
     return cache
   }
 
-  if (credential === undefined || credential.accesskey === undefined) {
+  if (credential === undefined || (credential.idToken === undefined && credential.accessKey === undefined)) {
     return undefined
   }
 

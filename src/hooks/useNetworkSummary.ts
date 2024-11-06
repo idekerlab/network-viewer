@@ -22,12 +22,7 @@ async function getNetworkSummary(
   const ndexUrl = `${serverUrl}/${apiVersion}`
   try {
     const ndexClient = getNdexClient(ndexUrl, credential)
-    let summary = null
-    if (credential.accesskey !== undefined && credential.accesskey !== '') {
-      summary = await ndexClient.getNetworkSummary(uuid, credential.accesskey)
-    } else {
-      summary = await ndexClient.getNetworkSummary(uuid)
-    }
+    const summary = await ndexClient.getNetworkSummary(uuid, credential.accessKey)
     summaryMap[uuid] = summary
 
     if (!isValidSummary(summary)) {
@@ -65,7 +60,7 @@ export default function useNetworkSummary(
   const location = useLocation()
   const accessKey: string = getAccessKey(location.search)
   if (accessKey !== null) {
-    credential.accesskey = accessKey
+    credential.accessKey = accessKey
   }
 
   return useQuery(

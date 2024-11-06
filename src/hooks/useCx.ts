@@ -33,18 +33,12 @@ const getCx = async (
 
   try {
     const ndexClient = getNdexClient(`${serverUrl}/${apiVersion}`, credential)
-    const accesskey = credential.accesskey
+    const accessKey = credential.accessKey
 
     if (cxVersion === '2') {
-      if (accesskey !== undefined) {
-        return await ndexClient.getCX2Network(uuid, accesskey)
-      }
-      return await ndexClient.getCX2Network(uuid)
+      return await ndexClient.getCX2Network(uuid, accessKey)
     } else {
-      if (accesskey !== undefined) {
-        return await ndexClient.getRawNetwork(uuid, accesskey)
-      }
-      return await ndexClient.getRawNetwork(uuid)
+      return await ndexClient.getRawNetwork(uuid, accessKey)
     }
   } catch (e: unknown) {
     const response = e['response']
@@ -68,7 +62,7 @@ export default function useCx(
   const location = useLocation()
   const accessKey: string = getAccessKey(location.search)
   if (accessKey !== null) {
-    credential.accesskey = accessKey
+    credential.accessKey = accessKey
   }
   return useQuery(
     [

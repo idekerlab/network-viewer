@@ -14,7 +14,6 @@ import { EDITABLE, Editable } from './Editable'
 const EditMetadataButton: FC = (): ReactElement => {
   const { summary, ndexCredential, config } = useContext(AppContext)
   const { uuid } = useParams()
-  const { accesskey } = ndexCredential
 
   const [isEditable, setIsEditable] = useState<boolean>(false)
 
@@ -54,10 +53,7 @@ const EditMetadataButton: FC = (): ReactElement => {
     }
   }, [permissions])
 
-  let login: boolean = false
-  if (accesskey !== undefined && summary !== undefined) {
-    login = true
-  }
+  let login: boolean = ndexCredential.authenticated && summary !== undefined
 
   let message = 'This feature is only available to signed-in users'
 

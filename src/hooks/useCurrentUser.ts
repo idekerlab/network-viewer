@@ -9,7 +9,7 @@ const getCurrentUser = async (
   apiVersion: string,
   credential: NdexCredential,
 ) => {
-  if (credential === undefined || credential.accesskey === undefined) {
+  if (credential === undefined || (credential.accessKey === undefined && credential.idToken === undefined)) {
     return undefined
   }
 
