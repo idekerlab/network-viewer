@@ -335,6 +335,9 @@ const VirtualizedTable2: FC<{
 
   // Render a cell in the column header.
   const _renderLeftHeaderCell = ({ columnIndex, key, style }) => {
+    if (headerGroups.length === 0) {
+      return
+    }
     const headerGroup = headerGroups[0]
     const column = headerGroup.headers[columnIndex]
 
@@ -469,7 +472,6 @@ const VirtualizedTable2: FC<{
         return <p className={classes.cellOverflow}>[{value.slice(0, 2)} ...]</p>
       } else {
         return <p className={classes.cellOverflow}>[{value} ...]</p>
-
       }
     }
   }

@@ -19,15 +19,8 @@ export const NdexSignInButton = () => {
   const [disabled, setDisabled] = useState<boolean>(true)
 
   // New Keycloak client
-  const {
-    config,
-    keycloak,
-    ndexCredential,
-    setNdexCredential,
-    showLogin,
-    setShowLogin,
-    summary,
-  } = useContext(AppContext)
+  const { config, keycloak, ndexCredential, setNdexCredential, summary } =
+    useContext(AppContext)
 
   useEffect(() => {
     if (ndexCredential === undefined || keycloak === undefined) {
@@ -46,23 +39,6 @@ export const NdexSignInButton = () => {
     setAnchorEl(null)
   }
 
-  const [errorMessage, setErrorMessage] = useState<string>('')
-
-  const onLoginSuccess = (event): void => {
-    console.log('Login success', event)
-  }
-
-  const postLogout = (): void => {
-    console.log('Post logout cleanup')
-    const { visibility } = summary
-
-    setShowLogin(false)
-    if (visibility === 'PRIVATE') {
-      setTimeout(() => {
-        window.location.reload()
-      }, 500)
-    }
-  }
   const onLogout = (): void => {
     // Clear credential from global state
     setNdexCredential({
@@ -70,13 +46,6 @@ export const NdexSignInButton = () => {
     })
     keycloak.logout()
   }
-
-  const handleError = (error) => {
-    console.log('Error:', error)
-    setErrorMessage(error)
-  }
-
-  const onError = (error: any) => {}
 
   const getTitle = (): string => {
     return ndexCredential.authenticated
