@@ -5,7 +5,7 @@ import logo from './assets/images/cytoscape-logo.svg'
 import logoDisabled from './assets/images/cytoscape-logo-mono-light.svg'
 import { withStyles } from '@material-ui/core'
 import Tooltip from '@material-ui/core/Tooltip'
-import ndexClient from '@js4cytoscape/ndex-client'
+import { CyNDEx } from '@js4cytoscape/ndex-client'
 import LargeNetworkDialog from './LargeNetworkDialog'
 import AppContext from '../../context/AppState'
 import { AuthType } from '../../model/AuthType'
@@ -53,16 +53,12 @@ const OpenInCytoscapeButton = (props) => {
   const [largeNetworkDialogOpen, setLargeNetworkDialogOpen] = useState(false)
 
   const importNetworkFromNDEx = (createView) => {
-    const cyndex = new ndexClient.CyNDEx(cyRESTPort)
+    const cyndex = new CyNDEx(cyRESTPort)
 
     cyndex.setNDExServer(ndexHttps)
 
-    if (ndexCredential.accesskey !== undefined) {
-      if (ndexCredential.authType === AuthType.KEYCLOAK) {
-        cyndex.setAuthToken(ndexCredential.accesskey)
-      } else {
-        cyndex.setBasicAuth(ndexCredential.userName, ndexCredential.accesskey)
-      }
+    if (ndexCredential.idToken !== undefined && ndexCredential.authenticated) {
+      cyndex.setAuthToken(ndexCredential.idToken)
     }
 
     const accessKey = ndexNetworkProperties.accessKey
@@ -152,7 +148,7 @@ const OpenInCytoscapeButton = (props) => {
         importNetworkFromNDEx(true)
       }
     } else {
-      const cyndex = new ndexClient.CyNDEx(cyRESTPort)
+      const cyndex = new CyNDEx(cyRESTPort)
       fetchCX().then(
         (cx) => {
           cyndex

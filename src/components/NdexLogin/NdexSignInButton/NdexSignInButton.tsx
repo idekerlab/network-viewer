@@ -5,9 +5,7 @@ import Avatar from '@material-ui/core/Avatar'
 import { useStyles } from './buttonStyle'
 import AppContext from '../../../context/AppState'
 import { NdexUserInfoPopover } from '../NdexUserInfoPopover'
-import { AuthType } from '../../../model/AuthType'
-import { NdexLoginDialog } from '../NdexLoginDialog'
-import { NdexCredentialTag } from '../NdexCredentialTag'
+import NdexCredential from '../../../model/NdexCredential'
 
 /**
  * Simplified version of NDEx login button
@@ -66,19 +64,11 @@ export const NdexSignInButton = () => {
     }
   }
   const onLogout = (): void => {
-    const { authType } = ndexCredential
-
     // Clear credential from global state
     setNdexCredential({
-      authType: AuthType.NONE,
+      authenticated: false,
     })
-
-    if (authType === AuthType.BASIC) {
-      window.localStorage.removeItem(NdexCredentialTag.NdexCredential)
-      postLogout()
-    } else if (authType === AuthType.KEYCLOAK) {
-      keycloak.logout()
-    }
+    keycloak.logout()
   }
 
   const handleError = (error) => {
@@ -89,16 +79,32 @@ export const NdexSignInButton = () => {
   const onError = (error: any) => {}
 
   const getTitle = (): string => {
-    return ndexCredential.authType !== AuthType.NONE
+    return ndexCredential.authenticated
       ? 'Signed in as ' + ndexCredential.userName
       : 'Sign in to NDEx'
   }
 
   const handleClick = (event): void => {
-    if (ndexCredential.authType !== AuthType.NONE) {
+    if (ndexCredential.authenticated) {
       setAnchorEl(event.currentTarget)
     } else {
-      setShowLogin(true)
+      keycloak.login().then(() => {
+        if (keycloak.authenticated) {
+          setNdexCredential({
+            authenticated: true,
+            userName: keycloak.tokenParsed.preferred_username,
+            idToken: keycloak.token,
+            fullName: keycloak.tokenParsed.name,
+          } as NdexCredential)
+          console.log('Login successfully')
+        } else {
+          // Failed
+          setNdexCredential({
+            authenticated: false,
+          } as NdexCredential)
+          console.log('Not authenticated')
+        }
+      })
     }
   }
 
@@ -111,22 +117,12 @@ export const NdexSignInButton = () => {
           disabled={disabled}
         >
           <Avatar className={classes.iconMedium}>
-            {ndexCredential.authType === AuthType.NONE
+            {ndexCredential.authenticated === false
               ? null
               : ndexCredential.fullName[0]}
           </Avatar>
         </IconButton>
       </Tooltip>
-      <NdexLoginDialog
-        setDialogState={setShowLogin}
-        isOpen={showLogin}
-        ndexServer={config.ndexUrl}
-        onLoginSuccess={onLoginSuccess}
-        onLogout={onLogout}
-        onError={onError}
-        handleError={handleError}
-        errorMessage={errorMessage}
-      />
       <NdexUserInfoPopover
         userName={ndexCredential.fullName}
         userId={ndexCredential.userName}

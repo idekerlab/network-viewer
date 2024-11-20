@@ -2,18 +2,32 @@ import React, { VFC, ReactElement, useContext, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import IconButton from '@material-ui/core/IconButton'
 import DeleteIcon from '@material-ui/icons/Delete'
+import LockIcon from '@material-ui/icons/Lock'
 import AppContext from '../../context/AppState'
 import useNetworkPermissions from '../../hooks/useNetworkPermissions'
+import useNetworkSummary from '../../hooks/useNetworkSummary'
 import { Tooltip } from '@material-ui/core'
 import DeleteDialog from './DeleteDialog'
 
 const DeleteButton: VFC = (): ReactElement => {
   const { summary, ndexCredential, config } = useContext(AppContext)
   const { uuid } = useParams()
-  const { accesskey } = ndexCredential
-  const isLogin: boolean = accesskey !== undefined
+  const isLogin: boolean = ndexCredential.authenticated
 
   const [open, setOpen] = useState<boolean>(false)
+
+  // Check whether the network is readonly or not
+  let readOnly = false
+  const summaryResponse = useNetworkSummary(
+    uuid,
+    config.ndexHttps,
+    'v2',
+    ndexCredential,
+  )
+  const networkSummary = summaryResponse.data
+  if (networkSummary !== undefined && networkSummary !== null) {
+    readOnly = networkSummary.isReadOnly
+  }
 
   const permissions = useNetworkPermissions(
     uuid,
@@ -37,11 +51,15 @@ const DeleteButton: VFC = (): ReactElement => {
   }
 
   let message = 'Delete function is only available to signed-in users'
-
   let disabled = true
+
   if (hasPermission && login) {
-    message = 'Delete this network'
-    disabled = false
+    if (readOnly) {
+      message = 'This network is read-only'
+    } else {
+      message = 'Delete this network'
+      disabled = false
+    }
   } else if (!hasPermission && login) {
     message = "You don't have permission to delete this network"
   }

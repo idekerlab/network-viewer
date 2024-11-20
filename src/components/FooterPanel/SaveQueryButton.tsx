@@ -18,8 +18,7 @@ const SaveQueryButton = () => {
     config.maxEdgeQuery,
   )
 
-  const { accesskey } = ndexCredential
-  const isLogin: boolean = accesskey !== undefined
+  const isLogin: boolean = ndexCredential.authenticated
 
   const subnet = searchResult.data
   const edgeLimitExceeded: boolean =
@@ -58,6 +57,7 @@ const SaveQueryButton = () => {
           onSuccess={onSuccess}
           onFailure={onFailure}
           subCx={subCx}
+          showLoginTip={!isLogin}
         />
         <Snackbar
           anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}

@@ -54,7 +54,6 @@ const EntryTable: VFC<{
   type?: string
   context
   letterWidths
-  label
   parentSize: [number, number]
   selected: boolean
 }> = ({
@@ -63,7 +62,6 @@ const EntryTable: VFC<{
   type,
   context,
   letterWidths,
-  label,
   parentSize,
   selected,
 }) => {
@@ -117,62 +115,24 @@ const EntryTable: VFC<{
         continue
       }
       for (let attr of attrs) {
-        if (
-          attr[0] === Attributes.NAME ||
-          (type === 'edge' && attr[0] === EdgeAttributes.INTERACTION)
-        ) {
-          continue
-        } else {
-          if (Array.isArray(attr[1])) {
-            for (let item of attr[1]) {
-              if (item !== undefined && item !== '') {
-                if (!columnsList.includes(attr[0])) {
-                  columnsList.push(attr[0])
-                }
-                break
-              }
-            }
-          } else {
-            if (attr[1] !== undefined && attr[1] !== '') {
+        if (Array.isArray(attr[1])) {
+          for (let item of attr[1]) {
+            if (item !== undefined && item !== '') {
               if (!columnsList.includes(attr[0])) {
                 columnsList.push(attr[0])
               }
+              break
+            }
+          }
+        } else {
+          if (attr[1] !== undefined && attr[1] !== '') {
+            if (!columnsList.includes(attr[0])) {
+              columnsList.push(attr[0])
             }
           }
         }
         if (columnsList.length + 1 === attrs.length) {
           break
-        }
-      }
-    }
-    columnsList.unshift(Attributes.NAME)
-    if (type === 'edge') {
-      //Add name for edges that don't have one
-      for (let id of selectedObjects) {
-        const attrs = attributes[id]
-        if (!attrs.has(Attributes.NAME)) {
-          if (
-            attrs.has(EdgeAttributes.SOURCE) &&
-            attrs.has(EdgeAttributes.TARGET)
-          ) {
-            if (attrs.has(EdgeAttributes.INTERACTION)) {
-              attrs.set(
-                Attributes.NAME,
-                attrs.get(EdgeAttributes.SOURCE) +
-                  ' (' +
-                  attrs.get(EdgeAttributes.INTERACTION) +
-                  ') ' +
-                  attrs.get(EdgeAttributes.TARGET),
-              )
-            } else {
-              attrs.set(
-                Attributes.NAME,
-                attrs.get(EdgeAttributes.SOURCE) +
-                  ' (-) ' +
-                  attrs.get(EdgeAttributes.TARGET),
-              )
-            }
-          }
         }
       }
     }
@@ -187,7 +147,7 @@ const EntryTable: VFC<{
       if (attributes === undefined) {
         continue
       }
-      
+
       const attrs = attributes[id]
       if (attrs === undefined) {
         continue
@@ -235,45 +195,45 @@ const EntryTable: VFC<{
     }
 
     return [sortedDataList, textDataList]
-  }, [selectedObjects])
+  }, [selectedObjects, columns])
 
   const finalColumns = useMemo(() => {
     //Put columns in correct order
-    let hasName = false
-    let hasRepresents = false
-    if (columns.includes(Attributes.NAME)) {
-      hasName = true
-      columns.splice(columns.indexOf(Attributes.NAME), 1)
-    }
-    if (columns.includes(NodeAttributes.REPRESENTS)) {
-      hasRepresents = true
-      columns.splice(columns.indexOf(NodeAttributes.REPRESENTS), 1)
-    }
-    columns.sort((a, b) => a.localeCompare(b))
-    if (hasRepresents) {
-      columns.unshift(NodeAttributes.REPRESENTS)
-    }
-    if (hasName) {
-      columns.unshift(Attributes.NAME)
+    const priorityColumns = [
+      Attributes.NAME,
+      NodeAttributes.REPRESENTS,
+      EdgeAttributes.SOURCE,
+      EdgeAttributes.INTERACTION,
+      EdgeAttributes.TARGET,
+    ]
+
+    const priorityColumnName = {
+      [Attributes.NAME]: 'name',
+      [NodeAttributes.REPRESENTS]: 'represents',
+      [EdgeAttributes.SOURCE]: 'source node',
+      [EdgeAttributes.INTERACTION]: 'interaction',
+      [EdgeAttributes.TARGET]: 'target node',
     }
 
-    return columns.map((column) => {
-      if (column === Attributes.NAME) {
-        return {
-          Header: label,
-          accessor: Attributes.NAME,
-          // sticky: 'left',
-          width: getColumnWidth(data[1], Attributes.NAME, label),
-        }
-      } else {
-        return {
-          Header: column,
-          accessor: replacePeriods(column),
-          width: getColumnWidth(data[1], column, column),
-        }
+    const orderedColumns = priorityColumns.filter((col) =>
+      columns.includes(col),
+    )
+    const remainingColumns = columns.filter(
+      (col) => !priorityColumns.includes(col),
+    )
+    remainingColumns.sort((a, b) => a.localeCompare(b))
+    const combinedColumns = [...orderedColumns, ...remainingColumns]
+
+    return combinedColumns.map((column) => {
+      return {
+        Header: priorityColumns.includes(column)
+          ? priorityColumnName[column]
+          : column,
+        accessor: replacePeriods(column),
+        width: getColumnWidth(data[1], column, column),
       }
     })
-  }, [selectedObjects])
+  }, [selectedObjects, data, columns])
 
   return (
     <VirtualizedTable2

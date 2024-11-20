@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const PropertyPanel = ({ attrMap, onClose }) => {
+const PropertyPanel = ({ attrMap, onClose, isNode }) => {
   const classes = useStyles()
 
   const handleClose = () => {
@@ -47,7 +47,7 @@ const PropertyPanel = ({ attrMap, onClose }) => {
     <div className={classes.root}>
       <div className={classes.title}>
         <Typography className={classes.name} variant="body1">
-          {attrMap.get('name')}
+          {attrMap.get('name') ?? ''}
         </Typography>
         <IconButton onClick={handleClose}>
           <CloseIcon />
