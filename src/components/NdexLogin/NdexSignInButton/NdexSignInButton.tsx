@@ -6,6 +6,8 @@ import { useStyles } from './buttonStyle'
 import AppContext from '../../../context/AppState'
 import { NdexUserInfoPopover } from '../NdexUserInfoPopover'
 import NdexCredential from '../../../model/NdexCredential'
+import { Visibility } from '../../../model/Visibility'
+import { getCurrentServer } from '../../../utils/locationUtil'
 
 /**
  * Simplified version of NDEx login button
@@ -44,7 +46,15 @@ export const NdexSignInButton = () => {
     setNdexCredential({
       authenticated: false,
     })
-    keycloak.logout()
+    const { visibility } = summary
+
+    if (visibility === Visibility.PUBLIC) {
+      keycloak.logout()
+    } else {
+      // if it is private network, then redirect to NDEx
+      const baseUrl: string = getCurrentServer()
+      keycloak.logout({ redirectUri: baseUrl })
+    }
   }
 
   const getTitle = (): string => {

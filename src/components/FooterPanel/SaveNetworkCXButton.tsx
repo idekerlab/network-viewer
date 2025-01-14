@@ -8,7 +8,6 @@ import Tooltip from '@material-ui/core/Tooltip'
 import DownloadIcon from '@material-ui/icons/CloudDownload'
 
 import { appendWindowProtocol } from '../../utils/locationUtil'
-import { AuthType } from '../../model/AuthType'
 
 const SaveNetworkCXButton = () => {
   const { uuid } = useParams()
