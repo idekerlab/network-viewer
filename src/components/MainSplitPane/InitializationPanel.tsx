@@ -1,9 +1,9 @@
 import React, { useState, FC, useEffect, useContext } from 'react'
-import { useParams } from 'react-router-dom'
 import MessageDialog from './MessageDialog'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import NdexCredential from '../../model/NdexCredential'
 
 // import WarningIcon from '@material-ui/icons/WarningOutlined'
 // import LockIcon from '@material-ui/icons/LockOutlined'
@@ -95,7 +95,8 @@ const InitPanel: FC<InitPanelProps> = ({
   setNoView,
 }) => {
   const classes = useStyles()
-  const { config, uiState, setShowLogin } = useContext(AppContext)
+  const { config, uiState, keycloak, setNdexCredential } =
+    useContext(AppContext)
 
   const [open, setOpen] = useState(false)
 
@@ -147,7 +148,23 @@ const InitPanel: FC<InitPanelProps> = ({
   }
 
   const _handleLoginOpen = () => {
-    setShowLogin(true)
+    keycloak.login().then(() => {
+      if (keycloak.authenticated) {
+        setNdexCredential({
+          authenticated: true,
+          userName: keycloak.tokenParsed.preferred_username,
+          accesskey: keycloak.token,
+          fullName: keycloak.tokenParsed.name,
+        } as NdexCredential)
+        console.log('Login successfully')
+      } else {
+        // Failed
+        setNdexCredential({
+          authenticated: false,
+        } as NdexCredential)
+        console.log('Not authenticated')
+      }
+    })
   }
 
   if (error) {

@@ -6,6 +6,8 @@ import { useStyles } from './buttonStyle'
 import AppContext from '../../../context/AppState'
 import { NdexUserInfoPopover } from '../NdexUserInfoPopover'
 import NdexCredential from '../../../model/NdexCredential'
+import { Visibility } from '../../../model/Visibility'
+import { getCurrentServer } from '../../../utils/locationUtil'
 
 /**
  * Simplified version of NDEx login button
@@ -19,15 +21,8 @@ export const NdexSignInButton = () => {
   const [disabled, setDisabled] = useState<boolean>(true)
 
   // New Keycloak client
-  const {
-    config,
-    keycloak,
-    ndexCredential,
-    setNdexCredential,
-    showLogin,
-    setShowLogin,
-    summary,
-  } = useContext(AppContext)
+  const { config, keycloak, ndexCredential, setNdexCredential, summary } =
+    useContext(AppContext)
 
   useEffect(() => {
     if (ndexCredential === undefined || keycloak === undefined) {
@@ -46,37 +41,21 @@ export const NdexSignInButton = () => {
     setAnchorEl(null)
   }
 
-  const [errorMessage, setErrorMessage] = useState<string>('')
-
-  const onLoginSuccess = (event): void => {
-    console.log('Login success', event)
-  }
-
-  const postLogout = (): void => {
-    console.log('Post logout cleanup')
-    const { visibility } = summary
-
-    setShowLogin(false)
-    if (visibility === 'PRIVATE') {
-      setTimeout(() => {
-        window.location.reload()
-      }, 500)
-    }
-  }
   const onLogout = (): void => {
     // Clear credential from global state
     setNdexCredential({
       authenticated: false,
     })
-    keycloak.logout()
-  }
+    const { visibility } = summary
 
-  const handleError = (error) => {
-    console.log('Error:', error)
-    setErrorMessage(error)
+    if (visibility === Visibility.PUBLIC) {
+      keycloak.logout()
+    } else {
+      // if it is private network, then redirect to NDEx
+      const baseUrl: string = getCurrentServer()
+      keycloak.logout({ redirectUri: baseUrl })
+    }
   }
-
-  const onError = (error: any) => {}
 
   const getTitle = (): string => {
     return ndexCredential.authenticated

@@ -35,9 +35,6 @@ type AppState = {
   ndexCredential: NdexCredential
   setNdexCredential: (credential: NdexCredential) => void
 
-  showLogin: boolean
-  setShowLogin: (showDialog: boolean) => void
-
   isReady: boolean
   setIsReady: (isReady: boolean) => void
 }

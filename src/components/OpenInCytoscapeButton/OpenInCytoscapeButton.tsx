@@ -8,7 +8,6 @@ import Tooltip from '@material-ui/core/Tooltip'
 import { CyNDEx } from '@js4cytoscape/ndex-client'
 import LargeNetworkDialog from './LargeNetworkDialog'
 import AppContext from '../../context/AppState'
-import { AuthType } from '../../model/AuthType'
 import { useCyNdexValue } from './CyNdexContext'
 
 const styles = () => ({

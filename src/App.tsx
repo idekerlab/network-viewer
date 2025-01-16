@@ -58,7 +58,6 @@ const App = ({ config, keycloak, credential }) => {
   )
 
   const [isReady, setIsReady] = useState<boolean>(false)
-  const [showLogin, setShowLogin] = useState<boolean>(false)
 
   // TODO: use reducer?
   const defState: AppState = {
@@ -90,9 +89,6 @@ const App = ({ config, keycloak, credential }) => {
     keycloak,
     isReady,
     setIsReady,
-
-    showLogin,
-    setShowLogin,
   }
 
   const routes = [
