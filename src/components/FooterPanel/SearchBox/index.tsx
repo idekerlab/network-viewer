@@ -17,7 +17,7 @@ import AppContext from '../../../context/AppState'
 import SearchHelpDialog from '../SearchHelpDialog'
 import { fitContent } from '../../../utils/cyjsUtil'
 
-import useSearch from '../../../hooks/useSearch'
+import useSearch, { fetchQueryCX2 } from '../../../hooks/useSearch'
 import SaveQueryButton from '../SaveQueryButton'
 import AdvancedQueryMenu from '../AdvancedQueryMenu'
 import UIState from '../../../model/UIState'
@@ -158,8 +158,21 @@ const SearchBox: FC = () => {
     : 0
 
   const data = summaryObjectCount > 0 ? subCx : undefined
+
+  const handleFetchCX2 = async () => {
+    return await fetchQueryCX2(
+      uuid || '',
+      query,
+      config.ndexHttps,
+      ndexCredential,
+      queryMode,
+      config.maxEdgeQuery,
+    )
+  }
+
   const downloadProps: DownloadProps = {
     data,
+    fetchCX2: handleFetchCX2,
     tooltip: 'Download query result as CX',
     fileName: `${uuid} subnet.cx`,
   }

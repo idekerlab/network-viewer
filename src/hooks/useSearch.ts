@@ -179,6 +179,78 @@ const queryNetwork = async (
   return response.parsedBody
 }
 
+export const fetchQueryCX2 = async (
+  uuid: string,
+  query: string,
+  serverUrl: string,
+  credential: NdexCredential,
+  mode: string,
+  maxEdge: number,
+) => {
+  if (uuid === undefined || uuid === null || uuid.length === 0) {
+    return {}
+  }
+
+  if (query === undefined || query === null || query.length === 0) {
+    return {}
+  }
+
+  const isInterconnect = mode === 'interconnect' || mode === 'direct'
+  const queryEndpointType = isInterconnect
+    ? 'networks/' + uuid + '/interconnectquery'
+    : 'networks/' + uuid + '/query'
+
+  // Construct URL with accesskey if needed for private networks
+  let url = `${serverUrl}/v3/search/${queryEndpointType}${
+    credential.accessKey ? `?accesskey=${credential.accessKey}` : ''
+  }`
+
+  // Construct valid V3 payload
+  const queryParam: any = {
+    searchString: query,
+    edgeLimit: maxEdge,
+    errorWhenLimitIsOver: true,
+  }
+
+  // searchDepth and directOnly are only valid on /query endpoints!
+  // passing them to /interconnectquery throws a 500 error in NDEx V3
+  if (!isInterconnect && queryModeParams[mode]) {
+    if (queryModeParams[mode].searchDepth !== undefined) {
+      queryParam.searchDepth = queryModeParams[mode].searchDepth
+    }
+    if (queryModeParams[mode].directOnly !== undefined) {
+      queryParam.directOnly = queryModeParams[mode].directOnly
+    }
+  }
+
+  const authorization = getAuthorization(credential)
+  const settings = {
+    method: 'POST',
+    headers: authorization
+      ? {
+          'Content-Type': 'application/json',
+          Authorization: authorization,
+        }
+      : {
+          'Content-Type': 'application/json',
+        },
+    body: JSON.stringify(queryParam),
+  }
+
+  try {
+    const response = await fetch(url, settings)
+    if (!response.ok) {
+      console.error(`CX2 fetch error: ${response.status} ${response.statusText}`)
+      return {}
+    }
+    const cx2 = await response.json()
+    return cx2
+  } catch (ex) {
+    console.error('CX2 Query API Call error using fetch:', ex)
+    return {}
+  }
+}
+
 const transformCx = (cx: object[]) => {
   const resultObject = {}
 
