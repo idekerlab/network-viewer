@@ -28,7 +28,6 @@ const AdvancedMenu = () => {
   const { uuid } = useParams()
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
   const baseUrl: string = getCurrentServer()
-  const classicUrl = `${baseUrl}/#/network/${uuid}`
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
@@ -56,16 +55,7 @@ const AdvancedMenu = () => {
         </IconButton>
       </Tooltip>
       <Menu open={open} anchorEl={anchorEl} onClose={handleClose}>
-        <Tooltip placement="right" title="Switch to classic viewer">
-          <MenuItem
-            onClick={() => {
-              window.open(classicUrl, '_self')
-              setAnchorEl(null)
-            }}
-          >
-            Legacy Viewer
-          </MenuItem>
-        </Tooltip>
+
         <MenuItem
           onClick={() => {
             window.open('https://home.ndexbio.org/about-ndex/')

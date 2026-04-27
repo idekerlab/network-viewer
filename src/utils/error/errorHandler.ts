@@ -7,7 +7,7 @@ const MESSAGE_MAP = new Map<ResponseCode, [string, string]>()
 
 MESSAGE_MAP.set(ResponseCode.BadRequest, [
   'The server could not handle your request',
-  'The NDEx server could not handle your request. Please try different query or try Classic Mode.',
+  'The NDEx server could not handle your request. Please try different query.',
 ])
 MESSAGE_MAP.set(ResponseCode.Unauthorized, [
   "You don't have permission to access this data",
