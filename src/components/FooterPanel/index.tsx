@@ -2,8 +2,6 @@ import React, { FC } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import SearchBox from './SearchBox'
 import OpenInCytoscape from './OpenInCytoscape'
-import EditMetadataButton from './EditMetadataButton'
-import ShareMenu from './ShareMenu'
 import SaveNetworkCXButton from './SaveNetworkCXButton'
 import DeleteButton from './DeleteButton'
 
@@ -35,8 +33,6 @@ const FooterPanel: FC = () => {
       <div className={classes.grow} />
       <OpenInCytoscape />
       <SaveNetworkCXButton />
-      <EditMetadataButton />
-      <ShareMenu />
       <DeleteButton />
     </div>
   )
