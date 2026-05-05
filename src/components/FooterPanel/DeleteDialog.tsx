@@ -8,19 +8,51 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import { getNdexClient } from '../../utils/credentialUtil'
 import AppContext from '../../context/AppState'
 import { useParams } from 'react-router-dom'
-import Snackbar from '@material-ui/core/Snackbar'
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { getCurrentServer } from '../../utils/locationUtil'
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    dialogPaper: {
+      borderRadius: 28,
+      padding: theme.spacing(2),
+    },
+    title: {
+      fontSize: '1.5rem',
+      fontWeight: 500,
+    },
+    content: {
+      fontSize: '1rem',
+      color: theme.palette.text.secondary,
+      marginBottom: theme.spacing(3),
+    },
+    actionButton: {
+      borderRadius: 20,
+      textTransform: 'none',
+      paddingLeft: theme.spacing(3),
+      paddingRight: theme.spacing(3),
+    },
+    confirmButton: {
+      backgroundColor: '#1a73e8',
+      color: 'white',
+      '&:hover': {
+        backgroundColor: '#1765cc',
+      },
+    },
+  }),
+)
 
 const DeleteDialog: VFC<{ open: boolean; setOpen: (boolean) => void }> = ({
   open,
   setOpen,
 }) => {
+  const classes = useStyles()
   const baseUrl: string = getCurrentServer()
-  const usersAccountUrl = `${baseUrl}/#/myAccount`
+  const trashUrl = `${baseUrl}/trash`
 
-  const { ndexCredential, config } = useContext(AppContext)
+  const { ndexCredential, config, summary } = useContext(AppContext)
   const { uuid } = useParams()
-  const [openFeedback, setOpenFeedback] = useState<boolean>(false)
+  const [deleted, setDeleted] = useState<boolean>(false)
 
   const _handleDelete = () => {
     const ndexClient = getNdexClient(`${config.ndexHttps}/v2`, ndexCredential)
@@ -28,60 +60,94 @@ const DeleteDialog: VFC<{ open: boolean; setOpen: (boolean) => void }> = ({
       .deleteNetwork(uuid)
       .then((response) => {
         console.log(response)
-        setOpenFeedback(true)
+        setDeleted(true)
       })
       .catch((err) => {
         console.log(err)
         throw new Error(err)
       })
-    setOpen(false)
   }
 
   const _handleClose = () => {
     setOpen(false)
+    if (deleted) {
+      setDeleted(false)
+    }
   }
 
-  const _handleCloseFeedback = () => {
-    setOpenFeedback(false)
-    setTimeout(() => {
-      window.open(usersAccountUrl, '_self')
-    }, 1100)
+  const _handleGoToTrash = () => {
+    window.open(trashUrl, '_self')
   }
+
+  const networkName = summary?.name || 'This network'
 
 
   return (
-    <>
-      <Dialog
-        open={open}
-        onClose={_handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {'Delete this network'}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            This network will be permanently deleted from NDEx. Are you sure you
-            want to proceed?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={_handleClose} color="default" autoFocus>
-            Cancel
-          </Button>
-          <Button onClick={_handleDelete} color="secondary">
-            Confirm
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Snackbar
-        open={openFeedback}
-        autoHideDuration={1000}
-        message="The network successfully deleted. Redirecting to your account page..."
-        onClose={_handleCloseFeedback}
-      />
-    </>
+    <Dialog
+      open={open}
+      onClose={_handleClose}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+      PaperProps={{ className: classes.dialogPaper }}
+    >
+      {!deleted ? (
+        <>
+          <DialogTitle id="alert-dialog-title" className={classes.title}>
+            {'Delete this network'}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText
+              id="alert-dialog-description"
+              className={classes.content}
+            >
+              This network will be moved to trash. Are you sure you want to
+              proceed?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={_handleClose}
+              color="default"
+              className={classes.actionButton}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={_handleDelete}
+              variant="contained"
+              className={`${classes.actionButton} ${classes.confirmButton}`}
+            >
+              Confirm
+            </Button>
+          </DialogActions>
+        </>
+      ) : (
+        <>
+          <DialogTitle id="alert-dialog-title" className={classes.title}>
+            {'File moved to trash'}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText
+              id="alert-dialog-description"
+              className={classes.content}
+            >
+              "{networkName}" will be in the trash. To access this file, go to
+              your trash.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={_handleGoToTrash}
+              variant="contained"
+              className={`${classes.actionButton} ${classes.confirmButton}`}
+              autoFocus
+            >
+              Go to trash
+            </Button>
+          </DialogActions>
+        </>
+      )}
+    </Dialog>
   )
 }
 
