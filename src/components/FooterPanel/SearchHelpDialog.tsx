@@ -202,7 +202,7 @@ const SearchHelpDialog = (props: SearchHelpProps) => {
                     <Typography variant="body2">
                       <br />
                       For more info, please review the manual on{' '}
-                      <a href="https://home.ndexbio.org/finding-and-querying-networks/" target="_blank" rel="noreferrer">
+                      <a href="/docs/finding-and-querying" target="_blank" rel="noreferrer">
                         Finding and Querying Networks in NDEx
                       </a>
                       .

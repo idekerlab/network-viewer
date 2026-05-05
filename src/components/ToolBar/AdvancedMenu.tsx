@@ -58,7 +58,7 @@ const AdvancedMenu = () => {
 
         <MenuItem
           onClick={() => {
-            window.open('https://home.ndexbio.org/about-ndex/')
+            window.open('/about')
             setAnchorEl(null)
           }}
         >
@@ -66,7 +66,7 @@ const AdvancedMenu = () => {
         </MenuItem>
         <MenuItem
           onClick={() => {
-            window.open('https://home.ndexbio.org/quick-start/')
+            window.open('/docs')
             setAnchorEl(null)
           }}
         >
@@ -74,7 +74,7 @@ const AdvancedMenu = () => {
         </MenuItem>
         <MenuItem
           onClick={() => {
-            window.open('https://home.ndexbio.org/report-a-bug/')
+            window.open('/report-bug')
             setAnchorEl(null)
           }}
         >
@@ -82,7 +82,7 @@ const AdvancedMenu = () => {
         </MenuItem>
         <MenuItem
           onClick={() => {
-            window.open('https://home.ndexbio.org/contact-us/')
+            window.open('/contact')
             setAnchorEl(null)
           }}
         >
@@ -90,7 +90,7 @@ const AdvancedMenu = () => {
         </MenuItem>
         <MenuItem
           onClick={() => {
-            window.open('https://home.ndexbio.org/faq/')
+            window.open('/faq')
             setAnchorEl(null)
           }}
         >

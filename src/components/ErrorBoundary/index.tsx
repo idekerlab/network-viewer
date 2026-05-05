@@ -45,7 +45,7 @@ export default class ErrorBoundary extends Component {
             <Typography
               color="secondary"
               onClick={() => {
-                window.open('https://home.ndexbio.org/report-a-bug/', '_blank')
+                window.open('/report-bug', '_blank')
               }}
               variant="h5"
               style={{ cursor: 'pointer', margin: '1rem' }}
