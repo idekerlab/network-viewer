@@ -23,3 +23,10 @@ yarn-debug.log*
 yarn-error.log*
 
 /backend/web-relative/build
+
+# Build and Config
+public/resource-dev3.json
+public/resource.json.bak
+build-dev3.sh
+deploy-network-viewer.sh
+network-viewer.tgz
