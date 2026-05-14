@@ -109,7 +109,7 @@ export const NdexSignInButton = () => {
         anchorEl={anchorEl}
         onClose={handleClose}
         onLogout={onLogout}
-        myAccountUrl={config.ndexUrl + '/index.html#/myAccount'}
+        myAccountUrl={config.ndexUrl + '/my-account'}
       />
     </>
   )
