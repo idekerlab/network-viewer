@@ -19,10 +19,10 @@ async function getNetworkSummary(
     return cache
   }
 
-  const ndexUrl = `${serverUrl}/${apiVersion}`
+  const ndexUrl = serverUrl
   try {
     const ndexClient = getNdexClient(ndexUrl, credential)
-    const summary = await ndexClient.getNetworkSummary(uuid, credential.accessKey)
+    const summary = await ndexClient.networks.getNetworkSummary(uuid, { accesskey: credential.accessKey })
     summaryMap[uuid] = summary
 
     if (!isValidSummary(summary)) {

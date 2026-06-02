@@ -12,7 +12,7 @@ import AppConfig from './model/AppConfig'
 import Keycloak from 'keycloak-js'
 import NdexCredential from './model/NdexCredential'
 import { EmailVerificationPanel } from './components/EmailVerification'
-import { NDEx } from '@js4cytoscape/ndex-client'
+import { NDExClient, NDExAuthError } from '@js4cytoscape/ndex-client'
 
 interface UserInfo {
   preferred_username: string
@@ -232,17 +232,18 @@ const checkEmailVerification = async (
   keycloakToken: string,
 ) => {
   try {
-    const ndexClient = new NDEx(ndexUrl)
-    const userObj = await ndexClient.signInFromIdToken(keycloakToken)
+    const ndexClient = new NDExClient({ baseURL: ndexUrl })
+    ndexClient.setIdToken(keycloakToken)
+    await ndexClient.user.getCurrentUser()
     return {
       isVerified: true,
     }
-  } catch (e) {
+  } catch (e: any) {
     if (
-      e.status === 401 &&
-      e.response?.data?.errorCode === 'NDEx_User_Account_Not_Verified'
+      e instanceof NDExAuthError &&
+      e.errorCode === 'NDEx_User_Account_Not_Verified'
     ) {
-      const userInfo = parseMessage(e.response?.data?.message)
+      const userInfo = parseMessage(e.message)
       return {
         isVerified: false,
         userName: userInfo?.userName,

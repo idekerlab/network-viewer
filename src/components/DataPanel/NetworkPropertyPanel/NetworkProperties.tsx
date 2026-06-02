@@ -165,30 +165,32 @@ const NetworkProperties: FC<{
   let rights
   let rightsHolder
   let reference
-  for (let property of properties) {
-    const value = property.value.trim()
-    const predicate = property.predicateString.trim()
-    if (value !== '' && !predicate.startsWith(HIDDEN_ATTR_PREFIX)) {
-      if (predicate === '@context') {
-        continue
-      } else if (predicate === 'rights') {
-        if (value.includes('|')) {
-          const [url, text] = value.split('|')
-          rights = '<a target="_blank" href="' + url + '">' + text + '</a>'
+  if (properties) {
+    for (const [predicateString, property] of Object.entries(properties)) {
+      const value = String((property as any).v).trim()
+      const predicate = predicateString.trim()
+      if (value !== '' && !predicate.startsWith(HIDDEN_ATTR_PREFIX)) {
+        if (predicate === '@context') {
+          continue
+        } else if (predicate === 'rights') {
+          if (value.includes('|')) {
+            const [url, text] = value.split('|')
+            rights = '<a target="_blank" href="' + url + '">' + text + '</a>'
+          } else {
+            rights = value
+          }
+        } else if (predicate === 'rightsHolder') {
+          rightsHolder = value
+        } else if (predicate === 'reference') {
+          reference = value
         } else {
-          rights = value
+          propertiesTableContent.push(
+            <tr key={predicate}>
+              <td className={classes.tdTitle}>{formatTitle(predicate)}</td>
+              <td className={classes.tdContent}>{formatPropertyValue(value)}</td>
+            </tr>,
+          )
         }
-      } else if (predicate === 'rightsHolder') {
-        rightsHolder = value
-      } else if (predicate === 'reference') {
-        reference = value
-      } else {
-        propertiesTableContent.push(
-          <tr key={predicate}>
-            <td className={classes.tdTitle}>{formatTitle(predicate)}</td>
-            <td className={classes.tdContent}>{formatPropertyValue(value)}</td>
-          </tr>,
-        )
       }
     }
   }

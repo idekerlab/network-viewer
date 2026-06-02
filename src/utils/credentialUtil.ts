@@ -1,5 +1,5 @@
 import NdexCredential from '../model/NdexCredential'
-import { NDEx } from '@js4cytoscape/ndex-client'
+import { NDExClient } from '@js4cytoscape/ndex-client'
 
 // const getGoogleHeader = (userInfo) => {
 //   const token = userInfo.tokenObj.token_type + ' ' + userInfo.tokenObj.id_token
@@ -25,7 +25,7 @@ const getAuthorization = (ndexCredential: NdexCredential) => {
  */
 const getNdexClient = (baseUrl: string, ndexCredential: NdexCredential) => {
   const { idToken, authenticated } = ndexCredential
-  const ndexClient = new NDEx(baseUrl)
+  const ndexClient = new NDExClient({ baseURL: baseUrl })
 
   if (authenticated) {
     if (idToken === undefined || idToken === null || idToken === '') {
@@ -34,7 +34,7 @@ const getNdexClient = (baseUrl: string, ndexCredential: NdexCredential) => {
       )
       return ndexClient
     } else {
-      ndexClient.setAuthToken(idToken)
+      ndexClient.setIdToken(idToken)
     }
   } else {
     console.info('No credential. Access to public networks only.')
